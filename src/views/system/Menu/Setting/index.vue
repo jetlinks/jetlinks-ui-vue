@@ -4,11 +4,11 @@
             <div class="top">
                 <AIcon style="padding: 12px" type="ExclamationCircleOutlined" />
                 <span
-                    >单击可切换菜单未选中/选中状态；操作父级菜单时，对应子菜单状态将默认与其同步，可以单独操作调整；支持拖拽菜单调整展示顺序。
+                    >{{ $t('Setting.index.113436-0') }}
                 </span>
             </div>
             <div class="content">
-                <a-card title="菜单配置" style="width: 80%">
+                <a-card :title="$t('Setting.index.113436-1')" style="width: 80%">
                     <div class="tree">
                         <j-scrollbar>
                             <a-tree
@@ -41,18 +41,18 @@
                 type="primary"
                 @click="() => (visible = true)"
                 style="margin-left: 10%"
-                >保存</a-button
+                >{{ $t('Setting.index.113436-2') }}</a-button
             >
             <j-permission-button
                 type="primary"
                 :popConfirm="{
-                    title: '确认同步系统菜单权限？',
-                    okText: ' 确定',
-                    cancelText: '取消',
+                    title: $t('Setting.index.113436-3'),
+                    okText: $t('Setting.index.113436-4'),
+                    cancelText: $t('Setting.index.113436-5'),
                     onConfirm: synchronization,
                 }"
                 style="margin-left: 20px"
-            >同步系统菜单权限
+            >{{ $t('Setting.index.113436-6') }}
             </j-permission-button>
         </a-card>
         <a-modal
@@ -62,7 +62,7 @@
             @ok="handleOk"
             @cancel="handleCancel"
         >
-            保存后当前系统菜单数据将被覆盖，确认操作？
+            {{ $t('Setting.index.113436-7') }}
         </a-modal>
     </j-page-container>
 </template>
@@ -94,7 +94,9 @@ import { protocolList } from '@/utils/consts';
 import { getProviders } from '@/api/data-collect/channel';
 import { isNoCommunity } from '@/utils/utils';
 import { USER_CENTER_MENU_DATA } from '@/views/init-home/data/baseMenu';
+import { useI18n } from 'vue-i18n';
 
+const { t: $t } = useI18n();
 const selectedKeys: any = ref([]);
 const treeData = ref<any>([]);
 const systemMenu: any = ref([]);
@@ -216,7 +218,7 @@ const handleOk = async () => {
     if (res?.status === 200) {
         loading.value = false;
         visible.value = false;
-        onlyMessage('操作成功', 'success');
+        onlyMessage($t('Setting.index.113436-8'), 'success');
         setTimeout(() => {
             location.reload();
         }, 100);
@@ -235,7 +237,7 @@ const onDrop = (info: AntTreeNodeDropEvent) => {
     const newTreeData = drop(info, treeData.value);
     const maxDepth = getMaxDepth(newTreeData);
     if (maxDepth > 3) {
-        onlyMessage('仅支持3级菜单', 'error');
+        onlyMessage($t('Setting.index.113436-9'), 'error');
         treeDataDropChange.value = false;
         treeData.value = TreeData;
     } else {
@@ -266,7 +268,7 @@ const synchronization = async () => {
     menu.push(USER_CENTER_MENU_DATA);
     const res = await updateMenus(menu).catch(() => {});
     if (res?.status === 200) {
-        onlyMessage('操作成功', 'success');
+        onlyMessage($t('Setting.index.113436-8'), 'success');
         location.reload();
     }
 };

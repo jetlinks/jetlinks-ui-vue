@@ -41,7 +41,7 @@
                 />
             </a-form-item>
         </a-form>
-        <j-empty v-else style="margin: 20px 0" description="当前模版暂无变量" />
+        <j-empty v-else style="margin: 20px 0" :description="$t('components.VariableDefinitions.420465-0')" />
     </div>
 </template>
 
@@ -50,7 +50,9 @@ import BuildIn from './variableItem/BuildIn.vue';
 import Tag from './variableItem/Tag.vue';
 import InputFile from './variableItem/InputFile.vue';
 import { PropType } from 'vue';
+import { useI18n } from 'vue-i18n';
 
+const { t: $t } = useI18n();
 const props = defineProps({
     variableDefinitions: {
         type: Array as PropType<any>,
@@ -87,43 +89,43 @@ const checkValue = (_rule: any, value: any, item: any) => {
     if (type === 'file') {
         return Promise.resolve();
     } else if (type === 'string' && !value) {
-        return Promise.reject(new Error('请输入' + item.name));
+        return Promise.reject(new Error($t('components.VariableDefinitions.420465-1') + item.name));
     } else if (type === 'link') {
         if (!value) {
-            return Promise.reject(new Error('请输入' + item.name));
+            return Promise.reject(new Error($t('components.VariableDefinitions.420465-1') + item.name));
         } else if (value.length > 64) {
-            return Promise.reject(new Error('最多64个字符'));
+            return Promise.reject(new Error($t('components.VariableDefinitions.420465-2')));
         }
     } else if (type === 'tag' && !value) {
-        return Promise.reject(new Error('请选择' + item.name));
+        return Promise.reject(new Error($t('components.VariableDefinitions.420465-3') + item.name));
     } else if (['date'].includes(type)) {
         if (!value) {
-            return Promise.reject(new Error('请选择' + item.name));
+            return Promise.reject(new Error($t('components.VariableDefinitions.420465-3') + item.name));
         } else {
             if (value?.source === 'upper') {
                 if (!value?.upperKey) {
-                    return Promise.reject(new Error('请选择' + item.name));
+                    return Promise.reject(new Error($t('components.VariableDefinitions.420465-3') + item.name));
                 } else {
                     return Promise.resolve();
                 }
             } else {
                 if (!value?.value) {
-                    return Promise.reject(new Error('请选择' + item.name));
+                    return Promise.reject(new Error($t('components.VariableDefinitions.420465-3') + item.name));
                 } else {
                     return Promise.resolve();
                 }
             }
         }
     } else if (value?.source === 'fixed' && !value?.value) {
-        return Promise.reject(new Error('请输入' + item.name));
+        return Promise.reject(new Error($t('components.VariableDefinitions.420465-1') + item.name));
     } else if (
         value?.source === 'relation' &&
         !value?.value &&
         !value?.relation
     ) {
-        return Promise.reject(new Error('请选择' + item.name));
+        return Promise.reject(new Error($t('components.VariableDefinitions.420465-3') + item.name));
     } else if (value?.source === 'upper' && !value.upperKey) {
-        return Promise.reject(new Error('请选择' + item.name));
+        return Promise.reject(new Error($t('components.VariableDefinitions.420465-3') + item.name));
     }
     return Promise.resolve();
 };

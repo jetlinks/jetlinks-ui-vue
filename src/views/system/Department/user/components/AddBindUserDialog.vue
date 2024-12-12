@@ -1,6 +1,6 @@
 <template>
   <a-modal
-    title="绑定"
+    :title="$t('components.AddBindUserDialog.811389-0')"
     :width="900"
     visible
     :confirmLoading="loading"
@@ -36,7 +36,9 @@ import { bindUser_api } from '@/api/system/department'
 import { useRequest } from '@jetlinks-web/hooks'
 import { onlyMessage } from '@jetlinks-web/utils'
 import { bindUserColumns, requestFun } from '../../util'
+import { useI18n } from 'vue-i18n';
 
+const { t: $t } = useI18n();
 const emits = defineEmits(['save', 'close'])
 
 const props = defineProps({
@@ -54,7 +56,7 @@ const { loading, run } = useRequest(bindUser_api, {
   immediate: false,
   onSuccess(res) {
     if (res.success) {
-      onlyMessage('操作成功')
+      onlyMessage($t('components.AddBindUserDialog.811389-1'))
       _selectedRowKeys.value = []
       emits('save')
     }
@@ -65,7 +67,7 @@ const confirm = () => {
   if (_selectedRowKeys.value.length && props.parentId) {
     run(props.parentId, _selectedRowKeys.value)
   } else {
-    onlyMessage('请选择要绑定的用户', 'warning')
+    onlyMessage($t('components.AddBindUserDialog.811389-2'), 'warning')
   }
 }
 

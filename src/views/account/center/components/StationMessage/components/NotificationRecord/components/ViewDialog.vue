@@ -1,7 +1,7 @@
 <template>
   <a-modal
     visible
-    title="详情"
+    :title="$t('components.ViewDialog.411617-0')"
     width="754px"
     @cancel="emits('update:visible', false)"
     class="view-dialog-container"
@@ -14,7 +14,7 @@
       "
     >
       <div>
-        <div class="label">通知流水:</div>
+        <div class="label">{{ $t('components.ViewDialog.411617-1') }}</div>
         <div style="padding: 10px; background-color: #fafafa">
           <j-scrollbar height="200px">
             <JsonViewer :value="data" />
@@ -44,30 +44,30 @@
           width: '72px',
         }"
       >
-        <a-descriptions-item label="发起人">
+        <a-descriptions-item :label="$t('components.ViewDialog.411617-2')">
           <j-ellipsis>{{ workFlowData?.creatorName }}</j-ellipsis>
         </a-descriptions-item>
-        <a-descriptions-item label="发起时间">
+        <a-descriptions-item :label="$t('components.ViewDialog.411617-3')">
           <j-ellipsis>
             {{ dayjs(workFlowData?.createTime).format('YYYY-MM-DD HH:mm:ss') }}
           </j-ellipsis>
         </a-descriptions-item>
-        <a-descriptions-item label="流程分类">
+        <a-descriptions-item :label="$t('components.ViewDialog.411617-4')">
           <j-ellipsis>
             {{ workFlowData?.classifiedName }}
           </j-ellipsis>
         </a-descriptions-item>
-        <a-descriptions-item label="流程名称">
+        <a-descriptions-item :label="$t('components.ViewDialog.411617-5')">
           <j-ellipsis>
             {{ workFlowData?.modelName }}
           </j-ellipsis>
         </a-descriptions-item>
-        <a-descriptions-item label="标题">
+        <a-descriptions-item :label="$t('components.ViewDialog.411617-6')">
           <j-ellipsis>
             {{ workFlowData?.name }}
           </j-ellipsis>
         </a-descriptions-item>
-        <a-descriptions-item label="摘要">
+        <a-descriptions-item :label="$t('components.ViewDialog.411617-7')">
           <j-ellipsis>
             {{ workFlowData?.summary }}
           </j-ellipsis>
@@ -86,34 +86,34 @@
         }"
       >
         <template v-if="data?.topicProvider === 'alarm-device'">
-          <a-descriptions-item label="告警设备">
+          <a-descriptions-item :label="$t('components.ViewDialog.411617-8')">
             <j-ellipsis>{{ _data?.targetName || '' }}</j-ellipsis>
           </a-descriptions-item>
-          <a-descriptions-item label="设备ID">
+          <a-descriptions-item :label="$t('components.ViewDialog.411617-9')">
             <j-ellipsis>
               {{ _data?.targetId || '' }}
             </j-ellipsis>
           </a-descriptions-item>
         </template>
-        <a-descriptions-item label="告警名称">
+        <a-descriptions-item :label="$t('components.ViewDialog.411617-10')">
           <j-ellipsis>
             {{ _data?.alarmName || _data?.alarmConfigName || '' }}
           </j-ellipsis>
         </a-descriptions-item>
-        <a-descriptions-item label="告警时间"
+        <a-descriptions-item :label="$t('components.ViewDialog.411617-11')"
           >{{ dayjs(_data?.alarmTime).format('YYYY-MM-DD HH:mm:ss') }}
         </a-descriptions-item>
-        <a-descriptions-item label="告警级别"
+        <a-descriptions-item :label="$t('components.ViewDialog.411617-12')"
           >{{ (levelList.length > 0 && getLevelLabel(_data.level)) || '' }}
         </a-descriptions-item>
-        <a-descriptions-item label="告警说明">
+        <a-descriptions-item :label="$t('components.ViewDialog.411617-13')">
           <j-ellipsis>
             {{ _data?.description || '' }}
           </j-ellipsis>
         </a-descriptions-item>
       </a-descriptions>
       <div>
-        <div class="label">告警流水:</div>
+        <div class="label">{{ $t('components.ViewDialog.411617-14') }}</div>
         <div style="padding: 10px; background-color: #fafafa">
           <j-scrollbar height="200px">
             <JsonViewer
@@ -126,7 +126,7 @@
     </template>
     <template #footer>
       <a-button type="primary" @click="emits('update:visible', false)"
-        >确定
+        >{{ $t('components.ViewDialog.411617-15') }}
       </a-button>
     </template>
   </a-modal>

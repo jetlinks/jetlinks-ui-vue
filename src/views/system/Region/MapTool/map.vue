@@ -54,36 +54,36 @@
       <div class="map-tool-content">
         <div class="tool-item-group">
           <div class="tool-item" @click="toolSave">
-            <a-tooltip title="保存描点" >
+            <a-tooltip :title="$t('MapTool.map.633284-0')" >
               <AIcon type="SaveOutlined" />
             </a-tooltip>
           </div>
           <div class="tool-item" @click="toolClose">
-            <a-tooltip title="取消操作" >
+            <a-tooltip :title="$t('MapTool.map.633284-1')" >
               <AIcon type="CloseOutlined" />
             </a-tooltip>
           </div>
         </div>
         <div class="tool-item-group">
           <div :class="{'tool-item': true, 'active': toolType === 'rectangle'}" @click="changeToolType(MAP_TOOL.rectangle)">
-            <a-tooltip title="矩形" >
+            <a-tooltip :title="$t('MapTool.map.633284-2')" >
               <AIcon type="icon-huajuxing" />
             </a-tooltip>
           </div>
           <div :class="{'tool-item': true, 'active': toolType === 'polygon'}" @click="changeToolType(MAP_TOOL.polygon)">
-            <a-tooltip title="多边形" >
+            <a-tooltip :title="$t('MapTool.map.633284-3')" >
               <AIcon type="icon-huaduobianxing" />
             </a-tooltip>
           </div>
         </div>
         <div class="tool-item-group">
           <div :class="{'tool-item': true, 'disabled': !hasHistory }" @click="onRevoke">
-            <a-tooltip title="撤销" >
+            <a-tooltip :title="$t('MapTool.map.633284-4')" >
               <AIcon type="RollbackOutlined" />
             </a-tooltip>
           </div>
           <div class="tool-item" @click="onDelete">
-            <a-tooltip title="删除">
+            <a-tooltip :title="$t('MapTool.map.633284-5')">
               <AIcon type="DeleteOutlined" />
             </a-tooltip>
           </div>
@@ -98,7 +98,9 @@ import {useHistory, useRegion} from "../hooks";
 import { MAP_TOOL } from '../util'
 import { DistrictSearch, GeoJson } from '@/components/AMapComponent'
 import { randomNumber,onlyMessage } from '@jetlinks-web/utils'
+import { useI18n } from 'vue-i18n';
 
+const { t: $t } = useI18n();
 const regionState = useRegion()
 const { revoke, addRecord, reset, hasHistory } = useHistory()
 
@@ -214,7 +216,7 @@ const toolSave = () => {
   if (toolDrawCache.value) {
     regionState.openSave(toolDrawCache.value)
   } else {
-    onlyMessage('请绘制区域范围','warning')
+    onlyMessage($t('MapTool.map.633284-6'),'warning')
   }
 }
 

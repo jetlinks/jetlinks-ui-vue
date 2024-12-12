@@ -12,28 +12,28 @@
           :rules="rules"
           @finish="submit"
         >
-          <a-form-item label="账号" name="username">
+          <a-form-item :label="$t('login.right.419974-0')" name="username">
             <a-input
               v-model:value="formData.username"
-              placeholder="请输入账号"
+              :placeholder="$t('login.right.419974-1')"
               :maxlength="64"
               autocomplete="off"
             />
           </a-form-item>
-          <a-form-item label="密码" name="password">
+          <a-form-item :label="$t('login.right.419974-2')" name="password">
             <a-input-password
               v-model:value="formData.password"
-              placeholder="请输入密码"
+              :placeholder="$t('login.right.419974-3')"
               :maxlength="64"
               autocomplete="off"
             />
           </a-form-item>
-          <a-form-item v-if="showCode" label="验证码" name="verifyCode">
+          <a-form-item v-if="showCode" :label="$t('login.right.419974-4')" name="verifyCode">
             <a-input
               v-model:value="formData.verifyCode"
               autocomplete="off"
               :maxlength="64"
-              placeholder="请输入验证码"
+              :placeholder="$t('login.right.419974-5')"
             >
               <template #addonAfter>
                 <img :src="url.base64" @click="getCode" />
@@ -54,7 +54,7 @@
               class="login-form-button"
               block
             >
-              登录
+              {{ $t('login.right.419974-6') }}
             </a-button>
           </a-form-item>
         </a-form>

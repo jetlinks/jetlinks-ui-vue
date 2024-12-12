@@ -1,7 +1,7 @@
 <template>
   <a-tree-select
       showSearch
-      placeholder="1级区域不需要选择"
+      :placeholder="$t('Save.BuildIn.317807-0')"
       :tree-data="areaTree"
       :value="_value"
       :field-names="{
@@ -19,13 +19,15 @@
       v-model:checked="mySync"
       @change="onCheckChange"
       style="margin-top: 5px"
-  >同步添加下一级区域</a-checkbox
+  >{{ $t('Save.BuildIn.317807-1') }}</a-checkbox
   >
 </template>
 
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
+const { t: $t } = useI18n();
 const props = defineProps({
   value: {
     type: String,
@@ -111,7 +113,7 @@ watch(
       if (props.value) {
         _value.value = props.value as string
       } else {
-        emits('update:name', '中国');
+        emits('update:name', $t('Save.BuildIn.317807-2'));
         emits('update:value', '100000');
       }
     },

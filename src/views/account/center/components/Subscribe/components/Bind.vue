@@ -37,7 +37,7 @@
     </template>
 
     <template #footer>
-      <a-button @click="emit('close')">关闭</a-button>
+      <a-button @click="emit('close')">{{ $t('Detail.index.551010-9') }}</a-button>
       <!-- <a-button type="primary" @click="emit('close')">确定</a-button> -->
     </template>
   </a-modal>

@@ -1,11 +1,11 @@
 <template>
   <div class="basic-info-container">
     <div class="card">
-      <TitleComponent data="基本信息" />
+      <TitleComponent :data="$t('BasicInfo.index.966110-0')" />
       <Info ref="basicFormRef" :value="value" />
     </div>
     <div class="card">
-      <TitleComponent data="权限配置" />
+      <TitleComponent :data="$t('BasicInfo.index.966110-1')" />
       <Permission ref="permissionFormRef" :value="value" />
       <j-permission-button
         :hasPermission="`${permission}:${
@@ -15,7 +15,7 @@
         type="primary"
         @click="onSave"
       >
-        保存
+        {{ $t('BasicInfo.index.966110-2') }}
       </j-permission-button>
     </div>
   </div>
@@ -29,7 +29,9 @@ import { useRequest } from '@jetlinks-web/hooks'
 import { onlyMessage } from '@jetlinks-web/utils'
 import { useMenuStore } from '@/store/menu'
 import {OWNER_KEY} from "@/utils/consts";
+import { useI18n } from 'vue-i18n';
 
+const { t: $t } = useI18n();
 const permission = 'system/Menu'
 const menuStore = useMenuStore()
 const route = useRoute()
@@ -48,7 +50,7 @@ const { loading, run } = useRequest(route.query.id !== ':id' ? updateMenu : addM
   immediate: false,
   onSuccess(res: any) {
     if (res.success) {
-      onlyMessage('操作成功')
+      onlyMessage($t('BasicInfo.index.966110-3'))
       if (!props.value?.id) {
         menuStore.jumpPage('system/Menu/Detail', {
           params: { id: res.result.id },
@@ -69,10 +71,10 @@ const onSave = async () => {
       value: accessSupportValue,
       label:
         accessSupportValue === 'unsupported'
-          ? '不支持'
+          ? $t('BasicInfo.index.966110-4')
           : accessSupportValue === 'support'
-          ? '支持'
-          : '间接控制',
+          ? $t('BasicInfo.index.966110-5')
+          : $t('BasicInfo.index.966110-6'),
     },
     owner: OWNER_KEY,
   }

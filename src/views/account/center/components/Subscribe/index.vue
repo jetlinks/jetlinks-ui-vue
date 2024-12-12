@@ -4,7 +4,7 @@
       <div style="padding: 0 10px">
         <div class="alert">
           <AIcon type="InfoCircleOutlined" />
-          你可以在该页面选择需要订阅的主题及接收通知的方式。
+          {{ $t('Subscribe.index.994011-0') }}
         </div>
         <div class="content-collapse">
           <template v-if="dataSource.length">

@@ -2,13 +2,13 @@
     <a-modal
         :width="540"
         visible
-        title="权限控制"
+        :title="$t('Auth.index.210912-0')"
         @cancel="emit('close')"
         @ok="onSave"
     >
         <div class="alert">
             <AIcon type="InfoCircleOutlined" />
-            通过角色控制哪些用户可以订阅【{{ name }}】下所有的通知方式。
+            {{ $t('Auth.index.210912-1', [name]) }}
         </div>
         <Role v-model="_selectedRowKeys" :gridColumn="2" />
     </a-modal>

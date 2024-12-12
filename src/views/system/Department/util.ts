@@ -1,5 +1,6 @@
 import { getBindUserList_api } from "@/api/system/department"
 import { TreeType } from "./typings"
+import i18n from "@/locales"
 
 export const ArrayToTree = (list: any[]): any[] => {
     const treeList: any[] = []
@@ -63,7 +64,7 @@ export const filterTree = (treeNode: TreeType[]) => {
 // 用户
 export const columns = [
     {
-        title: '姓名',
+        title: i18n.global.t('Department.util.780026-0'),
         dataIndex: 'name',
         key: 'name',
         ellipsis: true,
@@ -71,12 +72,12 @@ export const columns = [
         search: {
             type: 'string',
             componentProps: {
-                placeholder: '请输入姓名',
+                placeholder: i18n.global.t('Department.util.780026-1'),
             },
         },
     },
     {
-        title: '用户名',
+        title: i18n.global.t('Department.util.780026-2'),
         dataIndex: 'username',
         key: 'username',
         ellipsis: true,
@@ -84,13 +85,13 @@ export const columns = [
         search: {
             type: 'string',
             componentProps: {
-                placeholder: '请输入用户名',
+                placeholder: i18n.global.t('Department.util.780026-3'),
             },
         },
     },
 
     {
-        title: '状态',
+        title: i18n.global.t('Department.util.780026-4'),
         dataIndex: 'status',
         key: 'status',
         ellipsis: true,
@@ -98,15 +99,15 @@ export const columns = [
         search: {
             type: 'select',
             componentProps: {
-                placeholder: '请选择',
+                placeholder: i18n.global.t('Department.util.780026-5'),
             },
             options: [
                 {
-                    label: '正常',
+                    label: i18n.global.t('Department.util.780026-6'),
                     value: 1,
                 },
                 {
-                    label: '禁用',
+                    label: i18n.global.t('Department.util.780026-7'),
                     value: 0,
                 },
             ],
@@ -114,7 +115,7 @@ export const columns = [
         scopedSlots: true,
     },
     {
-        title: '操作',
+        title: i18n.global.t('Department.util.780026-8'),
         dataIndex: 'action',
         key: 'action',
         scopedSlots: true,
@@ -125,26 +126,26 @@ export const columns = [
 // 绑定用户
 export const bindUserColumns = [
     {
-        title: '姓名',
+        title: i18n.global.t('Department.util.780026-0'),
         dataIndex: 'name',
         key: 'name',
         ellipsis: true,
         search: {
             type: 'string',
             componentProps: {
-                placeholder: '请输入姓名',
+                placeholder: i18n.global.t('Department.util.780026-1'),
             },
         },
     },
     {
-        title: '用户名',
+        title: i18n.global.t('Department.util.780026-2'),
         dataIndex: 'username',
         key: 'username',
         ellipsis: true,
         search: {
             type: 'string',
             componentProps: {
-                placeholder: '请输入用户名',
+                placeholder: i18n.global.t('Department.util.780026-3'),
             },
         },
     },

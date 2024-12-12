@@ -12,34 +12,34 @@
       <a-form-item
         name="id"
         :rules="[
-          { required: true, message: '请输入标识' },
+          { required: true, message: $t('components.EditDialog.859823-0') },
           { validator: idCheck, trigger: 'blur' },
         ]"
       >
         <template #label>
-          <span style="margin-right: 5px">标识</span>
-          <a-tooltip title="标识ID需与代码中的标识ID一致">
+          <span style="margin-right: 5px">{{ $t('components.EditDialog.859823-1') }}</span>
+          <a-tooltip :title="$t('components.EditDialog.859823-2')">
             <AIcon type="QuestionCircleOutlined" />
           </a-tooltip>
         </template>
         <a-input
           v-model:value="modelRef.id"
-          placeholder="请输入标识(ID)"
+          :placeholder="$t('components.EditDialog.859823-0') + '(ID)'"
           :disabled="props.data.id"
         />
       </a-form-item>
       <a-form-item
         name="name"
-        label="名称"
+        :label="$t('components.EditDialog.859823-3')"
         :rules="[
-          { required: true, message: '请输入名称' },
+          { required: true, message: $t('components.EditDialog.859823-4') },
           {
             max: 64,
-            message: '最多可输入64个字符',
+            message: $t('components.EditDialog.859823-5'),
           },
         ]"
       >
-        <a-input v-model:value="modelRef.name" placeholder="请输入名称" />
+        <a-input v-model:value="modelRef.name" :placeholder="$t('components.EditDialog.859823-4')" />
       </a-form-item>
       <!-- 操作权限列表 -->
       <a-table
@@ -69,11 +69,11 @@
               :rules="[
                 {
                   required: column.key !== 'describe',
-                  message: `请输入${column.title}`,
+                  message: $t('components.EditDialog.859823-6', [column.title]),
                 },
                 {
                   max: 64,
-                  message: '最多可输入64个字符',
+                  message: $t('components.EditDialog.859823-5'),
                 },
               ]"
             >
@@ -88,7 +88,7 @@
       style="width: 100%; margin-top: 5px"
       @click="clickAdd"
     >
-      <AIcon type="PlusOutlined" /> 添加
+      <AIcon type="PlusOutlined" /> {{ $t('components.EditDialog.859823-7') }}
     </a-button>
   </a-modal>
 </template>
@@ -102,7 +102,9 @@ import {
 import { useRequest } from '@jetlinks-web/hooks'
 import { onlyMessage } from '@jetlinks-web/utils'
 import { editColumns, defaultAction } from '../util'
+import { useI18n } from 'vue-i18n';
 
+const { t: $t } = useI18n();
 const emits = defineEmits(['save', 'close'])
 
 const props = defineProps({
@@ -112,7 +114,7 @@ const props = defineProps({
   },
 })
 
-const dialogTitle = computed(() => (props.data.id ? '编辑' : '新增'))
+const dialogTitle = computed(() => (props.data.id ? $t('components.EditDialog.859823-8') : $t('components.EditDialog.859823-9')))
 
 // 表单相关
 const formRef = ref<any>()
@@ -126,7 +128,7 @@ const modelRef = reactive({
 // 校验标识是否可用
 const idCheck = async (_rule: any, id: string): Promise<any> => {
   if (!id) return Promise.resolve()
-  else if (id.length > 64) return Promise.reject('最多可输入64个字符')
+  else if (id.length > 64) return Promise.reject($t('components.EditDialog.859823-5'))
   else if (props.data.id && props.data.id === modelRef.id)
     return Promise.resolve()
   else {
@@ -157,7 +159,7 @@ const { loading, run } = useRequest(
     immediate: false,
     onSuccess(res) {
       if (res.success) {
-        onlyMessage('操作成功')
+        onlyMessage($t('components.EditDialog.859823-10'))
         emits('save')
       }
     },

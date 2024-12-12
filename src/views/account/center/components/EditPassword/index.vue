@@ -1,7 +1,7 @@
 <template>
     <a-modal
         visible
-        title="重置密码"
+        :title="$t('EditPassword.index.010161-0')"
         width="615px"
         :bodyStyle="{
             padding: 0,
@@ -23,9 +23,9 @@
                         :key="item"
                     >
                         <template #description>
-                            <span v-if="current === index">进行中</span>
-                            <span v-if="current < index">未开始</span>
-                            <span v-if="current > index">已完成</span>
+                            <span v-if="current === index">{{ $t('EditPassword.index.010161-1') }}</span>
+                            <span v-if="current < index">{{ $t('EditPassword.index.010161-2') }}</span>
+                            <span v-if="current > index">{{ $t('EditPassword.index.010161-3') }}</span>
                         </template>
                     </a-step>
                 </a-steps>
@@ -33,39 +33,39 @@
             <div class="content">
                 <a-form :model="form" layout="vertical" ref="formRef">
                     <a-form-item
-                        label="当前密码"
+                        :label="$t('EditPassword.index.010161-4')"
                         name="oldPassword"
                         v-show="current === 0"
                         :rules="[
-                            { required: true, message: '请输入当前密码' },
+                            { required: true, message: $t('EditPassword.index.010161-5') },
                             { validator: checkMethods.old, trigger: 'blur' },
                         ]"
                     >
                         <a-input
                             v-model:value="form.oldPassword"
-                            placeholder="请输入当前密码"
+                            :placeholder="$t('EditPassword.index.010161-5')"
                         />
                     </a-form-item>
                     <a-form-item
-                        label="新密码"
+                        :label="$t('EditPassword.index.010161-6')"
                         name="newPassword"
                         v-show="current === 1"
                         :rules="[
-                            { required: true, message: '请输入新密码' },
+                            { required: true, message: $t('EditPassword.index.010161-7') },
                             { validator: checkMethods.new, trigger: 'blur' },
                         ]"
                     >
                         <a-input-password
                             v-model:value="form.newPassword"
-                            placeholder="请输入新密码"
+                            :placeholder="$t('EditPassword.index.010161-7')"
                         />
                     </a-form-item>
                     <a-form-item
-                        label="确认新密码"
+                        :label="$t('EditPassword.index.010161-8')"
                         v-show="current === 2"
                         name="confirmPassword"
                         :rules="[
-                            { required: true, message: '请确认新密码' },
+                            { required: true, message: $t('EditPassword.index.010161-9') },
                             {
                                 validator: checkMethods.confirm,
                                 trigger: 'blur',
@@ -74,7 +74,7 @@
                     >
                         <a-input
                             v-model:value="form.confirmPassword"
-                            placeholder="请确认新密码"
+                            :placeholder="$t('EditPassword.index.010161-9')"
                         />
                     </a-form-item>
                 </a-form>
@@ -82,12 +82,12 @@
         </div>
         <template #footer>
             <a-button v-if="current === 0" @click="emits('close')"
-                >取消</a-button
+                >{{ $t('EditPassword.index.010161-10') }}</a-button
             >
-            <a-button v-if="current === 2" @click="onPrev">上一步</a-button>
-            <a-button type="primary" v-else @click="onNext">下一步</a-button>
+            <a-button v-if="current === 2" @click="onPrev">{{ $t('EditPassword.index.010161-11') }}</a-button>
+            <a-button type="primary" v-else @click="onNext">{{ $t('EditPassword.index.010161-12') }}</a-button>
             <a-button v-if="current === 2" type="primary" @click="handleOk"
-                >完成</a-button
+                >{{ $t('EditPassword.index.010161-13') }}</a-button
             >
         </template>
     </a-modal>
@@ -101,7 +101,9 @@ import {
 } from '@/api/account/center';
 import { onlyMessage } from "@jetlinks-web/utils";
 import { Modal } from 'ant-design-vue';
+import { useI18n } from 'vue-i18n';
 
+const { t: $t } = useI18n();
 type formType = {
     oldPassword: string;
     newPassword: string;
@@ -111,7 +113,7 @@ type formType = {
 const emits = defineEmits(['close']);
 const router = useRouter();
 
-const list = ['验证密码', '设置密码', '二次确认'];
+const list = [$t('EditPassword.index.010161-14'), $t('EditPassword.index.010161-15'), $t('EditPassword.index.010161-16')];
 
 const loading = ref(false);
 const formRef = ref<any>();
@@ -156,7 +158,7 @@ const checkMethods = {
                 return Promise.reject(resp.result.reason);
             else return Promise.resolve();
         } catch (error) {
-            return Promise.reject('验证失败');
+            return Promise.reject($t('EditPassword.index.010161-17'));
         }
     },
     new: async (_rule: any, value: string) => {
@@ -167,13 +169,13 @@ const checkMethods = {
                 return Promise.reject(resp.result.reason);
             else return Promise.resolve();
         } catch (error) {
-            return Promise.reject('验证失败');
+            return Promise.reject($t('EditPassword.index.010161-17'));
         }
     },
     confirm: async (_rule: any, value: string) => {
         if (!value) return Promise.resolve();
         else if (form.value.newPassword && value !== form.value.newPassword) {
-            return Promise.reject('两次密码输入不一致');
+            return Promise.reject($t('EditPassword.index.010161-18'));
         }
         try {
             const resp: any = await validateField_api('password', value);
@@ -181,7 +183,7 @@ const checkMethods = {
                 return Promise.reject(resp.result.reason);
             else return Promise.resolve();
         } catch (error) {
-            return Promise.reject('验证失败');
+            return Promise.reject($t('EditPassword.index.010161-17'));
         }
     },
 };
@@ -196,11 +198,11 @@ const handleOk = () => {
         updateMepsd_api(params)
             .then((resp) => {
                 if (resp.status === 200) {
-                    onlyMessage('保存成功', 'success');
+                    onlyMessage($t('EditPassword.index.010161-19'), 'success');
                     emits('close')
                     Modal.warning({
-                        content: '密码已重置，请重新登录',
-                        okText: '确定',
+                        content: $t('EditPassword.index.010161-20'),
+                        okText: $t('EditPassword.index.010161-21'),
                         onOk() {
                             localStorage.clear();
                             router.push('/user/login');

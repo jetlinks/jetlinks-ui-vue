@@ -2,7 +2,7 @@
     <div class="choose-view">
         <HomeView v-model:value="currentView" />
         <div class="btn">
-            <a-button type="primary" @click="confirm">保存修改</a-button>
+            <a-button type="primary" @click="confirm">{{$t('InitHome.index.152181-1')}}</a-button>
         </div>
     </div>
 </template>
@@ -11,7 +11,9 @@
 import { getMe_api, getView_api, setView_api } from '@/api/account/center';
 import { onlyMessage } from "@jetlinks-web/utils";
 import HomeView from '@/components/HomeView/index.vue';
+import { useI18n } from 'vue-i18n';
 
+const { t: $t } = useI18n();
 const currentView = ref<string>('');
 const isApiUser = ref<boolean>();
 
@@ -45,7 +47,7 @@ const confirm = () => {
     setView_api({
         name: 'view',
         content: currentView.value,
-    }).then(() => onlyMessage('保存成功', 'success'));
+    }).then(() => onlyMessage($t('EditInfo.index.557023-17'), 'success'));
 };
 
 onMounted(() => {

@@ -1,9 +1,9 @@
 <template>
     <div class="des">
         <div class="des_head">
-            <div>字典ID：<span>{{ data.id }}</span></div>
-            <div style="display: flex;">说明：<j-ellipsis style="width: calc(100% - 200px);"><span>{{ data.describe }}</span></j-ellipsis></div>
-            <div>创建日期：<span v-time-format="'YYYY-MM-DD HH:mm:ss'"> {{data?.createTime}}</span></div>
+            <div>{{ $t('Right.index.572408-0') }}<span>{{ data.id }}</span></div>
+            <div style="display: flex;">{{ $t('Right.index.572408-1') }}<j-ellipsis style="width: calc(100% - 200px);"><span>{{ data.describe }}</span></j-ellipsis></div>
+            <div>{{ $t('Right.index.572408-2') }}<span v-time-format="'YYYY-MM-DD HH:mm:ss'"> {{data?.createTime}}</span></div>
         </div>
         <div class="contain">
             <pro-search style="padding: 18px 0 0 0" :columns="columns" noMargin @search="handleSearch" target="system_dictionary" />
@@ -12,7 +12,7 @@
             }" :scroll="{ y: 'calc(100vh - 500px)' }" :columns="columns" mode="TABLE" :request="queryItem" :params="params" ref="tableRef">
                 <template #headerLeftRender>
                     <j-permission-button type="primary" @click="add" hasPermission="system/Dictionary:add">
-                        新增
+                        {{ $t('Right.index.572408-3') }}
                     </j-permission-button>
                 </template>
                 <template #action="slotProps">
@@ -42,6 +42,9 @@ import { queryDicItem, deleteDicItem, queryDicItemNoPage } from '@/api/system/di
 import Save from './Save/index.vue'
 import { onlyMessage } from '@jetlinks-web/utils';
 import { cloneDeep } from 'lodash-es';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 const props = defineProps({
     data: {
         type: Object,
@@ -56,7 +59,7 @@ const modalType = ref('add')
 const current = ref()
 const columns = [
     {
-        title: '检索码',
+        title: $t('Right.index.572408-4'),
         dataIndex: 'searchCode',
         hideInTable: true,
         search: {
@@ -90,7 +93,7 @@ const columns = [
             type: 'string'
         }
     }, {
-        title: '操作',
+        title: $t('Right.index.572408-5'),
         dataIndex: 'action',
         key: 'action',
         scopedSlots: true,
@@ -106,9 +109,9 @@ const getActions = (
     const actions = [
         {
             key: 'update',
-            text: '编辑',
+            text: $t('Right.index.572408-6'),
             tooltip: {
-                title: '编辑',
+                title: $t('Right.index.572408-6'),
             },
           icon: 'EditOutlined',
             onClick: () => {
@@ -119,19 +122,19 @@ const getActions = (
         },
         {
             key: 'delete',
-            text: '删除',
+            text: $t('Right.index.572408-7'),
             tooltip: {
-                title: '删除',
+                title: $t('Right.index.572408-7'),
             },
             popConfirm: {
-                title: '确认删除?',
+                title: $t('Right.index.572408-8'),
                 onConfirm: async () => {
                     const res = await deleteDicItem(data.id)
                     if (res.status === 200) {
-                        onlyMessage('操作成功!')
+                        onlyMessage($t('Right.index.572408-9'))
                         tableRef.value.reload()
                     } else {
-                        onlyMessage('操作失败!', 'error')
+                        onlyMessage($t('Right.index.572408-10'), 'error')
                     }
                 },
             },

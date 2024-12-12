@@ -4,7 +4,7 @@
             <a-input-search
                 allowClear
                 @search="onSearch"
-                placeholder="请输入名称"
+                :placeholder="$t('Role.index.617700-0')"
             />
             <div class="role-alert">
                 <a-alert type="info">
@@ -14,17 +14,17 @@
                                 :indeterminate="indeterminate"
                                 :checked="checked"
                                 @change="onSelectAll"
-                                >全选</a-checkbox
+                                >{{ $t('Role.index.617700-1') }}</a-checkbox
                             >
                             <a-space v-if="_selectedRowKeys.length">
                                 <span
-                                    >已选择{{ _selectedRowKeys.length }}项</span
+                                    >{{ $t('Role.index.617700-2') }}{{ _selectedRowKeys.length }}{{ $t('Role.index.617700-3') }}</span
                                 >
                                 <a-button
                                     style="padding: 0; height: 22px"
                                     type="link"
                                     @click="cancelSelect"
-                                    >取消选择</a-button
+                                    >{{ $t('Role.index.617700-4') }}</a-button
                                 >
                             </a-space>
                         </div>
@@ -40,21 +40,21 @@
                             <a-input-search
                                 allowClear
                                 @search="onSearch"
-                                placeholder="请输入名称"
+                                :placeholder="$t('Role.index.617700-0')"
                                 style="width: 300px"
                             />
                             <a-space>
                                 <template v-if="_selectedRowKeys.length">
                                     <span
-                                        >已选择{{
+                                        >{{ $t('Role.index.617700-2') }}{{
                                             _selectedRowKeys.length
-                                        }}项</span
+                                        }}{{ $t('Role.index.617700-3') }}</span
                                     >
                                     <a-button
                                         style="padding: 0; height: 22px"
                                         type="link"
                                         @click="cancelSelect"
-                                        >取消选择</a-button
+                                        >{{ $t('Role.index.617700-4') }}</a-button
                                     >
                                 </template>
 
@@ -62,7 +62,7 @@
                                     :indeterminate="indeterminate"
                                     :checked="checked"
                                     @change="onSelectAll"
-                                    >全选</a-checkbox
+                                    >{{ $t('Role.index.617700-1') }}</a-checkbox
                                 >
                             </a-space>
                         </div>
@@ -105,7 +105,9 @@
 <script lang="ts" setup>
 import { queryRoleList } from '@/api/system/noticeRule';
 import { PropType } from 'vue';
+import { useI18n } from 'vue-i18n';
 
+const { t: $t } = useI18n();
 const props = defineProps({
     modelValue: {
         type: Array as PropType<string[]>,
@@ -151,14 +153,14 @@ watchEffect(() => {
 
 const columns = [
     {
-        title: '标识',
+        title: $t('Role.index.617700-5'),
         dataIndex: 'id',
         key: 'id',
         ellipsis: true,
         fixed: 'left',
     },
     {
-        title: '名称',
+        title: $t('Role.index.617700-6'),
         dataIndex: 'name',
         key: 'name',
         ellipsis: true,
@@ -167,7 +169,7 @@ const columns = [
         },
     },
     {
-        title: '说明',
+        title: $t('Role.index.617700-7'),
         key: 'description',
         ellipsis: true,
         dataIndex: 'description',

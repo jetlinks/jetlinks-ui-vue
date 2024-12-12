@@ -1,3 +1,4 @@
+import i18n from "@/locales";
 type KeyType = 'HomeView' | 'BindThirdAccount' | 'Subscribe' | 'StationMessage';
 export const tabList: { key: KeyType; title: string }[] =  [
     // {
@@ -10,10 +11,10 @@ export const tabList: { key: KeyType; title: string }[] =  [
     // },
     {
         key: 'Subscribe',
-        title: '我的订阅',
+        title: i18n.global.t('center.data.756829-0'),
     },
     {
         key: 'StationMessage',
-        title: '站内信',
+        title: i18n.global.t('center.data.756829-1'),
     },
 ]

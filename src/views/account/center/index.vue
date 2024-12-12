@@ -23,10 +23,10 @@
         </div>
         <div class="person-header-item-action">
           <a-space :size="24">
-            <a-button class="btn" @click="visible = true">查看详情 </a-button>
-            <a-button @click="editInfoVisible = true">编辑资料 </a-button>
+            <a-button class="btn" @click="visible = true">{{ $t('center.index.661180-0') }} </a-button>
+            <a-button @click="editInfoVisible = true">{{ $t('center.index.661180-1') }} </a-button>
             <a-button v-if="hasPerm" @click="editPasswordVisible = true">
-              修改密码
+              {{ $t('center.index.661180-2') }}
             </a-button>
           </a-space>
         </div>
@@ -124,7 +124,7 @@ const onAvatarChange = (url: string) => {
     avatar: url,
   }).then((resp) => {
     if (resp.status === 200) {
-      onlyMessage('操作成功', 'success')
+      onlyMessage($t('center.index.661180-3'), 'success')
       user.getUserInfo()
     }
   })
@@ -192,7 +192,6 @@ onUnmounted(() => {
 
       .person-header-item-action {
         button {
-          width: 110px;
           background-color: #ebeef4;
           color: #333333;
           border: none;

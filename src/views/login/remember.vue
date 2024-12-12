@@ -1,5 +1,5 @@
 <template>
-    <a-checkbox :checked="checked" @change="change" >记住我</a-checkbox>
+    <a-checkbox :checked="checked" @change="change" >{{ $t('login.remember.102238-0') }}</a-checkbox>
 </template>
 <script setup name="Remember" lang="ts">
 const emit = defineEmits(['update:value', 'update:expires'])

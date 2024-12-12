@@ -25,7 +25,7 @@
               :hasPermission="`${permission}:add`"
               @click="toDetails({})"
             >
-              <AIcon type="PlusOutlined" />新增
+              <AIcon type="PlusOutlined" />{{ $t('Menu.index.599742-0') }}
             </j-permission-button>
           </template>
           <template #createTime="slotProps">
@@ -40,7 +40,7 @@
                 :hasPermission="`${permission}:add`"
                 @click="toDetails(slotProps)"
                 style="padding: 0"
-                :tooltip="{ title: '编辑' }"
+                :tooltip="{ title: $t('Menu.index.599742-1') }"
               >
                 <AIcon type="EditOutlined" />
               </j-permission-button>
@@ -48,7 +48,7 @@
               <j-permission-button
                 type="link"
                 :hasPermission="`${permission}:add`"
-                :tooltip="{ title: '新增子菜单' }"
+                :tooltip="{ title: $t('Menu.index.599742-2') }"
                 style="padding: 0"
                 @click="addChildren(slotProps)"
               >
@@ -57,11 +57,11 @@
               <j-permission-button
                 type="link"
                 :hasPermission="`${permission}:delete`"
-                :tooltip="{ title: '删除' }"
+                :tooltip="{ title: $t('Menu.index.599742-3') }"
                 danger
                 style="padding: 0"
                 :popConfirm="{
-                  title: `是否删除该菜单`,
+                  title: $t('Menu.index.599742-4'),
                   onConfirm: () => clickDel(slotProps),
                 }"
               >
@@ -80,14 +80,16 @@ import { getMenuTree, delMenu } from '@/api/system/menu'
 import { useMenuStore } from '@/store/menu'
 import { onlyMessage } from '@jetlinks-web/utils'
 import {OWNER_KEY} from "@/utils/consts";
+import { useI18n } from 'vue-i18n';
 
+const { t: $t } = useI18n();
 const permission = 'system/Menu'
 
 const menuStore = useMenuStore()
 
 const columns = [
   {
-    title: '编码',
+    title: $t('Menu.index.599742-5'),
     dataIndex: 'code',
     key: 'code',
     ellipsis: true,
@@ -95,56 +97,56 @@ const columns = [
     search: {
       type: 'string',
       componentProps: {
-        placeholder: '请输入编码',
+        placeholder: $t('Menu.index.599742-6'),
       },
     },
     width: 300,
   },
   {
-    title: '名称',
+    title: $t('Menu.index.599742-7'),
     dataIndex: 'name',
     key: 'name',
     ellipsis: true,
     search: {
       type: 'string',
       componentProps: {
-        placeholder: '请输入名称',
+        placeholder: $t('Menu.index.599742-8'),
       },
     },
   },
   {
-    title: '页面地址',
+    title: $t('Menu.index.599742-9'),
     dataIndex: 'url',
     key: 'url',
     ellipsis: true,
     search: {
       type: 'string',
       componentProps: {
-        placeholder: '请输入页面地址',
+        placeholder: $t('Menu.index.599742-10'),
       },
     },
   },
   {
-    title: '排序',
+    title: $t('Menu.index.599742-11'),
     dataIndex: 'sortIndex',
     key: 'sortIndex',
     ellipsis: true,
     search: {
       type: 'number',
       componentProps: {
-        placeholder: '请输入排序',
+        placeholder: $t('Menu.index.599742-12'),
       },
     },
     width: 80,
   },
   {
-    title: '说明',
+    title: $t('Menu.index.599742-13'),
     dataIndex: 'describe',
     key: 'describe',
     ellipsis: true,
   },
   {
-    title: '创建时间',
+    title: $t('Menu.index.599742-14'),
     dataIndex: 'createTime',
     key: 'createTime',
     search: {
@@ -154,7 +156,7 @@ const columns = [
     scopedSlots: true,
   },
   {
-    title: '操作',
+    title: $t('Menu.index.599742-15'),
     dataIndex: 'action',
     key: 'action',
     fixed: 'right',
@@ -263,7 +265,7 @@ const clickDel = (row: any) => {
   delMenu(row.id).then((resp: any) => {
     if (resp.status === 200) {
       tableRef.value?.reload()
-      onlyMessage('操作成功!')
+      onlyMessage($t('Menu.index.599742-16'))
     }
   })
 }

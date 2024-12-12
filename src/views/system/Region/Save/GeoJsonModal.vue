@@ -2,13 +2,13 @@
   <a-modal
     visible
     width="650px"
-    title="上传GeoJson"
+    :title="$t('Save.GeoJsonModal.692990-0')"
     :maskClosable="false"
     @ok="handleSave"
     @cancel="handleCancel"
   >
     <div>
-      仅支持获取单个区域数据
+      {{ $t('Save.GeoJsonModal.692990-1') }}
     </div>
     <j-monaco-editor
       language="json"

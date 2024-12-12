@@ -9,21 +9,21 @@
         </div>
 
         <p>
-            <span class="label">请求数据类型</span>
+            <span class="label">{{ $t('components.ApiDoes.5497514-0') }}</span>
             <span>{{
                 getContent(selectApi.requestBody) ||
                 'application/x-www-form-urlencoded'
             }}</span>
-            <span class="label">响应数据类型</span>
+            <span class="label">{{ $t('components.ApiDoes.5497514-1') }}</span>
             <span>{{ `["/"]` }}</span>
         </p>
 
         <div class="api-card" v-if="props.selectApi.description">
-            <h5>接口描述</h5>
+            <h5>{{ $t('components.ApiDoes.5497514-2') }}</h5>
             <div>{{ props.selectApi.description }}</div>
         </div>
         <div class="api-card" v-if="requestCard.codeText !== undefined">
-            <h5>请求示例</h5>
+            <h5>{{ $t('components.ApiDoes.5497514-3') }}</h5>
             <Monaco
                 :tips="requestCard.tips"
                 :codeText="requestCard.codeText"
@@ -31,7 +31,7 @@
             />
         </div>
         <div class="api-card" v-if="requestCard.tableData.length">
-            <h5>请求参数</h5>
+            <h5>{{$t('components.ApiDoes.5497514-4')}}</h5>
             <div class="content">
                 <j-pro-table
                     :columns="requestCard.columns"
@@ -47,7 +47,7 @@
             </div>
         </div>
         <div class="api-card">
-            <h5>响应状态</h5>
+            <h5>{{$t('components.ApiDoes.5497514-5')}}</h5>
             <div class="content">
                 <j-pro-table
                     :columns="responseStatusCard.columns"
@@ -69,7 +69,7 @@
         </div>
 
         <div class="api-card">
-            <h5>响应参数</h5>
+            <h5>{{ $t('components.ApiDoes.5497514-6') }}</h5>
             <div class="content">
                 <j-pro-table
                     :columns="respParamsCard.columns"
@@ -97,7 +97,9 @@ import type { PropType } from 'vue';
 import { findData, getCodeText, dealNoRef } from '../utils';
 import { randomString } from "@jetlinks-web/utils";
 import Monaco from './monaco.vue';
+import { useI18n } from 'vue-i18n';
 
+const { t: $t } = useI18n();
 type cardType = {
     columns: object[];
     tableData: any[];
@@ -122,30 +124,30 @@ const loading = ref(false)
 const requestCard = reactive<cardType>({
     columns: [
         {
-            title: '参数名',
+            title: $t('components.ApiDoes.5497514-7'),
             dataIndex: 'paramsName',
             key: 'paramsName',
         },
         {
-            title: '参数说明',
+            title: $t('components.ApiDoes.5497514-8'),
             dataIndex: 'desc',
             key: 'desc',
         },
         {
-            title: '请求类型',
+            title: $t('components.ApiDoes.5497514-9'),
             dataIndex: 'in',
             key: 'in',
             width: 80
         },
         {
-            title: '是否必须',
+            title: $t('components.ApiDoes.5497514-10'),
             dataIndex: 'required',
             key: 'required',
             scopedSlots: true,
             width: 80
         },
         {
-            title: '参数类型',
+            title: $t('components.ApiDoes.5497514-11'),
             dataIndex: 'paramsType',
             key: 'paramsType',
             width: 200
@@ -163,7 +165,7 @@ const requestCard = reactive<cardType>({
     getData: () => {
         if (!props.selectApi.requestBody) {
             requestCard.tableData = props.selectApi.parameters?.map(i => {
-                const desc =  i.description ? (i.description + (i.schema?.enum?.length ? `,可用值:${i.schema?.enum.join(',')}` : '')) : '';
+                const desc =  i.description ? (i.description + (i.schema?.enum?.length ? `,${$t('components.ApiDoes.5497514-12')}:${i.schema?.enum.join(',')}` : '')) : '';
                 const _paramsType = i.schema?.type ? (i.schema?.type + (i.schema?.format ? `(${i.schema?.format})` : '')) : ''
                 return {
                     ...i,
@@ -217,13 +219,13 @@ const responseStatusCard = reactive<cardType>({
     activeKey: '',
     columns: [
         {
-            title: '状态码',
+            title: $t('components.ApiDoes.5497514-13'),
             dataIndex: 'code',
             key: 'code',
             width: 200
         },
         {
-            title: '说明',
+            title: $t('components.ApiDoes.5497514-14'),
             dataIndex: 'desc',
             key: 'desc',
         },
@@ -262,16 +264,16 @@ const tabs = computed(() =>
 const respParamsCard = reactive<cardType>({
     columns: [
         {
-            title: '参数名称',
+            title: $t('components.ApiDoes.5497514-7'),
             dataIndex: 'paramsName',
             width: 320
         },
         {
-            title: '参数说明',
+            title: $t('components.ApiDoes.5497514-8'),
             dataIndex: 'desc',
         },
         {
-            title: '类型',
+            title: $t('components.ApiDoes.5497514-15'),
             dataIndex: 'paramsType',
             width: 320
         },

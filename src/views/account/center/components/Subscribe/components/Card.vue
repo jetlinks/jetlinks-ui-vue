@@ -23,7 +23,7 @@
             :hasPermission="true"
             @click="onCheckChange(current)"
           >
-            订阅
+            {{ $t('components.Card.812844-0') }}
           </j-permission-button>
           <template v-else>
             <Detail
@@ -42,7 +42,7 @@
               :hasPermission="true"
               @click="onUnSubscribe(current)"
             >
-              取消订阅
+              {{ $t('components.Card.812844-1') }}
             </j-permission-button>
           </template>
         </template>

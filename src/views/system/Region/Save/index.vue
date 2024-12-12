@@ -3,19 +3,19 @@
     :maskClosable="false"
     width="650px"
     :visible="true"
-    :title="mode === 'edit' ? '编辑区域' : '新增区域'"
+    :title="mode === 'edit' ? $t('Save.index.968210-0') : $t('Save.index.968210-1')"
     :confirmLoading="loading"
     @ok="handleSave"
     @cancel="() => { handleCancel() }"
   >
     <div style="margin-top: 10px">
       <a-form :layout="'vertical'" ref="formRef" :model="modelRef">
-        <a-form-item name="parentId" label="上级区域">
+        <a-form-item name="parentId" :label="$t('Save.index.968210-2')">
           <a-tree-select
             showSearch
             allowClear
             v-model:value="modelRef.parentId"
-            placeholder="1级区域不需要选择"
+            :placeholder="$t('Save.index.968210-3')"
             :tree-data="areaList"
             :field-names="{
                             children: 'children',
@@ -26,16 +26,16 @@
             @change="treeSelect"
           />
         </a-form-item>
-        <a-form-item label="添加方式">
+        <a-form-item :label="$t('Save.index.968210-4')">
           <RadioButton
             v-model:value="modelRef.properties.type"
             :options="[
               {
-                label: '内置行政区',
+                label: $t('Save.index.968210-5'),
                 value: 'builtin'
               },
               {
-                label: '自定义数据',
+                label: $t('Save.index.968210-6'),
                 value: 'custom'
               },
             ]"
@@ -54,17 +54,17 @@
         </template>
         <template v-else>
           <a-form-item
-            label="区域名称"
+            :label="$t('Save.index.968210-7')"
             name="name"
             required
             :rules="[
                         {
                             required: true,
-                            message: '请输入区域名称',
+                            message: $t('Save.index.968210-8'),
                         },
                         {
                             max: 64,
-                            message: '最多输入64个字符',
+                            message: $t('Save.index.968210-9'),
                         },
                         // {
                         //     validator: vailName,
@@ -74,17 +74,17 @@
           >
             <a-input
               v-model:value="modelRef.name"
-              placeholder="请输入区域名称"
+              :placeholder="$t('Save.index.968210-8')"
             />
           </a-form-item>
           <a-form-item
-            label="区划代码"
+            :label="$t('Save.index.968210-10')"
             name="code"
             required
             :rules="[
                         {
                             required: true,
-                            message: '请输入区划代码',
+                            message: $t('Save.index.968210-11'),
                         },
                         // {
                         //     validator: vailCode,
@@ -95,21 +95,21 @@
             <a-input-number
               v-model:value="modelRef.code"
               style="width: 100%"
-              placeholder="请输入区划代码"
+              :placeholder="$t('Save.index.968210-11')"
             />
           </a-form-item>
           <a-form-item
-            label="区域划分"
+            :label="$t('Save.index.968210-12')"
           >
             <j-radio-button
               v-model:value="modelRef.properties.partition"
               :options="[
               {
-                label: '无',
+                label: $t('Save.index.968210-13'),
                 value: 'none'
               },
               {
-                label: '手动描点',
+                label: $t('Save.index.968210-14'),
                 value: 'manual'
               },
               {
@@ -121,20 +121,20 @@
             />
           </a-form-item>
           <div v-if="modelRef.properties.partition === 'manual'">
-            <a-button v-if="!modelRef.geoJson" type="link" style="padding: 0" @click="showEditMap(false)">请在地图上描点</a-button>
+            <a-button v-if="!modelRef.geoJson" type="link" style="padding: 0" @click="showEditMap(false)">{{ $t('Save.index.968210-15') }}</a-button>
             <template v-else>
               <a-space>
-                <span>区域已圈定完成</span>
-                <a-button type="link" style="padding: 0" @click="showEditMap(true)">编辑</a-button>
+                <span>{{ $t('Save.index.968210-16') }}</span>
+                <a-button type="link" style="padding: 0" @click="showEditMap(true)">{{ $t('Save.index.968210-17') }}</a-button>
               </a-space>
             </template>
           </div>
           <div v-else-if="modelRef.properties.partition === 'geoJson'">
-            <a-button v-if="!modelRef.geoJson" type="link" style="padding: 0" @click="geoJsonVisible = true">点击上传GeoJson</a-button>
+            <a-button v-if="!modelRef.geoJson" type="link" style="padding: 0" @click="geoJsonVisible = true">{{ $t('Save.index.968210-18') }}</a-button>
             <template v-else>
               <a-space>
-                <span>已上传</span>
-                <a-button type="link" style="padding: 0" @click="geoJsonVisible = true">编辑</a-button>
+                <span>{{ $t('Save.index.968210-19') }}</span>
+                <a-button type="link" style="padding: 0" @click="geoJsonVisible = true">{{ $t('Save.index.968210-17') }}</a-button>
               </a-space>
             </template>
           </div>
@@ -161,7 +161,9 @@ import { onlyMessage } from "@jetlinks-web/utils";
 import GeoJsonModal from './GeoJsonModal.vue'
 import {useRegion} from "@/views/system/Region/hooks";
 import {syncChildren} from "@/views/system/Region/util";
+import { useI18n } from 'vue-i18n';
 
+const { t: $t } = useI18n();
 const emit = defineEmits(['close', 'save']);
 const props = defineProps({
   data: {
@@ -326,7 +328,7 @@ const handleSave = () => {
       });
       if (resp.status === 200) {
         regionState.stateInit()
-        onlyMessage('操作成功！');
+        onlyMessage($t('Save.index.968210-20'));
         emit('save');
       }
     })
@@ -339,7 +341,7 @@ const vailName = async (_: Record<string, any>, value: string) => {
   if (!props?.data?.id && value) {
     const resp = await validateName(value, props.data.id);
     if (resp.status === 200 && !resp.result?.passed) {
-      return Promise.reject('区域名称重复');
+      return Promise.reject($t('Save.index.968210-21'));
     } else {
       return Promise.resolve();
     }
@@ -352,7 +354,7 @@ const vailCode = async (_: Record<string, any>, value: string) => {
   if (!props?.data?.id && value) {
     const resp = await validateCode(value, props.data.id);
     if (resp.status === 200 && !resp.result?.passed) {
-      return Promise.reject('行政区域代码重复');
+      return Promise.reject($t('Save.index.968210-22'));
     } else {
       return Promise.resolve();
     }

@@ -9,7 +9,7 @@
             :disabled="rapidOn"
             style="margin-bottom: 10px"
         >
-            + 新增标签
+            +{{ $t('Tags.index.675027-0') }}
         </j-permission-button>
         <div class="content">
             <div v-for="i in tagsList" class="tag">
@@ -33,7 +33,7 @@
                         hasPermission="system/Calendar:update"
                         :disabled="i.disabled || rapidOn"
                         :tooltip="{
-                        title: '编辑'
+                        title: $t('Tags.index.675027-1')
                     }"
                         @click="() => editData(i)"
                     >
@@ -46,10 +46,10 @@
                         hasPermission="system/Calendar:delete"
                         :disabled="i.disabled || rapidOn"
                         :tooltip="{
-                        title: '删除'
+                        title: $t('Tags.index.675027-2')
                     }"
                         :popConfirm="{
-                        title: `确认删除？`,
+                        title: $t('Tags.index.675027-3'),
                         onConfirm: () => deleteData(i.id),
                     }"
                     >
@@ -78,7 +78,9 @@ import { onlyMessage } from '@jetlinks-web/utils';
 import { inject } from 'vue';
 import { omit } from 'lodash-es';
 import { useSystemStore } from '@/store/system';
+import { useI18n } from 'vue-i18n';
 
+const { t: $t } = useI18n();
 const system = useSystemStore();
 const calendarTagColor = system.calendarTagColor;
 const tagsMap = inject('tagsMap');
@@ -156,7 +158,7 @@ const deleteData = async (id) => {
             });
             const deleteColor = await saveTagsColor(color);
         }
-        onlyMessage('操作成功');
+        onlyMessage($t('Tags.index.675027-4'));
         queryTagsData();
     }
 };

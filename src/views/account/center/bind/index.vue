@@ -2,7 +2,7 @@
 <template>
   <div class='page-container'>
     <div class='content-bind'>
-      <div class='title'>第三方账户绑定</div>
+      <div class='title'>{{ $t('bind.index.350992-0') }}</div>
       <!-- 已登录-绑定三方账号 -->
       <template v-if='!!token'>
         <div class='info'>
@@ -15,10 +15,10 @@
                 "
               style="margin-bottom: 16px;"
             />
-            <div class="info-body-item"><span>账号：</span>
+            <div class="info-body-item"><span>{{ $t('bind.index.350992-1') }}</span>
               <j-ellipsis :lineClamp="2">{{ user?.username || '-' }}</j-ellipsis>
             </div>
-            <div class="info-body-item"><span>用户名：</span>
+            <div class="info-body-item"><span>{{ $t('bind.index.350992-2') }}</span>
               <j-ellipsis :lineClamp="2">{{ user?.name || "-" }}</j-ellipsis>
             </div>
           </div>
@@ -35,17 +35,17 @@
               shape="square"
               style="margin-bottom: 16px;"
             />
-            <div class="info-body-item"><span>账号：</span>
+            <div class="info-body-item"><span>{{ $t('bind.index.350992-1') }}</span>
               <j-ellipsis :lineClamp="2">{{ bindUser?.result?.userId || '' }}</j-ellipsis>
             </div>
-            <div class="info-body-item"><span>用户名：</span>
+            <div class="info-body-item"><span>{{ $t('bind.index.350992-2') }}</span>
               <j-ellipsis :lineClamp="2">{{ bindUser?.result?.name || '' }}</j-ellipsis>
             </div>
           </div>
         </div>
         <div class='btn'>
           <a-button type='primary' @click='handleBind'
-          >立即绑定
+          >{{ $t('bind.index.350992-3') }}
           </a-button
           >
         </div>
@@ -64,28 +64,28 @@
             />
           </div>
           <div class='desc'>
-            你已通过
+            {{ $t('bind.index.350992-4') }}
             {{ bindUser?.appName }}
-            授权,完善以下登录信息即可以完成绑定
+            {{ $t('bind.index.350992-5') }}
           </div>
           <div class='login-form'>
             <a-form layout='vertical'>
               <a-form-item
-                label='账户'
+                :label="$t('bind.index.350992-6')"
                 v-bind='validateInfos.username'
               >
                 <a-input
                   v-model:value='formData.username'
-                  placeholder='请输入账户'
+                  :placeholder="$t('bind.index.350992-7')"
                 />
               </a-form-item>
               <a-form-item
-                label='密码'
+                :label="$t('bind.index.350992-8')"
                 v-bind='validateInfos.password'
               >
                 <a-input-password
                   v-model:value='formData.password'
-                  placeholder='请输入密码'
+                  :placeholder="$t('bind.index.350992-9')"
                 />
               </a-form-item>
               <template v-if='captcha.base64'>
@@ -93,15 +93,15 @@
                   :rules="[
                     {
                         required: true,
-                        message: '请输入验证码',
+                        message: $t('bind.index.350992-10'),
                     },
                 ]"
-                  label='验证码'
+                  :label="$t('bind.index.350992-11')"
                   v-bind='validateInfos.verifyCode'
                 >
                   <a-input
                     v-model:value='formData.verifyCode'
-                    placeholder='请输入验证码'
+                    :placeholder="$t('bind.index.350992-10')"
                   >
                     <template #addonAfter>
                       <img
@@ -120,7 +120,7 @@
                   type='primary'
                   @click='handleLoginBind'
                 >
-                  登录并绑定账户
+                  {{ $t('bind.index.350992-12') }}
                 </a-button>
               </a-form-item>
             </a-form>
@@ -139,7 +139,9 @@ import { Form } from 'ant-design-vue'
 import { applicationInfo, bindAccount } from '@/api/system/bind'
 import { codeUrl, authLogin, userDetail, encryptionConfig } from '@/api/login'
 import { useSystemStore } from '@/store/system'
+import { useI18n } from 'vue-i18n';
 
+const { t: $t } = useI18n();
 
 const useForm = Form.useForm;
 const systemStore = useSystemStore();
@@ -189,9 +191,9 @@ const getAppInfo = async () => {
 
   if (success) {
     if (result?.applicationProvider === 'dingtalk-ent-app') {
-      bindUser.value.appName = '钉钉'
+      bindUser.value.appName = $t('bind.index.350992-13')
     } else if (result?.applicationProvider === 'wechat-webapp') {
-      bindUser.value.appName = '微信'
+      bindUser.value.appName = $t('bind.index.350992-14')
     } else {
       bindUser.value.appName = result?.applicationName
     }
@@ -206,7 +208,7 @@ const handleBind = async () => {
   const code = getUrlCode()
   const res = await bindAccount(code)
   console.log('bindAccount: ', res)
-  onlyMessage('绑定成功')
+  onlyMessage($t('bind.index.350992-15'))
   goRedirect()
   setTimeout(() => window.close(), 1000)
 }
@@ -221,13 +223,13 @@ const formRules = ref({
   username: [
     {
       required: true,
-      message: '请输入账户'
+      message: $t('bind.index.350992-7')
     }
   ],
   password: [
     {
       required: true,
-      message: '请输入密码'
+      message: $t('bind.index.350992-9')
     }
   ]
 })
@@ -288,7 +290,7 @@ const handleLoginBind = () => {
       const res = await authLogin(data)
       console.log('res: ', res)
       if (res.success) {
-        onlyMessage('登录成功')
+        onlyMessage($t('bind.index.350992-16'))
         LocalStore.set(TOKEN_KEY, res.result!.token as string)
         goRedirect()
       }

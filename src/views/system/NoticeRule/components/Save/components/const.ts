@@ -1,4 +1,5 @@
 import { getImage } from '@jetlinks-web/utils';
+import i18n from '@/locales';
 interface INoticeMethod {
     label: string;
     value: string;
@@ -6,23 +7,23 @@ interface INoticeMethod {
 // 通知方式
 export const NOTICE_METHOD: INoticeMethod[] = [
     {
-        label: '钉钉',
+        label: i18n.global.t('components.const.001562-0'),
         value: 'dingTalk',
     },
     {
-        label: '微信',
+        label: i18n.global.t('components.const.001562-1'),
         value: 'weixin',
     },
     {
-        label: '邮件',
+        label: i18n.global.t('components.const.001562-2'),
         value: 'email',
     },
     {
-        label: '语音',
+        label: i18n.global.t('components.const.001562-3'),
         value: 'voice',
     },
     {
-        label: '短信',
+        label: i18n.global.t('components.const.001562-4'),
         value: 'sms',
     },
     {
@@ -35,19 +36,19 @@ export const NOTICE_METHOD: INoticeMethod[] = [
 export const MSG_TYPE = {
     dingTalk: [
         {
-            label: '钉钉消息',
+            label: i18n.global.t('components.const.001562-5'),
             value: 'dingTalkMessage',
             logo: getImage('/notice/dingtalk.png'),
         },
         {
-            label: '群机器人消息',
+            label: i18n.global.t('components.const.001562-6'),
             value: 'dingTalkRobotWebHook',
             logo: getImage('/notice/dingTalk-rebot.png'),
         },
     ],
     weixin: [
         {
-            label: '企业消息',
+            label: i18n.global.t('components.const.001562-7'),
             value: 'corpMessage',
             logo: getImage('/notice/weixin-corp.png'),
         },
@@ -59,14 +60,14 @@ export const MSG_TYPE = {
     ],
     voice: [
         {
-            label: '阿里云语音',
+            label: i18n.global.t('components.const.001562-8'),
             value: 'aliyun',
             logo: getImage('/notice/voice.png'),
         },
     ],
     sms: [
         {
-            label: '阿里云短信',
+            label: i18n.global.t('components.const.001562-9'),
             value: 'aliyunSms',
             logo: getImage('/notice/sms.png'),
         },
@@ -80,7 +81,7 @@ export const MSG_TYPE = {
     ],
     email: [
         {
-            label: '邮件',
+            label: i18n.global.t('components.const.001562-2'),
             value: 'embedded',
             logo: getImage('/notice/email.png'),
         },

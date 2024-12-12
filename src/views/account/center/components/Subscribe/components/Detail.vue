@@ -2,31 +2,31 @@
   <div style="width: 300px">
     <template v-if="getType === 'notifier-dingTalk'">
       <div class="tip">
-        <j-ellipsis :lineClamp="2">绑定账号：{{ info }}</j-ellipsis>
+        <j-ellipsis :lineClamp="2">{{ $t('components.Detail.044328-0') }}{{ info }}</j-ellipsis>
       </div>
     </template>
     <template v-else-if="getType === 'notifier-weixin'">
       <div class="tip">
-        <j-ellipsis :lineClamp="2">绑定账号：{{ info }}</j-ellipsis>
+        <j-ellipsis :lineClamp="2">{{ $t('components.Detail.044328-0') }}{{ info }}</j-ellipsis>
       </div>
     </template>
     <template v-else-if="getType === 'notifier-email'">
       <div class="tip">
         <j-ellipsis :lineClamp="2"
-          >绑定账号：{{ user.userInfo?.email }}
+          >{{ $t('components.Detail.044328-0') }}{{ user.userInfo?.email }}
         </j-ellipsis>
       </div>
     </template>
     <template v-else>
       <div class="tip">
         <j-ellipsis :lineClamp="2"
-          >绑定账号：{{ user.userInfo?.telephone }}
+          >{{ $t('components.Detail.044328-0') }}{{ user.userInfo?.telephone }}
         </j-ellipsis>
       </div>
     </template>
     <div class="btn">
-      <a-button @click="emit('unsubscribe', current)">取消订阅</a-button>
-      <a-button type="primary" @click="onBind">更换绑定账号</a-button>
+      <a-button @click="emit('unsubscribe', current)">{{ $t('components.Detail.044328-1') }}</a-button>
+      <a-button type="primary" @click="onBind">{{ $t('components.Detail.044328-2') }}</a-button>
     </div>
   </div>
 </template>

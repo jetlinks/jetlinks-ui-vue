@@ -12,12 +12,12 @@
             type="primary"
             :hasPermission="['notice/Config:add']"
         >
-            新增
+            {{ $t('components.NotifyConfig.517040-0') }}
         </j-permission-button>
     </div>
     <div class="alert">
         <AIcon type="InfoCircleOutlined" />
-        钉钉群机器人类型的配置在当前页面将被过滤
+        {{ $t('components.NotifyConfig.517040-1') }}
     </div>
     <div style="max-height: 400px; overflow-y: auto">
         <JProTable
@@ -65,14 +65,14 @@
                         <a-row>
                             <a-col :span="12">
                                 <div class="card-item-content-text">
-                                    通知方式
+                                    {{ $t('components.NotifyConfig.517040-2') }}
                                 </div>
                                 <div>
                                     {{ getMethodTxt(slotProps.type) }}
                                 </div>
                             </a-col>
                             <a-col :span="12">
-                                <div class="card-item-content-text">说明</div>
+                                <div class="card-item-content-text">{{ $t('components.NotifyConfig.517040-3') }}</div>
                                 <j-ellipsis>
                                     {{ slotProps.description }}
                                 </j-ellipsis>
@@ -89,6 +89,9 @@
 import ConfigApi from '@/api/notice/config';
 import { MSG_TYPE, NOTICE_METHOD } from './const';
 import { noticeType } from '../../../data';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 const props = defineProps({
     notifyType: {
         type: String,
@@ -116,7 +119,7 @@ const tableRef = ref<any>();
 
 const columns = [
     {
-        title: '名称',
+        title: $t('components.NotifyConfig.517040-4'),
         dataIndex: 'name',
         key: 'name',
         search: {
@@ -132,7 +135,7 @@ const columns = [
         },
     },
     {
-        title: '说明',
+        title: $t('components.NotifyConfig.517040-3'),
         dataIndex: 'description',
         key: 'description',
         search: {

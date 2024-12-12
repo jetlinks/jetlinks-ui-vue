@@ -1,6 +1,6 @@
 <template>
   <a-modal
-    :title="type==='add'?'新增字典':'编辑字典'"
+    :title="type==='add'?$t('save.index.551811-0'):$t('save.index.551811-1')"
     visible
     @cancel="closeModal"
     @ok="submitData"
@@ -9,20 +9,20 @@
     :confirmLoading="loading"
   >
     <a-form layout="vertical" :rules="rules" ref="formRef" :model="form">
-        <a-form-item label="字典ID" name="id">
-            <a-input v-model:value="form.id" :disabled="type ==='edit'" placeholder="请输入字典ID"></a-input>
+        <a-form-item :label="$t('save.index.551811-2')" name="id">
+            <a-input v-model:value="form.id" :disabled="type ==='edit'" :placeholder="$t('save.index.551811-3')"></a-input>
         </a-form-item>
-        <a-form-item label="字典名称" name="name">
-            <a-input v-model:value="form.name" placeholder="请输入字典名称"></a-input>
+        <a-form-item :label="$t('save.index.551811-4')" name="name">
+            <a-input v-model:value="form.name" :placeholder="$t('save.index.551811-5')"></a-input>
         </a-form-item>
-        <a-form-item label="状态" name="status">
+        <a-form-item :label="$t('save.index.551811-6')" name="status">
             <a-radio-group v-model:value="form.status">
-                <a-radio-button :value="1">启用</a-radio-button>
-                <a-radio-button :value="0">禁用</a-radio-button>
+                <a-radio-button :value="1">{{ $t('save.index.551811-7') }}</a-radio-button>
+                <a-radio-button :value="0">{{ $t('save.index.551811-8') }}</a-radio-button>
             </a-radio-group>
         </a-form-item>
-        <a-form-item label="说明" name="describe">
-            <a-textarea :rows="4" :maxlength="200" v-model:value="form.describe" placeholder="请输入"></a-textarea>
+        <a-form-item :label="$t('save.index.551811-9')" name="describe">
+            <a-textarea :rows="4" :maxlength="200" v-model:value="form.describe" :placeholder="$t('save.index.551811-10')"></a-textarea>
         </a-form-item>
     </a-form>
   </a-modal>
@@ -32,6 +32,9 @@
 import { regular , onlyMessage } from '@jetlinks-web/utils';
 import type { Rule } from 'ant-design-vue/es/form';
 import { verifyId,addDictionary } from '@/api/system/dictionary'
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 const props = defineProps({
     type:{
         type:String,
@@ -57,12 +60,12 @@ const form = reactive({
  const validateInput = async (_rule: Rule, value: string) => {
     if (value) {
         if (!regular.isInputReg(value)) {
-            return Promise.reject('请输入英文或者数字或者-或者_');
+            return Promise.reject($t('save.index.551811-11'));
         } else {
             if (props.type === 'add') {
                 const res:any = await verifyId(value);
                 if (res.status === 200 && res.result) {
-                    return Promise.reject('该字典ID已存在');
+                    return Promise.reject($t('save.index.551811-12'));
                 } else {
                     return Promise.resolve();
                 }
@@ -75,23 +78,23 @@ const form = reactive({
 
 const rules = {
     id: [
-        { required:true,message:'请输入ID'},
+        { required:true,message:$t('save.index.551811-13')},
         { validator: validateInput, trigger: 'blur' },
-        { max: 64, message: '最多可输入64位字符', trigger: 'change' },
+        { max: 64, message: $t('save.index.551811-14'), trigger: 'change' },
     ],
     name: [
-        { required: true, message: '请输入名称', trigger: 'blur' },
-        { max: 64, message: '最多可输入64位字符', trigger: 'change' },
+        { required: true, message: $t('save.index.551811-15'), trigger: 'blur' },
+        { max: 64, message: $t('save.index.551811-14'), trigger: 'change' },
     ],
     status: [
         {
             required: true,
-            message:'请选择状态',
+            message:$t('save.index.551811-16'),
             trigger: 'blur',
         },
     ],
     description: [
-        { max: 200, message: '最多可输入200位字符', trigger: 'blur' },
+        { max: 200, message: $t('save.index.551811-17'), trigger: 'blur' },
     ],
 }
 
@@ -100,10 +103,10 @@ const submitData = () =>{
         loading.value = true
         const res = await addDictionary(form)
             if(res.status === 200){
-                onlyMessage('保存成功!')
+                onlyMessage($t('save.index.551811-18'))
                 emit('success')
             }else{
-                onlyMessage('操作失败!','error')
+                onlyMessage($t('save.index.551811-19'),'error')
             }
         loading.value = false
     })

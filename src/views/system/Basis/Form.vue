@@ -8,13 +8,13 @@
   >
     <div class="form-container">
       <div class="form-left">
-        <a-form-item label="系统名称" name="title">
+        <a-form-item :label="$t('Basis.Form.436809-0')" name="title">
           <a-input
             v-model:value="formData.title"
-            placeholder="请输入系统名称"
+            :placeholder="$t('Basis.Form.436809-1')"
           />
         </a-form-item>
-        <a-form-item label="主题色" name="headerTheme">
+        <a-form-item :label="$t('Basis.Form.436809-2')" name="headerTheme">
           <a-select v-model:value="formData.headerTheme" :options="headerThemeAreas">
           </a-select>
         </a-form-item>
@@ -23,33 +23,33 @@
         <a-form-item name="webKey">
           <template #label>
             <a-space>
-              <span>高德地图 web服务api </span>
+              <span>{{ $t('Basis.Form.436809-3') }} </span>
               <a-tooltip
-                title="开发者可通过接口使用各类型的地理数据服务,返回结果支持JSON和XML格式"
+                :title="$t('Basis.Form.436809-4')"
               >
                 <AIcon type="QuestionCircleOutlined"/>
               </a-tooltip>
             </a-space>
           </template>
-          <a-input v-model:value="formData.webKey" placeholder="请输入高德Web Key"></a-input>
+          <a-input v-model:value="formData.webKey" :placeholder="$t('Basis.Form.436809-5')"></a-input>
         </a-form-item>
         <a-form-item name="apiKey">
           <template #label>
             <a-space>
-              <span>高德地图 JSapi</span>
-              <a-tooltip title="配置后平台可调用高德地图GIS服务">
+              <span>{{ $t('Basis.Form.436809-6') }}</span>
+              <a-tooltip :title="$t('Basis.Form.436809-7')">
                 <AIcon type="QuestionCircleOutlined"/>
               </a-tooltip>
             </a-space>
           </template>
-          <a-input v-model:value="formData.apiKey" placeholder="请输入高德API Key"></a-input>
+          <a-input v-model:value="formData.apiKey" :placeholder="$t('Basis.Form.436809-8')"></a-input>
         </a-form-item>
         <a-form-item>
           <template #label>
             <a-space>
-              <span>高德地图 密钥</span>
+              <span>{{ $t('Basis.Form.436809-9') }}</span>
               <a-tooltip
-                title="降低明文传输被窃取的风险"
+                :title="$t('Basis.Form.436809-10')"
               >
                 <AIcon type="QuestionCircleOutlined"/>
               </a-tooltip>
@@ -57,7 +57,7 @@
           </template>
           <a-input
             v-model:value="formData.secretKey"
-            placeholder="请输入高德API 密钥"
+            :placeholder="$t('Basis.Form.436809-11')"
           />
         </a-form-item>
         <!-- base-path输入框 -->
@@ -68,9 +68,9 @@
               <a-tooltip>
                 <template #title>
                   <div style="word-break: break-all">
-                    <div>系统后台访问的url。</div>
+                    <div>{{ $t('Basis.Form.436809-12') }}</div>
                     <div>
-                      格式：{http/https}:
+                      {{ $t('Basis.Form.436809-13') }}{http/https}:
                       //{前端所在服务器IP地址}:{前端暴露的服务端口}/api
                     </div>
                   </div>
@@ -79,19 +79,19 @@
               </a-tooltip>
             </a-space>
           </template>
-          <a-input v-model:value="formData['base-path']" placeholder="请输入 base-path"></a-input>
+          <a-input v-model:value="formData['base-path']" :placeholder="$t('Basis.Form.436809-14')"></a-input>
         </a-form-item>
-        <!-- 系统logo 和 浏览器标签 -->
+        <!-- {{ $t('Basis.Form.436809-15') }} 和 浏览器标签 -->
         <a-row :gutter="24">
-          <!-- 系统logo -->
+          <!-- {{ $t('Basis.Form.436809-15') }} -->
           <a-col :span="12">
-            <a-form-item label="系统logo">
+            <a-form-item :label="$t('Basis.Form.436809-15')">
               <Upload v-model:img-src="formData.logo" uploadType="logo"/>
             </a-form-item>
           </a-col>
-          <!-- 浏览器页签icon -->
+          <!-- {{ $t('Basis.Form.436809-16') }}icon -->
           <a-col :span="12">
-            <a-form-item label="浏览器页签">
+            <a-form-item :label="$t('Basis.Form.436809-16')">
               <Upload v-model:img-src="formData.ico" uploadType="ico"/>
             </a-form-item>
           </a-col>
@@ -99,14 +99,14 @@
         <!-- 保存按钮 -->
         <a-form-item v-if="showBtn">
           <j-permission-button hasPermission="system/Basis:update" html-type="submit" type="primary" @click="submit">
-            保存
+            {{ $t('Basis.Form.436809-17') }}
           </j-permission-button>
         </a-form-item>
       </div>
       <!-- 表单右侧部分 -->
       <div class="form-right">
         <div class="form-right-background">
-          <a-form-item label="登录背景图" name="background">
+          <a-form-item :label="$t('Basis.Form.436809-18')" name="background">
             <Upload v-model:img-src="formData.background" height="400px" uploadType="background" width="550px"/>
           </a-form-item>
         </div>
@@ -124,7 +124,9 @@ import {useSystemStore} from '@/store/system';
 import Upload from '@/views/system/Basis/components/upload/upload.vue'
 import {onlyMessage} from '@jetlinks-web/utils';
 import {omit} from "lodash-es";
+import { useI18n } from 'vue-i18n';
 
+const { t: $t } = useI18n();
 const props = defineProps({
   hideSubmitBtn: {
     type: Boolean,
@@ -157,12 +159,12 @@ const formRules = {
   title: [
     {
       required: true,
-      message: '请输入系统名称',
+      message: $t('Basis.Form.436809-1'),
       trigger: 'blur'
     },
     {
       max: 64,
-      message: '最多可输入64个字符'
+      message: $t('Basis.Form.436809-19')
     }
   ],
   // 主题色验证规则
@@ -174,7 +176,7 @@ const formRules = {
   'base-path': [
     {
       required: true,
-      message: "base-path为必填项",
+      message: $t('Basis.Form.436809-20'),
       trigger: "blur"
     }
   ]
@@ -182,8 +184,8 @@ const formRules = {
 
 // 主题色下拉框选项
 const headerThemeAreas = ref([
-  {label: '白色', value: 'light'},
-  {label: '黑色', value: 'dark'}
+  {label: $t('Basis.Form.436809-21'), value: 'light'},
+  {label: $t('Basis.Form.436809-22'), value: 'dark'}
 ])
 
 
@@ -217,7 +219,7 @@ const {run} = useRequest(save_api, {
   immediate: false,
   onSuccess(res) {
     if (res.success) {
-      onlyMessage('保存成功', 'success')
+      onlyMessage($t('Basis.Form.436809-23'), 'success')
       getDetails()
     }
   }

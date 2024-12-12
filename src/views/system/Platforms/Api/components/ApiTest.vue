@@ -5,12 +5,12 @@
       <div class="input">
         <InputCard :value="props.selectApi.method"/>
         <a-input :value="props.selectApi?.url" disabled/>
-        <a-button type="primary" @click="send" :loading="loading">发送</a-button>
+        <a-button type="primary" @click="send" :loading="loading">{{ $t('components.ApiTest.726024-0') }}</a-button>
       </div>
     </div>
 
     <div class="api-card">
-      <h5>请求参数</h5>
+      <h5>{{ $t('components.ApiTest.726024-1') }}</h5>
       <div class="content">
         <div class="table" v-if="requestBody.params.paramsTable.length">
           <a-form :model="requestBody.params" ref="formRef">
@@ -31,7 +31,7 @@
                     :rules="[
                       {
                         required: true,
-                        message: '该字段是必填字段',
+                        message: $t('components.ApiTest.726024-2'),
                       },
                     ]"
                   >
@@ -57,7 +57,7 @@
                   <j-permission-button
                     type="text"
                     :popConfirm="{
-                    title: `确认删除`,
+                    title: $t('components.ApiTest.726024-3'),
                     onConfirm: () =>
                         requestBody.clickDel(index),
                     }"
@@ -74,7 +74,7 @@
             style="width: 100%; text-align: center; margin-top: 5px"
           >
             <AIcon type="PlusOutlined"/>
-            新增
+            {{ $t('components.ApiTest.726024-4') }}
           </a-button>
         </div>
         <a-select v-model:value="bodyType" @change="handleChangeBodyType">
@@ -105,7 +105,7 @@
       </div>
     </div>
     <div class="api-card">
-      <h5>响应参数</h5>
+      <h5>{{ $t('components.ApiTest.726024-5') }}</h5>
       <div class="content">
         <JsonViewer :value="responsesContent" copyable/>
       </div>
@@ -122,7 +122,9 @@ import {cloneDeep, toLower} from 'lodash-es';
 import {FormInstance} from 'ant-design-vue';
 import { request } from "@jetlinks-web/core";
 import {findData, getCodeText} from '../utils';
+import { useI18n } from 'vue-i18n';
 
+const { t: $t } = useI18n();
 const props = defineProps<{
   selectApi: apiDetailsType;
   schemas: any;
@@ -137,19 +139,19 @@ const loading = ref(false);
 const requestBody = reactive({
   tableColumns: [
     {
-      title: '参数名称',
+      title: $t('components.ApiTest.726024-6'),
       dataIndex: 'name',
       key: 'name',
       scopedSlots: true,
     },
     {
-      title: '参数值',
+      title: $t('components.ApiTest.726024-7'),
       dataIndex: 'value',
       key: 'value',
       scopedSlots: true,
     },
     {
-      title: '操作',
+      title: $t('components.ApiTest.726024-8'),
       dataIndex: 'action',
       key: 'action',
       width: '80px',

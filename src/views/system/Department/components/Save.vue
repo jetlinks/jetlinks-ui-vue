@@ -10,11 +10,11 @@
     :confirmLoading="loading"
   >
     <a-form ref="formRef" :model="formModel.data" layout="vertical">
-      <a-form-item name="parentId" label="上级组织">
+      <a-form-item name="parentId" :label="$t('components.Save.069696-0')">
         <a-tree-select
           v-model:value="formModel.data.parentId"
           style="width: 100%"
-          placeholder="请选择上级组织"
+          :placeholder="$t('components.Save.069696-1')"
           :tree-data="treeData"
           :field-names="{ value: 'id' }"
           @change="handleTreeSelectChange"
@@ -24,23 +24,23 @@
       </a-form-item>
       <a-form-item
         name="name"
-        label="名称"
+        :label="$t('components.Save.069696-2')"
         :rules="[
-          { required: true, message: '请输入名称' },
-          { max: 64, message: '最多可输入64个字符' },
+          { required: true, message: $t('components.Save.069696-3') },
+          { max: 64, message: $t('components.Save.069696-4') },
         ]"
       >
-        <a-input v-model:value="formModel.data.name" placeholder="请输入名称" />
+        <a-input v-model:value="formModel.data.name" :placeholder="$t('components.Save.069696-3')" />
       </a-form-item>
 
       <a-form-item
         name="sortIndex"
-        label="排序"
-        :rules="[{ required: true, message: '请输入排序' }]"
+        :label="$t('components.Save.069696-5')"
+        :rules="[{ required: true, message: $t('components.Save.069696-6') }]"
       >
         <a-input
           v-model:value="formModel.data.sortIndex"
-          placeholder="请输入排序"
+          :placeholder="$t('components.Save.069696-6')"
           :maxlength="64"
           @blur="checkSort"
         />
@@ -56,7 +56,9 @@ import { onlyMessage } from '@jetlinks-web/utils'
 import { useRequest } from '@jetlinks-web/hooks'
 import { FormType, TreeType } from '../typings';
 import { filterTree, findItemById } from '../util';
+import { useI18n } from 'vue-i18n';
 
+const { t: $t } = useI18n();
 const emits = defineEmits(['save', 'close'])
 const props = defineProps({
   treeData: {
@@ -84,7 +86,7 @@ const { loading, run } = useRequest(
     immediate: false,
     onSuccess(res) {
       if (res.success) {
-        onlyMessage('操作成功')
+        onlyMessage($t('components.Save.069696-7'))
         emits('save', res.result.id)
       }
     },
@@ -132,17 +134,17 @@ const checkSort = (e: any) => {
 //初始化
 const init = () => {
   if (props.data.id) {
-    title.value = '编辑'
+    title.value = $t('components.Save.069696-8')
     Object.assign(formModel.data, props.data)
   } else if (props.data.parentId) {
-    title.value = '新增子组织'
+    title.value = $t('components.Save.069696-9')
     formModel.data = {
       name: '',
       sortIndex: props.data.sortIndex,
       parentId: props.data.parentId,
     }
   } else {
-    title.value = '新增'
+    title.value = $t('components.Save.069696-10')
     formModel.data = {
       name: '',
       sortIndex: props.data.sortIndex,

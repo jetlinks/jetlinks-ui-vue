@@ -1,15 +1,15 @@
 <template>
-    <a-modal visible :title="type === 'add' ? '新增' : '编辑'" @cancel="close" @ok="submitData" :maskClosable="false"
+    <a-modal visible :title="type === 'add' ? $t('Save.index.134000-0') : $t('Save.index.134000-1')" @cancel="close" @ok="submitData" :maskClosable="false"
         :confirmLoading="loading">
         <a-form :model="form" layout="vertical" :rules="rules" ref="formRef">
             <a-form-item label="name" name="name">
-                <a-input placeholder="请输入name" v-model:value="form.name"></a-input>
+                <a-input :placeholder="$t('Save.index.134000-2')" v-model:value="form.name"></a-input>
             </a-form-item>
             <a-form-item label="value" name="value">
-                <a-input placeholder="请输入value" v-model:value="form.value"></a-input>
+                <a-input :placeholder="$t('Save.index.134000-3')" v-model:value="form.value"></a-input>
             </a-form-item>
             <a-form-item label="text" name="text">
-                <a-input placeholder="请输入text" v-model:value="form.text"></a-input>
+                <a-input :placeholder="$t('Save.index.134000-4')" v-model:value="form.text"></a-input>
             </a-form-item>
         </a-form>
     </a-modal>
@@ -20,6 +20,9 @@ import type { Rule } from 'ant-design-vue/es/form';
 import { saveDicItem, verifyValue } from '@/api/system/dictionary';
 import {regular, onlyMessage } from '@jetlinks-web/utils';
 import { cloneDeep } from 'lodash-es';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 const props = defineProps({
     type: {
         type: String,
@@ -56,7 +59,7 @@ const formRef = ref()
 const validateInput = async (_rule: Rule, value: string) => {
     if (value) {
         if (!regular.isInputReg(value)) {
-            return Promise.reject('请输入英文或者数字或者-或者_');
+            return Promise.reject($t('Save.index.134000-5'));
         }
     } else {
         return Promise.resolve();
@@ -86,7 +89,7 @@ const validateValue = async (_rule: Rule, value: string) => {
             ]
         })
         if (res.success && res.result) {
-                    return Promise.reject('value重复');
+                    return Promise.reject($t('Save.index.134000-6'));
                 } else {
                     return Promise.resolve();
         }
@@ -96,18 +99,18 @@ const validateValue = async (_rule: Rule, value: string) => {
 }
 const rules = {
     name: [
-        { required: true, message: '请输入name' },
+        { required: true, message: $t('Save.index.134000-2') },
         { validator: validateInput, trigger: 'change' },
-        { max: 64, message: '最多可输入64位字符', trigger: 'change' },
+        { max: 64, message: $t('Save.index.134000-7'), trigger: 'change' },
     ],
     value: [
-        { required: true, message: '请输入value', trigger: 'blur' },
-        { max: 64, message: '最多可输入64位字符', trigger: 'change' },
+        { required: true, message: $t('Save.index.134000-3'), trigger: 'blur' },
+        { max: 64, message: $t('Save.index.134000-7'), trigger: 'change' },
         { validator: validateValue, trigger: 'blur' }
     ],
     text: [
-        { required: true, message: '请输入text', trigger: 'blur' },
-        { max: 64, message: '最多可输入64位字符', trigger: 'change' },
+        { required: true, message: $t('Save.index.134000-4'), trigger: 'blur' },
+        { max: 64, message: $t('Save.index.134000-7'), trigger: 'change' },
     ]
 }
 const submitData = () => {
@@ -116,10 +119,10 @@ const submitData = () => {
         form.value.searchCode = form.value.name + ':' + form.value.value + ':' + form.value.text
         const res = await saveDicItem(form.value)
         if (res.status === 200) {
-            onlyMessage('操作成功!')
+            onlyMessage($t('Save.index.134000-8'))
             emit('refresh')
         } else {
-            onlyMessage('操作失败!', 'error')
+            onlyMessage($t('Save.index.134000-9'), 'error')
         }
         loading.value = false
     })

@@ -8,7 +8,7 @@
         v-if="props.showTitle"
         style="font-size: 16px;margin-bottom: 48px;"
       >
-        API文档
+        {{ $t('Api.index.558884-0') }}
       </div>
       <div class="api-page-body">
         <div class="tree-content">
@@ -39,16 +39,16 @@
             >
               <a-button
                 @click="selectedApi = initSelectedApi"
-                style="margin-bottom: 24px; width: 80px">返回</a-button>
+                style="margin-bottom: 24px; width: 80px">{{ $t('Api.index.558884-1') }}</a-button>
               <div class="api-details-tabs">
                 <a-tabs v-model:activeKey="activeKey" type="card">
-                  <a-tab-pane key="does" tab="文档">
+                  <a-tab-pane key="does" :tab="$t('Api.index.558884-2')">
                     <ApiDoes
                       :select-api="selectedApi"
                       :schemas="schemas"
                     />
                   </a-tab-pane>
-                  <a-tab-pane key="test" tab="调试">
+                  <a-tab-pane key="test" :tab="$t('Api.index.558884-3')">
                     <ApiTest
                       :select-api="selectedApi"
                       :schemas="schemas"

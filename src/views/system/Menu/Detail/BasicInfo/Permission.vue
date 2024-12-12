@@ -8,8 +8,8 @@
     >
       <a-form-item name="accessSupport" required>
         <template #label>
-          <span style="margin-right: 3px">数据权限控制</span>
-          <a-tooltip title="此菜单页面数据所对应的资产类型">
+          <span style="margin-right: 3px">{{ $t('BasicInfo.Permission.040830-0') }}</span>
+          <a-tooltip :title="$t('BasicInfo.Permission.040830-1')">
             <AIcon
               type="QuestionCircleOutlined"
               class="img-style"
@@ -21,11 +21,11 @@
           v-model:value="formModel.accessSupport"
           name="radioGroup"
         >
-          <a-radio value="unsupported">不支持</a-radio>
-          <a-radio value="support">支持</a-radio>
+          <a-radio value="unsupported">{{ $t('BasicInfo.Permission.040830-2') }}</a-radio>
+          <a-radio value="support">{{ $t('BasicInfo.Permission.040830-3') }}</a-radio>
           <a-radio value="indirect">
-            <span style="margin-right: 3px">间接控制</span>
-            <a-tooltip title="此菜单内的数据基于其他菜单的数据权限控制">
+            <span style="margin-right: 3px">{{ $t('BasicInfo.Permission.040830-4') }}</span>
+            <a-tooltip :title="$t('BasicInfo.Permission.040830-5')">
               <AIcon type="QuestionCircleFilled" class="img-style" />
             </a-tooltip>
           </a-radio>
@@ -34,13 +34,13 @@
         <a-form-item
           name="assetType"
           v-if="formModel.accessSupport === 'support'"
-          :rules="[{ required: true, message: '请选择资产类型' }]"
+          :rules="[{ required: true, message: $t('BasicInfo.Permission.040830-6') }]"
           style="margin-top: 24px; margin-bottom: 0"
         >
           <a-select
             v-model:value="formModel.assetType"
             style="width: 500px"
-            placeholder="请选择资产类型"
+            :placeholder="$t('BasicInfo.Permission.040830-6')"
             show-search
             :options="assetsType"
           >
@@ -50,7 +50,7 @@
         <a-form-item
           name="indirectMenus"
           v-if="formModel.accessSupport === 'indirect'"
-          :rules="[{ required: true, message: '请选择关联菜单' }]"
+          :rules="[{ required: true, message: $t('BasicInfo.Permission.040830-7') }]"
           style="margin-top: 24px; margin-bottom: 0"
         >
           <a-tree-select
@@ -60,7 +60,7 @@
               maxHeight: '400px',
               overflow: 'auto',
             }"
-            placeholder="请选择关联菜单"
+            :placeholder="$t('BasicInfo.Permission.040830-7')"
             multiple
             show-search
             :tree-data="treeData"
@@ -73,7 +73,7 @@
           </a-tree-select>
         </a-form-item>
       </a-form-item>
-      <a-form-item label="权限" name="permissions">
+      <a-form-item :label="$t('BasicInfo.Permission.040830-8')" name="permissions">
         <PermissionChoose
           :first-width="3"
           max-height="350px"

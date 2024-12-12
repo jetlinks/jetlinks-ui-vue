@@ -4,15 +4,15 @@
       v-model:value="searchValue"
       style="width: 300px"
       allowClear
-      placeholder="请输入权限名称"
+      :placeholder="$t('components.PermissionChoose.947802-0')"
       @input="onSearch"
       :disabled="disabled"
     />
 
     <div class="permission-table">
       <a-row :gutter="24" class="table-head">
-        <a-col :span="firstWidth">权限名称</a-col
-        ><a-col :span="24 - firstWidth">权限操作</a-col>
+        <a-col :span="firstWidth">{{ $t('components.PermissionChoose.947802-1') }}</a-col
+        ><a-col :span="24 - firstWidth">{{ $t('components.PermissionChoose.947802-2') }}</a-col>
       </a-row>
       <div class="table-body" :style="{ 'max-height': maxHeight }">
         <a-row

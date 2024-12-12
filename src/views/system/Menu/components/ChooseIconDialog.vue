@@ -1,7 +1,7 @@
 <template>
     <a-modal
         visible
-        title="菜单图标"
+        :title="$t('components.ChooseIconDialog.390527-0')"
         width="800px"
         @cancel="emits('close')"
         @ok="confirm"

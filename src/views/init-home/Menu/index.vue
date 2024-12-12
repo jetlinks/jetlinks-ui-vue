@@ -4,8 +4,8 @@
             <img :src="getImage('/init-home/menu.png')" />
         </div>
         <div class="menu-info">
-            <b>系统初始化{{ count }}个菜单</b>
-            <div>初始化后的菜单可在“菜单管理”页面进行维护管理</div>
+            <b>{{ $t('Menu.index.459633-0', [count]) }}</b>
+            <div>{{ $t('Menu.index.459633-2') }}</div>
         </div>
     </div>
 </template>

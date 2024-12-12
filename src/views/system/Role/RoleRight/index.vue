@@ -27,7 +27,7 @@
             :hasPermission="`${permission}:add`"
             @click="addRole"
           >
-            <AIcon type="PlusOutlined" />新增
+            <AIcon type="PlusOutlined" />{{ $t('RoleRight.index.470525-0') }}
           </j-permission-button>
         </template>
 
@@ -71,6 +71,9 @@ import AddDialog from './components/AddDialog.vue'
 import { getRoleList_api, delRole_api } from '@/api/system/role'
 import { useMenuStore } from '@/store/menu'
 import { onlyMessage } from '@jetlinks-web/utils'
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 const props = defineProps({
   groupId: {
     type: String,
@@ -88,7 +91,7 @@ const tableRef = ref<Record<string, any>>()
 const dialogVisible = ref(isSave)
 const columns = [
   {
-    title: '标识',
+    title: $t('RoleRight.index.470525-1'),
     dataIndex: 'id',
     key: 'id',
     ellipsis: true,
@@ -98,7 +101,7 @@ const columns = [
     },
   },
   {
-    title: '名称',
+    title: $t('RoleRight.index.470525-2'),
     dataIndex: 'name',
     key: 'name',
     ellipsis: true,
@@ -108,7 +111,7 @@ const columns = [
     },
   },
   {
-    title: '说明',
+    title: $t('RoleRight.index.470525-3'),
     key: 'description',
     ellipsis: true,
     dataIndex: 'description',
@@ -117,7 +120,7 @@ const columns = [
     },
   },
   {
-    title: '操作',
+    title: $t('RoleRight.index.470525-4'),
     dataIndex: 'action',
     key: 'action',
     width: 120,
@@ -133,9 +136,9 @@ const getActions = (
   const actions = [
     {
       key: 'update',
-      text: '编辑',
+      text: $t('RoleRight.index.470525-5'),
       tooltip: {
-        title: '编辑',
+        title: $t('RoleRight.index.470525-5'),
       },
       icon: 'EditOutlined',
       onClick: () => {
@@ -146,9 +149,9 @@ const getActions = (
     },
     {
       key: 'update',
-      text: '权限配置',
+      text: $t('RoleRight.index.470525-6'),
       tooltip: {
-        title: '权限配置',
+        title: $t('RoleRight.index.470525-6'),
       },
       onClick: () => {
         jumpPage(`system/Role/Detail`, {
@@ -161,19 +164,19 @@ const getActions = (
     },
     {
       key: 'delete',
-      text: '删除',
+      text: $t('RoleRight.index.470525-7'),
       tooltip: {
-        title: '删除',
+        title: $t('RoleRight.index.470525-7'),
       },
       popConfirm: {
-        title: '确认删除?',
+        title: $t('RoleRight.index.470525-8'),
         onConfirm: async () => {
           const res = await delRole_api(data.id)
           if (res.status === 200) {
-            onlyMessage('操作成功!')
+            onlyMessage($t('RoleRight.index.470525-9'))
             tableRef.value?.reload()
           } else {
-            onlyMessage('操作失败!', 'error')
+            onlyMessage($t('RoleRight.index.470525-10'), 'error')
           }
         },
       },

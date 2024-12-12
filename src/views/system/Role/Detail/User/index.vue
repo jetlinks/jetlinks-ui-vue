@@ -21,15 +21,15 @@
       <template #headerLeftRender>
         <a-space>
           <a-button type="primary" @click="dialogVisible = true">
-            <AIcon type="PlusOutlined" />新增
+            <AIcon type="PlusOutlined" />{{ $t('User.index.667995-0') }}
           </a-button>
           <j-permission-button
             :popConfirm="{
-              title: `是否批量解除绑定`,
+              title: $t('User.index.667995-1'),
               onConfirm: () => table.unbind(),
             }"
           >
-            <AIcon type="DisconnectOutlined" />批量解绑
+            <AIcon type="DisconnectOutlined" />{{ $t('User.index.667995-2') }}
           </j-permission-button>
         </a-space>
       </template>
@@ -37,7 +37,7 @@
       <template #status="slotProps">
         <j-badge-status
           :status="slotProps.status"
-          :text="slotProps.status ? '正常' : '禁用'"
+          :text="slotProps.status ? $t('User.index.667995-3') : $t('User.index.667995-4')"
           :statusNames="{
             1: 'success',
             0: 'error',
@@ -54,9 +54,9 @@
         <a-space :size="16">
           <j-permission-button
             type="link"
-            :tooltip="{ title: '解绑' }"
+            :tooltip="{ title: $t('User.index.667995-5') }"
             :pop-confirm="{
-              title: `确认解绑`,
+              title: $t('User.index.667995-6'),
               onConfirm: () => table.unbind([slotProps.id]),
             }"
           >
@@ -79,12 +79,14 @@
 import AddUserDialog from '../components/AddUserDialog.vue'
 import { getUserByRole_api, unbindUser_api } from '@/api/system/role'
 import { onlyMessage } from '@jetlinks-web/utils'
+import { useI18n } from 'vue-i18n';
 
+const { t: $t } = useI18n();
 const roleId = useRoute().params.id as string
 
 const columns = [
   {
-    title: '姓名',
+    title: $t('User.index.667995-7'),
     dataIndex: 'name',
     key: 'name',
     search: {
@@ -92,7 +94,7 @@ const columns = [
     },
   },
   {
-    title: '用户名',
+    title: $t('User.index.667995-8'),
     dataIndex: 'username',
     key: 'username',
     search: {
@@ -100,7 +102,7 @@ const columns = [
     },
   },
   {
-    title: '创建时间',
+    title: $t('User.index.667995-9'),
     dataIndex: 'createTime',
     key: 'createTime',
     search: {
@@ -109,18 +111,18 @@ const columns = [
     scopedSlots: true,
   },
   {
-    title: '状态',
+    title: $t('User.index.667995-10'),
     dataIndex: 'status',
     key: 'status',
     search: {
       type: 'select',
       options: [
         {
-          label: '正常',
+          label: $t('User.index.667995-3'),
           value: 1,
         },
         {
-          label: '禁用',
+          label: $t('User.index.667995-4'),
           value: 0,
         },
       ],
@@ -128,7 +130,7 @@ const columns = [
     scopedSlots: true,
   },
   {
-    title: '操作',
+    title: $t('User.index.667995-11'),
     dataIndex: 'action',
     key: 'action',
     width: '200px',
@@ -164,12 +166,12 @@ const table = {
   unbind: (ids?: string[]) => {
     const data = ids ? ids : selectedRowKeys.value
     if (!data.length) {
-      onlyMessage('请勾选数据', 'warning')
+      onlyMessage($t('User.index.667995-12'), 'warning')
       return
     }
     unbindUser_api(roleId, data).then((resp) => {
       if (resp.status === 200) {
-        onlyMessage('操作成功')
+        onlyMessage($t('User.index.667995-13'))
         table.refresh()
       }
     })

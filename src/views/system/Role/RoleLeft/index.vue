@@ -1,13 +1,13 @@
 <template>
 	<div class="left-contain">
-		<a-input v-model:value="searchValue" placeholder="分组名称" @change="searchChange" @pressEnter="search">
+		<a-input v-model:value="searchValue" :placeholder="$t('RoleLeft.index.507330-0')" @change="searchChange" @pressEnter="search">
 			<template #suffix>
 				<AIcon type="SearchOutlined" @click="search"/>
 			</template>
 		</a-input>
 		<div v-if="isAdmin" class="controls">
 			<a-button style="width: 100%" type="primary" @click="addGroup">
-				新增分组
+				{{ $t('RoleLeft.index.507330-1') }}
 			</a-button>
 		</div>
 		<div class="listBox">
@@ -27,14 +27,14 @@
 							</div>
 							<div v-if="item.id !== 'default_group'" @click="(e) => e.stopPropagation()">
 								<j-permission-button :disabled="item.id === 'default_group'" :popConfirm="{
-                                    title: `确定要删除？`,
+                                    title: $t('RoleLeft.index.507330-2'),
                                     onConfirm: () => deleteGroup(item.id),
                                 }" hasPermission="system/Role:groupDelete" type="text">
-									删除
+									{{ $t('RoleLeft.index.507330-3') }}
 								</j-permission-button>
 								<j-permission-button :disabled="item.id === 'default_group'" hasPermission="system/Role:groupUpdate"
 																		 type="text" @click="editGroup(item.data)">
-									编辑
+									{{ $t('RoleLeft.index.507330-4') }}
 								</j-permission-button>
 							</div>
 						</template>
@@ -53,11 +53,13 @@
 import { onlyMessage, randomString } from '@jetlinks-web/utils';
 import { queryRoleGroup, saveRoleGroup, deleteRoleGroup } from '@/api/system/role';
 import { useUserStore } from '@/store/user'
+import { useI18n } from 'vue-i18n';
 
+const { t: $t } = useI18n();
 const emit = defineEmits(['selectData'])
 const { isAdmin } = useUserStore();
 const listData: any = ref([{
-	name: '全局角色',
+	name: $t('RoleLeft.index.507330-5'),
 	id: 'global_role',
 	children: []
 }])
@@ -105,10 +107,10 @@ const saveGroup = async (data: any) => {
 		}
 		const res = await saveRoleGroup(saveData)
 		if (res.status === 200) {
-			onlyMessage('操作成功!')
+			onlyMessage($t('RoleLeft.index.507330-6'))
 			queryGroup()
 		} else {
-			onlyMessage('操作失败!')
+			onlyMessage($t('RoleLeft.index.507330-7'))
 		}
 	}
 	setTimeout(() => {
@@ -130,10 +132,10 @@ const selectGroup = (id: string) => {
 const deleteGroup = async (id: string) => {
 	const res: any = await deleteRoleGroup(id)
 	if (res.status === 200) {
-		onlyMessage('操作成功!')
+		onlyMessage($t('RoleLeft.index.507330-6'))
 		queryGroup(true)
 	} else {
-		onlyMessage('操作失败!')
+		onlyMessage($t('RoleLeft.index.507330-7'))
 	}
 }
 const editGroup = (data: any) => {

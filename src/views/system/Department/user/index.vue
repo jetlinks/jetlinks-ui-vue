@@ -31,24 +31,24 @@
               :disabled="isShow"
           >
             <AIcon type="PlusOutlined"/>
-            绑定用户
+            {{ $t('user.index.252066-0') }}
           </j-permission-button>
           <j-permission-button
               :hasPermission="`${permission}:bind`"
               :popConfirm="{
-                title: `是否解除绑定`,
+                title: $t('user.index.252066-1'),
                 onConfirm: () => unBind(),
               }"
           >
             <AIcon type="DisconnectOutlined"/>
-            批量解绑
+            {{ $t('user.index.252066-2') }}
           </j-permission-button>
         </a-space>
       </template>
       <template #status="slotProps">
         <j-badge-status
             :status="slotProps.status"
-            :text="slotProps.status ? '正常' : '禁用'"
+            :text="slotProps.status ? $t('user.index.252066-3') : $t('user.index.252066-4')"
             :statusNames="{
               1: 'success',
               0: 'error',
@@ -61,7 +61,7 @@
               type="link"
               :hasPermission="`${permission}:bind`"
               :popConfirm="{
-                title: `是否解除绑定`,
+                title: $t('user.index.252066-1'),
                 onConfirm: () => unBind(slotProps),
               }"
           >
@@ -85,7 +85,9 @@ import AddBindUserDialog from './components/AddBindUserDialog.vue'
 import {unBindUser_api} from '@/api/system/department'
 import {columns, requestFun} from '../util'
 import {onlyMessage} from '@jetlinks-web/utils'
+import { useI18n } from 'vue-i18n';
 
+const { t: $t } = useI18n();
 const permission = 'system/Department'
 
 const props = defineProps({
@@ -177,11 +179,11 @@ const handleSearch = (oParams: any) =>
 // 取消绑定
 const unBind = (row?: any) => {
   const ids = row ? [row.id] : _selectedRowKeys.value
-  if (ids.length < 1) return onlyMessage('请勾选需要解绑的数据', 'warning')
+  if (ids.length < 1) return onlyMessage($t('user.index.252066-5'), 'warning')
 
   unBindUser_api(props.parentId, ids).then((resp) => {
     if (resp.success) {
-      onlyMessage('操作成功')
+      onlyMessage($t('user.index.252066-6'))
       refresh()
     }
   })

@@ -4,19 +4,19 @@
       <a-row type="flex">
         <a-col flex="186px">
           <a-form-item
-            label="菜单图标"
+            :label="$t('BasicInfo.Info.607342-0')"
             name="icon"
             :rules="[
               {
                 required: true,
-                message: '请上传图标',
+                message: $t('BasicInfo.Info.607342-1'),
                 trigger: 'change',
               },
             ]"
           >
             <div class="icon-upload has-icon" v-if="formModel.icon">
               <AIcon :type="formModel.icon" style="font-size: 90px" />
-              <span class="mark" @click="dialogVisible = true">点击修改</span>
+              <span class="mark" @click="dialogVisible = true">{{ $t('BasicInfo.Info.607342-2') }}</span>
             </div>
 
             <div
@@ -26,7 +26,7 @@
             >
               <span>
                 <AIcon type="PlusOutlined" style="font-size: 30px" />
-                <p>点击选择图标</p>
+                <p>{{ $t('BasicInfo.Info.607342-3') }}</p>
               </span>
             </div>
           </a-form-item>
@@ -35,40 +35,40 @@
           <a-row :gutter="24">
             <a-col :span="12">
               <a-form-item
-                label="名称"
+                :label="$t('BasicInfo.Info.607342-4')"
                 name="name"
                 :rules="[
                   {
                     required: true,
-                    message: '请输入名称',
+                    message: $t('BasicInfo.Info.607342-5'),
                     trigger: 'change',
                   },
                   {
                     max: 64,
-                    message: '最多可输入64个字符',
+                    message: $t('BasicInfo.Info.607342-6'),
                     trigger: 'change',
                   },
                 ]"
               >
                 <a-input
                   v-model:value="formModel.name"
-                  placeholder="请输入名称"
+                  :placeholder="$t('BasicInfo.Info.607342-5')"
                 />
               </a-form-item>
             </a-col>
             <a-col :span="12">
               <a-form-item
-                label="编码"
+                :label="$t('BasicInfo.Info.607342-7')"
                 name="code"
                 :rules="[
                   {
                     required: true,
-                    message: '请输入编码',
+                    message: $t('BasicInfo.Info.607342-8'),
                     trigger: 'change',
                   },
                   {
                     max: 64,
-                    message: '最多可输入64个字符',
+                    message: $t('BasicInfo.Info.607342-6'),
                     trigger: 'change',
                   },
                   {
@@ -79,43 +79,43 @@
               >
                 <a-input
                   v-model:value="formModel.code"
-                  placeholder="请输入编码"
+                  :placeholder="$t('BasicInfo.Info.607342-8')"
                 />
               </a-form-item>
             </a-col>
             <a-col :span="12">
               <a-form-item
-                label="页面地址"
+                :label="$t('BasicInfo.Info.607342-9')"
                 name="url"
                 :rules="[
                   {
                     required: true,
-                    message: '请输入页面地址',
+                    message: $t('BasicInfo.Info.607342-10'),
                   },
-                  { max: 128, message: '最多可输入128字符' },
+                  { max: 128, message: $t('BasicInfo.Info.607342-11') },
                   { pattern: /^\//, message: '请正确填写地址，以/开头' },
                 ]"
               >
                 <a-input
                   v-model:value="formModel.url"
-                  placeholder="请输入页面地址"
+                  :placeholder="$t('BasicInfo.Info.607342-10')"
                 />
               </a-form-item>
             </a-col>
             <a-col :span="12">
               <a-form-item
-                label="排序"
+                :label="$t('BasicInfo.Info.607342-12')"
                 name="sortIndex"
                 :rules="[
                   {
                     pattern: /^[0-9]*[1-9][0-9]*$/,
-                    message: '请输入大于0的整数',
+                    message: $t('BasicInfo.Info.607342-13'),
                   },
                 ]"
               >
                 <a-input-number
                   v-model:value="formModel.sortIndex"
-                  placeholder="请输入排序"
+                  :placeholder="$t('BasicInfo.Info.607342-14')"
                   style="width: 100%"
                 />
               </a-form-item>
@@ -124,13 +124,13 @@
         </a-col>
       </a-row>
 
-      <a-form-item label="说明" name="describe">
+      <a-form-item :label="$t('BasicInfo.Info.607342-15')" name="describe">
         <a-textarea
           v-model:value="formModel.describe"
           :rows="4"
           show-count
           :maxlength="200"
-          placeholder="请输入说明"
+          :placeholder="$t('BasicInfo.Info.607342-16')"
         />
       </a-form-item>
     </a-form>
@@ -148,7 +148,9 @@ import { useRoute } from 'vue-router'
 import ChooseIconDialog from '../../components/ChooseIconDialog.vue'
 import { validMenuCode } from '@/api/system/menu'
 import {OWNER_KEY} from "@/utils/consts";
+import { useI18n } from 'vue-i18n';
 
+const { t: $t } = useI18n();
 const route = useRoute()
 const formRef = ref<any>()
 
@@ -188,7 +190,7 @@ const checkCode = async (_rule: any, value: string): Promise<any> => {
   if (!value) {
     return Promise.reject('')
   } else if (value.length > 64) {
-    return Promise.reject('最多可输入64个字符')
+    return Promise.reject($t('BasicInfo.Info.607342-6'))
   } else if (
     route.params.id &&
     route.params.id !== ':id' &&
@@ -202,7 +204,7 @@ const checkCode = async (_rule: any, value: string): Promise<any> => {
       owner: OWNER_KEY,
     })
     if (resp.result.passed) return Promise.resolve()
-    else return Promise.reject('该编码重复')
+    else return Promise.reject($t('BasicInfo.Info.607342-17'))
   }
 }
 

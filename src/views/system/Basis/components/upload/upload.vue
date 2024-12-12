@@ -13,8 +13,8 @@
             <AIcon type="LoadingOutlined" />
           </div>
           <template v-else>
-            <img id="upload-img" :style="`height: ${height};`" :src="imgSrc" alt="上传图片">
-            <div class="upload-mask" :style="`height: ${height};`">点击修改</div>
+            <img id="upload-img" :style="`height: ${height};`" :src="imgSrc" :alt="$t('upload.upload.283727-0')">
+            <div class="upload-mask" :style="`height: ${height};`">{{ $t('upload.upload.283727-1') }}</div>
           </template>
         </div>
         <div v-for="item in messages" :key="item" class="uploadTip">{{item}}</div>
@@ -29,8 +29,9 @@ import { getToken } from '@jetlinks-web/utils'
 import { onlyMessage } from '@jetlinks-web/utils'
 import { defineProps, ref } from 'vue'
 import {FileStaticPath} from '@/api/comm'
+import { useI18n } from 'vue-i18n';
 
-
+const { t: $t } = useI18n();
 const emit = defineEmits(['update:imgSrc'])
 
 // 传入参数
@@ -114,9 +115,9 @@ const loading = ref<Boolean>(false)
 // 上传相关信息
 const uploadInfo: UploadInfoType = {
   // 上传提示文字
-  logoTip: ['推荐尺寸200*200', '支持jpg,png,jfif,pjp,pjpeg,jpeg'],
-  icoTip: ['推荐尺寸64*64', '支持ico格式'],
-  backgroundTip: ['支持4M以内的图片: 支持jpg,png,jfif,pjp,pjpeg,jpeg', '建议尺寸1400x1080'],
+  logoTip: [$t('upload.upload.283727-2'), $t('upload.upload.283727-3')],
+  icoTip: [$t('upload.upload.283727-4'), $t('upload.upload.283727-5')],
+  backgroundTip: [$t('upload.upload.283727-6'), $t('upload.upload.283727-7')],
   // 上传的地址
   action: FileStaticPath,
   headers: { [TOKEN_KEY]: getToken() },
@@ -137,7 +138,7 @@ const uploadInfo: UploadInfoType = {
   isImageLessSize: (file: File, size: number) => {
     const isLess = 1.0 * file.size / 1024 / 1024 < size
     if (!isLess) {
-      onlyMessage('支持' + size + 'M以内的图片','error')
+      onlyMessage($t('upload.upload.283727-8') + size + $t('upload.upload.283727-9'),'error')
     }
     return isLess
   },
@@ -152,7 +153,7 @@ const uploadInfo: UploadInfoType = {
         .map((m: string) => m.split('.')[1])
         .filter((typeStr) => file.type.includes(typeStr)).length > 0
     if(!isImage) {
-      onlyMessage("请上传jpg png格式的图片",'error')
+      onlyMessage($t('upload.upload.283727-10'),'error')
     }
     return isImage
   },
@@ -165,7 +166,7 @@ const uploadInfo: UploadInfoType = {
   isIcoType: (file: File) => {
     const isico = file.type.includes("x-icon")
     if(!isico) {
-      onlyMessage("请上传ico格式的文件",'error')
+      onlyMessage($t('upload.upload.283727-11'),'error')
     }
     return isico
   },
@@ -185,7 +186,7 @@ const uploadInfo: UploadInfoType = {
       emit('update:imgSrc', info.file.url)
     } else if (info.file.status === 'error') {
       loading.value = false
-      onlyMessage(msg + '上传失败，请稍后再试', 'error')
+      onlyMessage(msg + $t('upload.upload.283727-12'), 'error')
     }
   },
 
@@ -194,7 +195,7 @@ const uploadInfo: UploadInfoType = {
  * @param info 上传信息
  */
   changeLogoUpload: (info: any) => {
-    uploadInfo.changUpload(info, "系统logo")
+    uploadInfo.changUpload(info, $t('upload.upload.283727-13'))
   },
 
 /**
@@ -202,7 +203,7 @@ const uploadInfo: UploadInfoType = {
  * @param info 上传信息
  */
   changeIcoUpload: (info: any) => {
-    uploadInfo.changUpload(info, "浏览器页签")
+    uploadInfo.changUpload(info, $t('upload.upload.283727-14'))
   },
 
 /**
@@ -210,7 +211,7 @@ const uploadInfo: UploadInfoType = {
  * @param info 上传信息
  */
   changeBackgroundUpload: (info: any) => {
-    uploadInfo.changUpload(info, "登录背景图")
+    uploadInfo.changUpload(info, $t('upload.upload.283727-15'))
   },
 
 /**

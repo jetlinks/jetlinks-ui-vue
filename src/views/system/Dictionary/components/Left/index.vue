@@ -1,21 +1,21 @@
 <template>
     <div class="left-contain">
-        <a-input placeholder="字典名称" v-model:value="searchValue" @pressEnter="search" @change="searchChange">
+        <a-input :placeholder="$t('Left.index.036608-0')" v-model:value="searchValue" @pressEnter="search" @change="searchChange">
             <template #suffix>
                 <AIcon type="SearchOutlined" @click="search" />
             </template>
         </a-input>
         <div class="controls">
             <j-permission-button type="primary" hasPermission="system/Dictionary:add" style="width: 160px" @click="showSave" >
-                新增字典
+                {{ $t('Left.index.036608-1') }}
             </j-permission-button>
             <j-permission-button type="text" hasPermission="system/Dictionary:down" @click="downVisible = true">
-                下载
+                {{ $t('Left.index.036608-2') }}
             </j-permission-button>
             <a-upload :before-upload="beforeUpload" accept=".json" :show-upload-list="false"
                 :disabled="!usePermission('system/Dictionary:import').hasPerm.value">
                 <j-permission-button type="text" hasPermission="system/Dictionary:import">
-                    导入
+                    {{ $t('Left.index.036608-3') }}
                 </j-permission-button>
             </a-upload>
         </div>
@@ -30,7 +30,7 @@
                         <div @click="(e) => e.stopPropagation()">
                             <a-popconfirm
                               v-if="permission.hasPerm.value && item.data.classified !== 'system'"
-                                :title="item.data.status === 1 ? '禁用后引用该字典的页面将受到影响，确认禁用？' : '确定启用？'"
+                                :title="item.data.status === 1 ? $t('Left.index.036608-4') : $t('Left.index.036608-5')"
                               @confirm="() => updateDic(item.data)">
                                 <a-switch :checked="item.status" :disabled="!permission.hasPerm.value || item.data.classified === 'system'"
                                     :checkedValue="1" :unCheckedValue="0"></a-switch>
@@ -38,7 +38,7 @@
                             <a-tooltip
                               v-else
                               placement="top"
-                              :title="!permission.hasPerm.value ? '暂无权限,请联系管理员' : '内置数据不支持修改'"
+                              :title="!permission.hasPerm.value ? $t('Left.index.036608-6') : $t('Left.index.036608-7')"
                             >
                                 <a-switch :checked="item.status" :disabled="!permission.hasPerm.value || item.data.classified === 'system'"
                                     :checkedValue="1" :unCheckedValue="0"></a-switch>
@@ -48,17 +48,17 @@
                               hasPermission="system/Dictionary:delete"
                               :disabled="item.data.classified === 'system'"
                               :popConfirm="{
-                                title: `确定要删除？`,
+                                title: $t('Left.index.036608-8'),
                                 onConfirm: () => deleteDic(item.id),
                               }"
                               :tooltip="
                                     item.data.classified === 'system'
-                                        ? { title: '内置数据不支持修改' }
+                                        ? { title: $t('Left.index.036608-7') }
                                         : null
                                 "
                               style="padding: 0 10px"
                             >
-                              删除
+                              {{ $t('Left.index.036608-9') }}
                             </j-permission-button>
                             <j-permission-button
                               type="text"
@@ -66,13 +66,13 @@
                               :disabled="item.data.classified === 'system'"
                               :tooltip="
                                     item.data.classified === 'system'
-                                        ? { title: '内置数据不支持修改' }
+                                        ? { title: $t('Left.index.036608-7') }
                                         : null
                                 "
                               style="padding: 0 10px"
                               @click="showEdit(item.data)"
                             >
-                              编辑
+                              {{ $t('Left.index.036608-10') }}
                             </j-permission-button>
                         </div>
                     </div>
@@ -91,7 +91,9 @@ import Save from './save/index.vue'
 import Export from './Export/index.vue'
 import { onlyMessage } from '@jetlinks-web/utils';
 import { usePermission } from '@jetlinks-web/hooks'
+import { useI18n } from 'vue-i18n';
 
+const { t: $t } = useI18n();
 const emit = defineEmits(['selectData'])
 
 const saveShow = ref(false)
@@ -152,10 +154,10 @@ const saveSuccess = () => {
 const deleteDic = (id: string) => {
     deleteDictionary(id).then((res: any) => {
         if (res.status === 200) {
-            onlyMessage('操作成功!')
+            onlyMessage($t('Left.index.036608-11'))
             queryData(true)
         } else {
-            onlyMessage('操作失败!', 'error')
+            onlyMessage($t('Left.index.036608-12'), 'error')
         }
     })
 }
@@ -166,10 +168,10 @@ const updateDic = (data: any) => {
     data.status = data.status === 1 ? 0 : 1
     addDictionary(data).then((res: any) => {
         if (res.status === 200) {
-            onlyMessage('操作成功!')
+            onlyMessage($t('Left.index.036608-11'))
             reload()
         } else {
-            onlyMessage('操作失败!', 'error')
+            onlyMessage($t('Left.index.036608-12'), 'error')
         }
     })
 }
@@ -194,20 +196,20 @@ const beforeUpload = (file: any) => {
                 try {
                     data = JSON.parse(text);
                 } catch {
-                    onlyMessage('请上传json格式的文件', 'error')
+                    onlyMessage($t('Left.index.036608-13'), 'error')
                     return false
                 }
                 const res = await addDictionary(data)
                 if (res.status === 200) {
                     reload()
-                    onlyMessage('操作成功！')
+                    onlyMessage($t('Left.index.036608-14'))
                 }
             } else {
-                onlyMessage('文件内容不能为空', 'error')
+                onlyMessage($t('Left.index.036608-15'), 'error')
             }
         };
     } else {
-        onlyMessage('请上传json格式的文件', 'error')
+        onlyMessage($t('Left.index.036608-13'), 'error')
     }
 };
 

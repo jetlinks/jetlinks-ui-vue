@@ -29,7 +29,9 @@ import {
 } from '@/api/system/apiPage';
 import type { modeType, treeNodeTpye } from '../typing';
 import { useDepartmentStore } from '@/store/department';
+import { useI18n } from 'vue-i18n';
 
+const { t: $t } = useI18n();
 const department = useDepartmentStore();
 const emits = defineEmits(['select']);
 const props = defineProps<{
@@ -72,7 +74,7 @@ const getTreeData = () => {
                 if (props.hasHome) {
                     tree.unshift({
                         key: 'home',
-                        name: '首页',
+                        name: $t('components.LeftTree.726027-0'),
                         schemas: {},
                         children: [],
                     });

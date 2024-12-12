@@ -2,7 +2,7 @@
 <template>
     <div class="page-container">
         <div class="container-text">
-            <div class="container-title">系统初始化</div>
+            <div class="container-title">{{ $t('init-home.index.011430-0') }}</div>
         </div>
         <div class="container-box">
             <div class="container-main">
@@ -11,18 +11,18 @@
                         <a-collapse v-model:activeKey="activeKey" accordion>
                             <a-collapse-panel key="1">
                                 <template #header>
-                                    <span class="title">基本信息</span>
+                                    <span class="title">{{ $t('init-home.index.011430-1') }}</span>
                                     <span class="sub-title"
-                                        >配置平台名称、登录背景图、主题色等基本信息</span
+                                        >{{ $t('init-home.index.011430-2') }}</span
                                     >
                                 </template>
                                 <Basic ref="basicRef" />
                             </a-collapse-panel>
                             <a-collapse-panel key="2" forceRender>
                                 <template #header>
-                                    <span class="title">菜单初始化</span>
+                                    <span class="title">{{ $t('init-home.index.011430-3') }}</span>
                                     <span class="sub-title"
-                                        >初始化菜单数据</span
+                                        >{{ $t('init-home.index.011430-4') }}</span
                                     >
                                 </template>
                                 <Menu ref="menuRef"></Menu>
@@ -43,7 +43,7 @@
                         class="btn-style"
                         @click="submitData"
                         :loading="loading"
-                        >确定</a-button
+                        >{{ $t('init-home.index.011430-5') }}</a-button
                     >
                 </div>
             </div>
@@ -55,6 +55,9 @@ import Basic from './Basic/index.vue';
 import Menu from './Menu/index.vue';
 import { getInit, saveInit } from '@/api/initHome';
 import { onlyMessage } from '@jetlinks-web/utils';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 const basicRef = ref();
 // const roleRef = ref();
 const menuRef = ref();
@@ -95,7 +98,7 @@ const submitData = async () => {
     loading.value = false;
     // 当前数据是否成功提交
     if (basicRes && menuRes) {
-        onlyMessage('保存成功');
+        onlyMessage($t('init-home.index.011430-6'));
         //     // 记录初始化数据，跳转首页
         const res = await saveInit();
         if (res.status === 200) {

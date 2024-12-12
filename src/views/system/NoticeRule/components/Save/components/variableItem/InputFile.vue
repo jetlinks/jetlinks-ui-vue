@@ -1,7 +1,7 @@
 <template>
     <a-input
         allowClear
-        placeholder="请上传文件"
+        :placeholder="$t('variableItem.InputFile.277580-0')"
         v-model:value="url"
         @change="onChange"
     >
@@ -21,7 +21,7 @@
                 <a-button type="link" style="height: 30px">
                     <AIcon type="LoadingOutlined" v-if="loading" />
                     <AIcon type="PlusOutlined" v-else />
-                    上传附件
+                    {{ $t('variableItem.InputFile.277580-1') }}
                 </a-button>
             </a-upload>
         </template>
@@ -32,7 +32,9 @@
 import { TOKEN_KEY} from '@jetlinks-web/constants'
 import { LocalStore, onlyMessage } from "@jetlinks-web/utils";
 import { FileStaticPath} from '@/api/comm'
+import { useI18n } from 'vue-i18n';
 
+const { t: $t } = useI18n();
 const props = defineProps({
     id: {
         type: String,
@@ -63,11 +65,11 @@ const handleChange = (info: any) => {
 const handleBeforeUpload = (file: any) => {
     const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
     if (!isJpgOrPng) {
-        onlyMessage('请上传正确格式图片', 'error');
+        onlyMessage($t('variableItem.InputFile.277580-2'), 'error');
     }
     const isSize = file.size / 1024 / 1024 < 4;
     if (!isSize) {
-        onlyMessage(`图片大小必须小于4M`, 'error');
+        onlyMessage($t('variableItem.InputFile.277580-3'), 'error');
     }
     return isJpgOrPng && isSize;
 };

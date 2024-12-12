@@ -1,5 +1,5 @@
 <template>
-    <a-modal visible title="新增" width="1000px" @ok="confirm" @cancel="emits('update:visible', false)">
+    <a-modal visible :title="$t('components.AddUserDialog.659587-0')" width="1000px" @ok="confirm" @cancel="emits('update:visible', false)">
         <pro-search :columns="columns" target="simple" @search="(params) => queryParams = { ...params }" />
 
         <j-pro-table ref="tableRef" :columns="columns" :request="getUserList" mode="TABLE" :params="queryParams"
@@ -16,7 +16,9 @@
 <script setup lang="ts" name="RoleAddUser">
 import { getUserByRole_api, bindUser_api } from '@/api/system/role';
 import { onlyMessage } from '@jetlinks-web/utils';
+import { useI18n } from 'vue-i18n';
 
+const { t: $t } = useI18n();
 const emits = defineEmits(['refresh', 'update:visible']);
 const props = defineProps<{
     visible: boolean;
@@ -25,7 +27,7 @@ const props = defineProps<{
 
 const columns = [
     {
-        title: '姓名',
+        title: $t('components.AddUserDialog.659587-1'),
         dataIndex: 'name',
         key: 'name',
         search: {
@@ -33,7 +35,7 @@ const columns = [
         },
     },
     {
-        title: '用户名',
+        title: $t('components.AddUserDialog.659587-2'),
         dataIndex: 'username',
         key: 'username',
         search: {
@@ -74,11 +76,11 @@ const getUserList = (oParams: any) => {
 
 const confirm = () => {
     if (selectedRowKeys.value.length < 1) {
-        onlyMessage('请至少选择一项', 'error');
+        onlyMessage($t('components.AddUserDialog.659587-3'), 'error');
     } else {
         bindUser_api(props.roleId, selectedRowKeys.value).then((resp) => {
             if (resp.status === 200) {
-                onlyMessage('操作成功');
+                onlyMessage($t('components.AddUserDialog.659587-4'));
                 emits('refresh');
                 emits('update:visible', false);
             }

@@ -5,7 +5,7 @@
                 <a-avatar :size="100" :src="userInfo.avatar"></a-avatar>
                 <div style="margin-left: 24px;  max-width: 280px;" >
                     <div class="name"><j-ellipsis>{{ userInfo.name }}</j-ellipsis></div>
-                    <div class="subTitle"><j-ellipsis>用户名: {{ userInfo?.username }}</j-ellipsis></div>
+                    <div class="subTitle"><j-ellipsis>{{ $t('Detail.index.153077-0') }} {{ userInfo?.username }}</j-ellipsis></div>
                     <!-- <div class="subTitle">账号ID: {{ userInfo?.id }}</div> -->
                 </div>
             </div>
@@ -19,22 +19,22 @@
                     color: '#333333',
                 }"
             >
-                <a-descriptions-item label="角色">
+                <a-descriptions-item :label="$t('Detail.index.153077-1')">
                     <j-ellipsis :lineClamp="2">
                         {{ role }}
                     </j-ellipsis>
                 </a-descriptions-item>
-                <a-descriptions-item label="组织">
+                <a-descriptions-item :label="$t('Detail.index.153077-2')">
                     <j-ellipsis :lineClamp="2">
                         {{ org }}
                     </j-ellipsis>
                 </a-descriptions-item>
-                <a-descriptions-item label="手机号">
+                <a-descriptions-item :label="$t('Detail.index.153077-3')">
                     <j-ellipsis :lineClamp="2">
                         {{ userInfo?.telephone }}
                     </j-ellipsis>
                 </a-descriptions-item>
-                <a-descriptions-item label="邮箱">
+                <a-descriptions-item :label="$t('Detail.index.153077-4')">
                     <j-ellipsis :lineClamp="2">
                         {{ userInfo?.email }}
                     </j-ellipsis>
@@ -42,25 +42,27 @@
             </a-descriptions>
         </div>
         <template #footer>
-            <a-button type="primary" @click="emit('close')">关闭</a-button>
+            <a-button type="primary" @click="emit('close')">{{ $t('Detail.index.153077-5') }}</a-button>
         </template>
     </a-modal>
 </template>
 
 <script lang="ts" setup>
 import { useUserStore } from '@/store/user'
+import { useI18n } from 'vue-i18n';
 
+const { t: $t } = useI18n();
 const { userInfo } = useUserStore();
 const emit = defineEmits(['close', 'save']);
 
 const role = computed(() => {
     const _role = userInfo?.roleList.map((item: any) => item?.name).join(';');
-    return _role || '暂无角色';
+    return _role || $t('Detail.index.153077-6');
 });
 
 const org = computed(() => {
     const _role = userInfo?.orgList.map((item: any) => item?.name).join(';');
-    return _role || '暂无组织';
+    return _role || $t('Detail.index.153077-7');
 });
 </script>
 

@@ -10,18 +10,18 @@
   >
     <a-form :model="formModel" class="basic-form" ref="formRef">
       <a-form-item
-        label="编码"
+        :label="$t('components.ButtonAddDialog.947292-0')"
         name="id"
         :rules="[
-          { required: true, message: '请输入编码' },
-          { max: 64, message: '最多可输入64个字符' },
+          { required: true, message: $t('components.ButtonAddDialog.947292-1') },
+          { max: 64, message: $t('components.ButtonAddDialog.947292-2') },
         ]"
       >
         <a-auto-complete
           v-model:value="formModel.id"
           :options="codeOptions"
-          placeholder="请输入编码"
-          :disabled="props.mode !== '新增'"
+          :placeholder="$t('components.ButtonAddDialog.947292-1')"
+          :disabled="props.mode !== $t('components.ButtonAddDialog.947292-3')"
         >
           <template #option="{ value: val, message }">
             {{ val }}
@@ -30,26 +30,26 @@
         </a-auto-complete>
       </a-form-item>
       <a-form-item
-        label="名称"
+        :label="$t('components.ButtonAddDialog.947292-4')"
         name="name"
         :rules="[
-          { required: true, message: '请输入名称' },
-          { max: 64, message: '最多可输入64个字符' },
+          { required: true, message: $t('components.ButtonAddDialog.947292-5') },
+          { max: 64, message: $t('components.ButtonAddDialog.947292-2') },
         ]"
       >
         <a-input
           v-model:value="formModel.name"
-          :disabled="props.mode === '查看'"
-          placeholder="请输入名称"
+          :disabled="props.mode === $t('components.ButtonAddDialog.947292-6')"
+          :placeholder="$t('components.ButtonAddDialog.947292-5')"
         />
       </a-form-item>
       <a-form-item
-        label="权限"
+        :label="$t('components.ButtonAddDialog.947292-7')"
         name="permissions"
         :rules="[
           {
             required: true,
-            message: '请选择权限',
+            message: $t('components.ButtonAddDialog.947292-8'),
             validator: checkPermission,
           },
         ]"
@@ -58,16 +58,16 @@
           :first-width="8"
           max-height="350px"
           v-model:value="formModel.permissions"
-          :disabled="props.mode === '查看'"
+          :disabled="props.mode === $t('components.ButtonAddDialog.947292-6')"
           :key="formModel.id || ''"
         />
       </a-form-item>
-      <a-form-item label="说明" name="describe">
+      <a-form-item :label="$t('components.ButtonAddDialog.947292-9')" name="describe">
         <a-textarea
           v-model:value="formModel.describe"
           :rows="4"
-          placeholder="请输入说明"
-          :disabled="props.mode === '查看'"
+          :placeholder="$t('components.ButtonAddDialog.947292-10')"
+          :disabled="props.mode === $t('components.ButtonAddDialog.947292-6')"
         />
       </a-form-item>
     </a-form>
@@ -78,7 +78,9 @@
 import { onlyMessage } from '@jetlinks-web/utils'
 import PermissionChoose from './PermissionChoose.vue'
 import { updateMenu } from '@/api/system/menu'
+import { useI18n } from 'vue-i18n';
 
+const { t: $t } = useI18n();
 const emits = defineEmits(['save', 'close'])
 const props = defineProps({
   menuInfo: {
@@ -86,7 +88,7 @@ const props = defineProps({
     default: () => {},
   },
   mode: {
-    type: String as PropType<'查看' | '新增' | '编辑'>,
+    type: String,
     default: '',
   },
   data: {
@@ -96,9 +98,9 @@ const props = defineProps({
 })
 
 const codeOptions = [
-  { label: 'add', value: 'add', message: '新增' },
-  { label: 'delete', value: 'delete', message: '删除' },
-  { label: 'update', value: 'update', message: '更新' },
+  { label: 'add', value: 'add', message: $t('components.ButtonAddDialog.947292-3') },
+  { label: 'delete', value: 'delete', message: $t('components.ButtonAddDialog.947292-11') },
+  { label: 'update', value: 'update', message: $t('components.ButtonAddDialog.947292-12') },
 ]
 const loading = ref<boolean>(false)
 const formRef = ref<any>()
@@ -110,7 +112,7 @@ const formModel = reactive({
 })
 
 const checkPermission = (_rule: any, value: string[]) => {
-  if (!value || value.length < 1) return Promise.reject('请选择权限')
+  if (!value || value.length < 1) return Promise.reject($t('components.ButtonAddDialog.947292-8'))
   return Promise.resolve()
 }
 
@@ -138,7 +140,7 @@ const confirm = () => {
       updateMenu(params)
         .then((resp) => {
           if (resp.success) {
-            onlyMessage('操作成功')
+            onlyMessage($t('components.ButtonAddDialog.947292-13'))
             emits('save')
           }
         })

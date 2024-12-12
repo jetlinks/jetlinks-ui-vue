@@ -1,6 +1,7 @@
+import i18n from "@/locales";
 export const columns = [
     {
-      title: '标识',
+      title: i18n.global.t('Permission.util.968438-0'),
       dataIndex: 'id',
       key: 'id',
       ellipsis: true,
@@ -8,12 +9,12 @@ export const columns = [
       search: {
         type: 'string',
         componentProps: {
-          placeholder: '请输入标识',
+          placeholder: i18n.global.t('Permission.util.968438-1'),
         },
       },
     },
     {
-      title: '名称',
+      title: i18n.global.t('Permission.util.968438-2'),
       dataIndex: 'name',
       key: 'name',
       ellipsis: true,
@@ -21,28 +22,28 @@ export const columns = [
         type: 'string',
         first: true,
         componentProps: {
-          placeholder: '请输入名称',
+          placeholder: i18n.global.t('Permission.util.968438-3'),
         },
       },
     },
     {
-      title: '状态',
+      title: i18n.global.t('Permission.util.968438-4'),
       dataIndex: 'status',
       key: 'status',
       scopedSlots: true,
       search: {
         type: 'select',
         componentProps: {
-          placeholder: '请选择状态',
+          placeholder: i18n.global.t('Permission.util.968438-5'),
         },
         options: [
-          { label: '启用', value: 1 },
-          { label: '禁用', value: 0 },
+          { label: i18n.global.t('Permission.util.968438-6'), value: 1 },
+          { label: i18n.global.t('Permission.util.968438-7'), value: 0 },
         ],
       },
     },
     {
-      title: '操作',
+      title: i18n.global.t('Permission.util.968438-8'),
       dataIndex: 'action',
       key: 'action',
       width: 150,
@@ -60,25 +61,25 @@ export const columns = [
       align: 'center',
     },
     {
-      title: '操作类型',
+      title: i18n.global.t('Permission.util.968438-9'),
       dataIndex: 'action',
       key: 'action',
       width: 220,
     },
     {
-      title: '名称',
+      title: i18n.global.t('Permission.util.968438-2'),
       dataIndex: 'name',
       key: 'name',
       ellipsis: true,
     },
     {
-      title: '说明',
+      title: i18n.global.t('Permission.util.968438-10'),
       dataIndex: 'describe',
       key: 'describe',
       ellipsis: true,
     },
     {
-      title: '操作',
+      title: i18n.global.t('Permission.util.968438-8'),
       width: 80,
       dataIndex: 'actions',
       key: 'actions',
@@ -86,7 +87,7 @@ export const columns = [
   ]
 
   export const defaultAction = [
-    { action: 'query', name: '查询', describe: '查询' },
-    { action: 'save', name: '保存', describe: '保存' },
-    { action: 'delete', name: '删除', describe: '删除' },
+    { action: 'query', name: i18n.global.t('Permission.util.968438-11'), describe: i18n.global.t('Permission.util.968438-11') },
+    { action: 'save', name: i18n.global.t('Permission.util.968438-12'), describe: i18n.global.t('Permission.util.968438-12') },
+    { action: 'delete', name: i18n.global.t('Permission.util.968438-13'), describe: i18n.global.t('Permission.util.968438-13') },
   ]

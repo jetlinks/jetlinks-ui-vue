@@ -21,27 +21,27 @@
                             item?.name
                         }}</j-ellipsis>
                         <div>
-                            <span v-if="item.bound" style="color: #2BA245">已绑定</span>
-                            <span v-else style="color: #999">未绑定</span>
+                            <span v-if="item.bound" style="color: #2BA245">{{ $t('BindThirdAccount.index.483756-0') }}</span>
+                            <span v-else style="color: #999">{{ $t('BindThirdAccount.index.483756-1') }}</span>
                         </div>
                         <div v-if="item.others?.name" style="color: #666666">
-                            {{ item.others?.name }}（已绑定的用户名）
+                            {{ item.others?.name }}{{ $t('BindThirdAccount.index.483756-2') }}
                         </div>
                     </div>
                     <div class="content-item-right">
                         <a-popconfirm
                             v-if="item.bound"
-                            title="确认解除绑定嘛?"
+                            :title="$t('BindThirdAccount.index.483756-3')"
                             @confirm="() => unBind(item.id)"
                         >
-                            <a-button>解除绑定</a-button>
+                            <a-button>{{ $t('BindThirdAccount.index.483756-4') }}</a-button>
                         </a-popconfirm>
                         <a-button
                             v-else
                             ghost
                             type="primary"
                             @click="clickBind(item.id)"
-                            >立即绑定</a-button
+                            >{{ $t('BindThirdAccount.index.483756-5') }}</a-button
                         >
                     </div>
                 </div>
@@ -56,7 +56,9 @@
 import { BASE_API } from '@jetlinks-web/constants'
 import { getSsoBinds_api , unBind_api} from '@/api/account/center';
 import { onlyMessage  , getImage } from "@jetlinks-web/utils";
+import { useI18n } from 'vue-i18n';
 
+const { t: $t } = useI18n();
 const bindList = ref<any[]>([]);
 const bindIcon = {
     'dingtalk-ent-app': '/notice/dingtalk.png',
@@ -67,7 +69,7 @@ const bindIcon = {
 const unBind = (id: string) => {
     unBind_api(id).then((resp) => {
         if (resp.status === 200) {
-            onlyMessage('解绑成功', 'success');
+            onlyMessage($t('BindThirdAccount.index.483756-6'), 'success');
             getSsoBinds();
         }
     });

@@ -24,10 +24,10 @@
               :hasPermission="`${permission}:add`"
               @click="openDialog()"
             >
-              <AIcon type="PlusOutlined" />新增
+              <AIcon type="PlusOutlined" />{{ $t('Permission.index.473829-0') }}
             </j-permission-button>
             <a-dropdown trigger="hover">
-              <a-button>批量操作</a-button>
+              <a-button>{{ $t('Permission.index.473829-1') }}</a-button>
               <template #overlay>
                 <a-menu>
                   <a-menu-item>
@@ -40,7 +40,7 @@
                       :disabled="!hasPerm"
                     >
                       <j-permission-button :hasPermission="`${permission}:import`">
-                        导入
+                        {{ $t('Permission.index.473829-2') }}
                       </j-permission-button>
                     </a-upload>
                   </a-menu-item>
@@ -48,11 +48,11 @@
                     <j-permission-button
                       :hasPermission="`${permission}:export`"
                       :popConfirm="{
-                        title: `确认导出？`,
+                        title: $t('Permission.index.473829-3'),
                         onConfirm: () => clickExport(),
                       }"
                     >
-                      导出
+                      {{ $t('Permission.index.473829-4') }}
                     </j-permission-button>
                   </a-menu-item>
                 </a-menu>
@@ -63,7 +63,7 @@
         <template #status="slotProps">
           <j-badge-status
             :status="slotProps.status"
-            :text="slotProps.status ? '启用' : '禁用'"
+            :text="slotProps.status ? $t('Permission.index.473829-5') : $t('Permission.index.473829-6')"
             :statusNames="{
               1: 'success',
               0: 'error',
@@ -76,7 +76,7 @@
               :hasPermission="`${permission}:update`"
               type="link"
               :tooltip="{
-                title: '编辑',
+                title: $t('Permission.index.473829-7'),
               }"
               style="padding: 0"
               @click="openDialog(slotProps)"
@@ -88,12 +88,12 @@
               :hasPermission="`${permission}:action`"
               type="link"
               :popConfirm="{
-                title: `确定要${!!slotProps.status ? '禁用' : '启用'}吗？`,
+                title: `确定要${!!slotProps.status ? $t('Permission.index.473829-6') : $t('Permission.index.473829-5')}吗？`,
                 onConfirm: () => changeStatus(slotProps),
               }"
               style="padding: 0"
               :tooltip="{
-                title: slotProps.status ? '禁用' : '启用',
+                title: slotProps.status ? $t('Permission.index.473829-6') : $t('Permission.index.473829-5'),
               }"
             >
               <AIcon
@@ -104,11 +104,11 @@
               :hasPermission="`${permission}:delete`"
               type="link"
               :tooltip="{
-                title: !!slotProps.status ? '请先禁用，再删除' : '删除',
+                title: !!slotProps.status ? $t('Permission.index.473829-9') : $t('Permission.index.473829-10'),
               }"
               danger
               :popConfirm="{
-                title: `确认删除`,
+                title: $t('Permission.index.473829-11'),
                 onConfirm: () => clickDel(slotProps),
               }"
               style="padding: 0"
@@ -138,7 +138,9 @@ import { PermissionItem } from './typings'
 import { onlyMessage } from '@jetlinks-web/utils'
 import { downloadJson } from '@/utils/comm'
 import { columns } from './util'
+import { useI18n } from 'vue-i18n';
 
+const { t: $t } = useI18n();
 const permission = 'system/Permission'
 const { hasPerm } = usePermission(`${permission}:import`)
 
@@ -168,15 +170,15 @@ const clickImport = (file: File) => {
         const data = JSON.parse(result.target.result)
         editPermission_api(data).then((resp) => {
           if (resp.status === 200) {
-            onlyMessage('导入成功')
+            onlyMessage($t('Permission.index.473829-12'))
             tableRef.value?.reload()
           }
         })
       } catch (error) {
-        onlyMessage('导入失败，请重试！', 'error')
+        onlyMessage($t('Permission.index.473829-13'), 'error')
       }
     }
-  } else onlyMessage('请上传json格式', 'error')
+  } else onlyMessage($t('Permission.index.473829-14'), 'error')
   return false
 }
 
@@ -188,10 +190,10 @@ const clickExport = () => {
   }
   exportPermission_api(_params).then((resp) => {
     if (resp.status === 200) {
-      downloadJson(resp.result as any, '权限数据')
-      onlyMessage('导出成功')
+      downloadJson(resp.result as any, $t('Permission.index.473829-15'))
+      onlyMessage($t('Permission.index.473829-16'))
     } else {
-      onlyMessage('导出错误', 'error')
+      onlyMessage($t('Permission.index.473829-17'), 'error')
     }
   })
 }
@@ -203,7 +205,7 @@ const changeStatus = (row: PermissionItem) => {
     status: row.status ? 0 : 1,
   }
   editPermission_api(_params).then(() => {
-    onlyMessage('操作成功')
+    onlyMessage($t('Permission.index.473829-18'))
     tableRef.value.reload()
   })
 }
@@ -214,7 +216,7 @@ const clickDel = (row: PermissionItem) => {
   delPermission_api(row.id).then((resp: any) => {
     if (resp.status === 200) {
       tableRef.value?.reload()
-      onlyMessage('操作成功!')
+      onlyMessage($t('Permission.index.473829-19'))
     }
   })
 }

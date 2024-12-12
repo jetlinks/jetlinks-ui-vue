@@ -1,45 +1,45 @@
 <template>
-    <a-modal :width="644" visible title="配置详情" @cancel="emit('close')">
+    <a-modal :width="644" visible :title="$t('Detail.index.056969-0')" @cancel="emit('close')">
         <div class="detail">
             <div class="item">
-                <div class="label">通知方式</div>
+                <div class="label">{{ $t('Detail.index.056969-1') }}</div>
                 <div class="value">
                     <j-ellipsis :lineClamp="2">{{ data.name }}</j-ellipsis>
                 </div>
             </div>
             <div class="item">
-                <div class="label">通知配置</div>
+                <div class="label">{{ $t('Detail.index.056969-2') }}</div>
                 <div class="value">
                     <j-ellipsis :lineClamp="2">{{ obj.notifier }}</j-ellipsis>
                 </div>
             </div>
             <div class="item">
-                <div class="label">通知模板</div>
+                <div class="label">{{ $t('Detail.index.056969-3') }}</div>
                 <div class="value">
                     <j-ellipsis :lineClamp="2">{{ obj.template }}</j-ellipsis>
                 </div>
             </div>
             <div class="item">
-                <div class="label">模版内容</div>
+                <div class="label">{{ $t('Detail.index.056969-4') }}</div>
                 <div class="value">
                     <j-ellipsis :lineClamp="2">{{ obj.content }}</j-ellipsis>
                 </div>
             </div>
             <div class="item">
-                <div class="label">模板变量</div>
+                <div class="label">{{ $t('Detail.index.056969-5') }}</div>
                 <div class="value">
                     <j-ellipsis :lineClamp="2">{{ variables }}</j-ellipsis>
                 </div>
             </div>
             <div class="item">
-                <div class="label">用户权限</div>
+                <div class="label">{{ $t('Detail.index.056969-6') }}</div>
                 <div class="value">
                     <j-ellipsis :lineClamp="2">{{ obj.role }}</j-ellipsis>
                 </div>
             </div>
         </div>
         <template #footer>
-            <a-button type="primary" @click="emit('close')">确定</a-button>
+            <a-button type="primary" @click="emit('close')">{{ $t('Detail.index.056969-7') }}</a-button>
         </template>
     </a-modal>
 </template>
@@ -49,7 +49,9 @@ import ConfigApi from '@/api/notice/config';
 import TemplateApi from '@/api/notice/template';
 import { queryConfigVariables } from '@/api/system/noticeRule';
 import { getRoleList_api } from '@/api/system/user';
+import { useI18n } from 'vue-i18n';
 
+const { t: $t } = useI18n();
 const props = defineProps({
     data: {
         type: Object,
@@ -70,7 +72,7 @@ const obj = reactive<{
     template: '',
     content: '',
     variables: [],
-    role: '未配置权限',
+    role: $t('Detail.index.056969-8'),
 });
 
 const handleSearch = async () => {
@@ -148,7 +150,7 @@ const handleSearch = async () => {
                             (i: any) => i?.id === item,
                         )?.name;
                     })
-                    ?.join(';') || '未配置权限';
+                    ?.join(';') || $t('Detail.index.056969-8');
         }
     }
 };

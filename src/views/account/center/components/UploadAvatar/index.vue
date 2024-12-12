@@ -21,7 +21,7 @@
           <template v-else>
             <AIcon type="UserOutlined" style="font-size: 20px" />
           </template>
-          <div class="upload-image-mask">更换</div>
+          <div class="upload-image-mask">{{ $t('UploadAvatar.index.820744-0') }}</div>
         </div>
       </a-upload>
       <div class="upload-loading-mask" v-if="props.disabled"></div>
@@ -35,7 +35,7 @@
     :img="cropperImg"
     @cancel="cropperVisible = false"
     @ok="saveImage"
-    title="更换头像"
+    :title="$t('UploadAvatar.index.820744-1')"
   />
 </template>
 
@@ -112,7 +112,7 @@ const handleChange = (info: UploadChangeParam) => {
   }
   if (info.file.status === 'error') {
     loading.value = false
-    onlyMessage('上传失败', 'error')
+    onlyMessage($t('UploadAvatar.index.820744-2'), 'error')
   }
 }
 
@@ -123,13 +123,13 @@ const beforeUpload = (file: UploadProps['fileList'][number]) => {
     if (props.errorMessage) {
       onlyMessage(props.errorMessage, 'error')
     } else {
-      onlyMessage(`请上传正确格式的图片`, 'error')
+      onlyMessage($t('UploadAvatar.index.820744-3'), 'error')
     }
     return false
   }
   const isSize = file.size / 1024 / 1024 < maxSize
   if (!isSize) {
-    onlyMessage(`图片大小必须小于${maxSize}M`, 'error')
+    onlyMessage($t('UploadAvatar.index.820744-4', [maxSize]), 'error')
     return false
   }
 

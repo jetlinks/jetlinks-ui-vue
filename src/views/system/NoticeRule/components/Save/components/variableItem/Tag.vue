@@ -2,7 +2,7 @@
     <a-select
         style="width: 100%"
         v-model:value="keys"
-        placeholder="请选择标签"
+        :placeholder="$t('variableItem.Tag.692842-0')"
         :options="tagsList"
         @change="onChange"
     />

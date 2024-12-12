@@ -3,7 +3,7 @@
     <a-input
       v-model:value="searchValue"
       @change="onSearch"
-      placeholder="请输入组织名称"
+      :placeholder="$t('components.LeftTree.755653-0')"
       allowClear
     >
       <template #suffix>
@@ -16,7 +16,7 @@
       @click="openDialog()"
       style="width: 100%; margin: 12px 0"
     >
-      新增
+      {{ $t('components.LeftTree.755653-1') }}
     </j-permission-button>
     <div class="tree">
       <a-spin :spinning="loading">
@@ -39,7 +39,7 @@
                   :hasPermission="`${permission}:update`"
                   type="link"
                   :tooltip="{
-                    title: '编辑',
+                    title: $t('components.LeftTree.755653-2'),
                   }"
                   style="padding: 0"
                   @click="openDialog(data)"
@@ -50,7 +50,7 @@
                   :hasPermission="`${permission}:add`"
                   type="link"
                   :tooltip="{
-                    title: '新增子组织',
+                    title: $t('components.LeftTree.755653-3'),
                   }"
                   @click="
                     openDialog({
@@ -65,11 +65,11 @@
                 <j-permission-button
                   type="link"
                   :hasPermission="`${permission}:delete`"
-                  :tooltip="{ title: '删除' }"
+                  :tooltip="{ title: $t('components.LeftTree.755653-4') }"
                   style="padding: 0"
                   danger
                   :popConfirm="{
-                    title: `确定要删除吗`,
+                    title: $t('components.LeftTree.755653-5'),
                     onConfirm: () => delDepartment(data.id),
                   }"
                 >
@@ -100,7 +100,9 @@ import { debounce, cloneDeep, omit } from 'lodash-es'
 import Save from './Save.vue'
 import { useRoute } from 'vue-router'
 import { ArrayToTree } from '../util'
+import { useI18n } from 'vue-i18n';
 
+const { t: $t } = useI18n();
 const permission = 'system/Department'
 
 const save = useRoute().query.save
@@ -193,7 +195,7 @@ function handleTreeMap(_data: any[]) {
 const delDepartment = (id: string) => {
   delDepartment_api(id).then((resp) => {
     if (resp.success) {
-      onlyMessage('操作成功')
+      onlyMessage($t('components.LeftTree.755653-6'))
       getTree()
     }
   })

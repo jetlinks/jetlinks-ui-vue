@@ -3,8 +3,8 @@
         <FullPage>
           <div class="details-container">
             <a-tabs v-model:activeKey="activeKey" type="card">
-              <a-tab-pane key="1" tab="权限分配"><Permission /></a-tab-pane>
-              <a-tab-pane key="2" tab="用户管理"><User /></a-tab-pane>
+              <a-tab-pane key="1" :tab="$t('Detail.index.386725-0')"><Permission /></a-tab-pane>
+              <a-tab-pane key="2" :tab="$t('Detail.index.386725-1')"><User /></a-tab-pane>
             </a-tabs>
           </div>
         </FullPage>

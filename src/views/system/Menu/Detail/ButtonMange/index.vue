@@ -11,9 +11,9 @@
         <j-permission-button
           type="primary"
           :hasPermission="`${permission}:update`"
-          @click="openDialog('新增', {})"
+          @click="openDialog($t('ButtonMange.index.544049-0'), {})"
         >
-          <AIcon type="PlusOutlined" />新增
+          <AIcon type="PlusOutlined" />{{ $t('ButtonMange.index.544049-0') }}
         </j-permission-button>
       </template>
       <template #action="slotProps">
@@ -21,28 +21,28 @@
           <j-permission-button
             type="link"
             :hasPermission="`${permission}:update`"
-            :tooltip="{ title: '编辑' }"
+            :tooltip="{ title: $t('ButtonMange.index.544049-1') }"
             style="padding: 0"
-            @click="openDialog('编辑', slotProps)"
+            @click="openDialog($t('ButtonMange.index.544049-1'), slotProps)"
           >
             <AIcon type="EditOutlined" />
           </j-permission-button>
           <j-permission-button
             type="link"
             :hasPermission="`${permission}:view`"
-            :tooltip="{ title: '查看' }"
+            :tooltip="{ title: $t('ButtonMange.index.544049-2') }"
             style="padding: 0"
-            @click="openDialog('查看', slotProps)"
+            @click="openDialog($t('ButtonMange.index.544049-2'), slotProps)"
           >
             <AIcon type="SearchOutlined" />
           </j-permission-button>
           <j-permission-button
             type="link"
-            :tooltip="{ title: '删除' }"
+            :tooltip="{ title: $t('ButtonMange.index.544049-3') }"
             style="padding: 0"
             danger
             :popConfirm="{
-              title: `确认删除`,
+              title: $t('ButtonMange.index.544049-4'),
               onConfirm: () => clickDel(slotProps),
             }"
           >
@@ -67,28 +67,30 @@
 import { updateMenu } from '@/api/system/menu'
 import { onlyMessage } from '@jetlinks-web/utils'
 import ButtonAddDialog from '../../components/ButtonAddDialog.vue'
+import { useI18n } from 'vue-i18n';
 
+const { t: $t } = useI18n();
 const columns = [
   {
-    title: '编码',
+    title: $t('ButtonMange.index.544049-5'),
     dataIndex: 'id',
     key: 'id',
     ellipsis: true
   },
   {
-    title: '名称',
+    title: $t('ButtonMange.index.544049-6'),
     dataIndex: 'name',
     key: 'name',
     ellipsis: true
   },
   {
-    title: '说明',
+    title: $t('ButtonMange.index.544049-7'),
     dataIndex: 'description',
     key: 'description',
     ellipsis: true
   },
   {
-    title: '操作',
+    title: $t('ButtonMange.index.544049-8'),
     dataIndex: 'action',
     key: 'action',
     scopedSlots: true,
@@ -109,11 +111,11 @@ const emits = defineEmits(['refresh'])
 const tableData = ref<any[]>([])
 const selectItem = ref<any>({})
 const dialogVisible = ref(false)
-const dialogTitle = ref<'查看' | '新增' | '编辑'>('新增')
+const dialogTitle = ref($t('ButtonMange.index.544049-0'))
 
-const openDialog = (mode: '查看' | '新增' | '编辑', row: object) => {
+const openDialog = (mode: any, row: object) => {
   if (!props.value.id) {
-    return onlyMessage('请先新增菜单基本信息', 'warning')
+    return onlyMessage($t('ButtonMange.index.544049-9'), 'warning')
   }
   selectItem.value = { ...row }
   dialogTitle.value = mode
@@ -129,7 +131,7 @@ const clickDel = (row: any) => {
     buttons,
   }
   updateMenu(params).then(() => {
-    onlyMessage('操作成功')
+    onlyMessage($t('ButtonMange.index.544049-10'))
     emits('refresh')
   })
 }

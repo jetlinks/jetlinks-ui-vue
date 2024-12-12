@@ -7,21 +7,21 @@
     :footer="null"
   >
     <template v-if="getType === 'notifier-dingTalk'">
-      <div class="tip">请先绑定钉钉账号</div>
+      <div class="tip">{{ $t('components.Unsubscribe.147155-0') }}</div>
     </template>
     <template v-else-if="getType === 'notifier-weixin'">
-      <div class="tip">请先绑定企业微信账号</div>
+      <div class="tip">{{ $t('components.Unsubscribe.147155-1') }}</div>
     </template>
     <template v-else-if="getType === 'notifier-email'">
-      <div class="tip">请先绑定邮箱</div>
+      <div class="tip">{{ $t('components.Unsubscribe.147155-2') }}</div>
     </template>
     <template v-else>
-      <div class="tip">请先绑定手机号</div>
+      <div class="tip">{{ $t('components.Unsubscribe.147155-3') }}</div>
     </template>
     <div class="btn">
       <a-space>
-        <a-button @click="emit('close')">取消</a-button>
-        <a-button @click="onBind" type="primary">立即绑定</a-button>
+        <a-button @click="emit('close')">{{ $t('components.Unsubscribe.147155-4') }}</a-button>
+        <a-button @click="onBind" type="primary">{{ $t('components.Unsubscribe.147155-5') }}</a-button>
       </a-space>
     </div>
     <EditInfo

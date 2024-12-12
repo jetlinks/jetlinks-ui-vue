@@ -2,8 +2,8 @@
     <a-input-group compact>
         <a-select
             :options="[
-                { label: '手动输入', value: 'fixed' },
-                { label: '内置参数', value: 'upper' },
+                { label: $t('variableItem.BuildIn.910899-0'), value: 'fixed' },
+                { label: $t('variableItem.BuildIn.910899-1'), value: 'upper' },
             ]"
             style="width: 120px"
             :value="value?.source"
@@ -13,7 +13,7 @@
             <a-tree-select
                 v-model:value="upperKey"
                 :treeData="builtInList"
-                placeholder="请选择参数"
+                :placeholder="$t('variableItem.BuildIn.910899-2')"
                 style="width: calc(100% - 120px)"
                 :fieldNames="{ label: 'name', value: 'id' }"
                 @change="(val) => itemOnChange(undefined, val)"
@@ -35,7 +35,7 @@
                 allowClear
                 style="width: calc(100% - 120px)"
                 v-else-if="item.type === 'number'"
-                :placeholder="`请输入${item.name}`"
+                :placeholder="$t('variableItem.BuildIn.910899-3', [item.name])"
                 @change="itemOnChange"
             />
             <a-input
@@ -43,7 +43,7 @@
                 allowClear
                 style="width: calc(100% - 120px)"
                 v-else
-                :placeholder="`请输入${item.name}`"
+                :placeholder="$t('variableItem.BuildIn.910899-3', [item.name])"
                 @change="(e) => itemOnChange(e.target.value)"
             />
         </template>

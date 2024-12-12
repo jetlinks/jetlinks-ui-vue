@@ -1,7 +1,7 @@
 <template>
   <div class="role-permiss-container">
     <section class="card">
-      <h5>权限分配</h5>
+      <h5>{{ $t('Permission.index.071527-0') }}</h5>
       <PermissionTree v-model:select-items="menus" />
 
       <a-button
@@ -9,7 +9,7 @@
         :confirm-loading="loading"
         @click="clickSave"
         style="margin-top: 24px"
-        >保存</a-button
+        >{{ $t('Permission.index.071527-1') }}</a-button
       >
     </section>
   </div>
@@ -20,7 +20,9 @@ import PermissionTree from '../components/PermissionTree.vue'
 // import { USER_CENTER_MENU_DATA } from '@/views/init-home/data/baseMenu'
 import { updatePermissionTree_api } from '@/api/system/role'
 import { onlyMessage } from '@jetlinks-web/utils'
+import { useI18n } from 'vue-i18n';
 
+const { t: $t } = useI18n();
 const route = useRoute()
 const roleId = route.params.id as string
 const loading = ref(false)
@@ -30,7 +32,7 @@ const clickSave = () => {
     menus: menus.value,
   }).then((res:any)=>{
     if(res.status === 200){
-        onlyMessage('操作成功')
+        onlyMessage($t('Permission.index.071527-2'))
     }
   })
 }

@@ -1,5 +1,5 @@
 <template>
-    <a-modal visible title="下载" @cancel="close" @ok="downLoad" :maskClosable="false"
+    <a-modal visible :title="$t('Export.index.047269-0')" @cancel="close" @ok="downLoad" :maskClosable="false"
         :confirmLoading="loading" :width="900">
         <JProTable
             :columns="columns"
@@ -9,7 +9,7 @@
             :defaultParams="{sorts: [{ name: 'createTime', order: 'desc' }]}"
         >
             <template #headerLeftRender>
-                请选择需要下载的字典
+                {{ $t('Export.index.047269-1') }}
             </template>
             <template #card="slotProps">
                 <CardBox :value="slotProps" :showStatus="false"  :active="_selectedRowKeys.includes(slotProps.id)" @click="onSelectChange">
@@ -17,12 +17,12 @@
                         <a-row>
                                 <a-col :span="12">
                                     <j-ellipsis style="width: 100%">
-                                    <div>字典名称：{{ slotProps.name }}</div>
+                                    <div>{{ $t('Export.index.047269-2') }}{{ slotProps.name }}</div>
                                     </j-ellipsis>
                                 </a-col>
                                 <a-col :span="12">
                                     <j-ellipsis style="width: 100%">
-                                       字典ID：{{ slotProps.id }}
+                                       {{ $t('Export.index.047269-3') }}{{ slotProps.id }}
                                     </j-ellipsis>
                                 </a-col>
                         </a-row>
@@ -37,6 +37,9 @@
 import { getDic_page , downDic} from '@/api/system/dictionary';
 import { onlyMessage , downloadFileByUrl } from '@jetlinks-web/utils';
 import dayjs from 'dayjs';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 const emit = defineEmits(['closeDown'])
 const loading = ref(false)
 const columns = [ {
@@ -83,13 +86,13 @@ const downLoad = async() =>{
             if (json) {
             const blob = new Blob([json], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
-            downloadFileByUrl(url, `数据字典${dayjs().format('YYYY-MM-DD HH:mm:ss')}`, 'json');
+            downloadFileByUrl(url, $t('Export.index.047269-4', [dayjs().format('YYYY-MM-DD HH:mm:ss')]), 'json');
             emit('closeDown');
             }
             emit('closeDown')
         }
     }else{
-        onlyMessage('至少选择一条数据!')
+        onlyMessage($t('Export.index.047269-5'))
     }
 }
 </script>
