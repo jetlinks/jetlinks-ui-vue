@@ -4,33 +4,33 @@
         <div class="live-player-content">
             <!-- 工具栏 -->
             <div class="player-screen-tool" v-if="showScreen">
-                <j-radio-group
+                <a-radio-group
                     :value="screen"
                     button-style="solid"
                     @change="handleScreenChange"
                 >
-                    <j-radio-button :value="1">单屏</j-radio-button>
-                    <j-radio-button :value="4">四分屏</j-radio-button>
-                    <j-radio-button :value="9">九分屏</j-radio-button>
-                    <j-radio-button :value="0">全屏</j-radio-button>
-                </j-radio-group>
+                    <a-radio-button :value="1">单屏</a-radio-button>
+                    <a-radio-button :value="4">四分屏</a-radio-button>
+                    <a-radio-button :value="9">九分屏</a-radio-button>
+                    <a-radio-button :value="0">全屏</a-radio-button>
+                </a-radio-group>
                 <div class="screen-tool-save">
-                    <j-space>
-                        <j-tooltip title="可保存分屏配置记录">
+                    <a-space>
+                        <a-tooltip title="可保存分屏配置记录">
                             <AIcon type="QuestionCircleOutlined" />
-                        </j-tooltip>
-                        <j-popover
+                        </a-tooltip>
+                        <a-popover
                             v-model:visible="visible"
                             trigger="click"
                             title="分屏名称"
                         >
                             <template #content>
-                                <j-form
+                                <a-form
                                     ref="formRef"
                                     :mode="formData"
                                     layout="vertical"
                                 >
-                                    <j-form-item
+                                    <a-form-item
                                         name="name"
                                         :rules="[
                                             {
@@ -43,37 +43,37 @@
                                             },
                                         ]"
                                     >
-                                        <j-textarea
+                                        <a-textarea
                                             v-model:value="formData.name"
                                         />
-                                    </j-form-item>
-                                    <j-button
+                                    </a-form-item>
+                                    <a-button
                                         type="primary"
                                         @click="saveHistory"
                                         :loading="loading"
                                         style="width: 100%; margin-top: 16px"
                                     >
                                         保存
-                                    </j-button>
-                                </j-form>
+                                    </a-button>
+                                </a-form>
                             </template>
-                            <j-dropdown-button
+                            <a-dropdown-button
                                 type="primary"
                                 @click="visible = true"
                             >
                                 保存
                                 <template #overlay>
-                                    <j-menu>
-                                        <j-empty
+                                    <a-menu>
+                                        <a-empty
                                             v-if="!historyList.length"
                                             description="暂无数据"
                                         />
-                                        <j-menu-item
+                                        <a-menu-item
                                             v-for="(item, index) in historyList"
                                             :key="`his${index}`"
                                             @click="handleHistory(item)"
                                         >
-                                            <j-space>
+                                            <a-space>
                                                 <span>{{ item.name }}</span>
                                                 <j-permission-button
                                                     type="text"
@@ -89,13 +89,13 @@
                                                         type="DeleteOutlined"
                                                     />
                                                 </j-permission-button>
-                                            </j-space>
-                                        </j-menu-item>
-                                    </j-menu>
+                                            </a-space>
+                                        </a-menu-item>
+                                    </a-menu>
                                 </template>
-                            </j-dropdown-button>
-                        </j-popover>
-                    </j-space>
+                            </a-dropdown-button>
+                        </a-popover>
+                    </a-space>
                 </div>
             </div>
             <!-- 播放器 -->
