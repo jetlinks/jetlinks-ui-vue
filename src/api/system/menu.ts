@@ -48,3 +48,8 @@ export const addMenu = (data: any) => request.post(`/menu`, data);
  * @returns 
  */
 export const delMenu = (id: string) => request.remove(`/menu/${id}`);
+
+/**
+ * 获取支持的数采协议
+ */
+export const getProviders = () => request.get(`/data-collect/channel/providers`);

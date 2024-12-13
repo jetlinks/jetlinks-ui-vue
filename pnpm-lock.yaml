@@ -50,12 +50,6 @@ importers:
       '@vueuse/router':
         specifier: ^11.3.0
         version: 11.3.0(vue-router@4.2.2(vue@3.3.4))(vue@3.3.4)
-      '@xterm/addon-fit':
-        specifier: ^0.10.0
-        version: 0.10.0(@xterm/xterm@5.5.0)
-      '@xterm/xterm':
-        specifier: ^5.5.0
-        version: 5.5.0
       axios:
         specifier: ^1.6.7
         version: 1.6.7
@@ -181,6 +175,12 @@ importers:
       '@jetlinks-web/components':
         specifier: ^2.4.10
         version: 2.4.10(@types/markdown-it@14.1.2)(vue-router@4.2.2(vue@3.3.4))(vue@3.3.4)
+      '@xterm/addon-fit':
+        specifier: ^0.10.0
+        version: 0.10.0(@xterm/xterm@5.5.0)
+      '@xterm/xterm':
+        specifier: ^5.5.0
+        version: 5.5.0
       async-validator:
         specifier: ^4.2.5
         version: 4.2.5

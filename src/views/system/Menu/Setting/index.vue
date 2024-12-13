@@ -68,7 +68,7 @@
 </template>
 
 <script setup lang="ts" name="MenuSetting">
-import { getMenuTree } from '@/api/system/menu';
+import { getMenuTree, getProviders } from '@/api/system/menu';
 import {
     getSystemPermission as getSystemPermission_api,
     updateMenus,
@@ -91,7 +91,6 @@ import { cloneDeep, unionBy } from 'lodash-es';
 import { onlyMessage } from '@/utils/comm';
 import { USER_CENTER_MENU_CODE, messageSubscribe } from '@/utils/consts';
 import { protocolList } from '@/utils/consts';
-import { getProviders } from '@/api/data-collect/channel';
 import { isNoCommunity } from '@/utils/utils';
 import { USER_CENTER_MENU_DATA } from '@/views/init-home/data/baseMenu';
 import { useI18n } from 'vue-i18n';
