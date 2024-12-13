@@ -33,10 +33,3 @@ export const deleteSearchHistory = (target:string, id:string) => request.remove(
  * @returns
  */
 export const queryDashboard = (data: Record<string, any>) => request.post(`/dashboard/_multi`, data)
-
-export const getRemoteProxyUrl = (deviceId: string) => request.post(`/edge/device/${deviceId}/_proxy/_start?timeoutMinute=10`)
-
-export const getRemoteToken = (deviceId: string, data: any) => request.post(`/edge/device/${deviceId}/token`, data)
-
-export const getRemoteSystem = (deviceId: string, data: any) => request.post(`/edge/device/${deviceId}/_/system/config/scopes`, data)
-
