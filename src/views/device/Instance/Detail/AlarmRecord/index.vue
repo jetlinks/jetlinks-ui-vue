@@ -356,9 +356,9 @@ const getActions = (data) => {
             ? [
                   {
                       key: 'view',
-                      text: '查看详情',
+                      text: '处理详情',
                       tooltip: {
-                          title: '查看详情',
+                          title: '处理详情',
                       },
                       onClick: async () => {
                           solveType.value = 'view';
