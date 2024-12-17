@@ -41,6 +41,9 @@
                         </j-upload>
                     </j-space>
                 </template>
+                <template #rightExtraRender>
+                    <a-button @click="menuStory.jumpPage('device/Product/QuickCreate');">快速创建</a-button>
+                </template>
                 <template #deviceType="slotProps">
                     <div>{{ slotProps.deviceType.text }}</div>
                 </template>

@@ -125,6 +125,11 @@ const extraRouteObj = {
   'rule-engine/Alarm/Configuration': {
     children: [{ code: 'Save', name: '详情' }],
   },
+  'device/Product':{
+    children:[{
+      code: 'QuickCreate', name: '快速创建'
+    }]
+  },
   'device/Firmware': {
     children: [{ code: 'Task', name: '升级任务' }],
   },

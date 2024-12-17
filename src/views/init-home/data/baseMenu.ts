@@ -1503,6 +1503,36 @@ export default [
             accessSupport: { text: "不支持", value: "unsupported" },
             supportDataAccess: false,
           },
+          {
+            "id": "626c2738db8e5f748ac1e42c5968deba",
+            "path": "VXpO-AcRa-t3Uh",
+            "sortIndex": 11,
+            "owner": "iot",
+            "name": "资源库",
+            "code": "link/Resources",
+            "describe": "",
+            "url": "/iot/link/resources",
+            "icon": "SnippetsOutlined",
+            "permissions": [
+                {
+                    "permission": "entity-template",
+                    "actions": [
+                        "query"
+                    ]
+                }
+            ],
+            "accessSupport": {
+                "text": "不支持",
+                "value": "unsupported"
+            },
+            "indirectMenus": [],
+            "options": {
+                "show": true
+            },
+            "creatorId": "1d77fc74a6239c0770bd329d1b3e5722",
+            "createTime": 1734315746729,
+            "supportDataAccess": false
+        }
         ],
       },
       {
