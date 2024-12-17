@@ -5,7 +5,7 @@
             :data-source="tableData"
             :pagination="false"
             :rowKey="'id'"
-            :scroll="{ y: '500px' }"
+            :scroll="{ y: '50vh' }"
             ref="treeRef"
         >
             <!-- 表头 -->
@@ -114,6 +114,8 @@ import {permissionsGranted, useIndirectMenusMap} from "@/views/system/Role/Detai
 import {NotificationSubscriptionCode} from "@/router/menu";
 import { useI18n } from 'vue-i18n';
 
+import { isNoCommunity } from '@/utils/utils'
+
 const { t: $t } = useI18n();
 const emits = defineEmits(['update:selectItems']);
 const route = useRoute();
@@ -138,6 +140,15 @@ const columns = [
         width: '260px',
     },
 ];
+
+if(isNoCommunity){
+    columns.push({
+        title: '数据权限',
+        dataIndex: 'data',
+        key: 'data',
+        width: '50%',
+    })
+}
 const tableData = ref<tableItemType[]>([]);
 
 // 表头-全选
