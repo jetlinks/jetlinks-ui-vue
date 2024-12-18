@@ -49,19 +49,19 @@ const handleSearch = () => {
         if (resp.status === 200) {
             const dataMap = new Map()
             resp.result.forEach((i: any) => {
-                if (!dataMap.has(i.type.value)) {
-                    dataMap.set(i.type.value, {
-                        name: i.type.text,
-                        provider: i.type.value,
+                if (!dataMap.has(i.type.id)) {
+                    dataMap.set(i.type.id, {
+                        name: i.type.name,
+                        provider: i.type.id,
                         children: [
                             {
                                 ...omit(i, ['type'])
                             }
                         ]
                     })
-                    activeKey.value.push(i.type.value)
+                    activeKey.value.push(i.type.id)
                 } else {
-                    dataMap.get(i.type.value).children.push({
+                    dataMap.get(i.type.id).children.push({
                         ...omit(i, ['type'])
                     })
                 }

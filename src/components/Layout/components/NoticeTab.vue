@@ -20,10 +20,6 @@ const props = defineProps({
     refresh: {
         type: Boolean
     },
-    introductionTotal: {
-        type: Number || undefined,
-        default: undefined
-    }
 });
 
 const total = ref<number>(0);
@@ -62,13 +58,9 @@ const getData = (type: string[]) => {
 
 
 watch(
-    () => [props.refresh, props.introductionTotal],
+    () => props.refresh,
     () => {
-        if (props.introductionTotal !== undefined) {
-            total.value = props.introductionTotal
-        } else {
-            getData(props.type);
-        }
+        getData(props.type);
     },
     {
         deep: true,

@@ -85,7 +85,7 @@ import {
 import dayjs from 'dayjs';
 import { useUserInfo } from '@/store/userInfo';
 import { useRouterParams } from '@/utils/hooks/useParams';
-import { getTyoeListNew } from '@/api/account/notificationSubscription';
+import { getTypeListNew } from '@/api/account/notificationSubscription';
 import { onlyMessage } from '@/utils/comm';
 
 const user = useUserInfo();
@@ -125,7 +125,7 @@ const columns = [
             type: 'select',
             termFilter: ['in', 'nin'],
             options: () =>
-            getTyoeListNew().then((resp: any) => {
+            getTypeListNew(props.type).then((resp: any) => {
                     return resp.result
                         .map((item: any) => ({
                             label: item.name,

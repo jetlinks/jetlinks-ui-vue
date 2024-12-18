@@ -16,7 +16,7 @@ export const changeStatus_api = (id: string, status: '_disabled' | '_enabled') =
 export const getTypeList_api = () => server.get(`/notifications/providers`);
 
 //获取订阅类型 新
-export const getTyoeListNew = () => server.get('notifications/current/providers')
+export const getTypeListNew = (type:string) => server.get(`/notifications/current/${type}/providers`)
 
 // 获取告警规则列表
 export const getAlarmList_api = () => server.post(`/alarm/config/_query/no-paging`, {

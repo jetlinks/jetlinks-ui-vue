@@ -12,7 +12,6 @@
                         :refresh="refreshObj[item.key]"
                         :tab="item?.tab"
                         :type="item.type"
-                        :introductionTotal="activeKey=== item.key ? total : undefined"
                     />
                 </template>
                 <j-spin :spinning="loading">

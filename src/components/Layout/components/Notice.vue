@@ -151,16 +151,16 @@ const queryTypeList = async () => {
     if (resp.status === 200) {
         const typeMap = new Map()
         resp.result.forEach((i: any) => {
-            if (!typeMap.has(i.type.value)) {
-                typeMap.set(i.type.value, {
-                    key: i.type.value,
-                    tab: i.type.text,
+            if (!typeMap.has(i.type.id)) {
+                typeMap.set(i.type.id, {
+                    key: i.type.id,
+                    tab: i.type.name,
                     type: [
                         i.provider
                     ]
                 })
             } else {
-                typeMap.get(i.type.value).type.push(i.provider)
+                typeMap.get(i.type.id).type.push(i.provider)
             }
         })
         tabs.value = [...typeMap.values()]
