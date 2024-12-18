@@ -1,11 +1,7 @@
 <template>
     <div class="notice-container">
-        <j-dropdown
-            v-model:visible="visible"
-            :trigger="['click']"
-            :destroyPopupOnHide="true"
-            @visible-change="visibleChange"
-        >
+        <j-dropdown v-model:visible="visible" :trigger="['click']" :destroyPopupOnHide="true"
+            @visible-change="visibleChange">
             <j-badge :count="total" :offset="[3, -3]">
                 <AIcon type="BellOutlined" style="font-size: 16px" />
             </j-badge>
@@ -45,41 +41,41 @@ const subscribeNotice = () => {
             notification.open({
                 message: resp?.payload?.topicName,
                 description: () =>
-                  h(
-                    'div',
-                    {
-                      class: "ellipsis",
-                      style: {
-                        cursor: 'pointer'
-                      },
-                      onClick: () => {
-                        read('', resp);
-                      }
-                    },
-                    {
-                      default: () => resp?.payload?.message
-                    }
-                  )
+                    h(
+                        'div',
+                        {
+                            class: "ellipsis",
+                            style: {
+                                cursor: 'pointer'
+                            },
+                            onClick: () => {
+                                read('', resp);
+                            }
+                        },
+                        {
+                            default: () => resp?.payload?.message
+                        }
+                    )
                 ,
                 onClick: () => {
                     read('', resp);
                 },
                 key: resp.payload.id,
                 btn: () =>
-                  h(
-                    Button,
-                    {
-                      type: "primary",
-                      size: "small",
-                      onClick: (e: Event) => {
-                        e.stopPropagation();
-                        read('_read', resp);
-                      }
-                    },
-                    {
-                      default: () => "标记已读"
-                    }
-                  ),
+                    h(
+                        Button,
+                        {
+                            type: "primary",
+                            size: "small",
+                            onClick: (e: Event) => {
+                                e.stopPropagation();
+                                read('_read', resp);
+                            }
+                        },
+                        {
+                            default: () => "标记已读"
+                        }
+                    ),
             });
         });
 };
@@ -97,39 +93,15 @@ const read = (type: string, data: any) => {
         }
     });
 };
-
-const tab = [
-    {
-        key: 'alarm',
-        tab: '告警',
-        type: [
-            'alarm-product',
-            'alarm-device',
-            'alarm-other',
-            'alarm-org',
-            'alarm',
-        ],
-    },
-    {
-        key: 'system-monitor',
-        tab: '系统监控',
-        type: ['system-event'],
-    },
-    {
-        key: 'system-business',
-        tab: '业务监控',
-        type: ['device-transparent-codec'],
-    },
-];
-
 // 查询未读数量
 const getList = () => {
-    if(tabs.value.length <= 0) return;
-    loading.value = true; 
+    if (tabs.value.length <= 0) return;
+    loading.value = true;
     const params = {
+        paging:false,
         sorts: [{
-          name: 'notifyTime',
-          order: 'desc'
+            name: 'notifyTime',
+            order: 'desc'
         }],
         terms: [
             {
@@ -161,44 +133,50 @@ const getList = () => {
         .finally(() => (loading.value = false));
 };
 
-const visibleChange = (bool: boolean) => {
-    bool && getList();
-};
+// const visibleChange = (bool: boolean) => {
+//     bool && getList();
+// };
 
 const handleRead = () => {
     visible.value = false;
     getList();
 };
 
-watch(updateCount, () => getList());
+
 
 const tabs = ref<any>([]);
 
-const queryTypeList = async (_tab: any[]) => {
+const queryTypeList = async () => {
     const resp: any = await getAllNotice();
     if (resp.status === 200) {
-        const provider = resp.result.map((i: any) => i.provider) || [];
-        const arr = _tab.filter((item: any) => {
-            return item.type.some((i: any) => provider.includes(i))
-        });
-        tabs.value = arr;
-        if(arr.length > 0) {
+        const typeMap = new Map()
+        resp.result.forEach((i: any) => {
+            if (!typeMap.has(i.type.value)) {
+                typeMap.set(i.type.value, {
+                    key: i.type.value,
+                    tab: i.type.text,
+                    type: [
+                        i.provider
+                    ]
+                })
+            } else {
+                typeMap.get(i.type.value).type.push(i.provider)
+            }
+        })
+        tabs.value = [...typeMap.values()]
+        if (tabs.value.length > 0) {
             subscribeNotice();
             getList();
         }
     }
 };
 
+
+
+watch(updateCount, () => getList());
+
 onMounted(() => {
-    const _list: any[] = [...tab]
-    if(menuStory.hasMenu('process')){
-        _list.push({
-            key: 'workflow-notification',
-            tab: '工作流通知',
-            type: ['workflow-task-todo', 'workflow-task-reject', 'workflow-task-cc', 'workflow-process-finish', 'workflow-process-repealed'],
-        })
-    }
-    queryTypeList(_list)
+    queryTypeList()
 })
 </script>
 

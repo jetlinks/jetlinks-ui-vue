@@ -19,6 +19,10 @@ const props = defineProps({
     },
     refresh: {
         type: Boolean
+    },
+    introductionTotal: {
+        type: Number || undefined,
+        default: undefined
     }
 });
 
@@ -56,14 +60,21 @@ const getData = (type: string[]) => {
     });
 };
 
+
 watch(
-    () => props.refresh,
+    () => [props.refresh, props.introductionTotal],
     () => {
-        getData(props.type);
+        if (props.introductionTotal !== undefined) {
+            total.value = props.introductionTotal
+        } else {
+            getData(props.type);
+        }
     },
     {
-        immediate: true,
-        deep: true
+        deep: true,
+        immediate: true
     }
 );
+
+
 </script>

@@ -12,6 +12,7 @@
                         :refresh="refreshObj[item.key]"
                         :tab="item?.tab"
                         :type="item.type"
+                        :introductionTotal="activeKey=== item.key ? total : undefined"
                     />
                 </template>
                 <j-spin :spinning="loading">
@@ -22,7 +23,7 @@
                                     :data="i"
                                     :type="item.key"
                                     @action="emits('action')"
-                                    @refresh="onRefresh(item.key,index)"
+                                    @refresh="onRefresh(item.key)"
                                 />
                             </template>
                             <div
@@ -134,7 +135,7 @@ const onChange = (_key: string) => {
 
 
 
-const onRefresh = (id: string,index:number) => {
+const onRefresh = (id: string) => {
     const flag = cloneDeep(refreshObj.value[id]);
     refreshObj.value = {
         ...refreshObj.value,
