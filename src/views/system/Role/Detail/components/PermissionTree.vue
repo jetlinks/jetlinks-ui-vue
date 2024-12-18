@@ -186,7 +186,7 @@ const selectAllChange = () => {
 };
 // 表头-批量设置
 const bulkShow = ref<boolean>(false);
-const bulkOptions = ref();
+const bulkOptions = ref([]);
 // const bulkOptions = [
 //     {
 //         label: '全部数据',
@@ -448,6 +448,17 @@ function treeToSimple(_treeData: tableItemType[]) {
         }
         flatTableData.push(item);
     });
+    // 根据所有权限, 取assetAccesses并集数据
+    if(isNoCommunity){
+        let assets: any[] = [];
+        flatTableData?.forEach((item: any) => {
+            assets = [...assets, ...item.assetAccesses];
+        });
+        bulkOptions.value = uniqBy(assets, 'supportId')?.map((m: any) => ({
+            label: m.name,
+            value: m.supportId,
+        }));
+    }
 }
 /**
  * 设置子节点的状态
