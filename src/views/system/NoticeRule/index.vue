@@ -41,131 +41,12 @@
 <script lang="ts" setup>
 import { queryChannelConfig } from '@/api/system/noticeRule';
 import Item from './components/Item/index.vue';
-import { useMenuStore } from '@/store/menu';
 import { omit } from 'lodash-es';
-const menuStore = useMenuStore();
-let dataSource: any[] = []
-// const systemNotice = [
-//     {
-//         provider: 'alarm',
-//         name: '告警',
-//         children: [
-//             {
-//                 provider: 'alarm-product',
-//                 name: '产品告警',
-//             },
-//             {
-//                 provider: 'alarm-device',
-//                 name: '设备告警',
-//             },
-//             {
-//                 provider: 'alarm-org',
-//                 name: '组织告警',
-//             },
-//             {
-//                 provider: 'alarm-scene',
-//                 name: '场景告警',
-//             },
-//         ],
-//     },
-//     {
-//         provider: 'system-monitor',
-//         name: '系统监控',
-//         children: [
-//             {
-//                 provider: 'system-event',
-//                 name: '系统运行异常',
-//             },
-//         ],
-//     },
-//     {
-//         provider: 'system-business',
-//         name: '业务监控',
-//         children: [
-//             {
-//                 provider: 'device-transparent-codec',
-//                 name: '透传消息解析异常',
-//             },
-//         ],
-//     },
-// ];
-// const lowCodeNotice = [
-//     {
-//         provider: 'workflow-notification',
-//         name: '工作流通知',
-//         children: [
-//             {
-//                 provider: 'workflow-task-todo',
-//                 name: '待办通知',
-//             },
-//             {
-//                 provider: 'workflow-task-reject',
-//                 name: '驳回通知',
-//             },
-//             {
-//                 provider: 'workflow-task-cc',
-//                 name: '抄送通知',
-//             },
-//             {
-//                 provider: 'workflow-process-finish',
-//                 name: '办结通知',
-//             },
-//             {
-//                 provider: 'workflow-process-repealed',
-//                 name: '关闭通知',
-//             },
-//             {
-//                 provider: 'workflow-task-transfer-todo',
-//                 name: '转办通知'
-//             }
-//         ],
-//     },
-// ]
-
 const activeKey = ref<string[]>([]);
-
-const dataMap = new Map();
-
-const data = ref<any[]>([]);
-
 const tabs = ref<any[]>([])
 const handleSearch = () => {
     queryChannelConfig().then((resp) => {
         if (resp.status === 200) {
-            // (resp?.result || []).map((item: any) => {
-            //     dataMap.set(item.provider, item);
-            // });
-            // data.value = Array.from(dataMap).map((item) => {
-            //     return item?.[1];
-            // });
-
-
-            // const arr = dataSource
-            //     .map((item: any) => {
-            //         const _child = item.children.map((i: any) => {
-            //             const _item = (resp.result || []).find(
-            //                 (t: any) => t?.provider === i?.provider,
-            //             );
-            //             return {
-            //                 ...i,
-            //                 ..._item,
-            //             };
-            //         });
-            //         return {
-            //             ...item,
-            //             children: _child,
-            //         };
-            //     })
-            //     .filter((it: any) => {
-            //         return it.children.filter((lt: any) => lt?.id)?.length;
-            //     })
-            //     .map((item) => {
-            //         return {
-            //             ...item,
-            //             children: item.children.filter((lt: any) => lt?.id),
-            //         };
-            //     });
-            //     tabs.value  = arr
             const dataMap = new Map()
             resp.result.forEach((i: any) => {
                 if (!dataMap.has(i.type.value)) {
@@ -186,7 +67,6 @@ const handleSearch = () => {
                 }
             })
             tabs.value = [...dataMap.values()]
-
         }
     });
 };
@@ -196,22 +76,6 @@ const onRefresh = () => {
 }
 
 onMounted(() => {
-    // dataMap.clear();
-    // dataSource.forEach((item) => {
-    //     item.children.map((i) => {
-    //         dataMap.set(i.provider, i);
-    //     });
-    // });
-    // data.value = Array.from(dataMap).map((item) => {
-    //     return item?.[1];
-    // });
-    // if(menuStore.hasMenu('process')){
-    //     dataSource = [...systemNotice,...lowCodeNotice]
-    //     activeKey.value = ['alarm', 'system-monitor', 'system-business','workflow-notification']
-    // }else{
-    //     dataSource = [...systemNotice]
-    //     activeKey.value = ['alarm', 'system-monitor', 'system-business']
-    // }
     handleSearch();
 });
 </script>

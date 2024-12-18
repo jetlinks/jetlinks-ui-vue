@@ -242,10 +242,6 @@ const onAuthSave = (_data: string[]) => {
             role: {
                 idList: _data || [],
             },
-            permissions:
-                props.provider === 'alarm'
-                    ? [{ id: 'alarm-config', actions: ['query'] }]
-                    : [],
         },
     };
     spinning.value = true;
@@ -293,12 +289,6 @@ const onAction = (e: boolean) => {
                               role: {
                                   idList: [],
                               },
-                              permissions: [
-                                  {
-                                      id: 'alarm-config',
-                                      actions: ['query'],
-                                  },
-                              ],
                           }
                         : props.data.grant,
                 channels: [
@@ -309,15 +299,6 @@ const onAction = (e: boolean) => {
                             role: {
                                 idList: [],
                             },
-                            permissions:
-                                props.provider === 'alarm'
-                                    ? [
-                                          {
-                                              id: 'alarm-config',
-                                              actions: ['query'],
-                                          },
-                                      ]
-                                    : [],
                         },
                     },
                 ],
