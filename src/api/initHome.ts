@@ -20,3 +20,14 @@ export const detail = (data?: any) => request.post(`/system/config/scopes`, data
 
 export const getSystemPermission = () =>request.get(`/system/resources/permission`)
 
+//更新权限菜单
+export const updateRoleMenu = (id: string, data: any) => request.put(`/menu/role/${id}/_grant`, data)
+
+// 添加角色
+export const addRole = (data: any) => request.post(`/role`, data)
+
+//更新权限菜单
+export const getRoleMenu = (id: string) => request.get(`/menu/role/${id}/_grant/tree`)
+
+//添加角色分组
+export const addRoleGroup = (data:any) => server.patch('/role/group',data)

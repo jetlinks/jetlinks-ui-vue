@@ -667,6 +667,62 @@ export default [
         supportDataAccess: false
       },
       {
+        code: 'system/Relationship',
+        name: '关系配置',
+        owner: 'iot',
+        //parentId: '3',
+        id: '2fa02b8758fe82a6b9666f4ebb1bbd03',
+        sortIndex: 7,
+        url: '/system/Relationship',
+        icon: 'icon-shuxingpeizhi',
+        showPage: ['relation'],
+        permissions: [],
+        buttons: [
+          {
+            id: 'update',
+            name: '编辑',
+            permissions: [
+              {
+                permission: 'relation',
+                actions: ['query', 'save'],
+              },
+            ],
+          },
+          {
+            id: 'delete',
+            name: '删除',
+            permissions: [
+              {
+                permission: 'relation',
+                actions: ['query', 'delete'],
+              },
+            ],
+          },
+          {
+            id: 'view',
+            name: '查看',
+            permissions: [
+              {
+                permission: 'relation',
+                actions: ['query'],
+              },
+            ],
+          },
+          {
+            id: 'add',
+            name: '新增',
+            permissions: [
+              {
+                permission: 'relation',
+                actions: ['query', 'save'],
+              },
+            ],
+          },
+        ],
+        accessSupport: { text: "不支持", value: "unsupported" },
+        supportDataAccess: false
+      },
+      {
         code: 'system/NoticeRule',
         name: '订阅管理',
         owner: 'iot',

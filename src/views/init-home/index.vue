@@ -27,7 +27,7 @@
                                 </template>
                                 <Menu ref="menuRef"></Menu>
                             </a-collapse-panel>
-                            <!-- <a-collapse-panel key="3" forceRender>
+                            <a-collapse-panel key="3" forceRender>
                                 <template #header>
                                     <span class="title">角色初始化</span>
                                     <span class="sub-title"
@@ -35,7 +35,7 @@
                                     >
                                 </template>
                                 <Role ref="roleRef"></Role>
-                            </a-collapse-panel> -->
+                            </a-collapse-panel>
                         </a-collapse>
                     </a-spin>
                     <a-button
@@ -53,6 +53,7 @@
 <script setup lang="ts">
 import Basic from './Basic/index.vue';
 import Menu from './Menu/index.vue';
+import Role from './Role/index.vue';
 import { getInit, saveInit } from '@/api/initHome';
 import { onlyMessage } from '@jetlinks-web/utils';
 import { useI18n } from 'vue-i18n';

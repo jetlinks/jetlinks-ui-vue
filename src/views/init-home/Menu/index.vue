@@ -12,7 +12,8 @@
 
 <script lang="ts" setup>
 import { getImage } from '@jetlinks-web/utils'
-import BaseMenu, { USER_CENTER_MENU_DATA } from '../data/baseMenu'
+import { USER_CENTER_MENU_DATA } from '../data/baseMenu'
+import BaseMenu from '../data'
 import {  updateMenus } from '@/api/initHome';
 
 /**

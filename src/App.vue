@@ -1,6 +1,6 @@
 <template>
   <ConfigProvider
-    :locale="zhCN"
+    :locale="language[local]"
     :IconConfig="{
       scriptUrl: '//at.alicdn.com/t/c/font_4035907_xgj5dtl8xl.js'
     }"
@@ -11,6 +11,7 @@
 <script setup lang="ts">
 import { ConfigProvider } from '@jetlinks-web/components'
 import zhCN from 'ant-design-vue/es/locale/zh_CN'
+import enUs from 'ant-design-vue/es/locale/en_US'
 import theme from '../configs/theme'
 import { useAuthStore } from '@/store';
 import { ComponentsEnum } from '@jetlinks-web/constants'
@@ -23,6 +24,11 @@ ConfigProvider.config({
   theme: theme,
 })
 
+const local = (navigator.language || 'en').toLocaleLowerCase();
+const language = {
+    en: enUs,
+    'zh-cn': zhCN
+}
 // 为公共hooks提供权限校验方法
 const { hasPermission } = useAuthStore();
 provide(ComponentsEnum.Permission, { hasPermission })

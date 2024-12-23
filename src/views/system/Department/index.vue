@@ -6,7 +6,24 @@
           <LeftTree @change="onChange" />
         </div>
         <div class="right">
-          <User :parentId="departmentId" />
+          <a-tabs v-if='isNoCommunity && Object.keys(modules).length' v-model:activeKey="activeKey" destroyInactiveTabPane>
+            <a-tab-pane key="product" tab="产品">
+              <Product
+                :parentId="departmentId"
+                @open-device-bind="openDeviceBind"
+              />
+            </a-tab-pane>
+            <a-tab-pane key="device" tab="设备">
+              <Device
+                :parentId="departmentId"
+                v-model:bindBool="bindBool"
+              />
+            </a-tab-pane>
+            <a-tab-pane key="user" tab="用户">
+              <User :parentId="departmentId" />
+            </a-tab-pane>
+          </a-tabs>
+          <User v-else :parentId="departmentId" />
         </div>
       </div>
     </FullPage>
@@ -16,8 +33,19 @@
 <script setup lang="ts" name="Department">
 import LeftTree from './components/LeftTree.vue'
 import User from './user/index.vue'
+import { isNoCommunity } from "@/utils";
 
-const departmentId = ref<string>('')
+const modules = import.meta.glob('../../../modules/device-manager-ui/index.ts');
+
+const activeKey = ref<'product' | 'device' | 'user'>('product');
+
+const departmentId = ref<string>('');
+
+const bindBool = ref<boolean>(false);
+const openDeviceBind = () => {
+  bindBool.value = true;
+  activeKey.value = 'device';
+};
 
 const onChange = (id: string) => {
   departmentId.value = id
@@ -32,15 +60,17 @@ const onChange = (id: string) => {
   height: 100%;
 
   .left {
-    border-right: 1px solid #f0f0f0;
-    padding-right: 24px;
-    flex:1;
-    height:100%
+    position: absolute;
+    height: 100%;
+    width: 300px;
   }
 
   .right {
-    flex:4;
-    height:100%
+    width: calc(100% - 316px);
+    margin-left: 316px;
+    :deep(.ant-tabs-nav-wrap) {
+      padding-left: 24px;
+    }
   }
 }
 </style>
