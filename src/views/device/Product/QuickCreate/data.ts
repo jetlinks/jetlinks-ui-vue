@@ -360,4 +360,34 @@ export const Rules = {
 };
 
 
+export const ProvideTypeMap = new Map([
+    ['fixed-media', 'media'],
+    ['gb28181-2016', 'media'],
+    ['onvif', 'media'],
+    ['media-plugin', 'media'],
+    // ['OneNet', 'cloud'],
+    ['OneNet-platform', 'cloud'],
+    ['Ctwing', 'cloud'],
+    ['modbus-tcp', 'channel'],
+    ['opc-ua', 'channel'],
+    ['official-edge-gateway', 'edge'],
+    ['edge-child-device', 'edge'],
+    ['network', 'network'],
+    ['agent-device-gateway','network'],
+    ['agent-media-device-gateway','network']
+]);
+
+export const NetworkTypeMapping = new Map();
+NetworkTypeMapping.set('websocket-server', 'WEB_SOCKET_SERVER');
+NetworkTypeMapping.set('http-server-gateway', 'HTTP_SERVER');
+NetworkTypeMapping.set('udp-device-gateway', 'UDP');
+NetworkTypeMapping.set('coap-server-gateway', 'COAP_SERVER');
+NetworkTypeMapping.set('mqtt-client-gateway', 'MQTT_CLIENT');
+NetworkTypeMapping.set('mqtt-server-gateway', 'MQTT_SERVER');
+NetworkTypeMapping.set('tcp-server-gateway', 'TCP_SERVER');
+NetworkTypeMapping.set('official-edge-gateway', 'MQTT_SERVER');
+NetworkTypeMapping.set('agent-device-gateway', 'MQTT_SERVER');
+NetworkTypeMapping.set('agent-media-device-gateway', 'MQTT_SERVER');
+
+
 export default typeMap

@@ -94,7 +94,7 @@ const saveChange = () => {
 
 onMounted(() => {
     pluginCurrent.value = cloneDeep(props.data)
-    queryProtocolList()
+    queryPlugin()
 })
 </script>
 <style lang='less' scoped>
