@@ -57,9 +57,9 @@ const form = reactive({
 /**
  * 校验id
  */
- const validateInput = async (_rule: Rule, value: string) => {
+const validateInput = async (_rule: Rule, value: string) => {
     if (value) {
-        if (!regular.isInputReg(value)) {
+        if (!/^[a-zA-Z0-9_\-]+$/.test(value)) {
             return Promise.reject($t('save.index.551811-11'));
         } else {
             if (props.type === 'add') {
@@ -73,7 +73,7 @@ const form = reactive({
         }
     } else {
         return Promise.resolve();
-    }
+   }
 };
 
 const rules = {
