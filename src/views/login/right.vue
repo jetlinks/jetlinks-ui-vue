@@ -150,8 +150,8 @@ const { loading, run } = useRequest(login, {
       window.location.href = '/'
     }
   },
-  onError: () => {
-    form.verifyCode = undefined;
+  onWarn: () => {
+    formData.verifyCode = undefined;
     getCode()
     reloadEncryption()
   }
