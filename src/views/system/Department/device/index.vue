@@ -3,16 +3,18 @@
     <pro-search
       :columns="columns"
       target="category-device"
+      noMargin
       @search="(params:any)=>queryParams = {...params}"
-      style='margin-bottom: 0;'
     />
-    <FullPage :extraHeight="24">
+    <FullPage>
       <j-pro-table
         ref="tableRef"
         :request="table.requestFun"
+        modeValue="CARD"
         :gridColumn="2"
+        :gridColumns="[2]"
         :scroll="{
-                    x:true,
+                    x: 'max-content',
                     y:610,
                 }"
         :params="queryParams"
@@ -24,7 +26,7 @@
                 }"
         :columns="columns"
       >
-        <template #headerTitle>
+        <template #headerLeftRender>
           <a-space>
             <j-permission-button
               :hasPermission="`${permission}:assert`"
@@ -32,17 +34,17 @@
               @click="table.clickAdd('handle')"
             >
               <AIcon type="PlusOutlined"/>
-              资产分配
+              {{ $t('device.index.988419-0') }}
             </j-permission-button>
             <a-dropdown trigger="hover">
-              <a-button>批量操作</a-button>
+              <a-button>{{ $t('device.index.988419-1') }}</a-button>
               <template #overlay>
                 <a-menu>
                   <a-menu-item>
                     <j-permission-button
                       :hasPermission="`${permission}:bind`"
                       :popConfirm="{
-                        title: `确认批量解除绑定？`,
+                        title: $t('device.index.988419-2'),
                         onConfirm: () =>
                           table.clickUnBind(),
                       }"
@@ -50,7 +52,7 @@
                       <AIcon
                         type="DisconnectOutlined"
                       />
-                      批量解绑
+                      {{ $t('device.index.988419-3') }}
                     </j-permission-button>
                   </a-menu-item>
                   <a-menu-item>
@@ -61,7 +63,7 @@
                       <AIcon
                         type="EditOutlined"
                       />
-                      批量编辑
+                      {{ $t('device.index.988419-4') }}
                     </j-permission-button>
                   </a-menu-item>
                 </a-menu>
@@ -90,8 +92,9 @@
             <template #img>
               <slot name="img">
                 <img
-                  :src="getImage('/device-product.png')"
+                  :src="systemImg.deviceProductImg"
                   style="cursor: pointer"
+                  alt=""
                 />
               </slot>
             </template>
@@ -99,23 +102,23 @@
               <h3 class="card-item-content-title" style='margin-bottom: 18px;'>
                 {{ slotProps.name }}
               </h3>
-              <j-row>
-                <j-col :span="12">
+              <a-row>
+                <a-col :span="12">
                   <div class="card-item-content-text">ID</div>
-                  <Ellipsis style="width: calc(100% - 20px);">
+                  <j-ellipsis style="width: calc(100% - 20px);">
                     <div
                       style="cursor: pointer"
                       class="card-item-content-value"
                     >
                       {{ slotProps.id }}
                     </div>
-                  </Ellipsis>
-                </j-col>
-                <j-col :span="12">
+                  </j-ellipsis>
+                </a-col>
+                <a-col :span="12">
                   <div class="card-item-content-text">
-                    资产权限
+                    {{ $t('device.index.988419-5') }}
                   </div>
-                  <Ellipsis style="width: calc(100% - 20px);">
+                  <j-ellipsis style="width: calc(100% - 20px);">
                     <div
                       style="cursor: pointer"
                       class="card-item-content-value"
@@ -127,28 +130,28 @@
                         )
                       }}
                     </div>
-                  </Ellipsis>
-                </j-col>
-              </j-row>
+                  </j-ellipsis>
+                </a-col>
+              </a-row>
             </template>
             <template #actions>
-              <PermissionButton
+              <j-permission-button
                 :hasPermission="`${permission}:assert`"
                 @click="table.clickEdit(slotProps)"
               >
                 <AIcon type="EditOutlined"/>
-              </PermissionButton>
+              </j-permission-button>
 
-              <PermissionButton
+              <j-permission-button
                 :hasPermission="`${permission}:bind`"
                 :popConfirm="{
-                  title: `确认解除绑定？`,
+                  title: $t('device.index.988419-6'),
                   onConfirm: () =>
                     table.clickUnBind(slotProps),
                 }"
               >
                 <AIcon type="DisconnectOutlined"/>
-              </PermissionButton>
+              </j-permission-button>
             </template>
           </CardBox>
         </template>
@@ -178,8 +181,8 @@
           }}</span>
         </template>
         <template #action="slotProps">
-          <j-space :size="16">
-            <PermissionButton
+          <a-space :size="16">
+            <j-permission-button
               v-for="i in table.getActions(slotProps, 'table')"
               :hasPermission="i.permission"
               type="link"
@@ -189,8 +192,8 @@
               :disabled="i?.disabled"
             >
               <AIcon :type="i.icon"/>
-            </PermissionButton>
-          </j-space>
+            </j-permission-button>
+          </a-space>
         </template>
       </j-pro-table>
     </FullPage>
@@ -221,8 +224,6 @@
 </template>
 
 <script setup lang="ts" name="device">
-import PermissionButton from '@/components/PermissionButton/index.vue';
-
 import AddDeviceOrProductDialog from '../components/AddDeviceOrProductDialog.vue';
 import EditPermissionDialog from '../components/EditPermissionDialog.vue';
 import {onlyMessage} from '@/utils/comm';
@@ -236,10 +237,13 @@ import {
 } from '@/api/system/department';
 import {intersection} from 'lodash-es';
 
-import type {dictType} from '../typing';
+import type {dictType} from '../typings';
 import {useDepartmentStore} from '@/store/department';
 import dayjs from 'dayjs';
+import {systemImg} from "@/assets";
+import { useI18n } from 'vue-i18n';
 
+const { t: $t } = useI18n();
 const departmentStore = useDepartmentStore();
 
 const permission = 'system/Department';
@@ -261,7 +265,7 @@ const columns = [
     },
   },
   {
-    title: '名称',
+    title: $t('device.index.988419-7'),
     dataIndex: 'name',
     key: 'name',
     ellipsis: true,
@@ -271,7 +275,7 @@ const columns = [
     },
   },
   {
-    title: '所属产品',
+    title: $t('device.index.988419-8'),
     dataIndex: 'productName',
     key: 'productName',
     ellipsis: true,
@@ -303,7 +307,7 @@ const columns = [
     },
   },
   {
-    title: '资产权限',
+    title: $t('device.index.988419-5'),
     dataIndex: 'permission',
     key: 'permission',
     ellipsis: true,
@@ -311,7 +315,7 @@ const columns = [
     scopedSlots: true,
   },
   {
-    title: '注册时间',
+    title: $t('device.index.988419-9'),
     dataIndex: 'registryTime',
     key: 'registryTime',
     ellipsis: true,
@@ -321,16 +325,16 @@ const columns = [
     },
   },
   {
-    title: '状态',
+    title: $t('device.index.988419-10'),
     dataIndex: 'state',
     key: 'state',
     ellipsis: true,
     search: {
       type: 'select',
       options: [
-        {label: '禁用', value: 'notActive'},
-        {label: '离线', value: 'offline'},
-        {label: '在线', value: 'online'},
+        {label: $t('device.index.988419-11'), value: 'notActive'},
+        {label: $t('device.index.988419-12'), value: 'offline'},
+        {label: $t('device.index.988419-13'), value: 'online'},
       ],
     },
     scopedSlots: true,
@@ -338,7 +342,7 @@ const columns = [
   },
 
   {
-    title: '操作',
+    title: $t('device.index.988419-14'),
     dataIndex: 'action',
     key: 'action',
     fixed: 'right',
@@ -375,16 +379,16 @@ const table = {
         {
           permission: `${permission}:assert`,
           key: 'edit',
-          tooltip: {title: '编辑'},
+          tooltip: {title: $t('device.index.988419-15')},
           icon: 'EditOutlined',
           onClick: () => table.clickEdit(data),
         },
         {
           permission: `${permission}:bind`,
           key: 'unbind',
-          tooltip: {title: '解除绑定'},
+          tooltip: {title: $t('device.index.988419-16')},
           popConfirm: {
-            title: `确认解除绑定？`,
+            title: $t('device.index.988419-6'),
             onConfirm: () => table.clickUnBind(data),
           },
           icon: 'DisconnectOutlined',
@@ -528,6 +532,7 @@ const table = {
         code: resp.status,
         result: resp.result,
         status: resp.status,
+        success: true
       };
     } else {
       return {
@@ -559,7 +564,7 @@ const table = {
   },
   clickEdit: async (row?: any) => {
     const ids = row ? [row.id] : [...table._selectedRowKeys.value];
-    if (ids.length < 1) return onlyMessage('请勾选需要编辑的数据', 'warning');
+    if (ids.length < 1) return onlyMessage($t('device.index.988419-17'), 'warning');
 
     table.defaultPermission = row ? row?.permission : intersection(...table.selectedRows.map(
       (item) => item.permission,
@@ -572,7 +577,7 @@ const table = {
   },
   clickUnBind: (row?: any) => {
     const ids = row ? [row.id] : [...table._selectedRowKeys.value];
-    if (ids.length < 1) return onlyMessage('请勾选需要解绑的数据', 'warning');
+    if (ids.length < 1) return onlyMessage($t('device.index.988419-18'), 'warning');
     const params = [
       {
         targetType: 'org',
@@ -583,7 +588,7 @@ const table = {
     ];
     const response = unBindDeviceOrProduct_api('device', params)
     response.then(() => {
-      onlyMessage('操作成功');
+      onlyMessage($t('device.index.988419-19'));
       table.refresh();
     });
     return response

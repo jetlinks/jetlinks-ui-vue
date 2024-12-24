@@ -3,17 +3,19 @@
         <pro-search
             :columns="columns"
             target="category-product"
+            noMargin
             @search="(params:any)=>queryParams = {...params}"
-            style='margin-bottom: 0;'
         />
         <FullPage :extraHeight="24">
             <j-pro-table
                 ref="tableRef"
                 :request="table.requestFun"
                 :gridColumn="2"
+                :gridColumns="[2]"
+                modeValue="CARD"
                 :scroll="{
-                    x:true,
-                    y:610,
+                    x: 'max-content',
+                    y: 610,
                 }"
                 :params="queryParams"
                 :rowSelection="{
@@ -24,47 +26,47 @@
                 }"
                 :columns="columns"
             >
-                <template #headerTitle>
-                    <j-space>
-                        <PermissionButton
+                <template #headerLeftRender>
+                    <a-space>
+                        <j-permission-button
                             :hasPermission="`${permission}:assert`"
                             type="primary"
                             @click="dialogs.addShow = true"
                         >
-                            <AIcon type="PlusOutlined" />资产分配
-                        </PermissionButton>
-                        <j-dropdown trigger="hover">
-                            <j-button>批量操作</j-button>
+                            <AIcon type="PlusOutlined" />{{ $t('product.index.083446-0') }}
+                        </j-permission-button>
+                        <a-dropdown trigger="hover">
+                            <a-button>{{ $t('product.index.083446-1') }}</a-button>
                             <template #overlay>
-                                <j-menu>
-                                    <j-menu-item>
-                                        <PermissionButton
+                                <a-menu>
+                                    <a-menu-item>
+                                        <j-permission-button
                                             :hasPermission="`${permission}:bind`"
                                             :popConfirm="{
-                                                title: `确认批量解除绑定？`,
+                                                title: $t('product.index.083446-2'),
                                                 onConfirm: () =>
                                                     table.clickUnBind(),
                                             }"
                                         >
                                             <AIcon
                                                 type="DisconnectOutlined"
-                                            />批量解绑
-                                        </PermissionButton>
-                                    </j-menu-item>
-                                    <j-menu-item>
-                                        <PermissionButton
+                                            />{{ $t('product.index.083446-3') }}
+                                        </j-permission-button>
+                                    </a-menu-item>
+                                    <a-menu-item>
+                                        <j-permission-button
                                             :hasPermission="`${permission}:assert`"
                                             @click="() => table.clickEdit()"
                                         >
                                             <AIcon
                                                 type="EditOutlined"
-                                            />批量编辑
-                                        </PermissionButton>
-                                    </j-menu-item>
-                                </j-menu>
+                                            />{{ $t('product.index.083446-4') }}
+                                        </j-permission-button>
+                                    </a-menu-item>
+                                </a-menu>
                             </template>
-                        </j-dropdown>
-                    </j-space>
+                        </a-dropdown>
+                    </a-space>
                 </template>
 
                 <template #card="slotProps">
@@ -86,7 +88,7 @@
                         <template #img>
                             <slot name="img">
                                 <img
-                                    :src="getImage('/device-product.png')"
+                                    :src="systemImg.deviceProductImg"
                                     style="cursor: pointer"
                                 />
                             </slot>
@@ -95,23 +97,23 @@
                             <h3 class="card-item-content-title" style='margin-bottom: 18px;'>
                                 {{ slotProps.name }}
                             </h3>
-                            <j-row>
-                                <j-col :span="12">
+                            <a-row>
+                                <a-col :span="12">
                                     <div class="card-item-content-text">ID</div>
-                                    <Ellipsis style="width: calc(100% - 20px);">
+                                    <j-ellipsis style="width: calc(100% - 20px);">
                                     <div
                                         style="cursor: pointer"
                                         class="card-item-content-value"
                                     >
                                         {{ slotProps.id }}
                                     </div>
-                                    </Ellipsis>
-                                </j-col>
-                                <j-col :span="12">
+                                    </j-ellipsis>
+                                </a-col>
+                                <a-col :span="12">
                                     <div class="card-item-content-text">
-                                        资产权限
+                                        {{ $t('product.index.083446-5') }}
                                     </div>
-                                    <Ellipsis style="width: calc(100% - 20px);">
+                                    <j-ellipsis style="width: calc(100% - 20px);">
                                     <div
                                         style="cursor: pointer"
                                         class="card-item-content-value"
@@ -123,41 +125,41 @@
                                             )
                                         }}
                                     </div>
-                                    </Ellipsis>
-                                </j-col>
-                            </j-row>
+                                    </j-ellipsis>
+                                </a-col>
+                            </a-row>
                         </template>
                         <template #actions="item">
-                            <j-tooltip
+                            <a-tooltip
                                 v-bind="item.tooltip"
                                 :title="item.disabled && item.tooltip.title"
                             >
-                                <j-dropdown
+                                <a-dropdown
                                     placement="bottomRight"
                                     v-if="item.key === 'others'"
                                 >
-                                    <j-button>
+                                    <a-button>
                                         <AIcon :type="item.icon" />
                                         <span>{{ item.text }}</span>
-                                    </j-button>
+                                    </a-button>
                                     <template #overlay>
-                                        <j-menu>
-                                            <j-menu-item
+                                        <a-menu>
+                                            <a-menu-item
                                                 v-for="(o, i) in item.children"
                                                 :key="i"
                                             >
-                                                <j-button
+                                                <a-button
                                                     type="link"
                                                     @click="o.onClick"
                                                 >
                                                     <AIcon :type="o.icon" />
                                                     <span>{{ o.text }}</span>
-                                                </j-button>
-                                            </j-menu-item>
-                                        </j-menu>
+                                                </a-button>
+                                            </a-menu-item>
+                                        </a-menu>
                                     </template>
-                                </j-dropdown>
-                                <PermissionButton
+                                </a-dropdown>
+                                <j-permission-button
                                     v-else
                                     :hasPermission="item.permission"
                                     :tooltip="item.tooltip"
@@ -169,8 +171,8 @@
                                     <span v-if="item.key !== 'delete'">{{
                                         item.text
                                     }}</span>
-                                </PermissionButton>
-                            </j-tooltip>
+                                </j-permission-button>
+                            </a-tooltip>
                         </template>
                     </CardBox>
                 </template>
@@ -192,8 +194,8 @@
                     ></BadgeStatus>
                 </template>
                 <template #action="slotProps">
-                    <j-space :size="16">
-                        <PermissionButton
+                    <a-space :size="16">
+                        <j-permission-button
                             v-for="i in table.getActions(slotProps, 'table')"
                             :hasPermission="i.permission"
                             type="link"
@@ -204,8 +206,8 @@
                             :disabled="i?.disabled"
                         >
                             <AIcon :type="i.icon" />
-                        </PermissionButton>
-                    </j-space>
+                        </j-permission-button>
+                    </a-space>
                 </template>
             </j-pro-table>
         </FullPage>
@@ -247,7 +249,7 @@ import PermissionButton from '@/components/PermissionButton/index.vue';
 import AddDeviceOrProductDialog from '../components/AddDeviceOrProductDialog.vue';
 import EditPermissionDialog from '../components/EditPermissionDialog.vue';
 import NextDialog from '../components/NextDialog.vue';
-import { getImage, onlyMessage } from '@/utils/comm';
+import { onlyMessage } from '@/utils/comm';
 import {
     getDeviceOrProductList_api,
     getPermission_api,
@@ -257,6 +259,10 @@ import {
 } from '@/api/system/department';
 import { intersection } from 'lodash-es';
 import { useDepartmentStore } from '@/store/department';
+import {systemImg} from "@/assets";
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 const permission = 'system/Department';
 
 const departmentStore = useDepartmentStore();
@@ -275,9 +281,10 @@ const columns = [
         search: {
             type: 'string',
         },
+        width: 120
     },
     {
-        title: '名称',
+        title: $t('product.index.083446-6'),
         dataIndex: 'name',
         key: 'name',
         ellipsis: true,
@@ -287,20 +294,22 @@ const columns = [
         },
     },
     {
-        title: '资产权限',
+        title: $t('product.index.083446-5'),
         dataIndex: 'permission',
         key: 'permission',
         ellipsis: true,
         scopedSlots: true,
+        width: 200,
     },
     {
-        title: '说明',
+        title: $t('product.index.083446-7'),
         dataIndex: 'describe',
         key: 'describe',
         ellipsis: true,
+        width: 100
     },
     {
-        title: '状态',
+        title: $t('product.index.083446-8'),
         dataIndex: 'state',
         key: 'state',
         ellipsis: true,
@@ -309,11 +318,11 @@ const columns = [
             type: 'select',
             options: [
                 {
-                    label: '正常',
+                    label: $t('product.index.083446-9'),
                     value: 1,
                 },
                 {
-                    label: '禁用',
+                    label: $t('product.index.083446-10'),
                     value: 0,
                 },
             ],
@@ -322,7 +331,7 @@ const columns = [
     },
 
     {
-        title: '操作',
+        title: $t('product.index.083446-11'),
         dataIndex: 'action',
         key: 'action',
         fixed: 'right',
@@ -360,16 +369,16 @@ const table = {
                 {
                     permission: `${permission}:assert`,
                     key: 'edit',
-                    tooltip: { title: '编辑' },
+                    tooltip: { title: $t('product.index.083446-12') },
                     icon: 'EditOutlined',
                     onClick: () => table.clickEdit(data),
                 },
                 {
                     permission: `${permission}:bind`,
                     key: 'unbind',
-                    tooltip: { title: '解除绑定' },
+                    tooltip: { title: $t('product.index.083446-13') },
                     popConfirm: {
-                        title: `确认解除绑定？`,
+                        title: $t('product.index.083446-14'),
                         onConfirm: () => table.clickUnBind(data),
                     },
                     icon: 'DisconnectOutlined',
@@ -478,9 +487,9 @@ const table = {
                                         : '',
                                 text:
                                     item.state === 1
-                                        ? '正常'
+                                        ? $t('product.index.083446-9')
                                         : item.state === 0
-                                        ? '禁用'
+                                        ? $t('product.index.083446-10')
                                         : '',
                             };
                         });
@@ -527,6 +536,7 @@ const table = {
                 code: resp.status,
                 result: resp.result,
                 status: resp.status,
+                success: true
             };
         } else {
             return {
@@ -553,7 +563,7 @@ const table = {
     },
     clickEdit: async (row?: any) => {
         const ids = row ? [row.id] : [...tableData._selectedRowKeys];
-        if (ids.length < 1) return onlyMessage('请勾选需要编辑的数据', 'warning');
+        if (ids.length < 1) return onlyMessage($t('product.index.083446-15'), 'warning');
         tableData.defaultPermission = row ? row?.permission : intersection(...tableData.selectedRows.map(
             (item) => item.permission,
         )) as string[]
@@ -564,7 +574,7 @@ const table = {
     },
     clickUnBind: (row?: any) => {
         const ids = row ? [row.id] : [...tableData._selectedRowKeys];
-        if (ids.length < 1) return onlyMessage('请勾选需要解绑的数据', 'warning');
+        if (ids.length < 1) return onlyMessage($t('product.index.083446-16'), 'warning');
         const params = [
             {
                 targetType: 'org',
@@ -576,7 +586,7 @@ const table = {
         const response = unBindDeviceOrProduct_api('product', params)
         response.then(() => {
             tableData._selectedRowKeys = [];
-            onlyMessage('操作成功');
+            onlyMessage($t('product.index.083446-17'));
             table.refresh();
         });
         return response

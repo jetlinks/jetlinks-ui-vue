@@ -7,19 +7,20 @@
         </div>
         <div class="right">
           <a-tabs v-if='isNoCommunity && Object.keys(modules).length' v-model:activeKey="activeKey" destroyInactiveTabPane>
-            <a-tab-pane key="product" tab="产品">
+            <a-tab-pane key="product" :tab="$t('Department.index.945805-0')">
               <Product
+                  v-if="Object.keys(modules).length"
                 :parentId="departmentId"
                 @open-device-bind="openDeviceBind"
               />
             </a-tab-pane>
-            <a-tab-pane key="device" tab="设备">
+            <a-tab-pane key="device" :tab="$t('Department.index.945805-1')">
               <Device
                 :parentId="departmentId"
                 v-model:bindBool="bindBool"
               />
             </a-tab-pane>
-            <a-tab-pane key="user" tab="用户">
+            <a-tab-pane key="user" :tab="$t('Department.index.945805-2')">
               <User :parentId="departmentId" />
             </a-tab-pane>
           </a-tabs>
@@ -32,7 +33,9 @@
 
 <script setup lang="ts" name="Department">
 import LeftTree from './components/LeftTree.vue'
-import User from './user/index.vue'
+import User from './user/index.vue';
+import Product from './product/index.vue';
+import Device from './device/index.vue';
 import { isNoCommunity } from "@/utils";
 
 const modules = import.meta.glob('../../../modules/device-manager-ui/index.ts');
