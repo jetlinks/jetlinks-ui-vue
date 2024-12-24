@@ -18,10 +18,10 @@
             :placeholder="$t('Save.index.968210-3')"
             :tree-data="areaList"
             :field-names="{
-                            children: 'children',
-                            label: 'name',
-                            value: 'id',
-                        }"
+              children: 'children',
+              label: 'name',
+              value: 'id',
+            }"
             tree-node-filter-prop="name"
             @change="treeSelect"
           />
@@ -58,19 +58,19 @@
             name="name"
             required
             :rules="[
-                        {
-                            required: true,
-                            message: $t('Save.index.968210-8'),
-                        },
-                        {
-                            max: 64,
-                            message: $t('Save.index.968210-9'),
-                        },
-                        // {
-                        //     validator: vailName,
-                        //     trigger: 'blur',
-                        // },
-                    ]"
+              {
+                required: true,
+                message: $t('Save.index.968210-8'),
+              },
+              {
+                max: 64,
+                message: $t('Save.index.968210-9'),
+              },
+              // {
+              //   validator: vailName,
+              //   trigger: 'blur',
+              // },
+            ]"
           >
             <a-input
               v-model:value="modelRef.name"
@@ -82,15 +82,15 @@
             name="code"
             required
             :rules="[
-                        {
-                            required: true,
-                            message: $t('Save.index.968210-11'),
-                        },
-                        // {
-                        //     validator: vailCode,
-                        //     trigger: 'blur',
-                        // },
-                    ]"
+              {
+                required: true,
+                message: $t('Save.index.968210-11'),
+              },
+                // {
+                //     validator: vailCode,
+                //     trigger: 'blur',
+                // },
+            ]"
           >
             <a-input-number
               v-model:value="modelRef.code"
@@ -101,7 +101,7 @@
           <a-form-item
             :label="$t('Save.index.968210-12')"
           >
-            <j-radio-button
+            <RadioButton
               v-model:value="modelRef.properties.partition"
               :options="[
               {
@@ -158,6 +158,7 @@ import BuildIn from './BuildIn.vue';
 import {updateRegion, validateName, validateCode} from '@/api/system/region';
 import {cloneDeep, omit} from "lodash-es";
 import { onlyMessage } from "@jetlinks-web/utils";
+import RadioButton from '@/components/CardSelect/RadioButton.vue'
 import GeoJsonModal from './GeoJsonModal.vue'
 import {useRegion} from "@/views/system/Region/hooks";
 import {syncChildren} from "@/views/system/Region/util";

@@ -109,7 +109,6 @@ import {
 import { useArea, useRegion } from '../hooks';
 import ResizeObserver from 'ant-design-vue/lib/vc-resize-observer';
 import { onlyMessage } from '@jetlinks-web/utils';
-import { title } from 'process';
 import { useI18n } from 'vue-i18n';
 
 const { t: $t } = useI18n();
