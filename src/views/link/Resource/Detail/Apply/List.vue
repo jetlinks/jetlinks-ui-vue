@@ -1,11 +1,13 @@
 <template>
-    <div class="content">
+    <div class="list">
         <div>
             <div class="header">
                 <a-space :size="12">
                     <AIcon type="AppstoreOutlined" style="font-size: 18px" />
                     <span style="font-size: 20px">物模型</span>
-                    <span @click="handleClick('metadata')">受影响的产品: 10</span>
+                    <span @click="handleClick('metadata')"
+                        >受影响的产品: <span style="color: #1890ff; "> 10 </span></span
+                    >
                 </a-space>
                 <a-space>
                     <a-tooltip>
@@ -30,13 +32,14 @@
                 }"
             >
                 <CardItem
-                    v-for="item in dataSource"
-                    :data="item"
+                    v-for="(item,index) in productList"
+                    v-model:value="productList[index]"
+                    :resourceMetadata="resourceMetadata"
                     :options="[
-                        { label: '取交集', value: 1 },
-                        { label: '取并集', value: 2 },
-                        { label: '忽略', value: 3 },
-                        { label: '覆盖', value: 4 },
+                        { label: '取交集', value: 'intersection' },
+                        { label: '取并集', value: 'union' },
+                        { label: '忽略', value: 'ignore' },
+                        { label: '覆盖', value: 'cover' },
                     ]"
                 >
                     <template #leftRender>
@@ -63,85 +66,7 @@
                 {{ expand ? '收起' : '展开' }}
             </div>
         </div>
-        <div class="header">
-            <a-space :size="12">
-                <AIcon type="AppstoreOutlined" style="font-size: 18px" />
-                <span style="font-size: 20px">消息协议</span>
-                <span @click="handleClick('metadata')">受影响的产品: 10</span>
-            </a-space>
-        </div>
-        <div class="protocol-items">
-            <CardItem
-                v-for="item in protocolList"
-                :data="item"
-                :options="[
-                    { label: '更新', value: 1 },
-                    { label: '忽略', value: 2 },
-                ]"
-            >
-                <template #leftRender>
-                    <a-space :size="12" align="end">
-                        <div>
-                            <div style="color: #00000080">当前协议</div>
-                            <div class="protocol-item">
-                                <div class="protocol-item-img">
-                                    <img
-                                        :src="
-                                            item.img ||
-                                            getImage(
-                                                '/device/instance/device-card.png',
-                                            )
-                                        "
-                                    />
-                                </div>
-                                <div class="protocol-item-text">
-                                    <j-ellipsis>
-                                        {{ item.old }}
-                                    </j-ellipsis>
-                                </div>
-                                <div class="protocol-item-version">
-                                    <j-ellipsis>
-                                        {{ item.version }}
-                                    </j-ellipsis>
-                                </div>
-                            </div>
-                        </div>
-                        <div>
-                            <AIcon
-                                type="ArrowRightOutlined"
-                                style="font-size: 18px; margin-bottom: 12px"
-                            />
-                        </div>
-                        <div>
-                            <div style="color: #00000080">新版协议</div>
-                            <div class="protocol-item">
-                                <div class="protocol-item-img">
-                                    <img
-                                        :src="
-                                            item.img ||
-                                            getImage(
-                                                '/device/instance/device-card.png',
-                                            )
-                                        "
-                                    />
-                                </div>
-                                <div class="protocol-item-text">
-                                    <j-ellipsis>
-                                        {{ item.new }}
-                                    </j-ellipsis>
-                                </div>
-                                <div class="protocol-item-version">
-                                    <j-ellipsis>
-                                        {{ item.version }}
-                                    </j-ellipsis>
-                                </div>
-                            </div>
-                        </div>
-                    </a-space>
-                </template>
-            </CardItem>
-        </div>
-        <Product v-if="visible" :params="params" @close="visible = false" />
+        <Product v-if="visible" @close="visible = false" />
     </div>
 </template>
 
@@ -150,24 +75,18 @@ import { getImage } from '@/utils/comm';
 import CardItem from './CardItem.vue';
 import Product from './Product.vue';
 
-const dataSource = [
-    { id: 1, name: '产品xxxxx' },
-    { id: 2, name: '产品xxxxx' },
-    { id: 3, name: '产品xxxxx' },
-    { id: 4, name: '产品xxxxx' },
-    { id: 2, name: '产品xxxxx' },
-    { id: 3, name: '产品xxxxx' },
-    { id: 4, name: '产品xxxxx' },
-];
-const protocolList = [
-    {
-        id: 1,
-        // name: '协议xxxxx',
-        old: 'old协议xxxxx',
-        version: '1.0.0.11158',
-        new: 'new协议xxxxxxxxxxxxxxxxxxxxx',
+const props = defineProps({
+    productList: {
+        type: Array,
+        default: () => [],
     },
-];
+    resourceMetadata: {
+        type: Object,
+        default: () => ({}),
+    },
+});
+
+
 const expand = ref(false);
 const visible = ref(false);
 const params = ref({});
@@ -175,11 +94,11 @@ const params = ref({});
 const handleClick = (type: any) => {
     if (type === 'metadata') {
         params.value = {
-            terms:[{ column: 'metadata', termType: 'eq', value: 'metadata' }]
+            terms: [{ column: 'metadata', termType: 'eq', value: 'metadata' }],
         };
-    }else{
+    } else {
         params.value = {
-            terms:[{ column: 'metadata', termType: 'eq', value: 'metadata' }]
+            terms: [{ column: 'metadata', termType: 'eq', value: 'metadata' }],
         };
     }
 
@@ -188,7 +107,7 @@ const handleClick = (type: any) => {
 </script>
 
 <style lang="less" scoped>
-.content {
+.list {
     .header {
         padding-bottom: 12px;
         display: flex;
@@ -202,13 +121,14 @@ const handleClick = (type: any) => {
         display: flex;
         flex-direction: column;
         gap: 12px;
-        height: 190px;
-        // max-height: 190px;
+        // height: 190px;
+        max-height: 190px;
         // height: 100%;
         overflow-y: hidden;
         overflow-x: hidden;
         &.items-expand {
             height: 100%;
+            max-height: 100%;
         }
         .render-img {
             height: 56px;

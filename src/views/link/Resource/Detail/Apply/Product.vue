@@ -28,7 +28,7 @@
                 model="CARD"
                 :columns="columns"
                 :params="params"
-                :request="queryProductList"
+                :request="(e) => _queryProduct(_id, e)"
                 :gridColumn="2"
                 :bodyStyle="{
                     paddingRight: 0,
@@ -95,23 +95,14 @@
 
 <script setup lang="ts" name="Product">
 import { getImage } from '@/utils/comm';
-import {
-    getProviders,
-    queryGatewayList,
-    queryProductList,
-} from '@/api/device/product';
 import { queryTree } from '@/api/device/category';
 import { getTreeData_api } from '@/api/system/department';
-import { accessConfigTypeFilter } from '@/utils/setting';
+import { _queryProduct } from '@/api/link/resource';
 
 const emits = defineEmits(['close']);
 
-const porps = defineProps({
-    params: {
-        type: Object,
-        default: () => ({}),
-    },
-});
+const route = useRoute();
+const _id = route.params?.id;
 const params = ref({});
 const handleSearch = (p: any) => {
     params.value = p;
@@ -138,37 +129,37 @@ const columns = [
             first: true,
         },
     },
-    {
-        title: '网关类型',
-        dataIndex: 'accessProvider',
-        width: 150,
-        ellipsis: true,
-        hideInTable: true,
-        search: {
-            type: 'select',
-            options: () =>
-                getProviders().then((resp: any) => {
-                    const data = resp.result || [];
-                    return accessConfigTypeFilter(data);
-                }),
-        },
-    },
-    {
-        title: '接入方式',
-        dataIndex: 'accessName',
-        width: 150,
-        ellipsis: true,
-        search: {
-            type: 'select',
-            options: () =>
-                queryGatewayList().then((resp: any) =>
-                    resp.result.map((item: any) => ({
-                        label: item.name,
-                        value: item.id,
-                    })),
-                ),
-        },
-    },
+    // {
+    //     title: '网关类型',
+    //     dataIndex: 'accessProvider',
+    //     width: 150,
+    //     ellipsis: true,
+    //     hideInTable: true,
+    //     search: {
+    //         type: 'select',
+    //         options: () =>
+    //             getProviders().then((resp: any) => {
+    //                 const data = resp.result || [];
+    //                 return accessConfigTypeFilter(data);
+    //             }),
+    //     },
+    // },
+    // {
+    //     title: '接入方式',
+    //     dataIndex: 'accessName',
+    //     width: 150,
+    //     ellipsis: true,
+    //     search: {
+    //         type: 'select',
+    //         options: () =>
+    //             queryGatewayList().then((resp: any) =>
+    //                 resp.result.map((item: any) => ({
+    //                     label: item.name,
+    //                     value: item.id,
+    //                 })),
+    //             ),
+    //     },
+    // },
     {
         title: '设备类型',
         dataIndex: 'deviceType',
