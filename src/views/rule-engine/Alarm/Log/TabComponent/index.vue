@@ -203,7 +203,7 @@ const props = defineProps<{
 const imgMap = new Map();
 imgMap.set('product', getImage('/alarm/product.png'));
 imgMap.set('device', getImage('/alarm/device.png'));
-imgMap.set('other', getImage('/alarm/other.png'));
+imgMap.set('scene', getImage('/alarm/other.png'));
 imgMap.set('organization', getImage('/alarm/org.png'));
 
 const titleMap = new Map();
