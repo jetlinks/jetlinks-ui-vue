@@ -37,16 +37,20 @@
                 {{ $t('CalendarRight.index.810845-4') }}<a-switch v-model:checked="rapidChecked" />
             </div>
             <div class="rapidActionControl" v-if="rapidChecked">
-                <div>
-                    {{ $t('CalendarRight.index.810845-5') }}
+                <a-space>
+                    <j-ellipsis>
+                        {{ $t('CalendarRight.index.810845-5') }}
+                    </j-ellipsis>
                     <a-input
                         style="width: 300px"
                         v-model:value="selectedDate"
                         :disabled="true"
                     ></a-input>
-                </div>
-                <div style="margin-left: 10px">
-                    {{ $t('CalendarRight.index.810845-6') }}
+                </a-space>
+                <a-space>
+                    <j-ellipsis>
+                        {{ $t('CalendarRight.index.810845-6') }}
+                    </j-ellipsis>
                     <a-input-number
                         style="width: 100px"
                         v-model:value="effectDays"
@@ -55,8 +59,10 @@
                         :precision="0"
                         :controls="false"
                     ></a-input-number>
-                    {{ $t('CalendarRight.index.810845-7') }}
-                </div>
+                    <j-ellipsis>
+                        {{ $t('CalendarRight.index.810845-7') }}
+                    </j-ellipsis>
+                </a-space>
                 <div>
                     <a-button type="text" @click="reselect">{{ $t('CalendarRight.index.810845-8') }}</a-button>
                     <a-button type="link" @click="rapid">{{ $t('CalendarRight.index.810845-9') }}</a-button>
@@ -127,19 +133,25 @@ watch(
         justify-content: space-between;
     }
     .rapidAction {
+        width: 100%;
         margin-top: 10px;
         display: flex;
         align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        overflow: auto;
         .rapidSwitch {
             padding: 15px 0;
         }
         .rapidActionControl {
             display: flex;
-            width: 70%;
-            margin-left: 20%;
+            flex: 1;
             background-color: rgb(239, 249, 254);
             padding: 10px;
             justify-content: space-around;
+            gap: 20px;
+            overflow: auto;
+            white-space: nowrap;
         }
     }
 }
