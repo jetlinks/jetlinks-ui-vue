@@ -111,180 +111,88 @@ const classification = ref([
 ])
 const selectedClassification = ref()
 const selectedResource = ref(undefined)
-const resourceData = ref([
-            {
-                "id": "1866776402031923200",
-                "type": {
-                    "text": "设备模板",
-                    "value": "device"
-                },
-                "photoUrl": {
-                    "type": {
-                        "text": "本地上传",
-                        "value": "internal"
-                    },
-                    "url": "http://192.168.35.114:9000/api/file/O5O1FkHvM0KSfocXIikH5swcFLaHkHJV.png?accessKey=eb8974eed7ff40f1374a3fd6fb0a7199",
-                    "name": "test.png"
-                },
-                "name": "MQTT设备模板",
-                "describe": "备注：测试",
-                "source": [
-                    "使用MQTT标准协议接入的设备",
-                    "使用MQTT标准协议接入的网关设备"
-                ],
-                "repositoryUrl": "https://github.com/jetlinks-v2",
-                "docUrl": [
-                    {
-                        "type": {
-                            "text": "外链地址",
-                            "value": "external"
-                        },
-                        "url": "https://hanta.yuque.com/px7kg1/dev",
-                        "name": "语雀文档"
-                    },
-                    {
-                        "type": {
-                            "text": "本地上传",
-                            "value": "internal"
-                        },
-                        "url": "http://192.168.35.114:9000/api/file/O5O1FkHvM0KSfocXIikH5swcFLaHkHJV.png?accessKey=eb8974eed7ff40f1374a3fd6fb0a7199",
-                        "name": "test.png"
-                    }
-                ],
-                "coverUrl": {
-                    "type": {
-                        "text": "本地上传",
-                        "value": "internal"
-                    },
-                    "url": "http://192.168.35.114:9000/api/file/O5O1FkHvM0KSfocXIikH5swcFLaHkHJV.png?accessKey=eb8974eed7ff40f1374a3fd6fb0a7199",
-                    "name": "cover.png"
-                },
-                "videoUrl": {
-                    "type": {
-                        "text": "本地上传",
-                        "value": "internal"
-                    },
-                    "url": "http://192.168.35.114:9000/api/file/O5O1FkHvM0KSfocXIikH5swcFLaHkHJV.png?accessKey=eb8974eed7ff40f1374a3fd6fb0a7199",
-                    "name": "video"
-                },
-                "loopPicUrl": [
-                    {
-                        "type": {
-                            "text": "本地上传",
-                            "value": "internal"
-                        },
-                        "url": "http://192.168.35.114:9000/api/file/O5O1FkHvM0KSfocXIikH5swcFLaHkHJV.png?accessKey=eb8974eed7ff40f1374a3fd6fb0a7199",
-                        "name": "test.png"
-                    },
-                    {
-                        "type": {
-                            "text": "本地上传",
-                            "value": "internal"
-                        },
-                        "url": "http://192.168.35.114:9000/api/file/O5O1FkHvM0KSfocXIikH5swcFLaHkHJV.png?accessKey=eb8974eed7ff40f1374a3fd6fb0a7199",
-                        "name": "test.png"
-                    }
-                ],
-                "developDuration": 5.5,
-                "charge": false,
-                "classification": [
-                    {
-                        "id": "1866398366079029248",
-                        "name": "品牌",
-                        "children": [
-                            {
-                                "id": "8ef03e87-a45e-434d-86ee-b5f7881072df",
-                                "classificationId": "1866398366079029248",
-                                "name": "海康威视",
-                                "order": 1
-                            }
-                        ]
-                    },
-                    {
-                        "id": "1866398366091612161",
-                        "name": "品类",
-                        "children": [
-                            {
-                                "id": "089a5110-d24d-4e29-94a0-6283e66ea31b",
-                                "classificationId": "1866398366091612161",
-                                "name": "传感器",
-                                "order": 1
-                            }
-                        ]
-                    },
-                    {
-                        "id": "1866398366091612160",
-                        "name": "行业",
-                        "children": [
-                            {
-                                "id": "d03469b8-c492-40d6-943f-8651d88d1a07",
-                                "classificationId": "1866398366091612160",
-                                "name": "智能安防",
-                                "order": 1
-                            },
-                            {
-                                "id": "40701834-0223-4b75-ad10-9acfa2e92625",
-                                "classificationId": "1866398366091612160",
-                                "name": "h1",
-                                "order": 1
-                            }
-                        ]
-                    }
-                ],
-                "model": [
-                    {
-                        "id": "1384042230ee740a630e18fee22a9e73",
-                        "name": "test4",
-                        "children": [
-                            {
-                                "id": "1868859775522103296",
-                                "classificationId": "1384042230ee740a630e18fee22a9e73",
-                                "name": "呵呵呵呵呵额呵53333",
-                                "order": 1
-                            },
-                            {
-                                "id": "1868859739006492672",
-                                "classificationId": "1384042230ee740a630e18fee22a9e73",
-                                "name": "呵呵呵呵呵额呵5555",
-                                "order": 2
-                            }
-                        ]
-                    }
-                ],
-                "state": {
-                    "text": "正常",
-                    "value": "enabled"
-                },
-                "deviceType": [
-                    {
-                        "text": "直连设备",
-                        "value": "device"
-                    },
-                    {
-                        "text": "网关设备",
-                        "value": "gateway"
-                    }
-                ],
-                "accessInfos": [
-                    {
-                        "provider": "mqtt-server-gateway",
-                        "channel": "network",
-                        "bindInfo": [
-                            {
-                                "id": "1868550086119489536",
-                                "type": "protocol",
-                                "name": "官方协议包",
-                                "defaultAccess": true
-                            }
-                        ],
-                        "transport": "mqtt",
-                        "configuration": {},
-                        "defaultAccess": true
-                    }
-                ],
-                "metadata": "{\"functions\":[],\"properties\":[{\"valueType\":{\"falseValue\":\"false\",\"trueText\":\"是\",\"trueValue\":\"true\",\"falseText\":\"否\",\"type\":\"boolean\"},\"name\":\"boolean类型属性示例\",\"description\":\"boolean类型属性示例的说明\",\"id\":\"boolean_id\"},{\"valueType\":{\"tz\":\"Asia/Shanghai\",\"format\":\"timestamp\",\"type\":\"date\"},\"name\":\"date类型属性示例\",\"description\":\"date类型属性示例的说明\",\"id\":\"date_id\"},{\"valueType\":{\"unit\":\"pascal\",\"round\":\"HALF_UP\",\"scale\":8,\"type\":\"double\"},\"name\":\"double类型属性示例\",\"description\":\"double类型属性示例的说明。数据类型配置可以为空\",\"id\":\"double_id\"},{\"valueType\":{\"elements\":[{\"description\":\"枚举说明0\",\"text\":\"0\",\"value\":\"枚举值0\"},{\"description\":\"枚举说明1\",\"text\":\"1\",\"value\":\"枚举值1\"},{\"description\":\"枚举说明2\",\"text\":\"2\",\"value\":\"枚举值2\"}],\"type\":\"enum\"},\"name\":\"enum类型属性示例\",\"description\":\"enum类型属性示例的说明\",\"id\":\"enum_id\"},{\"valueType\":{\"unit\":\"megahertz\",\"round\":\"HALF_UP\",\"scale\":6,\"type\":\"float\"},\"name\":\"float类型属性示例\",\"description\":\"float类型属性示例的说明。数据类型配置可以为空\",\"id\":\"float_id\"},{\"valueType\":{\"unit\":\"ohm\",\"round\":\"HALF_UP\",\"type\":\"int\"},\"name\":\"int类型属性示例\",\"description\":\"int类型属性示例的说明。数据类型配置可以为空\",\"id\":\"int_id\"},{\"valueType\":{\"unit\":\"cubicKilometer\",\"round\":\"HALF_UP\",\"type\":\"long\"},\"name\":\"long类型属性示例\",\"description\":\"long类型属性示例的说明。数据类型配置可以为空\",\"id\":\"long_id\"},{\"valueType\":{\"expands\":{\"maxLength\":630},\"type\":\"string\"},\"name\":\"string类型属性示例\",\"description\":\"string类型属性示例的说明\",\"id\":\"string_id\"},{\"valueType\":{\"lonProperty\":\"lon\",\"type\":\"geoPoint\",\"latProperty\":\"lat\"},\"name\":\"geoPoint类型属性示例\",\"description\":\"geoPoint类型属性示例的说明\",\"id\":\"geoPoint_id\"},{\"valueType\":{\"bodyType\":\"url\",\"mediaType\":\"*/*\",\"type\":\"file\"},\"name\":\"file类型属性示例\",\"description\":\"file类型属性示例的说明\",\"id\":\"file_id\"},{\"valueType\":{\"expands\":{\"maxLength\":7},\"type\":\"password\"},\"name\":\"password类型属性示例\",\"description\":\"password类型属性示例的说明\",\"id\":\"password_id\"}],\"events\":[],\"tags\":[]}"
-            }
-        ])
+const resourceData = ref([{
+  "id": "1871843939208122368",
+  "type": {
+    "text": "设备模板",
+    "value": "device"
+  },
+  "photoUrl": {
+    "type": {
+      "text": "本地上传",
+      "value": "internal"
+    }
+  },
+  "name": "前端测试",
+  "source": [],
+  "docUrl": [],
+  "loopPicUrl": [],
+  "developDuration": 1,
+  "charge": false,
+  "classification": [
+    {
+      "id": "1866398366079029248",
+      "name": "品牌",
+      "children": [
+        {
+          "id": "2ba2ba25-4966-41bb-afd1-89b60bd59425",
+          "classificationId": "1866398366079029248",
+          "name": "11111111",
+          "order": -1
+        }
+      ]
+    }
+  ],
+  "version": "v1.0.0",
+  "creatorId": "1199596756811550720",
+  "creatorName": "超级管理员",
+  "createTime": 1735117346942,
+  "modifyTime": 1735117346942,
+  "modifierId": "1199596756811550720",
+  "modifierName": "超级管理员",
+  "deviceType": [
+    {
+      "text": "直连设备",
+      "value": "device"
+    }
+  ],
+  "accessInfos": [
+    {
+      "provider": "gb28181-2016",
+      "channel": "gb28181",
+      "bindInfo": [],
+      "transport": "SIP",
+      "configuration": {},
+      "defaultAccess": true
+    },
+    {
+      "provider": "plugin_gateway",
+      "channel": "plugin",
+      "bindInfo": [
+        {
+          "id": "1868948306088001536",
+          "type": "protocol",
+          "name": "p_1217",
+          "defaultAccess": true
+        },
+        {
+          "id": "1870025837543178240",
+          "type": "protocol",
+          "name": "test1220"
+        },
+        {
+          "id": "1870026182482739200",
+          "type": "protocol",
+          "name": "xxxx"
+        }
+      ],
+      "transport": "WebSocket",
+      "configuration": {},
+      "defaultAccess": false
+    }
+  ],
+  "metadata": "{\"events\":[],\"properties\":[],\"functions\":[],\"tags\":[]}"
+}])
 const getClassificationType = async () => {
     const res = await queryClassificationType();
     if (res.success) {

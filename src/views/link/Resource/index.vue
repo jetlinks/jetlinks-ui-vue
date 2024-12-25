@@ -4,29 +4,29 @@
             <FullPage>
                 <a-button @click="showInstallModal = true">安装</a-button>
                 <a-button @click="toDetail">详情</a-button>
+                <ResourceTable />
             </FullPage>
+            <Install v-if="showInstallModal" @close="showInstallModal = false" />
         </div>
-        <Install v-if="showInstallModal"  @close="showInstallModal = false"/>
-        <ResourceTable />
     </page-container>
 </template>
 
 <script setup>
 import Install from './Install/index.vue'
-import {useMenuStore} from '@/store/menu';
+import { useMenuStore } from '@/store/menu';
 import ResourceTable from '@/components/ResourceTable/ResourceTable.vue';
 const menuStory = useMenuStore();
 const showInstallModal = ref(false)
 
 const toDetail = () => {
-    menuStory.jumpPage('link/Resource/Detail',{
+    menuStory.jumpPage('link/Resource/Detail', {
         id: ':id'
     });
 }
 
 </script>
 <style lang='less' scoped>
-.container{
-    border: 1px solid rgb(230,230,230);
+.container {
+    border: 1px solid rgb(230, 230, 230);
 }
 </style>

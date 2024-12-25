@@ -14,7 +14,7 @@
         <div class="content">
             <a-row :gutter="[12, 12]" v-if="pluginList.length > 0">
                 <a-col v-for="item in pluginList" :key="item.id" :span="8">
-                    <AccessCard @checkedChange="pluginChange" :checked="PluginCurrent?.id"
+                    <AccessCard @checkedChange="pluginChange" :checked="pluginCurrent?.id"
                         :data="{ ...item, type: 'plugin' }"></AccessCard>
                 </a-col>
             </a-row>
