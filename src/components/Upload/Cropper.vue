@@ -25,6 +25,7 @@
 import 'vue-cropper/dist/index.css'
 import { VueCropper } from 'vue-cropper';
 import { fileUpload } from '@/api/comm';
+import i18n from '@/locales';
 
 const props = defineProps({
   img: {
@@ -32,7 +33,7 @@ const props = defineProps({
   },
   title: {
     type: String,
-    default: '图片编辑'
+    default: i18n.global.t('Upload.Cropper.282287-0')
   }
 })
 

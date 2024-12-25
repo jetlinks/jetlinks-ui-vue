@@ -92,6 +92,7 @@
 <script setup lang="ts" name='CardBox'>
 import color, { getHexColor } from '@jetlinks-web/components/es/BadgeStatus/color';
 import { PropType } from 'vue';
+import i18n from '@/locales';
 
 type EmitProps = {
   // (e: 'update:modelValue', data: Record<string, any>): void;
@@ -118,7 +119,7 @@ const props = defineProps({
   },
   statusText: {
     type: String,
-    default: '正常',
+    default: i18n.global.t('DeviceAccess.accessModal.551011-8'),
   },
   status: {
     type: [String, Number] as PropType<string | number>,

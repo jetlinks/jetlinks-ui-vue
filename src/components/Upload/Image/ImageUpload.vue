@@ -15,7 +15,7 @@
           <slot name="content" :imageUrl="imageUrl" :loading="loading">
             <template v-if="imageUrl">
               <img :src="imageUrl" width="100%" class="upload-image" />
-              <div class="upload-image-mask">点击修改</div>
+              <div class="upload-image-mask">{{ $t('Image.ImageUpload.825077-0') }}</div>
             </template>
             <AIcon
               v-else
@@ -47,7 +47,10 @@ import { TOKEN_KEY } from '@jetlinks-web/constants'
 import type { CSSProperties, PropType } from "vue";
 import type { UploadChangeParam } from 'ant-design-vue';
 import CropperModal from "./CropperModal";
+import { useI18n } from "vue-i18n";
+import i18n from "@/locales";
 
+const { t: $t } = useI18n();
 const props = defineProps({
   value: {
     type: String,
@@ -87,7 +90,7 @@ const props = defineProps({
   },
   cropperTitle: {
     type: String,
-    default: '图片编辑'
+    default: i18n.global.t('Image.ImageUpload.825077-1')
   },
   cropperProps: {
     type: Object,
@@ -111,11 +114,11 @@ const beforeUpload = (file: any) => {
   const isMaxSize = (file.size / 1024 / 1024) < maxSize
 
   if (!inType) {
-    onlyMessage('请上传正确格式的图片', 'error')
+    onlyMessage($t('Image.ImageUpload.825077-2'), 'error')
   }
 
   if (!isMaxSize) {
-    onlyMessage(`图片大小必须小于${maxSize}M`, 'error');
+    onlyMessage($t('Image.ImageUpload.825077-3', [maxSize]), 'error');
   }
   getBase64ByImg(file, base64Url => {
     cropper.img = base64Url
@@ -136,7 +139,7 @@ const handleChange = (info: UploadChangeParam) => {
   }
   if (info.file.status === 'error') {
     loading.value = false;
-    onlyMessage('上传失败', 'error');
+    onlyMessage($t('Image.ImageUpload.825077-4'), 'error');
   }
 }
 

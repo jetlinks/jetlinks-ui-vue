@@ -11,11 +11,11 @@
                 {{ _item.text }}
             </j-permission-button>
             <a-button type="link" @click="reload"
-                ><AIcon type="RedoOutlined" />重选</a-button
+                ><AIcon type="RedoOutlined" />{{ $t('BatchDropdown.index.755305-0') }}</a-button
             >
         </a-space>
         <a-dropdown :overlayStyle="{ zIndex: 1000 }" v-else>
-            <a-button>批量操作 <AIcon type="DownOutlined" /></a-button>
+            <a-button>{{ $t('BatchDropdown.index.755305-1') }} <AIcon type="DownOutlined" /></a-button>
             <template #overlay>
                 <a-menu @click="handleMenuClick">
                     <a-menu-item v-for="item in actions" :key="item.key">

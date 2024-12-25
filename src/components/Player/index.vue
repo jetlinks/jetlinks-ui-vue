@@ -34,7 +34,9 @@ import {
     PauseOutlined,
     CaretRightOutlined
 } from '@ant-design/icons-vue'
+import { useI18n } from 'vue-i18n';
 
+const { t: $t } = useI18n();
 type PlayerProps = {
     url?: string;
     live?: boolean;
@@ -121,7 +123,7 @@ const initEvent = () => {
         props.onTimeUpdate?.(ev)
     })
     player[fn](Events.CANPLAY, (ev) => {
-        console.log('-媒体数据加载好了-', ev);
+        console.log($t('Player.index.345076-0'), ev);
         if (props.autoplay !== false) {
             play()
         }
@@ -136,7 +138,7 @@ const initEvent = () => {
         console.log('[media error] > ', ev)
         isHevcSupport.value = Player.isHevcSupported()
         if (!isHevcSupport.value) {
-            playerElement.value.querySelector('.xgplayer-error-text').innerHTML = '该浏览器不支持hevc(h265)解码'
+            playerElement.value.querySelector('.xgplayer-error-text').innerHTML = $t('Player.index.345076-1')
             playerElement.value.querySelector('.xgplayer-error-tips').innerHTML = ''
         }
 
