@@ -3,6 +3,7 @@
         <pro-search
             :columns="columns"
             target="action-notice-template"
+            type="simple"
             @search="handleSearch"
             style="padding-bottom: 0"
         />
@@ -254,5 +255,8 @@ watch(
     color: rgba(0, 0, 0, 0.55);
     line-height: 40px;
     background-color: #f6f6f6;
+}
+:deep(.JSearch-warp) {
+  margin-bottom: 0 !important;
 }
 </style>

@@ -3,8 +3,9 @@
         <pro-search
             :columns="columns"
             target="action-notice-config"
+            type="simple"
             class="action-search"
-            style="padding-bottom: 0"
+            style="margin-bottom: 0"
             @search="handleSearch"
         />
         <j-permission-button
@@ -239,5 +240,8 @@ watch(
     color: rgba(0, 0, 0, 0.55);
     line-height: 40px;
     background-color: #f6f6f6;
+}
+:deep(.JSearch-warp) {
+  margin-bottom: 0 !important;
 }
 </style>
