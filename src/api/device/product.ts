@@ -222,5 +222,8 @@ export const queryProductVirtualProperty = (productId: string, propertyId: strin
 
 export const getTemplate = (id: string, format: string) => `${BASE_API_PATH}/device/product/${id}/property-metadata/template.${format}`
 
+//查询模板详情
+export const queryTemplate = (data:any) => server.post('/resources/instance/detail/_query',data)
+
 
 

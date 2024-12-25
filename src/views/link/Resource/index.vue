@@ -7,12 +7,14 @@
             </FullPage>
         </div>
         <Install v-if="showInstallModal"  @close="showInstallModal = false"/>
+        <ResourceTable />
     </page-container>
 </template>
 
 <script setup>
 import Install from './Install/index.vue'
 import {useMenuStore} from '@/store/menu';
+import ResourceTable from '@/components/ResourceTable/ResourceTable.vue';
 const menuStory = useMenuStore();
 const showInstallModal = ref(false)
 

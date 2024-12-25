@@ -11,7 +11,7 @@
                 <a-button v-if="showSelectAll" @click="selectAll">全选</a-button>
                 <a-button v-else @click="cancelSelect">取消全选</a-button>
             </div>
-            <div class="metadataList">
+            <div class="metadataList" v-if="metadataData.length">
                 <div v-for="i in metadataData" :key="i.id"
                     :class="{ 'metadataItem': true, 'selected': selectedMap.has(i.id) }"
                     @click="() => chooseMetadata(i)">
@@ -22,6 +22,7 @@
                     </div>
                 </div>
             </div>
+            <a-empty v-else></a-empty>
         </div>
     </div>
 </template>

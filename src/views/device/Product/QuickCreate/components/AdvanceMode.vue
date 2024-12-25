@@ -1,55 +1,111 @@
 <template>
     <div class="container">
-        <div>
+        <div v-if="!accessConfig">
             <div class="tips">
                 <div>您已进入高级模式，可自定义接入配置</div>
                 <a-button type="link" @click="quitAdvanceMode">退出高级模式</a-button>
             </div>
-            <div>
+            <div style="margin-bottom: 16px">
                 请选择接入方式
             </div>
             <a-row :gutter="[12, 12]">
-                <a-col :span="12">
-                    <div>
-                        <img src="" alt="">
-                        <div>
-                            <div></div>
-                            <div></div>
+                <a-col :span="12" v-for="i in accessList">
+                    <div class="accessCard card" @click="() => selectAccess(i)">
+                        <img :src="BackMap.get(i?.provider)" alt="">
+                        <div style="margin-left: 20px">
+                            <div class="cardName">{{ i?.provider + '网关' }}</div>
+                            <div class="cardDes">{{ descriptions?.get(i?.provider) }}</div>
                         </div>
                     </div>
                 </a-col>
             </a-row>
         </div>
-        <div>
+        <div v-else>
             <div>
-                <img src="" alt="">
-                <div>
-                    <div></div>
-                    <div></div>
+                <div class="accessInfo">
+                    <img :src="BackMap.get(accessConfig?.provider)" alt="">
+                    <div style="margin-left: 20px">
+                        <div class="cardName">{{ accessConfig?.provider + '网关' }}</div>
+                        <div class="cardDes">{{ descriptions?.get(accessConfig?.provider) }}</div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div>
-            <Title data="网络组件">
-                <template #extra>
-                    <a-button type="link" @click="visibleAddNetwork = true">选择</a-button>
-                </template>
-            </Title>
-            <Title data="协议">
-                <template #extra>
-                    <a-button type="link" @click="visibleAddProtocol = true">选择</a-button>
-                </template>
-            </Title>
-            <Title data="插件">
-                <template #extra>
-                    <a-button type="link" @click="visibleAddPlugin = true">选择</a-button>
-                </template>
-            </Title>
+            <div>
+                <div v-if="accessConfig.channel === 'network'">
+                    <Title data="网络组件">
+                        <template #extra>
+                            <a-button type="link" @click="visibleAddNetwork = true">选择</a-button>
+                        </template>
+                    </Title>
+                    <a-row :gutter="[12, 12]">
+                        <a-col :span="8">
+                            <div class="card" style="margin-bottom:10px;" v-if="network">
+                                <img :src="getImage('/network.png')" alt="">
+                                <div style="margin-left: 20px;">
+                                    <div class="cardName">
+                                        {{ network.name }}
+                                    </div>
+                                    <div class="cardDes">
+                                        <j-ellipsis>
+                                            {{ network.description }}
+                                        </j-ellipsis>
+                                    </div>
+                                </div>
+                            </div>
+                        </a-col>
+                    </a-row>
+                    <Title data="协议">
+                        <template #extra>
+                            <a-button type="link" @click="visibleAddProtocol = true">选择</a-button>
+                        </template>
+                    </Title>
+                    <a-row :gutter="[12, 12]">
+                        <a-col :span="8" v-for="i in accessConfig?.bindInfo">
+                            <div :class="{ 'card': true, 'protocolCard': true, 'selected': i.id === protocol?.id }"
+                                @click="protocol = i">
+                                <img :src="getImage('/protocol.png')" alt="">
+                                <div style="margin-left: 20px">
+                                    <div class="cardName">
+                                        {{ i.name }}
+                                    </div>
+                                </div>
+                            </div>
+                        </a-col>
+                    </a-row>
+                </div>
+                <div v-if="accessConfig.channel === 'plugin'">
+                    <Title data="插件">
+                        <template #extra>
+                            <a-button type="link" @click="visibleAddPlugin = true">选择</a-button>
+                        </template>
+                    </Title>
+                    <a-col :span="8" v-for="i in accessConfig?.bindInfo">
+                        <div :class="{ 'card': true, 'protocolCard': true, 'selected': i.id === plugin?.id }"
+                            @click="() => selectResourceProtocol(i)">
+                            <img :src="getImage('/plug.png')" alt="">
+                            <div style="margin-left: 20px">
+                                <div class="cardName">
+                                    {{ i.name }}
+                                </div>
+                            </div>
+                        </div>
+                    </a-col>
+                </div>
+            </div>
+            <div class="operation">
+                <a-space>
+                    <a-button @click="quitAdvanceMode">取消</a-button>
+                    <a-button type="primary" @click="submitDada">确定</a-button>
+                </a-space>
+            </div>
         </div>
     </div>
-    <Network v-if="visibleAddNetwork" :type="accessType" :selectedNetWork="network" @close="visibleAddNetwork = false" />
-    <Protocol v-if="visibleAddProtocol" :type="accessType" :selectedNetWork="protocol" @close="visibleAddProtocol = false" />
-    <Plugin v-if="visibleAddPlugin" :type="accessType" :selectedNetWork="plugin" @close="visibleAddPlugin = false" />
+    <Network v-if="visibleAddNetwork" :type="accessConfig?.provider" :selectedNetWork="network"
+        @selectedNetWork="selectedNetWork" @close="visibleAddNetwork = false" />
+    <Protocol v-if="visibleAddProtocol" :type="accessConfig?.provider" :selectedNetWork="protocol"
+        @selectedProtocol="selectedProtocol" @close="visibleAddProtocol = false" />
+    <Plugin v-if="visibleAddPlugin" :type="accessConfig?.provider" :selectedNetWork="plugin"
+        @selectedPlugin="selectedPlugin" @close="visibleAddPlugin = false" />
 </template>
 
 <script setup>
@@ -58,23 +114,130 @@ import Network from './NetWork/index.vue';
 import Protocol from './Protocol/index.vue'
 import Title from './Title/index.vue'
 import Plugin from './Plugin/index.vue'
-const emits = defineEmits(['quit'])
-const accessType = 'mqtt-server-gateway'
+import { getImage } from '@/utils/comm';
+import { omit } from 'lodash-es';
+const props = defineProps({
+    accessList: {
+        type: Array,
+        default: []
+    },
+    descriptions: {
+        type: Object,
+        default: () => {
+
+        }
+    }
+})
+const emits = defineEmits(['quit', 'submitDada'])
+const accessConfig = ref()
 const network = ref()
 const protocol = ref()
 const plugin = ref()
 const visibleAddNetwork = ref(false)
 const visibleAddProtocol = ref(false)
 const visibleAddPlugin = ref(false)
+const randomString = ref()
+function generateString() {
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const numbers = '0123456789';
+    let randomLetter = letters[Math.floor(Math.random() * letters.length)];
+    let randomNum1 = numbers[Math.floor(Math.random() * numbers.length)];
+    let randomNum2 = numbers[Math.floor(Math.random() * numbers.length)];
+    randomString.value = randomLetter + randomNum1 + randomNum2
+}
+
+const selectAccess = (data) => {
+    accessConfig.value = data
+}
+
+const selectedNetWork = (data) => {
+    network.value = data
+    visibleAddNetwork.value = false
+}
+
+const selectedProtocol = (data) => {
+    protocol.value = data
+    visibleAddProtocol.value = false
+}
+
+const selectedPlugin = (data) => {
+    plugin.value = data
+    visibleAddPlugin.value = false
+}
+
+const selectResourceProtocol = (data) => {
+
+}
+
 const quitAdvanceMode = () => {
     emits('quit')
 }
+
+const submitDada = () => {
+    generateString()
+    const data = accessConfig.value.channel === 'network' ? {
+        network: network.value,
+        gateway: {
+            name: accessConfig.value.provider?.split('-')?.[0] + '网关' + randomString.value,
+            ...omit(accessConfig.value, ['bindInfo', 'defaultAccess'])
+        },
+        protocol: protocol.value
+    } : {
+        gateway: {
+            name: accessConfig.value.provider?.split('-')?.[0] + '网关' + randomString.value,
+            ...omit(accessConfig.value, ['bindInfo', 'defaultAccess'])
+        },
+        plugin: plugin.value
+    }
+    console.log(data,'data')
+    emits('submitDada', data)
+}
+
 </script>
 <style lang='less' scoped>
 .container {
     border: 1px solid #bebfbf;
     border-radius: 8px;
-    padding: 5px 10px;
+    padding: 20px;
+    background-color: #f9fafc;
+
+    .accessInfo {
+        display: flex;
+    }
+
+    .accessCard {
+        cursor: pointer;
+    }
+
+    .cardName {
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    .cardDes {
+        margin-top: 20px;
+    }
+
+    .card {
+        display: flex;
+        border: 1px solid #949494;
+        border-radius: 8px;
+        padding: 20px;
+        background-color: #fff;
+    }
+
+    .protocolCard {
+        cursor: pointer;
+    }
+
+    .selected {
+        border-color: #2f54eb;
+    }
+
+    .operation {
+        margin-top: 16px;
+        text-align: right;
+    }
 }
 
 .tips {
