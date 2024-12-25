@@ -140,6 +140,7 @@
         </FullPage>
     </page-container>
     <SaveModal v-if="visible" :data="editData" @cancel="cancel" @ok="save" />
+    <Detail v-if="visibleDetail" :data="editData" @close="visibleDetail = false" />
 </template>
 
 <script setup lang="ts" name="PluginIndex">
@@ -147,12 +148,14 @@ import SaveModal from './Save.vue';
 import { getImage, onlyMessage } from '@/utils/comm';
 import { queryPage, removeFn, getTypes } from '@/api/link/plugin';
 import { TypeMap } from './util';
+import Detail from './Detail.vue';
 
 const route = useRoute();
 const visible = ref(false);
 const params = ref<any>();
 const editData = ref();
 const instanceRef = ref();
+const visibleDetail = ref(false);
 
 const columns = [
     {
@@ -224,7 +227,7 @@ const columns = [
         title: '操作',
         key: 'action',
         fixed: 'right',
-        width: 120,
+        width: 150,
         scopedSlots: true,
     },
 ];
@@ -252,6 +255,18 @@ const cancel = () => {
 
 const getActions = (data: any) => {
     return [
+    {
+            key: 'view',
+            text: '查看',
+            tooltip: {
+                title: '查看',
+            },
+            icon: 'EyeOutlined',
+            onClick: () => {
+                visibleDetail.value = true;
+                editData.value = data;
+            },
+        },
         {
             key: 'update',
             text: '编辑',
