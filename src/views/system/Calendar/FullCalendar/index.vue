@@ -524,7 +524,7 @@ const changeDate = (date) => {
 };
 
 const gotoCalendar = () => {
-    menuStory.jumpPage('system/Calendar');
+    menuStory.jumpPage('system/Calendar', {});
 };
 defineExpose({
     reselection,
