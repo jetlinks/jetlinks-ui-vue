@@ -15,6 +15,9 @@ export const changeStatus_api = (id: string, status: '_disabled' | '_enabled') =
 // 获取订阅类型
 export const getTypeList_api = () => server.get(`/notifications/providers`);
 
+//获取订阅类型 新
+export const getTypeListNew = (type:string) => server.get(`/notifications/current/${type}/providers`)
+
 // 获取告警规则列表
 export const getAlarmList_api = () => server.post(`/alarm/config/_query/no-paging`, {
     sorts: [{ name: 'createTime', order: 'desc' }],

@@ -85,7 +85,7 @@ import {
 import dayjs from 'dayjs';
 import { useUserInfo } from '@/store/userInfo';
 import { useRouterParams } from '@/utils/hooks/useParams';
-import { getTypeList_api } from '@/api/account/notificationSubscription';
+import { getTypeListNew } from '@/api/account/notificationSubscription';
 import { onlyMessage } from '@/utils/comm';
 
 const user = useUserInfo();
@@ -110,7 +110,7 @@ const getType = computed(() => {
             'alarm',
             'alarm-product',
             'alarm-device',
-            'alarm-other',
+            'alarm-scene',
             'alarm-org',
         ];
     }
@@ -125,17 +125,12 @@ const columns = [
             type: 'select',
             termFilter: ['in', 'nin'],
             options: () =>
-                getTypeList_api().then((resp: any) => {
+            getTypeListNew(props.type).then((resp: any) => {
                     return resp.result
                         .map((item: any) => ({
                             label: item.name,
                             value: item.id,
                         }))
-                        .filter((item: any) => {
-                            return [...getType.value].includes(item?.value)
-                        }).sort((a: any, b: any) => {
-                            return b?.value?.length - a?.value?.length
-                        });
                 }),
         },
         scopedSlots: true,

@@ -3,12 +3,7 @@
   <page-container v-if="type === 'card'">
     <!-- 新增、编辑 -->
     <div>
-      <Save
-          v-if="visible"
-          :type="saveType"
-          :data="current"
-          @change="saveChange"
-      />
+      <Save v-if="visible" :type="saveType" :data="current" @change="saveChange" />
       <j-row :gutter="[24, 24]">
         <j-col :span="24">
           <j-card>
@@ -17,16 +12,12 @@
                 <Guide>
                   <template #title>
                     <span>基本信息</span>
-                    <j-button
-                        type="link"
-                        @click="
-                                                () => {
-                                                    visible = true;
-                                                    current = detail;
-                                                    saveType = 'edit';
-                                                }
-                                            "
-                    >
+                    <j-button type="link" @click="() => {
+                        visible = true;
+                        current = detail;
+                        saveType = 'edit';
+                      }
+                      ">
                       <AIcon type="EditOutlined"></AIcon>
                       编辑
                     </j-button>
@@ -35,107 +26,111 @@
               </template>
 
               <j-descriptions-item label="卡号">{{
-                  detail.id
-                }}
+                detail.id
+              }}
               </j-descriptions-item>
               <j-descriptions-item label="ICCID">{{
-                  detail.iccId
-                }}
+                detail.iccId
+              }}
               </j-descriptions-item>
               <j-descriptions-item label="绑定设备">{{
-                  detail.deviceName
-                }}
+                detail.deviceName
+              }}
               </j-descriptions-item>
               <j-descriptions-item label="平台类型">{{
-                  platformTypeList.find(
-                      (item) =>
-                          item.value ===
-                          detail.operatorName,
-                  )?.label || detail.operatorName
-                }}
+                platformTypeList.find(
+                  (item) =>
+                    item.value ===
+                    detail.operatorName,
+                )?.label || detail.operatorName
+              }}
               </j-descriptions-item>
               <j-descriptions-item label="平台名称">{{
-                  detail.platformConfigName
-                }}
+                detail.platformConfigName
+              }}
               </j-descriptions-item>
               <j-descriptions-item label="运营商">{{
-                  OperatorList.find(
-                      (item) =>
-                          item.value === detail.operatorName,
-                  )?.label || detail.operatorName
-                }}
+                OperatorList.find(
+                  (item) =>
+                    item.value === detail.operatorName,
+                )?.label || detail.operatorName
+              }}
               </j-descriptions-item>
               <j-descriptions-item label="类型">{{
-                  detail.cardType?.text
-                }}
+                detail.cardType?.text
+              }}
               </j-descriptions-item>
               <j-descriptions-item label="激活日期">{{
-                  detail.activationDate
-                      ? dayjs(detail.activationDate).format(
-                          'YYYY-MM-DD HH:mm:ss',
-                      )
-                      : ''
-                }}
+                detail.activationDate
+                  ? dayjs(detail.activationDate).format(
+                    'YYYY-MM-DD HH:mm:ss',
+                  )
+                  : ''
+              }}
               </j-descriptions-item>
               <j-descriptions-item label="更新时间">{{
-                  detail.updateTime
-                      ? dayjs(detail.updateTime).format(
-                          'YYYY-MM-DD HH:mm:ss',
-                      )
-                      : ''
-                }}
+                detail.updateTime
+                  ? dayjs(detail.updateTime).format(
+                    'YYYY-MM-DD HH:mm:ss',
+                  )
+                  : ''
+              }}
               </j-descriptions-item>
               <j-descriptions-item label="总流量">{{
-                  detail.totalFlow
-                      ? detail.totalFlow.toFixed(2) + ' M'
-                      : '0 M'
-                }}
+                detail.totalFlow
+                  ? detail.totalFlow.toFixed(2) + ' M'
+                  : '0 M'
+              }}
               </j-descriptions-item>
               <j-descriptions-item label="使用流量">{{
-                  detail.usedFlow
-                      ? detail.usedFlow.toFixed(2) + ' M'
-                      : '0 M'
-                }}
+                detail.usedFlow
+                  ? detail.usedFlow.toFixed(2) + ' M'
+                  : '0 M'
+              }}
               </j-descriptions-item>
               <j-descriptions-item label="剩余流量">{{
-                  detail.residualFlow
-                      ? detail.residualFlow.toFixed(2) + ' M'
-                      : '0 M'
-                }}
+                detail.residualFlow
+                  ? detail.residualFlow.toFixed(2) + ' M'
+                  : '0 M'
+              }}
               </j-descriptions-item>
               <j-descriptions-item label="运营商状态">
                 {{ detail?.cardState?.text }}
-                <span
-                    v-if="deactivateData.show"
-                    style="padding-left: 8px"
-                >
-                                    <a-tooltip :title="deactivateData.tip">
-                                        <AIcon
-                                            type="ExclamationCircleOutlined"
-                                            style="
+                <span v-if="deactivateData.show" style="padding-left: 8px">
+                  <a-tooltip :title="deactivateData.tip">
+                    <AIcon type="ExclamationCircleOutlined" style="
                                                 color: var(--ant-error-color);
-                                            "
-                                        />
-                                    </a-tooltip>
-                                </span>
+                                            " />
+                  </a-tooltip>
+                </span>
               </j-descriptions-item>
               <j-descriptions-item label="平台状态">
                 {{ detail?.cardStateType?.text }}
               </j-descriptions-item>
-              <j-descriptions-item label="同步状态">
+              <j-descriptions-item>
+                <template #label>
+                  <div>
+                    同步状态
+                    <a-tooltip>
+                      <template #title>批量操作中物联网卡的同步状态</template>
+                      <AIcon type="QuestionCircleOutlined"></AIcon>
+                    </a-tooltip>
+                  </div>
+                </template>
                 <div style="display: flex; gap: 10px; align-items: center;">
                   <div style="min-width: 60px">
                     {{ detail?.syncCardStatus?.text }}
                   </div>
-                  <div style="display: flex; color: red; align-items: center; gap: 5px" v-if="detail?.syncCardStatus?.value === 'failed'">
+                  <div style="display: flex; color: red; align-items: center; gap: 5px"
+                    v-if="detail?.syncCardStatus?.value === 'failed'">
                     <AIcon type="ExclamationCircleFilled" />
                     <j-ellipsis>{{ detail?.errorMessage }}</j-ellipsis>
                   </div>
                 </div>
               </j-descriptions-item>
               <j-descriptions-item label="说明">{{
-                  detail?.describe
-                }}
+                detail?.describe
+              }}
               </j-descriptions-item>
             </j-descriptions>
           </j-card>
@@ -147,41 +142,24 @@
               <div class="card">
                 <Guide title="流量统计">
                   <template #extra>
-                    <TimeSelect
-                        :type="'week'"
-                        :quickBtnList="quickBtnList"
-                        @change="getEcharts"
-                    />
+                    <TimeSelect :type="'week'" :quickBtnList="quickBtnList" @change="getEcharts" />
                   </template>
                 </Guide>
-                <LineChart
-                    :showX="true"
-                    :showY="true"
-                    style="min-height: 490px"
-                    :chartData="flowData"
-                />
+                <LineChart :showX="true" :showY="true" style="min-height: 490px" :chartData="flowData" />
               </div>
             </j-col>
             <j-col :span="8">
               <div class="card">
-                <Guide title="数据统计"/>
-                <div
-                    class="static-info"
-                    style="min-height: 490px"
-                >
+                <Guide title="数据统计" />
+                <div class="static-info" style="min-height: 490px">
                   <div class="data-statistics-item">
-                    <div
-                        class="flow-info"
-                        style="width: 100%"
-                    >
+                    <div class="flow-info" style="width: 100%">
                       <div class="label">
                         昨日流量消耗
                       </div>
                       <j-tooltip placement="bottomLeft">
                         <template #title>
-                                                    <span
-                                                    >{{ dayTotal }} M</span
-                                                    >
+                          <span>{{ dayTotal }} M</span>
                         </template>
                         <div class="value">
                           {{ dayTotal }}
@@ -189,27 +167,19 @@
                         </div>
                       </j-tooltip>
                     </div>
-                    <LineChart
-                        color="#FBA500"
-                        :chartData="dayOptions"
-                    />
+                    <LineChart color="#FBA500" :chartData="dayOptions" />
                   </div>
                   <div class="data-statistics-item">
-                    <div
-                        class="flow-info"
-                        style="width: 100%"
-                    >
+                    <div class="flow-info" style="width: 100%">
                       <div class="label">
                         当月流量消耗
                       </div>
                       <j-tooltip placement="bottomLeft">
                         <template #title>
-                                                    <span
-                                                    >{{
-                                                        monthTotal
-                                                      }}
-                                                        M</span
-                                                    >
+                          <span>{{
+                            monthTotal
+                          }}
+                            M</span>
                         </template>
                         <div class="value">
                           {{ monthTotal }}
@@ -217,21 +187,16 @@
                         </div>
                       </j-tooltip>
                     </div>
-                    <LineChart :chartData="monthOptions"/>
+                    <LineChart :chartData="monthOptions" />
                   </div>
                   <div class="data-statistics-item">
-                    <div
-                        class="flow-info"
-                        style="width: 100%"
-                    >
+                    <div class="flow-info" style="width: 100%">
                       <div class="label">
                         本年流量消耗
                       </div>
                       <j-tooltip placement="bottomLeft">
                         <template #title>
-                                                    <span
-                                                    >{{ yearTotal }} M</span
-                                                    >
+                          <span>{{ yearTotal }} M</span>
                         </template>
                         <div class="value">
                           {{ yearTotal }}
@@ -239,10 +204,7 @@
                         </div>
                       </j-tooltip>
                     </div>
-                    <LineChart
-                        color="#58E1D3"
-                        :chartData="yearOptions"
-                    />
+                    <LineChart color="#58E1D3" :chartData="yearOptions" />
                   </div>
                 </div>
               </div>
@@ -254,12 +216,7 @@
   </page-container>
   <div v-else>
     <div v-if="cardId">
-      <Save
-          v-if="visible"
-          :type="saveType"
-          :data="current"
-          @change="saveChange"
-      />
+      <Save v-if="visible" :type="saveType" :data="current" @change="saveChange" />
       <j-row :gutter="[24, 24]">
         <j-col :span="24">
           <j-card>
@@ -268,16 +225,12 @@
                 <Guide>
                   <template #title>
                     <span>基本信息</span>
-                    <j-button
-                        type="link"
-                        @click="
-                                                () => {
-                                                    visible = true;
-                                                    current = detail;
-                                                    saveType = 'edit';
-                                                }
-                                            "
-                    >
+                    <j-button type="link" @click="() => {
+                        visible = true;
+                        current = detail;
+                        saveType = 'edit';
+                      }
+                      ">
                       <AIcon type="EditOutlined"></AIcon>
                       编辑
                     </j-button>
@@ -286,96 +239,90 @@
               </template>
 
               <j-descriptions-item label="卡号">{{
-                  detail.id
-                }}
+                detail.id
+              }}
               </j-descriptions-item>
               <j-descriptions-item label="ICCID">{{
-                  detail.iccId
-                }}
+                detail.iccId
+              }}
               </j-descriptions-item>
               <j-descriptions-item label="绑定设备">{{
-                  detail.deviceName
-                }}
+                detail.deviceName
+              }}
               </j-descriptions-item>
               <j-descriptions-item label="平台类型">{{
-                  platformTypeList.find(
-                      (item) =>
-                          item.value ===
-                          detail.operatorName,
-                  )?.label || detail.operatorName
-                }}
+                platformTypeList.find(
+                  (item) =>
+                    item.value ===
+                    detail.operatorName,
+                )?.label || detail.operatorName
+              }}
               </j-descriptions-item>
               <j-descriptions-item label="平台名称">{{
-                  detail.platformConfigName
-                }}
+                detail.platformConfigName
+              }}
               </j-descriptions-item>
               <j-descriptions-item label="运营商">{{
-                  OperatorList.find(
-                      (item) =>
-                          item.value === detail.operatorName,
-                  )?.label || detail.operatorName
-                }}
+                OperatorList.find(
+                  (item) =>
+                    item.value === detail.operatorName,
+                )?.label || detail.operatorName
+              }}
               </j-descriptions-item>
               <j-descriptions-item label="类型">{{
-                  detail.cardType?.text
-                }}
+                detail.cardType?.text
+              }}
               </j-descriptions-item>
               <j-descriptions-item label="激活日期">{{
-                  detail.activationDate
-                      ? dayjs(detail.activationDate).format(
-                          'YYYY-MM-DD HH:mm:ss',
-                      )
-                      : ''
-                }}
+                detail.activationDate
+                  ? dayjs(detail.activationDate).format(
+                    'YYYY-MM-DD HH:mm:ss',
+                  )
+                  : ''
+              }}
               </j-descriptions-item>
               <j-descriptions-item label="更新时间">{{
-                  detail.updateTime
-                      ? dayjs(detail.updateTime).format(
-                          'YYYY-MM-DD HH:mm:ss',
-                      )
-                      : ''
-                }}
+                detail.updateTime
+                  ? dayjs(detail.updateTime).format(
+                    'YYYY-MM-DD HH:mm:ss',
+                  )
+                  : ''
+              }}
               </j-descriptions-item>
               <j-descriptions-item label="总流量">{{
-                  detail.totalFlow
-                      ? detail.totalFlow.toFixed(2) + ' M'
-                      : '0 M'
-                }}
+                detail.totalFlow
+                  ? detail.totalFlow.toFixed(2) + ' M'
+                  : '0 M'
+              }}
               </j-descriptions-item>
               <j-descriptions-item label="使用流量">{{
-                  detail.usedFlow
-                      ? detail.usedFlow.toFixed(2) + ' M'
-                      : '0 M'
-                }}
+                detail.usedFlow
+                  ? detail.usedFlow.toFixed(2) + ' M'
+                  : '0 M'
+              }}
               </j-descriptions-item>
               <j-descriptions-item label="剩余流量">{{
-                  detail.residualFlow
-                      ? detail.residualFlow.toFixed(2) + ' M'
-                      : '0 M'
-                }}
+                detail.residualFlow
+                  ? detail.residualFlow.toFixed(2) + ' M'
+                  : '0 M'
+              }}
               </j-descriptions-item>
               <j-descriptions-item label="运营商状态">
                 {{ detail?.cardState?.text }}
-                <span
-                    v-if="deactivateData.show"
-                    style="padding-left: 8px"
-                >
-                                    <a-tooltip :title="deactivateData.tip">
-                                        <AIcon
-                                            type="ExclamationCircleOutlined"
-                                            style="
+                <span v-if="deactivateData.show" style="padding-left: 8px">
+                  <a-tooltip :title="deactivateData.tip">
+                    <AIcon type="ExclamationCircleOutlined" style="
                                                 color: var(--ant-error-color);
-                                            "
-                                        />
-                                    </a-tooltip>
-                                </span>
+                                            " />
+                  </a-tooltip>
+                </span>
               </j-descriptions-item>
               <j-descriptions-item label="平台状态">
                 {{ detail?.cardStateType?.text }}
               </j-descriptions-item>
               <j-descriptions-item label="说明">{{
-                  detail?.describe
-                }}
+                detail?.describe
+              }}
               </j-descriptions-item>
             </j-descriptions>
           </j-card>
@@ -387,41 +334,24 @@
               <div class="card">
                 <Guide title="流量统计">
                   <template #extra>
-                    <TimeSelect
-                        :type="'week'"
-                        :quickBtnList="quickBtnList"
-                        @change="getEcharts"
-                    />
+                    <TimeSelect :type="'week'" :quickBtnList="quickBtnList" @change="getEcharts" />
                   </template>
                 </Guide>
-                <LineChart
-                    :showX="true"
-                    :showY="true"
-                    style="min-height: 490px"
-                    :chartData="flowData"
-                />
+                <LineChart :showX="true" :showY="true" style="min-height: 490px" :chartData="flowData" />
               </div>
             </j-col>
             <j-col :span="8">
               <div class="card">
-                <Guide title="数据统计"/>
-                <div
-                    class="static-info"
-                    style="min-height: 490px"
-                >
+                <Guide title="数据统计" />
+                <div class="static-info" style="min-height: 490px">
                   <div class="data-statistics-item">
-                    <div
-                        class="flow-info"
-                        style="width: 100%"
-                    >
+                    <div class="flow-info" style="width: 100%">
                       <div class="label">
                         昨日流量消耗
                       </div>
                       <j-tooltip placement="bottomLeft">
                         <template #title>
-                                                    <span
-                                                    >{{ dayTotal }} M</span
-                                                    >
+                          <span>{{ dayTotal }} M</span>
                         </template>
                         <div class="value">
                           {{ dayTotal }}
@@ -429,27 +359,19 @@
                         </div>
                       </j-tooltip>
                     </div>
-                    <LineChart
-                        color="#FBA500"
-                        :chartData="dayOptions"
-                    />
+                    <LineChart color="#FBA500" :chartData="dayOptions" />
                   </div>
                   <div class="data-statistics-item">
-                    <div
-                        class="flow-info"
-                        style="width: 100%"
-                    >
+                    <div class="flow-info" style="width: 100%">
                       <div class="label">
                         当月流量消耗
                       </div>
                       <j-tooltip placement="bottomLeft">
                         <template #title>
-                                                    <span
-                                                    >{{
-                                                        monthTotal
-                                                      }}
-                                                        M</span
-                                                    >
+                          <span>{{
+                            monthTotal
+                          }}
+                            M</span>
                         </template>
                         <div class="value">
                           {{ monthTotal }}
@@ -457,21 +379,16 @@
                         </div>
                       </j-tooltip>
                     </div>
-                    <LineChart :chartData="monthOptions"/>
+                    <LineChart :chartData="monthOptions" />
                   </div>
                   <div class="data-statistics-item">
-                    <div
-                        class="flow-info"
-                        style="width: 100%"
-                    >
+                    <div class="flow-info" style="width: 100%">
                       <div class="label">
                         本年流量消耗
                       </div>
                       <j-tooltip placement="bottomLeft">
                         <template #title>
-                                                    <span
-                                                    >{{ yearTotal }} M</span
-                                                    >
+                          <span>{{ yearTotal }} M</span>
                         </template>
                         <div class="value">
                           {{ yearTotal }}
@@ -479,10 +396,7 @@
                         </div>
                       </j-tooltip>
                     </div>
-                    <LineChart
-                        color="#58E1D3"
-                        :chartData="yearOptions"
-                    />
+                    <LineChart color="#58E1D3" :chartData="yearOptions" />
                   </div>
                 </div>
               </div>
@@ -497,7 +411,7 @@
 
 <script setup lang="ts" name="CardDetail">
 import dayjs from 'dayjs';
-import type {CardManagement} from '../typing';
+import type { CardManagement } from '../typing';
 import {
   queryDeactivate,
   queryDetail,
@@ -506,9 +420,9 @@ import {
 import Save from '../Save.vue';
 import Guide from '@/views/iot-card/components/Guide.vue';
 import LineChart from '@/views/iot-card/components/LineChart.vue';
-import {queryFlow} from '@/api/iot-card/home';
+import { queryFlow } from '@/api/iot-card/home';
 import TimeSelect from '@/views/iot-card/components/TimeSelect.vue';
-import {OperatorList, platformTypeList} from '@/views/iot-card/data';
+import { OperatorList, platformTypeList } from '@/views/iot-card/data';
 
 const props = defineProps({
   type: {
@@ -539,10 +453,10 @@ const deactivateData = reactive({
 });
 
 const quickBtnList = [
-  {label: '昨日', value: 'yesterday'},
-  {label: '近一周', value: 'week'},
-  {label: '近一月', value: 'month'},
-  {label: '近一年', value: 'year'},
+  { label: '昨日', value: 'yesterday' },
+  { label: '近一周', value: 'week' },
+  { label: '近一月', value: 'month' },
+  { label: '近一年', value: 'year' },
 ];
 
 const getDetail = () => {
@@ -589,8 +503,8 @@ const getData = (start: number, end: number): Promise<{ sortArray: any[] }> => {
     }).then((resp: any) => {
       if (resp.status === 200) {
         const sortArray = resp.result.sort(
-            (a: any, b: any) =>
-                new Date(a.date).getTime() - new Date(b.date).getTime(),
+          (a: any, b: any) =>
+            new Date(a.date).getTime() - new Date(b.date).getTime(),
         );
         resolve({
           sortArray,
@@ -618,20 +532,20 @@ const getDataTotal = () => {
   ];
   getData(dTime[0], dTime[1]).then((resp) => {
     dayTotal.value = resp.sortArray
-        .reduce((r, n) => r + Number(n.value), 0)
-        .toFixed(2);
+      .reduce((r, n) => r + Number(n.value), 0)
+      .toFixed(2);
     dayOptions.value = resp.sortArray;
   });
   getData(mTime[0], mTime[1]).then((resp) => {
     monthTotal.value = resp.sortArray
-        .reduce((r, n) => r + Number(n.value), 0)
-        .toFixed(2);
+      .reduce((r, n) => r + Number(n.value), 0)
+      .toFixed(2);
     monthOptions.value = resp.sortArray;
   });
   getData(yTime[0], yTime[1]).then((resp) => {
     yearTotal.value = resp.sortArray
-        .reduce((r, n) => r + Number(n.value), 0)
-        .toFixed(2);
+      .reduce((r, n) => r + Number(n.value), 0)
+      .toFixed(2);
     yearOptions.value = resp.sortArray;
   });
 };

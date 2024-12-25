@@ -879,12 +879,14 @@ const handleImport = async () => {
                         data[data?.type === 'copy' ? 'copy' : 'import'] || '{}',
                     );
                     if (data?.type !== 'copy') {
-                        Object.keys(_object).forEach((i: any) => {
+                        Object.keys(_object)?.forEach((i: any) => {
                             const map = new Map();
-                            _object[i].forEach((item: any) =>
+                            if(Array.isArray(_object[i])){
+                                _object[i]?.forEach((item: any) =>
                                 map.set(item.id, item),
                             );
-                            _object[i] = [...map.values()];
+                                _object[i] = [...map.values()];
+                            }
                         });
                     }
                     if (
@@ -904,9 +906,9 @@ const handleImport = async () => {
                     //     _object as DeviceMetadata,
                     // );
                     // console.log(copyOperateLimits,_object); // 导入取并集逻辑
-                    Object.keys(_object).forEach((i: any) => {
+                    Object.keys(_object)?.forEach((i: any) => {
                         if (i === 'functions') {
-                            _object[i].forEach((a: any) => {
+                            _object[i]?.forEach((a: any) => {
                                 a?.inputs?.forEach((item: any) => {
                                     item.expands = {
                                         required: false,
@@ -915,7 +917,7 @@ const handleImport = async () => {
                             });
                         }
                         if (i === 'properties') {
-                            _object[i].filter((a: any) => {
+                            _object[i]?.filter((a: any) => {
                                 if (a?.expands?.source === 'rule') {
                                     hasVirtualRule.value = true;
                                     return;
@@ -954,7 +956,8 @@ const handleImport = async () => {
                     }
                     metadataStore.set('importMetadata', true);
                     close();
-                } catch (e) {
+                } 
+                catch (e) {
                     loading.value = false;
                     if (e?.name === 'AxiosError') {
                         return;

@@ -13,6 +13,7 @@ export interface formValueType {
     logo: string | undefined;
     ico: string | undefined;
     backgroud: string | undefined;
+    handbook: string | undefined;
 }
 
 export interface formType {

@@ -148,13 +148,13 @@ let alarmState = ref<Footer[]>([
 const selectOpt1 = ref<Object[]>([
     { label: '设备', value: 'device' },
     { label: '产品', value: 'product' },
-    { label: '组织', value: 'org' },
-    { label: '其它', value: 'other' },
+    { label: '组织', value: 'organization' },
+    { label: '场景', value: 'scene' },
 ]);
 const selectOpt2 = ref<SelectTypes['options']>([
     { label: '设备', value: 'device' },
     { label: '产品', value: 'product' },
-    { label: '其它', value: 'other' },
+    { label: '场景', value: 'scene' },
 ]);
 let queryCodition = reactive({
     startTime: 0,
@@ -338,13 +338,34 @@ const getAlarmConfig = async () => {
 getAlarmConfig();
 const getCurrentAlarm = async () => {
     const alarmLevel: any = await getAlarmLevel();
+    const params ={
+    "pageIndex": 0,
+    "pageSize": 12,
+    "sorts": [
+        {
+            "name": "alarmTime",
+            "order": "desc"
+        }
+    ],
+    "terms": [
+        {
+            "terms": [
+                {
+                    "type": "or",
+                    "value": "warning",
+                    "termType": "eq",
+                    "column": "state"
+                }
+            ]
+        }
+    ]
+}
     const sorts = { alarmTime: 'desc' };
-    const currentAlarm: any = await getAlarm(encodeQuery({ sorts }));
+    const currentAlarm: any = await getAlarm(params);
     if (currentAlarm.status === 200) {
         if (alarmLevel.status === 200) {
             const levels = alarmLevel.result.levels;
             state.alarmList = currentAlarm.result?.data
-                .filter((i: any) => i?.state?.value === 'warning')
                 .map((item: { level: any }) => ({
                     ...item,
                     levelName: levels.find((l: any) => l.level === item.level)
@@ -427,12 +448,12 @@ const selectChange = () => {
             limit: 9,
         },
     };
-    let tip = '其它';
+    let tip = '场景';
     if (queryCodition.targetType === 'device') {
         tip = '设备';
     } else if (queryCodition.targetType === 'product') {
         tip = '产品';
-    } else if (queryCodition.targetType === 'org') {
+    } else if (queryCodition.targetType === 'organization') {
         tip = '组织';
     }
     // 网络请求
