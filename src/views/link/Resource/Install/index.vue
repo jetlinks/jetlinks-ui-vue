@@ -8,7 +8,7 @@
       :footer="null"
   >
     <InstallIng v-if="taskList.length" :taskList="taskList"/>
-    <List v-else-if="fileList.length"/>
+    <List v-else-if="fileList.length" v-model:value="fileList" @cancel="emits('close')" @refresh="getTaskList"/>
     <template v-else>
       <Init v-model:source="source" v-model:value="fileList"/>
     </template>
@@ -42,7 +42,7 @@ const getTaskList = async () => {
 }
 
 onMounted(() => {
-  getTaskList()
+  // getTaskList()
 })
 </script>
 <style lang="less" scoped>
