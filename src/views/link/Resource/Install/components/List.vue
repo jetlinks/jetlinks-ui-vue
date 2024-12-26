@@ -70,10 +70,10 @@ const props = defineProps({
         type: Array,
         default: [],
     },
-    installType: {
-        type: String,
-        default: '',
-    },
+    source:{
+        type:String,
+        default: ''
+    }
 });
 const emits = defineEmits(['update:value', 'cancel', 'refresh']);
 const resourceVersionMap = ref(new Map());
@@ -112,7 +112,7 @@ const removeFile = (index) => {
 const onInstall = async () => {
     return new Promise(async (resolve) => {
         const res = await installResource({
-            type: props.installType,
+            type: props.source,
             resourceDetails: fileList.value.map((i) => {
                 return {
                     releaseDetail: i,
