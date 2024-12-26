@@ -119,9 +119,9 @@
                                     :class="{
                                         card: true,
                                         protocolCard: true,
-                                        selected: i.id === protocol?.id,
+                                        selected: i.id === protocol?.id || i.id === selectedProtocolID,
                                     }"
-                                    @click="protocol = i"
+                                    @click="() => selectResourceProtocol(i)"
                                 >
                                     <img
                                         :src="getImage('/protocol.png')"
@@ -217,6 +217,10 @@ const props = defineProps({
         type: Object,
         default: () => {},
     },
+    randomString:{
+        type:String,
+        default:''
+    }
 });
 const emits = defineEmits(['quit', 'submit']);
 const accessConfig = ref();
@@ -226,6 +230,10 @@ const plugin = ref();
 const visibleAddNetwork = ref(false);
 const visibleAddProtocol = ref(false);
 const visibleAddPlugin = ref(false);
+//资源库选中插件id
+const selectedPluginID = ref()
+//资源库选中协议id
+const selectedProtocolID = ref()
 const protocolList = computed(() => {
     const resource = accessConfig.value.bindInfo.some((i) => {
         return i.id === protocol.value?.id;
@@ -242,15 +250,6 @@ const pluginList = computed(() => {
         ? accessConfig.value.bindInfo
         : [plugin.value];
 });
-const randomString = ref();
-function generateString() {
-    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    const numbers = '0123456789';
-    let randomLetter = letters[Math.floor(Math.random() * letters.length)];
-    let randomNum1 = numbers[Math.floor(Math.random() * numbers.length)];
-    let randomNum2 = numbers[Math.floor(Math.random() * numbers.length)];
-    randomString.value = randomLetter + randomNum1 + randomNum2;
-}
 
 const selectAccess = (data) => {
     accessConfig.value = data;
@@ -264,15 +263,24 @@ const selectedNetWork = (data) => {
 const selectedProtocol = (data) => {
     protocol.value = data;
     visibleAddProtocol.value = false;
+    selectedProtocolID.value = ''
 };
 
 const selectedPlugin = (data) => {
     plugin.value = data;
     visibleAddPlugin.value = false;
+    selectedPluginID.value = ''
 };
 
 const selectResourceProtocol = (data) => {
-    
+    protocol.value = {
+        ...omit(data, ['id']),
+        type: 'jar',
+        configuration: {
+            location: data.url,
+        },
+    };
+    selectedProtocolID.value = data.id
 };
 
 const quitAdvanceMode = () => {
@@ -280,13 +288,12 @@ const quitAdvanceMode = () => {
 };
 
 const submitDada = () => {
-    generateString();
     let data;
     const gateway = {
         name:
             accessConfig.value.provider?.split('-')?.[0] +
             '网关' +
-            randomString.value,
+            props.randomString,
         ...omit(accessConfig.value, ['bindInfo', 'defaultAccess']),
         gatewayType: gatewayType.get(accessConfig.value.provider),
     };

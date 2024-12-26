@@ -67,6 +67,7 @@ const addVisible = ref(false);
 const networkCurrent = ref();
 
 const queryNetworkList = async (data = {}) => {
+    addVisible.value = false
     const params = {
         paging: false,
         sorts: [

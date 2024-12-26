@@ -126,7 +126,7 @@
             v-if="!advancedMode && accessData.channel === 'network'"
         >
             <div>网络组件配置</div>
-            <Network ref="networkRef" />
+            <Network ref="networkRef" :accessData="accessData"/>
         </div>
         <div>
             <a-space>
@@ -407,30 +407,29 @@ const getConfigurationByGB28181 = async () => {
     }
 };
 
-watch(
-    () => props.accessData,
-    () => {
-        console.log(props.accessData, 'accessData');
-        if (
-            ['network', 'OneNet', 'Ctwing'].includes(
-                props.accessData.channel,
-            ) &&
-            !['agent-media-device-gateway', 'agent-device-gateway'].includes(
-                props.accessData.provider,
-            )
-        ) {
-            getConfigurationByProtocol();
-        } else if (props.accessData.channel === 'plugin') {
-            getConfigurationByPlugin();
-        } else if (props.accessData.provider === 'gb28181-2016') {
-            getConfigurationByGB28181();
-        }
-    },
-    {
-        deep: true,
-        immediate: true,
-    },
-);
+// watch(
+//     () => props.accessData,
+//     () => {
+//         if (
+//             ['network', 'OneNet', 'Ctwing'].includes(
+//                 props.accessData.channel,
+//             ) &&
+//             !['agent-media-device-gateway', 'agent-device-gateway'].includes(
+//                 props.accessData.provider,
+//             )
+//         ) {
+//             getConfigurationByProtocol();
+//         } else if (props.accessData.channel === 'plugin') {
+//             getConfigurationByPlugin();
+//         } else if (props.accessData.provider === 'gb28181-2016') {
+//             getConfigurationByGB28181();
+//         }
+//     },
+//     {
+//         deep: true,
+//         immediate: true,
+//     },
+// );
 
 onMounted(() => {
     getStoragList().then((resp) => {
@@ -438,6 +437,18 @@ onMounted(() => {
             storageList.value = resp.result;
         }
     });
+    if (
+        ['network', 'OneNet', 'Ctwing'].includes(props.accessData.channel) &&
+        !['agent-media-device-gateway', 'agent-device-gateway'].includes(
+            props.accessData.provider,
+        )
+    ) {
+        getConfigurationByProtocol();
+    } else if (props.accessData.channel === 'plugin') {
+        getConfigurationByPlugin();
+    } else if (props.accessData.provider === 'gb28181-2016') {
+        getConfigurationByGB28181();
+    }
 });
 </script>
 <style lang="less" scoped></style>

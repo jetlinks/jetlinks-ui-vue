@@ -179,8 +179,16 @@ import {
     Rules,
 } from '../../../data';
 import { certificates } from '@/api/link/type';
+import { NetworkTypeMapping } from '@/views/link/AccessConfig/data';
 import { cloneDeep } from 'lodash-es';
-import { defineExpose, toRaw } from 'vue';
+import { defineExpose } from 'vue';
+const props = defineProps({
+    accessData: {
+        type: Object,
+        default: () => {},
+    },
+});
+
 const formData = reactive({
     secure: false,
     certId: '',
@@ -197,7 +205,7 @@ const typescriptTip = reactive({
     typescript: '',
 });
 
-const netWorkType = ref('TCP_SERVER');
+const netWorkType = ref('');
 
 const getCertificates = async () => {
     const resp = await certificates();
@@ -266,6 +274,18 @@ const submitData = () => {
 defineExpose({
     submitData,
 });
+
+watch(
+    () => props.accessData,
+    () => {
+        console.log(props.accessData)
+        netWorkType.value = NetworkTypeMapping.get(props.accessData.provider)
+    },
+    {
+        deep: true,
+        immediate: true,
+    },
+);
 
 onMounted(() => {
     getCertificates();

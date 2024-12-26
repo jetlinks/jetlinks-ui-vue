@@ -6,29 +6,54 @@
                     <div class="header">
                         <a-row align="middle">
                             <a-col :span="18">请选择资源</a-col>
-                            <a-col :span="6"> <a-input placeholder="请输入关键字"
-                                    v-model:value="searchParams"></a-input></a-col>
+                            <a-col :span="6">
+                                <a-input
+                                    placeholder="请输入关键字"
+                                    v-model:value="searchParams"
+                                ></a-input
+                            ></a-col>
                         </a-row>
                     </div>
                 </div>
                 <div class="content">
                     <div class="left_search">
-                        <a-tabs v-model:activeKey="activeKey" @change="typeChange">
-                            <a-tab-pane v-for="i in classificationType" :key="i.id" :tab="i.name">
-                                <SearchTree :data="classification" @select="select" />
+                        <a-tabs
+                            v-model:activeKey="activeKey"
+                            @change="typeChange"
+                        >
+                            <a-tab-pane
+                                v-for="i in classificationType"
+                                :key="i.id"
+                                :tab="i.name"
+                            >
+                                <SearchTree
+                                    :data="classification"
+                                    @select="select"
+                                />
                             </a-tab-pane>
                         </a-tabs>
                     </div>
                     <div class="right_list">
                         <a-row :gutter="[16, 16]" v-if="resourceData.length">
-                            <a-col :span="8" v-for="i in resourceData" :key="i.id">
-                                <div class="resource" @click="() => chooseResource(i)">
-                                    <img :src="i.photoUrl?.url" alt="" class="resourceImg">
+                            <a-col
+                                :span="8"
+                                v-for="i in resourceData"
+                                :key="i.id"
+                            >
+                                <div
+                                    class="resource"
+                                    @click="() => chooseResource(i)"
+                                >
+                                    <img
+                                        :src="i.photoUrl?.url"
+                                        alt=""
+                                        class="resourceImg"
+                                    />
                                     <div>
                                         <div>
                                             {{ i.name }}
                                         </div>
-                                        <div style="color:#8e8e8e">
+                                        <div style="color: #8e8e8e">
                                             {{ i.describe }}
                                         </div>
                                     </div>
@@ -39,231 +64,240 @@
                     </div>
                 </div>
             </template>
-            <Operation v-else :data="selectedResource" @reselection="reselection"></Operation>
+            <Operation
+                v-else
+                :data="selectedResource"
+                @reselection="reselection"
+            ></Operation>
         </FullPage>
     </page-container>
 </template>
 
 <script setup>
 import SearchTree from './components/SearchTree.vue';
-import { queryClassificationType, queryClassification } from '@/api/device/quickCreate.ts'
-import { queryTemplate } from '@/api/device/product.ts'
+import {
+    queryClassificationType,
+    queryClassification,
+} from '@/api/device/quickCreate.ts';
+import { queryTemplate } from '@/api/device/product.ts';
 import Operation from './Operation.vue';
-const searchParams = ref('')
-const activeKey = ref(undefined)
+const searchParams = ref('');
+const activeKey = ref(undefined);
 //分类类型
 const classificationType = ref([
     {
-        "id": "1866398366079029248",
-        "name": "品牌",
-        "creatorId": "1199596756811550720",
-        "createTime": 1733819021132
+        id: '1866398366079029248',
+        name: '品牌',
+        creatorId: '1199596756811550720',
+        createTime: 1733819021132,
     },
     {
-        "id": "1866398366091612160",
-        "name": "行业",
-        "creatorId": "1199596756811550720",
-        "createTime": 1733819021132
+        id: '1866398366091612160',
+        name: '行业',
+        creatorId: '1199596756811550720',
+        createTime: 1733819021132,
     },
     {
-        "id": "1866398366091612161",
-        "name": "品类",
-        "creatorId": "1199596756811550720",
-        "createTime": 1733819021132
-    }
-])
+        id: '1866398366091612161',
+        name: '品类',
+        creatorId: '1199596756811550720',
+        createTime: 1733819021132,
+    },
+]);
 //分类数据
 const classification = ref([
     {
-        "id": "5e41c296-6abd-423b-8781-22a1c62ceec3",
-        "path": "SBur",
-        "sortIndex": 1,
-        "level": 1,
-        "name": "建筑",
-        "classificationTypeId": "1866398366091612160",
-        "creatorId": "1199596756811550720",
-        "createTime": 1733819161446,
-        "children": [
+        id: '5e41c296-6abd-423b-8781-22a1c62ceec3',
+        path: 'SBur',
+        sortIndex: 1,
+        level: 1,
+        name: '建筑',
+        classificationTypeId: '1866398366091612160',
+        creatorId: '1199596756811550720',
+        createTime: 1733819161446,
+        children: [
             {
-                "id": "9cf1900f-e573-4f0d-aaab-6d18f59c6a34",
-                "parentId": "5e41c296-6abd-423b-8781-22a1c62ceec3",
-                "path": "SBur-Oux9",
-                "sortIndex": 1,
-                "level": 2,
-                "name": "桥梁建设",
-                "classificationTypeId": "1866398366091612160",
-                "creatorId": "1199596756811550720",
-                "createTime": 1733819189718
+                id: '9cf1900f-e573-4f0d-aaab-6d18f59c6a34',
+                parentId: '5e41c296-6abd-423b-8781-22a1c62ceec3',
+                path: 'SBur-Oux9',
+                sortIndex: 1,
+                level: 2,
+                name: '桥梁建设',
+                classificationTypeId: '1866398366091612160',
+                creatorId: '1199596756811550720',
+                createTime: 1733819189718,
             },
             {
-                "id": "af881773-71a9-46b2-8ee0-718a5151bfe5",
-                "parentId": "5e41c296-6abd-423b-8781-22a1c62ceec3",
-                "path": "SBur-CPE8",
-                "sortIndex": 1,
-                "level": 2,
-                "name": "桥梁建设A",
-                "classificationTypeId": "1866398366091612160",
-                "creatorId": "1199596756811550720",
-                "createTime": 1733822120806
-            }
-        ]
-    }
-])
-const selectedClassification = ref()
-const selectedResource = ref(undefined)
-const resourceData = ref([{
-  "id": "1871843939208122368",
-  "type": {
-    "text": "设备模板",
-    "value": "device"
-  },
-  "photoUrl": {
-    "type": {
-      "text": "本地上传",
-      "value": "internal"
-    }
-  },
-  "name": "前端测试",
-  "source": [],
-  "docUrl": [],
-  "loopPicUrl": [],
-  "developDuration": 1,
-  "charge": false,
-  "classification": [
-    {
-      "id": "1866398366079029248",
-      "name": "品牌",
-      "children": [
-        {
-          "id": "2ba2ba25-4966-41bb-afd1-89b60bd59425",
-          "classificationId": "1866398366079029248",
-          "name": "11111111",
-          "order": -1
-        }
-      ]
-    }
-  ],
-  "version": "v1.0.0",
-  "creatorId": "1199596756811550720",
-  "creatorName": "超级管理员",
-  "createTime": 1735117346942,
-  "modifyTime": 1735117346942,
-  "modifierId": "1199596756811550720",
-  "modifierName": "超级管理员",
-  "deviceType": [
-    {
-      "text": "直连设备",
-      "value": "device"
-    }
-  ],
-  "accessInfos": [
-    {
-      "provider": "gb28181-2016",
-      "channel": "gb28181",
-      "bindInfo": [],
-      "transport": "SIP",
-      "configuration": {},
-      "defaultAccess": true
+                id: 'af881773-71a9-46b2-8ee0-718a5151bfe5',
+                parentId: '5e41c296-6abd-423b-8781-22a1c62ceec3',
+                path: 'SBur-CPE8',
+                sortIndex: 1,
+                level: 2,
+                name: '桥梁建设A',
+                classificationTypeId: '1866398366091612160',
+                creatorId: '1199596756811550720',
+                createTime: 1733822120806,
+            },
+        ],
     },
+]);
+const selectedClassification = ref();
+const selectedResource = ref(undefined);
+const resourceData = ref([
     {
-      "provider": "plugin_gateway",
-      "channel": "plugin",
-      "bindInfo": [
-        {
-          "id": "1868948306088001536",
-          "type": "protocol",
-          "name": "p_1217",
-          "defaultAccess": true
+        id: '1872154883502014464',
+        type: {
+            text: '设备模板',
+            value: 'device',
         },
-        {
-          "id": "1870025837543178240",
-          "type": "protocol",
-          "name": "test1220"
+        photoUrl: {
+            type: {
+                text: '本地上传',
+                value: 'internal',
+            },
         },
-        {
-          "id": "1870026182482739200",
-          "type": "protocol",
-          "name": "xxxx"
-        }
-      ],
-      "transport": "WebSocket",
-      "configuration": {},
-      "defaultAccess": false
-    }
-  ],
-  "metadata": "{\"events\":[],\"properties\":[],\"functions\":[],\"tags\":[]}"
-}])
+        name: 'MQTT 设备创建',
+        describe: '设备模板创建',
+        source: ['自动创建'],
+        docUrl: [
+            {
+                type: {
+                    text: '本地上传',
+                    value: 'internal',
+                },
+                url: 'http://192.168.32.139:9900/api/file/Z5QCUSLAMXkbAr6PrvQkHRIoiyMee_71.docx?accessKey=87efecb5d56884ab1df7fd403a0bfa03',
+                name: 'JetLinks2.2系统部署方案.docx',
+            },
+        ],
+        loopPicUrl: [
+            {
+                url: 'http://192.168.33.6:31401/api/file/CZQBHQC87AOssZFcjVKFJGJxgZY-sO5m.png?accessKey=0e4b92b075394d0c6eca3190ac17fe01',
+                name: 'test.png',
+            },
+        ],
+        developDuration: 99,
+        charge: false,
+        version: '1.0.2',
+        state: {
+            text: '正常',
+            value: 'enabled',
+        },
+        creatorId: '1199596756811550720',
+        creatorName: '超级管理员',
+        createTime: 1735191481839,
+        modifyTime: 1735191986484,
+        modifierId: '1199596756811550720',
+        modifierName: '超级管理员',
+        deviceType: [
+            {
+                text: '直连设备',
+                value: 'device',
+            },
+            {
+                text: '网关子设备',
+                value: 'childrenDevice',
+            },
+            {
+                text: '网关设备',
+                value: 'gateway',
+            },
+        ],
+        accessInfos: [
+            {
+                provider: 'mqtt-server-gateway',
+                channel: 'network',
+                bindInfo: [
+                    {
+                        id: '1870018483435094016',
+                        type: 'protocol',
+                        name: '官方协议1',
+                        url: 'http://192.168.32.139:9900/api/file/Z5QCUSLpECNe2Ps9vdZv4MbadfPBDG49.jar?accessKey=a7de88a76732030ea7942a3fdbcf1ac4',
+                        metadata:
+                            '{"events":[],"functions":[],"modules":[],"properties":[],"tags":[]}',
+                        defaultAccess: true,
+                    },
+                ],
+                transport: 'MQTT',
+                configuration: {},
+                defaultAccess: true,
+            },
+        ],
+        metadata: '{"events":[],"properties":[],"functions":[],"tags":[]}',
+    },
+]);
 const getClassificationType = async () => {
     const res = await queryClassificationType();
     if (res.success) {
         classificationType.value = res.result;
-        activeKey.value = res.result?.[0]?.id
+        activeKey.value = res.result?.[0]?.id;
     }
-}
+};
 
 const getClassification = async (classificationTypeId) => {
     const params = {
-        terms: [{
-            "column": "classificationTypeId",
-            "termType": "eq",
-            "value": classificationTypeId
-        }]
-    }
+        terms: [
+            {
+                column: 'classificationTypeId',
+                termType: 'eq',
+                value: classificationTypeId,
+            },
+        ],
+    };
     const res = await queryClassification(params);
     if (res.success) {
-        classification.value = res.result
+        classification.value = res.result;
     }
-}
+};
 
 const typeChange = async (key) => {
-    getClassification(key)
-}
+    getClassification(key);
+};
 
 const select = (key) => {
-    selectedClassification.value = key
-}
+    selectedClassification.value = key;
+};
 
 const chooseResource = (data) => {
     selectedResource.value = data;
-}
+};
 
 const reselection = () => {
-    selectedResource.value = undefined
-}
+    selectedResource.value = undefined;
+};
 
 const getTemplateList = async () => {
     const params = {
-        "pageIndex": 0,
-        "pageSize": 12,
-        "sorts": [
+        pageIndex: 0,
+        pageSize: 12,
+        sorts: [
             {
-                "name": "createTime",
-                "order": "desc"
-            }
+                name: 'createTime',
+                order: 'desc',
+            },
         ],
-        "terms": [
+        terms: [
             {
-                "column": "type",
-                "value": "device"
-            }
-        ]
-    }
+                column: 'type',
+                value: 'device',
+            },
+        ],
+    };
     const res = await queryTemplate(params);
     if (res.success) {
-        // resourceData.value = res.result?.data || []
+        // resourceData.value = res.result?.data || [];
     }
-}
+};
 
 onMounted(() => {
-    getClassificationType()
-    getTemplateList()
-})
+    getClassificationType();
+    getTemplateList();
+});
 </script>
-<style lang='less' scoped>
+<style lang="less" scoped>
 .header {
     background-color: #fff;
     padding: 5px 10px;
-    color: #7f7f7f
+    color: #7f7f7f;
 }
 
 .content {
