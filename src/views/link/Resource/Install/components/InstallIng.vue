@@ -1,0 +1,205 @@
+<template>
+  <div class="container">
+    <div class="header">
+      <a-space>
+        <div>共{{ statistics?.total || 0 }}个资源</div>
+        <div>
+          <AIcon type="CheckCircleOutlined" class="icon"></AIcon>
+          已完成{{ statistics?.success || 0 }}
+        </div>
+        <div>
+          <AIcon type="ExclamationCircleOutlined" class="icon"/>
+          已失败{{ statistics?.fail || 0 }}
+        </div>
+        <div>
+          <AIcon type="HourglassOutlined" class="icon"/>
+          安装中{{ statistics?.install || 0 }}
+        </div>
+        <div>
+          <AIcon type="ClockCircleOutlined" class="icon"/>
+          排队中{{ statistics?.queue || 0 }}
+        </div>
+        <div>
+          <AIcon type="PauseCircleOutlined" class="icon"/>
+          已暂停{{ statistics?.pause || 0 }}
+        </div>
+      </a-space>
+      <a-button @click="pauseAll" type="primary" v-if="controlStatue === 'pause'">
+        <template #icon>
+          <AIcon type="PauseOutlined"></AIcon>
+        </template>
+        全部暂停
+      </a-button>
+      <a-space v-else>
+        <a-button @click="startAll" type="primary">
+          <template #icon>
+            <AIcon type="CaretRightOutlined"></AIcon>
+          </template>
+          全部开始
+        </a-button>
+        <a-button @click="removeAll" type="primary">
+          <template #icon>
+            <AIcon type="DeleteOutlined"></AIcon>
+          </template>
+          全部移除
+        </a-button>
+      </a-space>
+    </div>
+    <div style="margin-top: 10px; max-height: 500px; overflow-y: auto">
+      <div v-for="i in taskList" :key="i.id" class="fileList">
+        <img
+            :src="i.img"
+            alt=""
+            style="width: 80px; height: 80px; margin-right: 16px"
+        />
+        <div style="width: calc(100% - 80px)">
+          <div class="fileInfoHeader">
+            <div>
+              <div style="display: flex">
+                <j-ellipsis>{{ i.resourceDetails?.releaseDetail?.resourcesName }}</j-ellipsis>
+                <span class="fileType">
+                    {{ i.resourceDetails?.releaseDetail?.resourcesType?.text }}
+                </span>
+              </div>
+              <div>
+                {{ 'v' + i.resourceDetails?.releaseDetail?.version }}
+              </div>
+            </div>
+            <a-space>
+              <AIcon :type="statusIcon.get(i.state.value)"/>
+              <a-button v-if='i.state.value === "success"' @click="onDetail(i)">查看详情</a-button>
+              <a-button v-if='i.state.value === "installing"' @click="onPause(i)">暂停</a-button>
+              <a-button v-if='i.state.value === "canceled"' @click="onBegin(i)">开始</a-button>
+              <a-button v-if='i.state.value === "waiting_install"' @click="onDelete(i)">移除</a-button>
+              <a-button v-if='i.state.value === "failed"' @click="onReload(i)">重装</a-button>
+            </a-space>
+          </div>
+          <a-divider/>
+          <div class="fileInfoFooter">
+            <div class="install_container">
+              <a-badge status="default"/>
+              <!--              <div class="installStatue">{{ computedVersion(i) }}</div>-->
+              <!--              <div v-if="resourceVersionMap.has(i.resourcesId)">-->
+              <!--                (当前版本:V{{ resourceVersionMap.get(i.resourcesId) }})-->
+              <!--              </div>-->
+            </div>
+            <div class="description">
+              {{ i?.describe }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import {getWebSocket} from "@/utils/websocket";
+import {statusIcon} from '../data'
+import {deployTask} from "@/api/link/resource";
+
+const props = defineProps({
+  taskList: {
+    type: Array,
+    default: () => []
+  }
+})
+
+const statistics = ref({})
+
+let wsRef = null
+const controlStatue = ref('pause')
+const pauseAll = () => {
+
+}
+const startAll = () => {
+
+}
+
+const removeAll = () => {
+
+}
+
+const onPause = () => {
+
+}
+
+const onDetail = () => {
+
+}
+
+const onBegin = async (item) => {
+  const resp = await deployTask()
+}
+
+const onDelete = () => {
+
+}
+
+const onReload = () => {
+
+}
+
+const installTask = () => {
+  wsRef = getWebSocket(
+      `resources-install-state-subscriber`,
+      `/resources/install/*`,
+      {},
+  ).subscribe((resp) => {
+    if (resp.payload?.taskId) {
+      // status.set(resp.payload.taskId, resp.payload)
+    }
+    // console.log(status)
+  });
+}
+
+</script>
+<style lang='less' scoped>
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .icon {
+    margin-right: 4px;
+  }
+}
+
+.fileList {
+  display: flex;
+  margin-bottom: 16px;
+  text-align: start;
+  background-color: rgb(242, 242, 242);
+  padding: 8px;
+  border-radius: 8px;
+
+  .fileInfoHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .fileType {
+      background-color: rgb(206, 234, 214);
+      margin-left: 6px;
+      padding: 0 6px;
+      border-radius: 6px;
+      color: rgb(23, 129, 60);
+    }
+  }
+
+  .fileInfoFooter {
+    color: #878787;
+    font-size: 12px;
+
+    .install_container {
+      display: flex;
+      vertical-align: middle;
+
+      .installStatue {
+        color: black;
+        margin-right: 6px;
+      }
+    }
+  }
+}
+</style>

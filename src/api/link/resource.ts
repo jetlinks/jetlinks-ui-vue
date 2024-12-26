@@ -12,34 +12,41 @@ export const checkUpdate = (id: string) => server.get(`/resources/library/${id}/
 export const _latest = (id: string) => server.get(`/resources/library/${id}/version/_latest`)
 
 //应用资源受影响产品列表
-export const _queryProduct = (id: string,data:any) => server.post(`resources/library/${id}/affected/product/_query`,data)
+export const _queryProduct = (id: string, data: any) => server.post(`resources/library/${id}/affected/product/_query`, data)
 // export const _queryProductNoPaging = (id: string,data:any) => server.post(`resources/library/${id}/affected/product/_query/no-paging`,data)
 
 //应用资源受影响采集器列表
-export const _queryCollector = (id: string,data:any) => server.post(`resources/library/${id}/affected/collector/_query`,data)
+export const _queryCollector = (id: string, data: any) => server.post(`resources/library/${id}/affected/collector/_query`, data)
 //应用资源受协议影响的产品列表
-export const _queryProtocol = (id: string,data:any) => server.post(`/resources/library/${id}/protocol/affected/product/_query`,data)
+export const _queryProtocol = (id: string, data: any) => server.post(`/resources/library/${id}/protocol/affected/product/_query`, data)
 
 //应用资源协议列表
-export const _queryProtocolResource = (id: string,data:any) => server.post(`/resources/library/${id}/affected/protocol/_query`,data)
+export const _queryProtocolResource = (id: string, data: any) => server.post(`/resources/library/${id}/affected/protocol/_query`, data)
 
 //当前资源的最新版本协议列表
-export const _queryProtocolNew = (id: string,data:any) => server.post(`/resources/library/${id}/protocol/current/_query`,data)
+export const _queryProtocolNew = (id: string, data: any) => server.post(`/resources/library/${id}/protocol/current/_query`, data)
 
 //获取云端我的资源信息
 export const _queryResourceCloud = () => server.get('/resources/cloud')
 
 //获取资源库信息
-export const _queryTemplate = (data:any) => server.post('/resources/instance/detail/_query',data)
+export const _queryTemplate = (data: any) => server.post('/resources/instance/detail/_query', data)
 
 //获取资源库信息不分页接口
-export const _queryTemplateNoPaging = (data:any) => server.post('/resources/instance/_query/no-paging',data)
+export const _queryTemplateNoPaging = (data: any) => server.post('/resources/instance/_query/no-paging', data)
 
 //安装资源
-export const installResource = (data:any) => server.post('/resources/install/task/_create',data) 
+export const installResource = (data: any) => server.post('/resources/install/task/_create', data)
 
+// 查询任务列表
+export const queryTaskListNoPaging = (data: any) => server.post('/resources/install/task/_query/no-paging', data)
 
-
+// 开始任务
+export const deployTask = (data: any) => server.post('/resources/install/task/_deploy', data)
+// 删除全部/单个任务
+export const delTask = (data: any) => server.post('/resources/install/task/_delete', data)
+// 停止任务
+export const stopTask = (data: any) => server.post('/resources/install/task/_stop', data)
 /**
  * 类型查询
  * @param data
@@ -57,4 +64,4 @@ export const ResourceApi = {
     queryProvider,
     queryClassify,
     queryClassifyType,
-  }
+}
