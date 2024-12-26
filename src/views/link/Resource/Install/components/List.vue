@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div style="margin-top: 10px; max-height: 500px; min-height: 400px; overflow-y: auto">
         <div v-for="(i, index) in fileList" class="fileList">
             <img
                 :src="i.img"
@@ -46,23 +46,21 @@
                 </div>
             </div>
         </div>
-        <div class="control">
-            <a-space>
-                <a-button @click="emits('cancel')">取消</a-button>
-                <a-button @click="onInstall">全部安装</a-button>
-            </a-space>
-        </div>
     </div>
+  <a-divider />
+  <div style="display: flex; justify-content: center; margin-top: 8px;">
+    <a-space>
+      <a-button @click="emits('cancel')">取消</a-button>
+      <a-button @click="onInstall" type="primary">全部安装</a-button>
+    </a-space>
+  </div>
 </template>
 
 <script setup>
 import {
     _queryTemplateNoPaging,
     installResource,
-    queryTaskListNoPaging,
 } from '@/api/link/resource';
-import { defineExpose } from 'vue';
-import { getWebSocket } from '@/utils/websocket';
 import { cloneDeep } from 'lodash-es';
 
 const props = defineProps({
@@ -78,9 +76,7 @@ const props = defineProps({
 const emits = defineEmits(['update:value', 'cancel', 'refresh']);
 const resourceVersionMap = ref(new Map());
 const fileList = ref([]);
-let wsRef = null;
 const status = new Map();
-const taskList = ref([]);
 const computedVersion = (data) => {
     if (resourceVersionMap.value.has(data.resourcesId)) {
         return resourceVersionMap.value.get(data.resourcesId) === data.version
@@ -96,52 +92,18 @@ const removeFile = (index) => {
     emits('update:value', fileList.value);
 };
 
-// const installTask = () => {
-//     wsRef = getWebSocket(
-//         `resources-install-state-subscriber`,
-//         `/resources/install/*`,
-//         {},
-//     ).subscribe((resp) => {
-//         if (resp.payload?.taskId) {
-//             status.set(resp.payload.taskId, resp.payload);
-//         }
-//         console.log(status);
-//     });
-// };
-
 const onInstall = async () => {
-    return new Promise(async (resolve) => {
-        const res = await installResource({
-            type: props.source,
-            resourceDetails: fileList.value.map((i) => {
-                return {
-                    releaseDetail: i,
-                };
-            }),
-        }).catch(() => {
-            resolve(false);
-        });
-        if (res.success) {
-            // const resp = await queryTaskListNoPaging({
-            //     terms: [
-            //         {
-            //             column: 'state',
-            //             termType: 'not',
-            //             value: 'success',
-            //         },
-            //     ],
-            // });
-            // if (resp.success) {
-            // taskList.value = resp.result;
-            // status.clear();
-            // installTask();
-            // resolve(true);
-            emits('refresh');
-            // }
-        } else {
-            resolve(false);
-        }
-    });
+  const res = await installResource({
+    type: props.source,
+    resourceDetails: fileList.value.map((i) => {
+      return {
+        releaseDetail: i,
+      };
+    }),
+  })
+  if (res.success) {
+    emits('refresh');
+  }
 };
 
 const getVersion = async (ids) => {
@@ -183,8 +145,6 @@ watch(
         immediate: true,
     },
 );
-
-defineExpose({ onInstall });
 </script>
 <style lang="less" scoped>
 .fileList {

@@ -1,11 +1,11 @@
 <template>
-  <div>
+  <div :style="colorStyle" class="item">
     <AIcon :type="statusIcon.get(value)"/>
   </div>
 </template>
 
 <script setup>
-import {statusIcon} from "@/views/link/Resource/Install/data";
+import {statusColor, statusIcon} from "@/views/link/Resource/Install/data";
 
 const props = defineProps({
   value: {
@@ -13,8 +13,16 @@ const props = defineProps({
     default: ''
   }
 })
+
+const colorStyle = computed(() => {
+  return {
+    color: statusColor.get(props.value) ,
+  }
+})
 </script>
 
 <style lang="less" scoped>
-
+.item {
+  font-size: 20px;
+}
 </style>

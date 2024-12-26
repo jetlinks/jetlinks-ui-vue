@@ -4,11 +4,11 @@
       visible
       @cancel="emits('close')"
       :maskClosable="false"
-      :width="800"
+      :width="1000"
       :footer="null"
   >
     <InstallIng v-if="taskList.length" :taskList="taskList" @refresh="getTaskList"/>
-    <List v-else-if="fileList.length" v-model:value="fileList" @cancel="emits('close')" @refresh="getTaskList"/>
+    <List :source="source" v-else-if="fileList.length" v-model:value="fileList" @cancel="emits('close')" @refresh="getTaskList"/>
     <template v-else>
       <Init v-model:source="source" v-model:value="fileList"/>
     </template>

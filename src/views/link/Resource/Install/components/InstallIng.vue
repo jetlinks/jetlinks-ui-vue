@@ -2,27 +2,37 @@
   <div class="container">
     <div class="header">
       <a-space>
-        <div>共{{ statistics?.total || 0 }}个资源</div>
+        <div>共{{ taskList?.length || 0 }}个资源</div>
         <div>
           <AIcon type="CheckCircleOutlined" class="icon"></AIcon>
-          已完成{{ statistics?.success || 0 }}
+          已完成{{ getStatusNumber('success') }}
         </div>
         <div>
           <AIcon type="ExclamationCircleOutlined" class="icon"/>
-          已失败{{ statistics?.fail || 0 }}
+          安装中{{ getStatusNumber('installing') }}
         </div>
         <div>
           <AIcon type="HourglassOutlined" class="icon"/>
-          安装中{{ statistics?.install || 0 }}
+          已暂停{{ getStatusNumber('canceled') }}
         </div>
         <div>
           <AIcon type="ClockCircleOutlined" class="icon"/>
-          排队中{{ statistics?.queue || 0 }}
+          失败{{ getStatusNumber('failed') }}
         </div>
         <div>
           <AIcon type="PauseCircleOutlined" class="icon"/>
-          已暂停{{ statistics?.pause || 0 }}
+          下载中{{ getStatusNumber('downloading') }}
         </div>
+        <template v-if="source === 'cloud'">
+          <div>
+            <AIcon type="PauseCircleOutlined" class="icon"/>
+            等待安装{{ getStatusNumber('waiting_install') }}
+          </div>
+          <div>
+            <AIcon type="PauseCircleOutlined" class="icon"/>
+            等待下载{{ getStatusNumber('waiting_download') }}
+          </div>
+        </template>
       </a-space>
       <a-button @click="pauseAll" type="primary" v-if="controlStatue">
         <template #icon>
@@ -66,7 +76,7 @@
               </div>
             </div>
             <a-space>
-              <Status :value="status.get(i.id)?.state?.value || i.state.value" />
+              <Status :value="status[i.id]?.state?.value || i.state.value" />
               <a-button v-if='i.state.value === "success"' @click="onDetail(i)">查看详情</a-button>
               <a-button v-if='i.state.value === "installing"' @click="onPause(i)">暂停</a-button>
               <a-button v-if='i.state.value === "canceled"' @click="onBegin(i)">开始</a-button>
@@ -110,10 +120,10 @@ const props = defineProps({
   },
 })
 const emits = defineEmits(['refresh'])
-const statistics = ref({})
-const status = new Map()
+const status = ref({})
 let wsRef = null
 const controlStatue = ref(false)
+
 const pauseAll = async () => {
   const arr = map(props.taskList.filter(i => ['success', 'failed'].includes(i.state.value)), 'id')
   const resp = await stopTask(arr)
@@ -121,6 +131,13 @@ const pauseAll = async () => {
     controlStatue.value = false
   }
 }
+
+const getStatusNumber = (type) => {
+  return props.taskList.filter(i => {
+    return (status.value?.[i.id]?.state?.value || i.state.value) === type
+  })?.length || 0
+}
+
 const startAll = async () => {
   const arr = map(props.taskList.filter(i => ['success', 'failed'].includes(i.state.value)), 'id')
   const resp = await deployTask(arr)
@@ -172,7 +189,7 @@ const onBegin = async (item) => {
 
 const onDelete = async (item) => {
   const resp = await delTask({
-    "taskId": item.id,
+    "id": item.id,
   })
   if(resp.success){
     emits('refresh')
@@ -190,8 +207,7 @@ const installTask = () => {
       {},
   ).subscribe((resp) => {
     if (resp.payload?.taskId) {
-      status.set(resp.payload.taskId, resp.payload)
-      console.log(status)
+      status.value[resp.payload.taskId] = resp.payload
     }
   });
 }
@@ -203,6 +219,12 @@ watch(() => props.taskList, () => {
 }, {
   deep: true,
   immediate: true
+})
+
+onUnmounted(() => {
+  if(wsRef) {
+    wsRef?.unsubscribe()
+  }
 })
 </script>
 <style lang='less' scoped>
@@ -221,7 +243,7 @@ watch(() => props.taskList, () => {
   margin-bottom: 16px;
   text-align: start;
   background-color: rgb(242, 242, 242);
-  padding: 8px;
+  padding: 16px;
   border-radius: 8px;
 
   .fileInfoHeader {
