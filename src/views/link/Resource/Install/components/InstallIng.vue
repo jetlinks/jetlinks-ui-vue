@@ -4,32 +4,32 @@
       <a-space>
         <div>共{{ taskList?.length || 0 }}个资源</div>
         <div>
-          <AIcon type="CheckCircleOutlined" class="icon"></AIcon>
+          <AIcon :type="statusIcon.get('success')" class="icon" />
           已完成{{ getStatusNumber('success') }}
         </div>
         <div>
-          <AIcon type="ExclamationCircleOutlined" class="icon"/>
+          <AIcon :type="statusIcon.get('installing')" class="icon" />
           安装中{{ getStatusNumber('installing') }}
         </div>
         <div>
-          <AIcon type="HourglassOutlined" class="icon"/>
+          <AIcon :type="statusIcon.get('canceled')" class="icon" />
           已暂停{{ getStatusNumber('canceled') }}
         </div>
         <div>
-          <AIcon type="ClockCircleOutlined" class="icon"/>
+          <AIcon :type="statusIcon.get('failed')" class="icon" />
           失败{{ getStatusNumber('failed') }}
         </div>
         <div>
-          <AIcon type="PauseCircleOutlined" class="icon"/>
+          <AIcon :type="statusIcon.get('downloading')" class="icon" />
           下载中{{ getStatusNumber('downloading') }}
         </div>
         <template v-if="source === 'cloud'">
           <div>
-            <AIcon type="PauseCircleOutlined" class="icon"/>
+            <AIcon :type="statusIcon.get('waiting_install')" class="icon" />
             等待安装{{ getStatusNumber('waiting_install') }}
           </div>
           <div>
-            <AIcon type="PauseCircleOutlined" class="icon"/>
+            <AIcon :type="statusIcon.get('waiting_download')" class="icon" />
             等待下载{{ getStatusNumber('waiting_download') }}
           </div>
         </template>
@@ -108,6 +108,7 @@ import {getWebSocket} from "@/utils/websocket";
 import Status from './Status.vue'
 import {delTask, deployTask, stopTask} from "@/api/link/resource";
 import {map} from "lodash-es";
+import {statusIcon} from "@/views/link/Resource/Install/data";
 
 const props = defineProps({
   taskList: {
@@ -274,5 +275,9 @@ onUnmounted(() => {
       }
     }
   }
+}
+
+.icon {
+  margin-left: 10px;
 }
 </style>

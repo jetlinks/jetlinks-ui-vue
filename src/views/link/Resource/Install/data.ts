@@ -8,11 +8,11 @@
 
 export const statusIcon = new Map()
 statusIcon.set('success', 'CheckCircleFilled')
-statusIcon.set('installing', 'PauseCircleOutlined')
-statusIcon.set('canceled', 'ToolOutlined')
-statusIcon.set('failed', 'InfoCircleOutlined')
-statusIcon.set('downloading', 'CheckCircleFilled')
-statusIcon.set('waiting_install', 'LoadingOutlined')
+statusIcon.set('installing', 'ToolOutlined')
+statusIcon.set('canceled', 'PauseCircleOutlined')
+statusIcon.set('failed', 'ExclamationCircleOutlined')
+statusIcon.set('downloading', 'ClockCircleOutlined')
+statusIcon.set('waiting_install', 'IssuesCloseOutlined')
 statusIcon.set('waiting_download', 'LoadingOutlined')
 
 export const statusColor = new Map()
