@@ -28,7 +28,7 @@
                 model="CARD"
                 :columns="columns"
                 :params="params"
-                :request="queryCollector"
+                :request="e=>_queryCollector(_id, e)"
                 :gridColumn="2"
                 :bodyStyle="{
                     paddingRight: 0,
@@ -100,18 +100,14 @@
 <script setup lang="ts" name="Product">
 import { getImage } from '@/utils/comm';
 import {
-    queryCollector,
+    _queryCollector,
 } from '@/api/link/resource';
 
 const emits = defineEmits(['close']);
 
-const porps = defineProps({
-    params: {
-        type: Object,
-        default: () => ({}),
-    },
-});
 const params = ref({});
+const route = useRoute();
+const _id = route.params?.id as any;
 const handleSearch = (p: any) => {
     params.value = p;
 };

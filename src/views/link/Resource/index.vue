@@ -29,8 +29,8 @@ const menuStory = useMenuStore();
 const showInstallModal = ref(false);
 
 const toDetail = () => {
-    menuStory.jumpPage('link/Resource/Detail', {
-        id: '1871071629752754176',
+    menuStory.jumpPage('link/Resource/Detail',{
+        id: '1866776402031923200'
     });
 };
 </script>

@@ -28,7 +28,12 @@
                 model="CARD"
                 :columns="columns"
                 :params="params"
-                :request="(e) => _queryProduct(_id, e)"
+                :request="
+                    (e) =>
+                        type === 'metadata'
+                            ? _queryProduct(_id, e)
+                            : _queryProtocol(_id, e)
+                "
                 :gridColumn="2"
                 :bodyStyle="{
                     paddingRight: 0,
@@ -97,9 +102,15 @@
 import { getImage } from '@/utils/comm';
 import { queryTree } from '@/api/device/category';
 import { getTreeData_api } from '@/api/system/department';
-import { _queryProduct } from '@/api/link/resource';
+import { _queryProduct, _queryProtocol } from '@/api/link/resource';
 
 const emits = defineEmits(['close']);
+const props = defineProps({
+    type: {
+        type: String,
+        default: 'metadata',
+    },
+});
 
 const route = useRoute();
 const _id = route.params?.id;
@@ -191,67 +202,67 @@ const columns = [
         ellipsis: true,
         width: 300,
     },
-    {
-        dataIndex: 'classifiedId',
-        title: '分类',
-        hideInTable: true,
-        search: {
-            type: 'treeSelect',
-            options: () => {
-                return new Promise((res) => {
-                    queryTree({ paging: false }).then((resp) => {
-                        res(resp.result);
-                    });
-                });
-            },
-            componentProps: {
-                fieldNames: {
-                    label: 'name',
-                    value: 'id',
-                },
-            },
-        },
-    },
-    {
-        dataIndex: 'id$dim-assets',
-        key: 'id$dim-assets',
-        title: '所属组织',
-        hideInTable: true,
-        search: {
-            type: 'treeSelect',
-            componentProps: {
-                fieldNames: {
-                    label: 'name',
-                    value: 'value',
-                },
-            },
-            options: () =>
-                new Promise((resolve) => {
-                    getTreeData_api({ paging: false }).then((resp: any) => {
-                        const formatValue = (list: any[]) => {
-                            return list.map((item: any) => {
-                                if (item.children) {
-                                    item.children = formatValue(item.children);
-                                }
-                                return {
-                                    ...item,
-                                    value: JSON.stringify({
-                                        assetType: 'product',
-                                        targets: [
-                                            {
-                                                type: 'org',
-                                                id: item.id,
-                                            },
-                                        ],
-                                    }),
-                                };
-                            });
-                        };
-                        resolve(formatValue(resp.result) || []);
-                    });
-                }),
-        },
-    },
+    // {
+    //     dataIndex: 'classifiedId',
+    //     title: '分类',
+    //     hideInTable: true,
+    //     search: {
+    //         type: 'treeSelect',
+    //         options: () => {
+    //             return new Promise((res) => {
+    //                 queryTree({ paging: false }).then((resp) => {
+    //                     res(resp.result);
+    //                 });
+    //             });
+    //         },
+    //         componentProps: {
+    //             fieldNames: {
+    //                 label: 'name',
+    //                 value: 'id',
+    //             },
+    //         },
+    //     },
+    // },
+    // {
+    //     dataIndex: 'id$dim-assets',
+    //     key: 'id$dim-assets',
+    //     title: '所属组织',
+    //     hideInTable: true,
+    //     search: {
+    //         type: 'treeSelect',
+    //         componentProps: {
+    //             fieldNames: {
+    //                 label: 'name',
+    //                 value: 'value',
+    //             },
+    //         },
+    //         options: () =>
+    //             new Promise((resolve) => {
+    //                 getTreeData_api({ paging: false }).then((resp: any) => {
+    //                     const formatValue = (list: any[]) => {
+    //                         return list.map((item: any) => {
+    //                             if (item.children) {
+    //                                 item.children = formatValue(item.children);
+    //                             }
+    //                             return {
+    //                                 ...item,
+    //                                 value: JSON.stringify({
+    //                                     assetType: 'product',
+    //                                     targets: [
+    //                                         {
+    //                                             type: 'org',
+    //                                             id: item.id,
+    //                                         },
+    //                                     ],
+    //                                 }),
+    //                             };
+    //                         });
+    //                     };
+    //                     resolve(formatValue(resp.result) || []);
+    //                 });
+    //             }),
+    //     },
+    // },
 ];
 </script>
 

@@ -12,7 +12,7 @@
                 <a-space :size="12">
                     <AIcon type="AppstoreOutlined" style="font-size: 16px" />
                     <span style="font-size: 18px">数采</span>
-                    <span @click="handleClick">受影响的采集器: 10</span>
+                    <span @click="handleClick">受影响的采集器: <span style="color: #1890ff; ">{{ _dataSource.length }}</span></span>
                 </a-space>
             </div>
             <div class="items">
