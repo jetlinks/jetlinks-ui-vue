@@ -1,64 +1,37 @@
 <template>
     <page-container>
-        <pro-search
-            :columns="columns"
-            target="edge-device"
-            @search="handleSearch"
-        />
+        <pro-search :columns="columns" target="edge-device" @search="handleSearch" />
         <FullPage>
-            <JProTable
-                ref="edgeDeviceRef"
-                :columns="columns"
-                :request="query"
-                :defaultParams="defaultParams"
-                :params="params"
-                :gridColumn="3"
-            >
+            <JProTable ref="edgeDeviceRef" :columns="columns" :request="query" :defaultParams="defaultParams"
+                :params="params" :gridColumn="3">
                 <template #headerTitle>
                     <j-space>
-                        <PermissionButton
-                            type="primary"
-                            @click="handleAdd"
-                            hasPermission="edge/Device:add"
-                        >
-                            <template #icon
-                                ><AIcon type="PlusOutlined"
-                            /></template>
+                        <PermissionButton type="primary" @click="handleAdd" hasPermission="edge/Device:add">
+                            <template #icon>
+                                <AIcon type="PlusOutlined" />
+                            </template>
                             新增
                         </PermissionButton>
-                        <PermissionButton
-                            @click="importVisible = true"
-                            hasPermission="edge/Device:import"
-                        >
-                            <template #icon
-                                ><AIcon type="ImportOutlined"
-                            /></template>
+                        <PermissionButton @click="importVisible = true" hasPermission="edge/Device:import">
+                            <template #icon>
+                                <AIcon type="ImportOutlined" />
+                            </template>
                             导入
                         </PermissionButton>
                     </j-space>
                 </template>
                 <template #card="slotProps">
-                    <CardBox
-                        :value="slotProps"
-                        :actions="getActions(slotProps, 'card')"
-                        :status="slotProps.state?.value"
-                        :statusText="slotProps.state?.text"
-                        @click="handleView(slotProps.id)"
-                        :statusNames="{
+                    <CardBox :value="slotProps" :actions="getActions(slotProps, 'card')"
+                        :status="slotProps.state?.value" :statusText="slotProps.state?.text"
+                        @click="handleView(slotProps.id)" :statusNames="{
                             online: 'processing',
                             offline: 'error',
                             notActive: 'warning',
-                        }"
-                    >
+                        }">
                         <template #img>
-                            <img
-                                :width="80"
-                                :height="80"
-                                :src="
-                                    slotProps?.photoUrl ||
-                                    getImage('/device-gateway.png')
-                                "
-                            />
+                            <img :width="80" :height="80" :src="slotProps?.photoUrl ||
+                                getImage('/device-gateway.png')
+                                " />
                         </template>
                         <template #content>
                             <Ellipsis style="width: calc(100% - 100px)">
@@ -84,36 +57,21 @@
                             </j-row>
                         </template>
                         <template #actions="item">
-                            <j-dropdown
-                                placement="bottomRight"
-                                v-if="item.key === 'others'"
-                            >
+                            <j-dropdown placement="bottomRight" v-if="item.key === 'others'">
                                 <j-button>
                                     <AIcon :type="item.icon" />
                                     <span>{{ item.text }}</span>
                                 </j-button>
                                 <template #overlay>
                                     <j-menu>
-                                        <j-menu-item
-                                            v-for="(o, i) in item.children"
-                                            :key="i"
-                                        >
-                                            <PermissionButton
-                                                :disabled="
-                                                    o.disabled ||
-                                                    slotProps.state.value !==
-                                                        'online'
-                                                "
-                                                :popConfirm="o.popConfirm"
-                                                :tooltip="{
+                                        <j-menu-item v-for="(o, i) in item.children" :key="i">
+                                            <PermissionButton :disabled="o.disabled ||
+                                                slotProps.state.value !==
+                                                'online'
+                                                " :popConfirm="o.popConfirm" :tooltip="{
                                                     ...o.tooltip,
-                                                }"
-                                                @click="o.onClick"
-                                                :hasPermission="
-                                                    'edge/Device:' + o.key
-                                                "
-                                                type="link"
-                                            >
+                                                }" @click="o.onClick" :hasPermission="'edge/Device:' + o.key
+                                                    " type="link">
                                                 <AIcon :type="o.icon" />
                                                 <span>{{ o?.text }}</span>
                                             </PermissionButton>
@@ -121,20 +79,10 @@
                                     </j-menu>
                                 </template>
                             </j-dropdown>
-                            <PermissionButton
-                                :disabled="item.disabled"
-                                v-else
-                                :popConfirm="item.popConfirm"
-                                :tooltip="{
-                                    ...item.tooltip,
-                                }"
-                                @click="item.onClick"
-                                :hasPermission="'edge/Device:' + item.key"
-                            >
-                                <AIcon
-                                    type="DeleteOutlined"
-                                    v-if="item.key === 'delete'"
-                                />
+                            <PermissionButton :disabled="item.disabled" v-else :popConfirm="item.popConfirm" :tooltip="{
+                                ...item.tooltip,
+                            }" @click="item.onClick" :hasPermission="'edge/Device:' + item.key">
+                                <AIcon type="DeleteOutlined" v-if="item.key === 'delete'" />
                                 <template v-else>
                                     <AIcon :type="item.icon" />
                                     <span>{{ item?.text }}</span>
@@ -144,68 +92,42 @@
                     </CardBox>
                 </template>
                 <template #state="slotProps">
-                    <BadgeStatus
-                        :status="slotProps.state?.value"
-                        :text="slotProps.state?.text"
-                        :statusNames="{
-                            online: 'processing',
-                            offline: 'error',
-                            notActive: 'warning',
-                        }"
-                    />
+                    <BadgeStatus :status="slotProps.state?.value" :text="slotProps.state?.text" :statusNames="{
+                        online: 'processing',
+                        offline: 'error',
+                        notActive: 'warning',
+                    }" />
                 </template>
                 <template #registryTime="slotProps">
                     <span>{{
                         slotProps.registryTime
                             ? dayjs(slotProps.registryTime).format(
-                                  'YYYY-MM-DD HH:mm:ss',
-                              )
+                                'YYYY-MM-DD HH:mm:ss',
+                            )
                             : ''
                     }}</span>
                 </template>
                 <template #action="slotProps">
                     <j-space :size="16">
-                        <template
-                            v-for="i in getActions(slotProps, 'table')"
-                            :key="i.key"
-                        >
-                            <PermissionButton
-                                :disabled="i.disabled"
-                                :popConfirm="i.popConfirm"
-                                :tooltip="{
-                                    ...i.tooltip,
-                                }"
-                                @click="i.onClick"
-                                type="link"
-                                style="padding: 0 5px"
-                                :danger="i.key === 'delete'"
-                                :hasPermission="
-                                    i.key === 'view'
-                                        ? true
-                                        : 'edge/Device:' + i.key
-                                "
-                            >
-                                <template #icon
-                                    ><AIcon :type="i.icon"
-                                /></template>
+                        <template v-for="i in getActions(slotProps, 'table')" :key="i.key">
+                            <PermissionButton :disabled="i.disabled" :popConfirm="i.popConfirm" :tooltip="{
+                                ...i.tooltip,
+                            }" @click="i.onClick" type="link" style="padding: 0 5px" :danger="i.key === 'delete'"
+                                :hasPermission="i.key === 'view'
+                                    ? true
+                                    : 'edge/Device:' + i.key
+                                    ">
+                                <template #icon>
+                                    <AIcon :type="i.icon" />
+                                </template>
                             </PermissionButton>
                         </template>
                     </j-space>
                 </template>
             </JProTable>
         </FullPage>
-        <Save
-            v-if="visible"
-            :data="current"
-            @close="visible = false"
-            @save="saveBtn"
-        />
-        <Import
-            @save="onRefresh"
-            @close="importVisible = false"
-            v-if="importVisible"
-            type="official-edge-gateway"
-        />
+        <Save v-if="visible" :data="current" @close="visible = false" @save="saveBtn" />
+        <Import @save="onRefresh" @close="importVisible = false" v-if="importVisible" type="official-edge-gateway" />
     </page-container>
 </template>
 
@@ -214,10 +136,10 @@ import { queryNoPagingPost } from '@/api/device/product';
 import { queryTree } from '@/api/device/category';
 import type { ActionsType } from '@/views/device/Instance/typings';
 import { useMenuStore } from '@/store/menu';
-import {getImage, onlyMessage, openEdgeUrl} from '@/utils/comm';
+import { getImage, onlyMessage, openEdgeUrl } from '@/utils/comm';
 import dayjs from 'dayjs';
 import { query, _delete, _deploy, _undeploy } from '@/api/device/instance';
-import { getRemoteProxyUrl, getRemoteToken, getRemoteSystem} from '@/api/edge/device';
+import { getRemoteProxyUrl, getRemoteToken, getRemoteSystem } from '@/api/edge/device';
 import Save from './Save/index.vue';
 import Import from '@/views/device/Instance/Import/index.vue';
 import BadgeStatus from '@/components/BadgeStatus/index.vue';
@@ -233,9 +155,20 @@ const defaultParams = {
                     column: 'productId$product-info',
                     value: 'accessProvider in (agent-device-gateway,agent-media-device-gateway,official-edge-gateway)',
                 },
+
             ],
             type: 'and',
         },
+        {
+            "terms": [
+                {
+                    "type": "or",
+                    "value": "gateway",
+                    "termType": "eq",
+                    "column": "deviceType"
+                }
+            ]
+        }
     ],
 };
 
@@ -295,13 +228,15 @@ const columns = [
             rename: 'productId',
             options: () =>
                 new Promise((resolve) => {
-                    queryNoPagingPost({ paging: false, terms: [
-                        {
-                            termType: 'in',
-                            column: 'accessProvider',
-                            value: provider,
-                        },
-                    ], }).then((resp: any) => {
+                    queryNoPagingPost({
+                        paging: false, terms: [
+                            {
+                                termType: 'in',
+                                column: 'accessProvider',
+                                value: provider,
+                            },
+                        ],
+                    }).then((resp: any) => {
                         resolve(
                             resp.result.map((item: any) => ({
                                 label: item.name,
@@ -376,14 +311,14 @@ const columns = [
         title: '设备类型',
         valueType: 'select',
         hideInTable: true,
-        search: {
-            type: 'select',
-            options: [
-                { label: '直连设备', value: 'device' },
-                { label: '网关子设备', value: 'childrenDevice' },
-                { label: '网关设备', value: 'gateway' },
-            ],
-        },
+        // search: {
+        //     type: 'select',
+        //     options: [
+        //         { label: '直连设备', value: 'device' },
+        //         { label: '网关子设备', value: 'childrenDevice' },
+        //         { label: '网关设备', value: 'gateway' },
+        //     ],
+        // },
     },
     {
         title: '说明',
@@ -443,9 +378,8 @@ const getActions = (
                     ? 'StopOutlined'
                     : 'CheckCircleOutlined',
             popConfirm: {
-                title: `确认${
-                    data.state.value !== 'notActive' ? '禁用' : '启用'
-                }?`,
+                title: `确认${data.state.value !== 'notActive' ? '禁用' : '启用'
+                    }?`,
                 onConfirm: () => {
                     let response = undefined;
                     if (data.state.value !== 'notActive') {
@@ -465,17 +399,17 @@ const getActions = (
                 },
             },
         },
-      {
-        key: 'setting',
-        text: '远程访问',
-        tooltip: {
-          title: '远程访问',
+        {
+            key: 'setting',
+            text: '远程访问',
+            tooltip: {
+                title: '远程访问',
+            },
+            icon: 'ControlOutlined',
+            onClick: async () => {
+                await openEdgeUrl(data?.id)
+            },
         },
-        icon: 'ControlOutlined',
-        onClick: async () => {
-          await openEdgeUrl(data?.id)
-        },
-      },
     ];
 
 

@@ -7,7 +7,7 @@ export const dashboard = (data:Record<string,any[]>)=> server.post('/dashboard/_
 /**
  * 
  */
-export const getAlarm = (params:Record<string,any[]>) => server.get('/alarm/record/_query',params);
+export const getAlarm = (params:Record<string,any[]>) => server.post('/alarm/record/_query',params);
 
 /**
  * 获取告警数量

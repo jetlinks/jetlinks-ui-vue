@@ -138,6 +138,7 @@ import Parsing from './Parsing/index.vue';
 import GateWay from './GateWay/index.vue';
 import Log from './Log/index.vue';
 import AlarmRecord from './AlarmRecord/index.vue';
+import Invalid from './Invalid/index.vue'
 import Firmware from './Firmware/index.vue';
 import Shadow from './Shadow/index.vue';
 import Terminal from './Terminal/index.vue';
@@ -212,7 +213,8 @@ const tabs = {
   CardManagement,
   Firmware,
   Shadow,
-  Terminal
+  Terminal,
+  Invalid
 };
 
 const permissionStore = usePermissionStore();
@@ -236,10 +238,13 @@ const getStatus = (id: string) => {
 const getDetail = () => {
   const keys = list.value.map((i) => i.key);
   if (permissionStore.hasPermission('rule-engine/Alarm/Log:view') && isNoCommunity && showThreshold) {
-    list.value.push({
+    list.value.push(...[{
       key: 'AlarmRecord',
-      tab: '预处理数据',
-    });
+      tab: '告警记录',
+    },{
+      key: 'Invalid',
+      tab: '无效数据'
+    }]);
   }
   if (permissionStore.hasPermission('iot-card/CardManagement:view') && isNoCommunity) {
     list.value.push({

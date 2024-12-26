@@ -406,7 +406,7 @@ watch(
     (value) => {
         if (value.id) {
             formData.value = value;
-            dynamicValidateForm.properties = value.properties;
+            dynamicValidateForm.properties = value.properties || [];
         }
     },
     { immediate: true, deep: true },

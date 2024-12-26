@@ -19,7 +19,7 @@ const props = defineProps({
     },
     refresh: {
         type: Boolean
-    }
+    },
 });
 
 const total = ref<number>(0);
@@ -56,14 +56,17 @@ const getData = (type: string[]) => {
     });
 };
 
+
 watch(
     () => props.refresh,
     () => {
         getData(props.type);
     },
     {
-        immediate: true,
-        deep: true
+        deep: true,
+        immediate: true
     }
 );
+
+
 </script>

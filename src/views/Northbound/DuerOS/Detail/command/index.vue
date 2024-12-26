@@ -334,7 +334,7 @@ watch(
                     newVal.message.properties = Object.keys(
                         val.message.properties,
                     )[0];
-                    newVal.message.value = Object.keys(
+                    newVal.message.value = Object.values(
                         val.message.properties,
                     )[0];
                 }

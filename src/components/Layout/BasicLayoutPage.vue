@@ -20,7 +20,7 @@
         </template>
         <template #rightContentRender>
             <div class="right-content">
-                <AIcon v-if="DefaultSetting.layout.question" type="QuestionCircleOutlined" @click="toDoc" />
+                <AIcon v-if="layoutConf.question === 'true'" type="QuestionCircleOutlined" @click="toDoc" />
                 <Notice style="margin: 0 24px" />
                 <UserInfo />
             </div>
@@ -59,12 +59,14 @@ const layoutConf = reactive({
     menuData: menu.siderMenus,
     // menuData: menu.siderMenus,
     splitMenus: true,
+    question: DefaultSetting.layout.question
 });
 
 watchEffect(() => {
     layoutConf.theme = configInfo.value.front?.headerTheme || DefaultSetting.layout.theme;
     layoutConf.title = configInfo.value.front?.title || DefaultSetting.layout.title;
     layoutConf.logo = configInfo.value.front?.logo || DefaultSetting.layout.logo;
+    layoutConf.question = configInfo.value.front?.handbook || DefaultSetting.layout.question
 })
 
 const components = computed(() => {

@@ -16,7 +16,7 @@
                     terms: [
                         {
                             column:
-                                props.goal === 'device'
+                                props.type === 'device'
                                     ? 'thingId'
                                     : 'templateId',
                             value: current.id,
@@ -51,15 +51,15 @@ import { useProductStore } from '@/store/product';
 import dayjs from 'dayjs';
 import { useMenuStore } from 'store/menu';
 const props = defineProps({
-    goal: {
+    type: {
         type: String,
         default: 'device',
     },
 });
 const menuStory = useMenuStore();
 const { current } =
-    props.goal === 'device' ? useInstanceStore() : useProductStore();
-const columns = props.goal === 'device' ? [
+    props.type === 'device' ? useInstanceStore() : useProductStore();
+const columns = props.type === 'device' ? [
     {
         title: '上报时间',
         dataIndex: 'createTime',
