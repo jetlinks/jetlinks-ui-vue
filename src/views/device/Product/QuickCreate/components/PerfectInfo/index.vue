@@ -130,7 +130,7 @@
         </div>
         <div>
             <a-space>
-                <a-button>取消</a-button>
+                <a-button @click="emits('cancel')">取消</a-button>
                 <a-button @click="createProduct">确定</a-button>
             </a-space>
         </div>
@@ -180,6 +180,8 @@ const props = defineProps({
         default: () => {},
     },
 });
+
+const emits = defineEmits(['cancel'])
 
 const accessRef = ref();
 const networkRef = ref();

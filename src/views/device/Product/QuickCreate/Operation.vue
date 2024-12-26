@@ -136,6 +136,7 @@
                             :accessData="accessData"
                             :metadata="metadataData"
                             :advancedMode="advancedMode"
+                            @cancel="emits('reselection')"
                         />
                     </template>
                 </a-step>
