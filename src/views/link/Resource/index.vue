@@ -1,32 +1,41 @@
 <template>
     <page-container>
-        <div class="container">
-            <FullPage>
-                <a-button @click="showInstallModal = true">安装</a-button>
-                <a-button @click="toDetail">详情</a-button>
-                <ResourceTable />
-            </FullPage>
-            <Install v-if="showInstallModal" @close="showInstallModal = false" />
-        </div>
+        <FullPage>
+            <div class="container">
+                <ResourceTable>
+                    <template #title>
+                        <a-space>
+                            <span>我的资源</span>
+                            <a-button @click="showInstallModal = true"
+                                >安装</a-button
+                            >
+                            <a-button @click="toDetail">详情</a-button>
+                        </a-space>
+                    </template>
+                </ResourceTable>
+                <Install
+                    v-if="showInstallModal"
+                    @close="showInstallModal = false"
+                />
+            </div>
+        </FullPage>
     </page-container>
 </template>
 
 <script setup>
-import Install from './Install/index.vue'
+import Install from './Install/index.vue';
 import { useMenuStore } from '@/store/menu';
-import ResourceTable from '@/components/ResourceTable/ResourceTable.vue';
 const menuStory = useMenuStore();
-const showInstallModal = ref(false)
+const showInstallModal = ref(false);
 
 const toDetail = () => {
-    menuStory.jumpPage('link/Resource/Detail',{
-        id: '1871071629752754176'
+    menuStory.jumpPage('link/Resource/Detail', {
+        id: '1871071629752754176',
     });
-}
-
+};
 </script>
-<style lang='less' scoped>
+<style lang="less" scoped>
 .container {
-    border: 1px solid rgb(230, 230, 230);
+    padding: 20px;
 }
 </style>

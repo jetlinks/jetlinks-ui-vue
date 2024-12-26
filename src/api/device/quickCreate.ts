@@ -17,3 +17,6 @@ export const queryNetWork = (data: any) => server.post(`/network/config/_query/n
 export const queryProtocolDetail =(id:string) => server.get(`/protocol/${id}`)
 
 export const quickCreateProduct = (data:any) => server.post('/resources/library/quick/product',data)
+
+
+

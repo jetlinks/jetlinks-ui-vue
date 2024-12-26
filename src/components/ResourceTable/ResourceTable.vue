@@ -1,5 +1,5 @@
 <script setup>
-// import { ClientApi } from '@/api/client'
+import { _queryTemplate } from '@/api/link/resource';
 import Search from './Search/Search.vue';
 const props = defineProps({
   request: Function,
@@ -62,11 +62,11 @@ const onItemClick = (record) => {
     </Search>
     <j-pro-table
       ref="tableRef"
-      mode="CARD"
-      style="padding: 0"
+      model="CARD"
+      style="padding: 0;background: transparent"
       :type="type"
       :gridColumns="gridColumns"
-      :request="props.request"
+      :request="props.request || _queryTemplate"
       :columns="columns"
       :rowSelection="rowSelection"
       :dataSource="dataSource"
@@ -74,8 +74,8 @@ const onItemClick = (record) => {
       :defaultParams="defaultParams"
       v-bind="extra"
     >
-      <template #headerLeftRender>
-        <slot name="headerLeftRender"/>
+      <template #headerTitle>
+        <slot name="headerTitle"/>
       </template>
       <template #card="slotProps">
         <slot name="card" :slotProps="slotProps">
@@ -92,8 +92,9 @@ const onItemClick = (record) => {
 
 <style scoped lang="less">
 .resource-table-warp {
-  :deep(.jtable-card) {
-    padding: 16px;
+
+  :deep(.jtable-card-items) {
+    gap: 24px;
   }
 
   .resource-table-search-title {

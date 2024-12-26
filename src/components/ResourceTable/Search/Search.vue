@@ -23,9 +23,9 @@
             </span>
           </div>
           <div class="search-input">
-            <a-input placeholder="请输入关键词" >
+            <a-input placeholder="请输入关键词" v-model:value="searchValue" :maxlength="64" >
               <template #suffix>
-                <AIcon type="SearchOutlined"/>
+                <AIcon type="SearchOutlined" @click="onSearch"/>
               </template>
             </a-input>
           </div>
@@ -34,15 +34,17 @@
     </div>
 
     <div :class="{'search-params': true, 'slide-in-top': showParams, 'search-params-hidden': hiddenParams }">
-      <ParamsOptions
-        title="类型"
-        :options="providerOptions"
-        :fieldNames="{
-          label: 'text',
-        }"
-        style="margin-bottom: 12px"
-        @change="(v, r) => onParamsChange(v, r, 0)"
-      />
+      <slot name="providerRender" :onParamsChange="onProviderRenderChange">
+        <ParamsOptions
+          title="类型"
+          :options="providerOptions"
+          :fieldNames="{
+            label: 'text',
+          }"
+          style="margin-bottom: 12px"
+          @change="(v, r) => onParamsChange(v, r, 0)"
+        />
+      </slot>
       <ParamsOptions
         title="分类"
         :options="classifyTypeOptions"
@@ -64,8 +66,8 @@
 <script setup name='ProSearch'>
 import ParamsOptions from './ParamsOptions.vue'
 import ClassifyOptions from './ClassifyOptions.vue'
-import { useRequest } from '@/hook';
-// import { ClientApi } from '@/api/client'
+import { useRequest } from '@/hook'
+import { ResourceApi } from '@/api/link/resource'
 
 const props = defineProps({
   style: {
@@ -91,13 +93,15 @@ const text = ref('全部')
 const showParams = ref(false)
 const hiddenParams = ref(true)
 const searchRef = ref()
+const searchValue = ref()
+
 let oldClassifyType = 'all'
 
 const searchParams = []
 
-// const { data: providerOptions } = useRequest(ClientApi.queryProvider, { defaultValue: [] })
-// const { data: classifyOptions, run: runClassify } = useRequest(ClientApi.queryClassify, { immediate: false, defaultValue: [] })
-// const { data: classifyTypeOptions } = useRequest(ClientApi.queryClassifyType, { defaultValue: [], defaultParams: { paging: false } })
+const { data: providerOptions } = useRequest(ResourceApi.queryProvider, { defaultValue: [] })
+const { data: classifyOptions, run: runClassify } = useRequest(ResourceApi.queryClassify, { immediate: false, defaultValue: [] })
+const { data: classifyTypeOptions } = useRequest(ResourceApi.queryClassifyType, { defaultValue: [], defaultParams: { paging: false } })
 
 const paramsArray = []
 
@@ -105,9 +109,14 @@ const paramsArray = []
  * 提交
  */
 const searchSubmit = () => {
-  const _params = searchParams.filter(item => item)
-  emit('update:value', { terms: _params})
-  emit('search', { terms: _params})
+  const nameParams = searchParams[2]
+  const _params = searchParams.filter((item, index) => item && index !== 2)
+  const newParams = {
+    terms: nameParams ? [ { terms: _params}, nameParams ]: _params
+  }
+
+  emit('update:value', newParams)
+  emit('search', newParams)
 }
 
 const onShowParams = () => {
@@ -125,6 +134,21 @@ const onShowParams = () => {
   setTimeout(() => {
     showParams.value = !oldValue
   }, 100)
+}
+
+const onSearch = () => {
+  searchParams[2] = {
+    column: "name",
+    value: `%${searchValue.value}%`,
+    termType: 'like',
+    type: 'and'
+  }
+  searchSubmit()
+}
+
+const onProviderRenderChange = (params, index = 0) => {
+  searchParams[index] = params
+  searchSubmit()
 }
 
 const onParamsChange = (value, record, index) => {

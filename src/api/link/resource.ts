@@ -25,3 +25,28 @@ export const _queryProtocolResource = (id: string,data:any) => server.post(`/res
 
 //当前资源的最新版本协议列表
 export const _queryProtocolNew = (id: string,data:any) => server.post(`/resources/library/${id}/protocol/current/_query`,data)
+
+//获取云端我的资源信息
+export const _queryResourceCloud = () => server.get('/resources/cloud')
+
+//获取资源库信息
+export const _queryTemplate = (data:any) => server.post('/resources/instance/detail/_query',data)
+
+/**
+ * 类型查询
+ * @param data
+ */
+const queryProvider = (data: any) => server.get(`/resources/center/type/provider`, data)
+
+/**
+ * 分类树查询
+ * @param data
+ */
+const queryClassify = (data: any) => server.post(`/resources/center/_query/_children/tree`, data)
+const queryClassifyType = (data: any) => server.post(`/resources/center/classification-type/_query`, data)
+
+export const ResourceApi = {
+    queryProvider,
+    queryClassify,
+    queryClassifyType,
+  }
