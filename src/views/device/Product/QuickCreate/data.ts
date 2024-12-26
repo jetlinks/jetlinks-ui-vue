@@ -390,4 +390,23 @@ NetworkTypeMapping.set('agent-device-gateway', 'MQTT_SERVER');
 NetworkTypeMapping.set('agent-media-device-gateway', 'MQTT_SERVER');
 
 
+export const gatewayType = new Map([
+    ["mqtt-server-gateway","mqtt_server_gateway"],
+    ["mqtt-client-gateway","mqtt_client_gateway"],
+    ["coap-server-gateway","coap_server_gateway"],
+    ["tcp-server-gateway","tcp_server_gateway"],
+    ["udp-device-gateway","udp_device_gateway"],
+    ["http-server-gateway","http_server_gateway"],
+    ["websocket-server","websocket_server"],
+    ["plugin_gateway","plugin_gateway"],
+    ["child-device","child_device"],
+    ["fixed-media","fixed_media"],
+    ["onvif","onvif"],
+    ["gb28181-2016","gb28181_2016"],
+    ["media-plugin","media_plugin"],
+    ["OneNet-platform","oneNet_platform"],
+    ["Ctwing","ctwing"]
+]);
+
+
 export default typeMap

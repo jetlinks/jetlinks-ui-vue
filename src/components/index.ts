@@ -22,6 +22,7 @@ import RowPagination from './RowPagination/index.vue'
 import LevelIcon from './AlarmLeveIcon/index.vue'
 import CheckButton from "./CheckButton";
 import ConfirmModal from './ConfirmModal/index.vue'
+import { ResourceTable, ResourceCardItem } from './ResourceTable'
 
 export default  {
     install(app: App) {
@@ -48,6 +49,8 @@ export default  {
             .component('RadioCard', RadioCard)
             .component('MarkDown', MarkDown)
             .component('CardSelect', CardSelect)
+            .component('ResourceTable',ResourceTable)
+            .component('ResourceCardItem',ResourceCardItem)
             .component('CheckButton', CheckButton)
             .component('ConfirmModal',ConfirmModal)
             .component('LevelIcon',LevelIcon)

@@ -1,9 +1,12 @@
 <script setup>
-
-
+import { resource } from '@/assets'
   const props = defineProps({
     record: Object,
-    active: Boolean
+    active: Boolean,
+    showCharge: {
+      type:Boolean,
+      default: true
+    }
   })
 
   const classNames = computed(() =>{
@@ -12,30 +15,48 @@
       'active': props.active
     }
   })
+
+  const typeColor = {
+      device: '#1677FF',
+      collector: '#52C41A', // 数采
+      protocol: '#FAAD14', // 协议
+  }
 </script>
 
 <template>
   <div :class="classNames">
     <div class="item-center">
       <div class="table-item-img">
-        <img :src="record.photoUrl?.url" />
+        <img :src="record.photoUrl?.url || resource.defaultImage" />
       </div>
-      <div class="table-item-title p-12">
-        <j-ellipsis >
-          {{ record.name }}
-        </j-ellipsis>
-      </div>
-      <div class="table-item-desc p-12">
-        <j-ellipsis :lineClamp="2">
-          {{ record.describe }}
-        </j-ellipsis>
+      <div class="item-center-bottom">
+        <div class="table-item-title fz-16">
+          <j-ellipsis >
+            {{ record.name }}
+          </j-ellipsis>
+        </div>
+        <div class="table-item-tag">
+          <a-space>
+            <AIcon type="FireFilled" :style="{ color: typeColor[record.type?.value]}" />
+            <span class="fc-600">
+              {{ record.type?.text || '-' }}
+            </span>
+          </a-space>
+        </div>
+        <div class="table-item-desc fz-12">
+          <j-ellipsis :lineClamp="2">
+            {{ record.describe }}
+          </j-ellipsis>
+        </div>
       </div>
     </div>
-    <div class="table-item-tag item-position-absolute">
-      {{ record.type?.text || '-' }}
-    </div>
-    <div class="table-item-version item-position-absolute">
-      {{ record.charge === false ? '限时免费' : '付费资源' }}
+
+    <div
+      v-if="showCharge"
+      class="table-item-version item-position-absolute"
+      :class="{'charge': record.charge}"
+    >
+      {{ record.charge ?  '付费资源' : '限时免费' }}
     </div>
   </div>
 </template>
@@ -45,17 +66,19 @@
   position: relative;
   width: 100%;
   transition: all .2s;
-  border-radius: 12px;
+  border-radius: 8px;
   cursor: pointer;
-  height: 320px;
+  height: 348px;
   border: 2px solid transparent;
+  color: @font-gray-900;
+  background-color: #fff;
+
+  .item-center {
+    padding: 12px;
+  }
 
   &.active {
     border-color: @primary-color;
-  }
-
-  &:hover {
-    box-shadow: 0 1px 16px rgba(0,0,0,.2);
   }
 
   .item-position-absolute {
@@ -66,12 +89,17 @@
     font-weight: bold;
   }
 
+  .item-center-bottom {
+    padding: 0 4px;
+    margin-top: 16px;
+  }
+
   .table-item-tag {
-    top: 0;
-    left: 12px;
-    padding: 4px;
-    background-color: @primary-color;
-    color: #fff;
+    border-radius: 4px;
+    background-color: @font-gray-50;
+    display: inline-block;
+    padding: 4px 8px;
+    margin: 8px 0;
   }
 
   .p-12 {
@@ -79,26 +107,30 @@
   }
 
   .table-item-img {
-    background-color: #fff;
-    height: 240px;
-    padding: 12px;
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
+    background-color: @font-gray-50;
+    height: 194px;
+    width: 258px;
+    border-radius: 4px;
+    overflow: hidden;
 
     >img {
-      height: 216px;
+      height: 194px;
       width: 100%;
     }
   }
 
   .table-item-version {
-    top: 0;
-    right: 12px;
-    padding: 2px 12px;
-    text-align: center;
-    border-radius: 20px;
-    background-color: @primary-color;
-    color: #fff;
+    top: 12px;
+    left: 12px;
+    border-radius: 4px;
+    padding: 4px 12px;
+    background-color: #ffeded;
+    color: #ff4d4f;
+
+    .charge {
+      background-color: #FBEBD1;
+      color: #A6845F;
+    }
   }
 }
 </style>

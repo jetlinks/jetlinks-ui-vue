@@ -1,5 +1,5 @@
 <template>
-    <a-modal visible title="协议" :width="1000" :maskClosable="false" @ok="emits('selectedProtocol', protocolCurrent)"
+    <a-modal visible title="协议" :width="1000" :maskClosable="false" @ok="submitData"
         @cancel="emits('close')">
         <div class="header">
             <j-input-search allowClear style="margin-right: 8px;" placeholder="请输入"
@@ -28,6 +28,7 @@
 import { cloneDeep } from 'lodash-es';
 import AccessCard from '../AccessCard/index.vue'
 import { getProtocolList } from '@/api/link/accessConfig';
+import { queryProtocolDetail } from '@/api/device/quickCreate';
 import { ProtocolMapping } from './data';
 import Save from '@/views/link/Protocol/Save/index.vue'
 const props = defineProps({
@@ -79,6 +80,14 @@ const saveChange = () =>{
         onlyMessage('操作成功', 'success');
         queryProtocolList();
     }
+}
+
+const submitData = async() =>{
+    const res = await queryProtocolDetail(protocolCurrent.value.id)
+    if(res.success){
+        emits('selectedProtocol', res.result)
+    }
+    
 }
 
 onMounted(() => {
