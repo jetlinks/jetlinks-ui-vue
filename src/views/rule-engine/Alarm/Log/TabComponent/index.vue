@@ -78,7 +78,7 @@
                                     :span="6"
                                     class="content-left"
                                 >
-                                    <div class="content-title">告警维度</div>
+                                    <div class="content-title">告警目标</div>
                                     <Ellipsis
                                         ><div>
                                             {{ slotProps?.targetName }}
@@ -178,7 +178,7 @@
 
 <script lang="ts" setup>
 import { getImage } from '@/utils/comm';
-import { getOrgList, query, getAlarmProduct } from '@/api/rule-engine/log';
+import { getOrgList, query, getAlarmProduct , queryAlarmRecordByType } from '@/api/rule-engine/log';
 import { useAlarmStore } from '@/store/alarm';
 import { storeToRefs } from 'pinia';
 import dayjs from 'dayjs';
@@ -190,7 +190,7 @@ import Duration from '../components/Duration.vue';
 import { useAlarmLevel } from '@/hook';
 const menuStory = useMenuStore();
 const tableRef = ref();
-const { levelMap, levelList } = useAlarmLevel();
+const { levelMap, getLevelList} = useAlarmLevel();
 const alarmStore = useAlarmStore();
 const { data } = storeToRefs(alarmStore);
 const drawerData = ref();
@@ -203,14 +203,14 @@ const props = defineProps<{
 const imgMap = new Map();
 imgMap.set('product', getImage('/alarm/product.png'));
 imgMap.set('device', getImage('/alarm/device.png'));
-imgMap.set('other', getImage('/alarm/other.png'));
-imgMap.set('org', getImage('/alarm/org.png'));
+imgMap.set('scene', getImage('/alarm/other.png'));
+imgMap.set('organization', getImage('/alarm/org.png'));
 
 const titleMap = new Map();
 titleMap.set('product', '产品');
 titleMap.set('device', '设备');
-titleMap.set('other', '场景');
-titleMap.set('org', '组织');
+titleMap.set('scene', '场景');
+titleMap.set('organization', '组织');
 
 const columns = [
     {
@@ -237,7 +237,7 @@ const columns = [
         search: {
             type: 'select',
             options: async () => {
-                return levelList.value;
+                return getLevelList();
             },
         },
         scopedSlots: true,
@@ -293,7 +293,7 @@ const newColumns = computed(() => {
         case 'device':
             otherColumns.title = '设备名称';
             break;
-        case 'org':
+        case 'organization':
             otherColumns.title = '组织名称';
             break;
         case 'other':
@@ -354,7 +354,7 @@ let params: any = ref({
     terms: [],
 });
 const handleSearch = async (params: any) => {
-    const resp: any = await query(params);
+    const resp: any =props.type !== 'all' ? await queryAlarmRecordByType(props.type,params) : await query(params);
     if (resp.status === 200) {
         const res: any = await getOrgList();
         if (res.status === 200) {
@@ -378,14 +378,6 @@ const handleSearch = async (params: any) => {
 
 const search = (data: any) => {
     params.value.terms = [...data?.terms];
-    if (props.type !== 'all' && !props.id) {
-        params.value.terms.push({
-            termType: 'eq',
-            column: 'targetType',
-            value: props.type,
-            type: 'and',
-        });
-    }
     if (props.type === 'device') {
         data?.terms.forEach((i: any, _index: number) => {
             i.terms.forEach((item: any, index: number) => {
@@ -479,16 +471,6 @@ const showDrawer = (data: any) => {
     visibleDrawer.value = true;
 };
 onMounted(() => {
-    if (props.type !== 'all' && !props.id) {
-        params.value.terms = [
-            {
-                termType: 'eq',
-                column: 'targetType',
-                value: props.type,
-                type: 'and',
-            },
-        ];
-    }
     if (props.id) {
         params.value.terms = [
             {

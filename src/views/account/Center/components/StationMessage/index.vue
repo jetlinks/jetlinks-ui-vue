@@ -24,43 +24,63 @@ import { getInitData } from '../data';
 import { getAllNotice } from '@/api/account/center';
 import { useRouterParams } from '@/utils/hooks/useParams';
 import { useUserInfo } from '@/store/userInfo';
+import { omit } from 'lodash-es';
 
 const tabs = ref<any[]>([]);
 const router = useRouterParams();
 const user = useUserInfo();
-let initData:any[]
+// let initData:any[]
 const queryTypeList = () => {
     getAllNotice().then((resp: any) => {
         if (resp.status === 200) {
-            const arr = initData
-                .map((item: any) => {
-                    const _child = item.children.map((i: any) => {
-                        const _item = (resp.result || []).find(
-                            (t: any) => t?.provider === i?.provider,
-                        );
-                        return {
-                            ...i,
-                            ..._item,
-                        };
-                    });
-                    return {
-                        ...item,
-                        children: _child,
-                    };
-                })
-                .filter((it: any) => {
-                    return it.children.filter((lt: any) => lt?.id)?.length;
-                })
-                .map((item) => {
-                    return {
-                        ...item,
-                        children: item.children.filter((lt: any) => lt?.id),
-                    };
-                });
+            // const arr = initData
+            //     .map((item: any) => {
+            //         const _child = item.children.map((i: any) => {
+            //             const _item = (resp.result || []).find(
+            //                 (t: any) => t?.provider === i?.provider,
+            //             );
+            //             return {
+            //                 ...i,
+            //                 ..._item,
+            //             };
+            //         });
+            //         return {
+            //             ...item,
+            //             children: _child,
+            //         };
+            //     })
+            //     .filter((it: any) => {
+            //         return it.children.filter((lt: any) => lt?.id)?.length;
+            //     })
+            //     .map((item) => {
+            //         return {
+            //             ...item,
+            //             children: item.children.filter((lt: any) => lt?.id),
+            //         };
+            //     });
+            const dataMap = new Map()
+            resp.result.forEach((i: any) => {
+                if (!dataMap.has(i.type.id)) {
+                    dataMap.set(i.type.id, {
+                        name: i.type.name,
+                        provider: i.type.id,
+                        children: [
+                            {
+                                ...omit(i, ['type'])
+                            }
+                        ]
+                    })
+                } else {
+                    dataMap.get(i.type.id).children.push({
+                        ...omit(i, ['type'])
+                    })
+                }
+            })
+            tabs.value = [...dataMap.values()];
             if (!user.other.tabKey) {
-                user.other.tabKey = arr?.[0]?.provider;
+                user.other.tabKey = tabs.value?.[0]?.provider;
             }
-            tabs.value = arr;
+            // tabs.value = arr;
         }
     });
 };
@@ -83,7 +103,7 @@ watchEffect(() => {
 });
 
 onMounted(() => {
-    initData = getInitData()
+    // initData = getInitData()
     queryTypeList();
 });
 </script>

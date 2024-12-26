@@ -79,16 +79,8 @@ const columns = [
     },
 ];
 const queryList = async () => {
-    const res = await queryHandleHistory({
+    const res = await queryHandleHistory(props.currentId,{
         sorts: [{ name: 'createTime', order: 'desc' }],
-        terms: [
-            {
-                column: 'alarmRecordId',
-                termType: 'eq',
-                value: props.currentId,
-                type: 'and',
-            },
-        ],
         pageIndex: 0,
         pageSize: 51,
     });

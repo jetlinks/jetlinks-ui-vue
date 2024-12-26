@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { systemVersion } from '@/api/comm'
 import { useMenuStore } from './menu'
 import {getDetails_api, settingDetail} from '@/api/system/basis';
-import { queryProductThreshold } from '@/api/device/instance'
+import { queryModal } from '@/api/login';
 import type { ConfigInfoType } from '@/views/system/Basis/typing';
 import { LocalStore } from '@/utils/comm'
 import { SystemConst } from '@/utils/consts'
@@ -107,11 +107,10 @@ export const useSystem = defineStore('system', {
             }
         },
         async getThreshold(){
-            await queryProductThreshold('test','test',true).catch((res:any)=>{
-                if(res.response.status === 404){
-                    this.showThreshold = false
-                }
-            })
+           const res:any = await queryModal('metadataPreprocessor')
+           if(res.success){
+            this.showThreshold = res.result
+           }
         }
     }
 })

@@ -24,10 +24,10 @@ const systemNotice = [
                     '当组织类型的告警被触发时，你将在已订阅的方式中收到通知',
             },
             {
-                provider: 'alarm-other',
-                name: '其他告警',
+                provider: 'alarm-scene',
+                name: '场景告警',
                 description:
-                    '当其他类型的告警被触发时，你将在已订阅的方式中收到通知',
+                    '当场景类型的告警被触发时，你将在已订阅的方式中收到通知',
             },
         ],
     },

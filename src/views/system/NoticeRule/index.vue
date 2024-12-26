@@ -11,36 +11,23 @@
                 <div class="content-collapse">
                     <j-collapse :bordered="false" v-model:activeKey="activeKey" expand-icon-position="right">
                         <template #expandIcon="{ isActive }">
-                            <AIcon
-                                type="CaretRightOutlined"
-                                :style="{
-                                    transform: `rotate(${
-                                        isActive ? 90 : 0
+                            <AIcon type="CaretRightOutlined" :style="{
+                                transform: `rotate(${isActive ? 90 : 0
                                     }deg)`,
-                                }"
-                            />
+                            }" />
                         </template>
-                        <j-collapse-panel
-                            v-for="item in tabs"
-                            :key="item.provider"
-                        >
+                        <j-collapse-panel v-for="item in tabs" :key="item.provider">
                             <template #header>
                                 <div>
                                     {{ item.name }}
-                                    <span style="margin-left: 10px;" class="alert" v-if="item.provider === 'alarm'">注意：接收人需要有告警配置页面查询权限，才能收到告警类通知</span>
+                                    <span style="margin-left: 10px;" class="alert"
+                                        v-if="item.provider === 'alarm'">注意：接收人需要有告警配置页面查询权限，才能收到告警类通知</span>
                                 </div>
                             </template>
                             <div>
-                                <template
-                                    v-for="(child, index) in item.children"
-                                    :key="child.provider"
-                                >
-                                    <Item
-                                        :data="child"
-                                        @refresh="onRefresh"
-                                        :isLast="index === item.children?.length"
-                                        :provider="item.provider"
-                                    />
+                                <template v-for="(child, index) in item.children" :key="child.provider">
+                                    <Item :data="child" @refresh="onRefresh" :isLast="index === item.children?.length"
+                                        :provider="item.provider" />
                                 </template>
                             </div>
                         </j-collapse-panel>
@@ -54,128 +41,32 @@
 <script lang="ts" setup>
 import { queryChannelConfig } from '@/api/system/noticeRule';
 import Item from './components/Item/index.vue';
-import { useMenuStore } from '@/store/menu';
-const menuStore = useMenuStore();
-let dataSource:any[] =[] 
-const systemNotice = [
-    {
-        provider: 'alarm',
-        name: '告警',
-        children: [
-            {
-                provider: 'alarm-product',
-                name: '产品告警',
-            },
-            {
-                provider: 'alarm-device',
-                name: '设备告警',
-            },
-            {
-                provider: 'alarm-org',
-                name: '组织告警',
-            },
-            {
-                provider: 'alarm-other',
-                name: '其他告警',
-            },
-        ],
-    },
-    {
-        provider: 'system-monitor',
-        name: '系统监控',
-        children: [
-            {
-                provider: 'system-event',
-                name: '系统运行异常',
-            },
-        ],
-    },
-    {
-        provider: 'system-business',
-        name: '业务监控',
-        children: [
-            {
-                provider: 'device-transparent-codec',
-                name: '透传消息解析异常',
-            },
-        ],
-    },
-];
-const lowCodeNotice = [
-    {
-        provider: 'workflow-notification',
-        name: '工作流通知',
-        children: [
-            {
-                provider: 'workflow-task-todo',
-                name: '待办通知',
-            },
-            {
-                provider: 'workflow-task-reject',
-                name: '驳回通知',
-            },
-            {
-                provider: 'workflow-task-cc',
-                name: '抄送通知',
-            },
-            {
-                provider: 'workflow-process-finish',
-                name: '办结通知',
-            },
-            {
-                provider: 'workflow-process-repealed',
-                name: '关闭通知',
-            },
-            {
-                provider: 'workflow-task-transfer-todo',
-                name: '转办通知'
-            }
-        ],
-    },
-]
-
-const activeKey = ref<string[]>();
-
-const dataMap = new Map();
-
-const data = ref<any[]>([]);
-
+import { omit } from 'lodash-es';
+const activeKey = ref<string[]>([]);
 const tabs = ref<any[]>([])
 const handleSearch = () => {
     queryChannelConfig().then((resp) => {
         if (resp.status === 200) {
-            // (resp?.result || []).map((item: any) => {
-            //     dataMap.set(item.provider, item);
-            // });
-            // data.value = Array.from(dataMap).map((item) => {
-            //     return item?.[1];
-            // });
-            const arr = dataSource
-                .map((item: any) => {
-                    const _child = item.children.map((i: any) => {
-                        const _item = (resp.result || []).find(
-                            (t: any) => t?.provider === i?.provider,
-                        );
-                        return {
-                            ...i,
-                            ..._item,
-                        };
-                    });
-                    return {
-                        ...item,
-                        children: _child,
-                    };
-                })
-                .filter((it: any) => {
-                    return it.children.filter((lt: any) => lt?.id)?.length;
-                })
-                .map((item) => {
-                    return {
-                        ...item,
-                        children: item.children.filter((lt: any) => lt?.id),
-                    };
-                });
-                tabs.value  = arr
+            const dataMap = new Map()
+            resp.result.forEach((i: any) => {
+                if (!dataMap.has(i.type.id)) {
+                    dataMap.set(i.type.id, {
+                        name: i.type.name,
+                        provider: i.type.id,
+                        children: [
+                            {
+                                ...omit(i, ['type'])
+                            }
+                        ]
+                    })
+                    activeKey.value.push(i.type.id)
+                } else {
+                    dataMap.get(i.type.id).children.push({
+                        ...omit(i, ['type'])
+                    })
+                }
+            })
+            tabs.value = [...dataMap.values()]
         }
     });
 };
@@ -185,22 +76,6 @@ const onRefresh = () => {
 }
 
 onMounted(() => {
-    // dataMap.clear();
-    // dataSource.forEach((item) => {
-    //     item.children.map((i) => {
-    //         dataMap.set(i.provider, i);
-    //     });
-    // });
-    // data.value = Array.from(dataMap).map((item) => {
-    //     return item?.[1];
-    // });
-    if(menuStore.hasMenu('process')){
-        dataSource = [...systemNotice,...lowCodeNotice]
-        activeKey.value = ['alarm', 'system-monitor', 'system-business','workflow-notification']
-    }else{
-        dataSource = [...systemNotice]
-        activeKey.value = ['alarm', 'system-monitor', 'system-business']
-    }
     handleSearch();
 });
 </script>
@@ -219,6 +94,7 @@ onMounted(() => {
         background-color: #fff;
     }
 }
+
 .alert {
     padding-left: 10px;
     color: rgba(0, 0, 0, 0.55);
@@ -238,6 +114,7 @@ onMounted(() => {
             background-color: #F7F8FA;
             height: 42px;
         }
+
         .ant-collapse-content {
             padding: 17px 21px 7px 21px;
         }
