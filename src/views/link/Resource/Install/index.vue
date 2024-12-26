@@ -42,7 +42,7 @@ const getTaskList = async () => {
 }
 
 onMounted(() => {
-  // getTaskList()
+  getTaskList()
 })
 </script>
 <style lang="less" scoped>
