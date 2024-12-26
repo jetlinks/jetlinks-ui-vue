@@ -8,7 +8,7 @@
       :footer="null"
   >
     <InstallIng v-if="taskList.length" :taskList="taskList"/>
-    <List v-else-if="fileList.length" v-model:value="fileList" @cancel="emits('close')" @refresh="getTaskList"/>
+    <List v-else-if="fileList.length" :source="source" v-model:value="fileList" @cancel="emits('close')" @refresh="getTaskList"/>
     <template v-else>
       <Init v-model:source="source" v-model:value="fileList"/>
     </template>
