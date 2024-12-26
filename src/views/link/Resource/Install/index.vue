@@ -1,23 +1,52 @@
 <template>
-    <a-modal title="安装资源" visible @cancel="emits('close')" :maskClosable="false" :width="800">
+    <a-modal
+        title="安装资源"
+        visible
+        @cancel="emits('close')"
+        :maskClosable="false"
+        :width="800"
+    >
         <template #footer>
-            <div v-if="uploadFileList.length">
+            <div v-if="fileList.length">
                 <a-button>取消</a-button>
                 <a-button>全部安装</a-button>
             </div>
         </template>
-        <div class="upload_container" v-if="false">
-            <div class="cloud" v-if="!uploadFileList.length">
-                <a-button class="cloudBtn" type="primary">从云端获取</a-button>
+        <div class="upload_container" v-if="true">
+            <div
+                class="cloud"
+                v-if="!source"
+            >
+                <a-button
+                    class="cloudBtn"
+                    type="primary"
+                    @click="getResourceByCloud"
+                    >从云端获取</a-button
+                >
             </div>
-            <div class="upload">
-                <a-upload-dragger v-model:fileList="fileList" name="file" :multiple="true" :maxCount="10"
-                    :action="FILE_UPLOAD" @change="handleChange" @drop="handleDrop">
+            <InstallFile v-if="source === 'cloud' && fileList.length " :data="fileList" :install-type="source">
+            </InstallFile>
+            <a-empty v-if="source === 'cloud' && !fileList.length"></a-empty>
+            <div class="upload" v-if="source !== 'cloud'">
+                <a-upload-dragger
+                    v-model:fileList="fileList"
+                    name="file"
+                    :multiple="true"
+                    :maxCount="10"
+                    :action="FILE_UPLOAD"
+                    @change="handleChange"
+                    @drop="handleDrop"
+                >
                     <div style="height: 400px; padding: 0 10px">
-                        <div v-if="!uploadFileList.length" class="noData">
-                            <AIcon type="PlusSquareOutlined" style="font-size: 100px" />
+                        <div v-if="!fileList.length" class="noData">
+                            <AIcon
+                                type="PlusSquareOutlined"
+                                style="font-size: 100px"
+                            />
                             <div class="tips">
-                                <div>拖放安装资源或者点击上方按钮从本地文件中选取资源安装;</div>
+                                <div>
+                                    拖放安装资源或者点击上方按钮从本地文件中选取资源安装;
+                                </div>
                                 <div>单次支持最多选取10个资源文件</div>
                             </div>
                         </div>
@@ -31,31 +60,37 @@
                                 </div>
                             </div>
                             <div class="uploadList">
-                                <UploadFile :data="uploadFileList"></UploadFile>
+                                <InstallFile :data="fileList" :install-type="source"></InstallFile>
                             </div>
                         </div>
                     </div>
                 </a-upload-dragger>
             </div>
         </div>
-        <InstallAll></InstallAll>
+        <InstallAll v-else></InstallAll>
     </a-modal>
 </template>
 
 <script setup>
 import { FILE_UPLOAD } from '@/api/comm';
-import { getImage } from '@/utils/comm';
-import UploadFile from './components/UploadFile.vue';
+import InstallFile from './components/InstallFile.vue';
 import InstallAll from './components/InstallAll.vue';
-const emits = defineEmits(['close'])
-const fileList = ref()
-const handleChange = () => {
+import { _queryResourceCloud } from '@/api/link/resource';
+const emits = defineEmits(['close']);
+const fileList = ref([]);
+const source = ref('');
+const handleChange = () => {};
 
-}
-const uploadFileList = ref([
-])
+const getResourceByCloud = async () => {
+    source.value = 'cloud';
+    const res = await _queryResourceCloud();
+    if (res.success) {
+        fileList.value = res.result;
+    }
+};
+
 </script>
-<style lang='less' scoped>
+<style lang="less" scoped>
 .cloud {
     text-align: right;
 }

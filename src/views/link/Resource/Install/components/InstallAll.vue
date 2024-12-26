@@ -37,7 +37,7 @@
                     全部移除</a-button>
             </a-space>
         </div>
-        <UploadFile :data="uploadList">
+        <InstallFile :data="uploadList">
             <template #control="{ data, index }">
                 <div @mouseleave="() => handleMouseLeave(index)" @mouseenter="() => handleMouseEnter(index)"
                     class="listControl">
@@ -68,12 +68,12 @@
                     </template>
                 </div>
             </template>
-        </UploadFile>
+        </InstallFile>
     </div>
 </template>
 
 <script setup>
-import UploadFile from './UploadFile.vue';
+import InstallFile from './InstallFile.vue';
 import { getImage } from '@/utils/comm';
 const statistics = ref({
 

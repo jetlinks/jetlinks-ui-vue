@@ -32,6 +32,14 @@ export const _queryResourceCloud = () => server.get('/resources/cloud')
 //获取资源库信息
 export const _queryTemplate = (data:any) => server.post('/resources/instance/detail/_query',data)
 
+//获取资源库信息不分页接口
+export const _queryTemplateNoPaging = (data:any) => server.post('/resources/instance/_query/no-paging',data)
+
+//安装资源
+export const installResource = (data:any) => server.post('/resources/install/task/_create',data) 
+
+
+
 /**
  * 类型查询
  * @param data
