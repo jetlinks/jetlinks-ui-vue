@@ -24,7 +24,7 @@
           已暂停{{ statistics?.pause || 0 }}
         </div>
       </a-space>
-      <a-button @click="pauseAll" type="primary" v-if="controlStatue === 'pause'">
+      <a-button @click="pauseAll" type="primary" v-if="controlStatue">
         <template #icon>
           <AIcon type="PauseOutlined"></AIcon>
         </template>
@@ -45,7 +45,7 @@
         </a-button>
       </a-space>
     </div>
-    <div style="margin-top: 10px; max-height: 500px; overflow-y: auto">
+    <div style="margin-top: 10px; max-height: 500px; min-height: 400px; overflow-y: auto">
       <div v-for="i in taskList" :key="i.id" class="fileList">
         <img
             :src="i.img"
@@ -66,11 +66,11 @@
               </div>
             </div>
             <a-space>
-              <AIcon :type="statusIcon.get(i.state.value)"/>
+              <Status :value="status.get(i.id)?.state?.value || i.state.value" />
               <a-button v-if='i.state.value === "success"' @click="onDetail(i)">查看详情</a-button>
               <a-button v-if='i.state.value === "installing"' @click="onPause(i)">暂停</a-button>
               <a-button v-if='i.state.value === "canceled"' @click="onBegin(i)">开始</a-button>
-              <a-button v-if='i.state.value === "waiting_install"' @click="onDelete(i)">移除</a-button>
+              <a-button v-if='i.state.value === "failed"' @click="onDelete(i)">移除</a-button>
               <a-button v-if='i.state.value === "failed"' @click="onReload(i)">重装</a-button>
             </a-space>
           </div>
@@ -78,10 +78,10 @@
           <div class="fileInfoFooter">
             <div class="install_container">
               <a-badge status="default"/>
-              <!--              <div class="installStatue">{{ computedVersion(i) }}</div>-->
-              <!--              <div v-if="resourceVersionMap.has(i.resourcesId)">-->
-              <!--                (当前版本:V{{ resourceVersionMap.get(i.resourcesId) }})-->
-              <!--              </div>-->
+<!--                            <div class="installStatue">{{ computedVersion(i) }}</div>-->
+<!--                            <div v-if="resourceVersionMap.has(i.resourcesId)">-->
+<!--                              (当前版本:V{{ resourceVersionMap.get(i.resourcesId) }})-->
+<!--                            </div>-->
             </div>
             <div class="description">
               {{ i?.describe }}
@@ -95,45 +95,88 @@
 
 <script setup>
 import {getWebSocket} from "@/utils/websocket";
-import {statusIcon} from '../data'
-import {deployTask} from "@/api/link/resource";
+import Status from './Status.vue'
+import {delTask, deployTask, stopTask} from "@/api/link/resource";
+import {map} from "lodash-es";
 
 const props = defineProps({
   taskList: {
     type: Array,
     default: () => []
-  }
+  },
+  source: {
+    type: String,
+    default: 'cloud'
+  },
 })
-
+const emits = defineEmits(['refresh'])
 const statistics = ref({})
-
+const status = new Map()
 let wsRef = null
-const controlStatue = ref('pause')
-const pauseAll = () => {
-
+const controlStatue = ref(false)
+const pauseAll = async () => {
+  const arr = map(props.taskList.filter(i => ['success', 'failed'].includes(i.state.value)), 'id')
+  const resp = await stopTask(arr)
+  if(resp.success){
+    controlStatue.value = false
+  }
 }
-const startAll = () => {
-
+const startAll = async () => {
+  const arr = map(props.taskList.filter(i => ['success', 'failed'].includes(i.state.value)), 'id')
+  const resp = await deployTask(arr)
+  if(resp.success){
+    controlStatue.value = true
+  }
 }
 
-const removeAll = () => {
-
+const removeAll = async () => {
+  const resp = await delTask({
+    "states": [
+      "canceled", 'failed'
+    ]
+  })
+  if(resp.success){
+    emits('refresh')
+  }
 }
 
-const onPause = () => {
+const onPause = async (item) => {
+  const resp = await stopTask({
+    "taskId": item.id,
+    "type": props.source,
+    "states": [
+      "canceled"
+    ]
+  })
+  if(resp.success){
 
+  }
 }
 
-const onDetail = () => {
+const onDetail = async () => {
 
 }
 
 const onBegin = async (item) => {
-  const resp = await deployTask()
+  const resp = await deployTask({
+    "taskId": item.id,
+    "type": props.source,
+    "states": [
+      "canceled"
+    ]
+  })
+  if(resp.success){
+
+  }
 }
 
-const onDelete = () => {
-
+const onDelete = async (item) => {
+  const resp = await delTask({
+    "taskId": item.id,
+  })
+  if(resp.success){
+    emits('refresh')
+  }
 }
 
 const onReload = () => {
@@ -147,12 +190,20 @@ const installTask = () => {
       {},
   ).subscribe((resp) => {
     if (resp.payload?.taskId) {
-      // status.set(resp.payload.taskId, resp.payload)
+      status.set(resp.payload.taskId, resp.payload)
+      console.log(status)
     }
-    // console.log(status)
   });
 }
 
+watch(() => props.taskList, () => {
+  if(props.taskList.length){
+    installTask()
+  }
+}, {
+  deep: true,
+  immediate: true
+})
 </script>
 <style lang='less' scoped>
 .header {
