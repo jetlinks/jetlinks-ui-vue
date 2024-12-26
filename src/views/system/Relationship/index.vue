@@ -11,7 +11,7 @@
                     ref="tableRef"
                     :columns="columns"
                     :request="getRelationshipList_api"
-                    model="TABLE"
+                    mode="TABLE"
                     :params="queryParams"
                     :defaultParams="{
                         sorts: [{ name: 'createTime', order: 'desc' }],
