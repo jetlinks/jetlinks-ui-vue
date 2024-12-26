@@ -6,7 +6,7 @@
                     <AIcon type="AppstoreOutlined" style="font-size: 18px" />
                     <span style="font-size: 20px">物模型</span>
                     <span @click="handleClick('metadata')"
-                        >受影响的产品: <span style="color: #1890ff; "> 10 </span></span
+                        >受影响的产品: <span style="color: #1890ff; "> {{ productList.length }} </span></span
                     >
                 </a-space>
                 <a-space>
@@ -92,16 +92,6 @@ const visible = ref(false);
 const params = ref({});
 
 const handleClick = (type: any) => {
-    if (type === 'metadata') {
-        params.value = {
-            terms: [{ column: 'metadata', termType: 'eq', value: 'metadata' }],
-        };
-    } else {
-        params.value = {
-            terms: [{ column: 'metadata', termType: 'eq', value: 'metadata' }],
-        };
-    }
-
     visible.value = true;
 };
 </script>

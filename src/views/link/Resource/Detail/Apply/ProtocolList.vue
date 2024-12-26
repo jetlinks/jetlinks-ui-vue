@@ -4,7 +4,7 @@
             <a-space :size="12">
                 <AIcon type="AppstoreOutlined" style="font-size: 18px" />
                 <span style="font-size: 20px">消息协议</span>
-                <span @click="handleClick('metadata')">受影响的产品: 10</span>
+                <span @click="handleClick('metadata')">受影响的产品: <span style="color: #1890ff; "> {{ productList.length }} </span></span>
             </a-space>
         </div>
         <div class="protocol-items">
@@ -12,8 +12,8 @@
                 v-for="item in protocolList"
                 :data="item"
                 :options="[
-                    { label: '更新', value: 1 },
-                    { label: '忽略', value: 2 },
+                    { label: '更新', value: 'cover' },
+                    { label: '忽略', value: 'ignore' },
                 ]"
             >
                 <template #leftRender>
@@ -78,7 +78,7 @@
                 </template>
             </CardItem>
         </div>
-        <Product v-if="visible"  @close="visible = false" />
+        <Product v-if="visible" type="protocol"  @close="visible = false" />
     </div>
 </template>
 
@@ -86,6 +86,7 @@
 import { getImage } from '@/utils/comm';
 import CardItem from './CardItem.vue';
 import Product from './Product.vue';
+
 
 const props = defineProps({
     productList: {
@@ -98,15 +99,6 @@ const props = defineProps({
     }
 });
 
-const dataSource = [
-    { id: 1, name: '产品xxxxx' },
-    { id: 2, name: '产品xxxxx' },
-    { id: 3, name: '产品xxxxx' },
-    { id: 4, name: '产品xxxxx' },
-    { id: 2, name: '产品xxxxx' },
-    { id: 3, name: '产品xxxxx' },
-    { id: 4, name: '产品xxxxx' },
-];
 const protocolList = [
     {
         id: 1,

@@ -12,8 +12,8 @@
                 <a-button type="primary" @click="onUpdate">更新</a-button>
             </div>
             <div class="log">
-                <h3>更新日志</h3>
-                <p>{{ version }}</p>
+                <h3>新版本 {{ info.version }}</h3>
+                <p>{{ info.describe }}</p>
             </div>
         </div>
         <div v-else><a-badge status="success" />当前已是最新版本</div>
@@ -32,7 +32,7 @@ const props = defineProps({
     },
 });
 const showUpate = ref(false);
-const version = ref();
+const info = ref();
 const getUpdate = async () => {
     const res = await checkUpdate(props.data.id);
     if(res.success){
@@ -40,7 +40,7 @@ const getUpdate = async () => {
         if(res.result){
             const resp = await _latest(props.data.id);
             if(resp.success){
-                version.value = resp.result
+                info.value = resp.result
             }
         }
     }
