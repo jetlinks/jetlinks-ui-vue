@@ -4,7 +4,7 @@
             <a-space :size="12">
                 <AIcon type="AppstoreOutlined" style="font-size: 18px" />
                 <span style="font-size: 20px">消息协议</span>
-                <span @click="handleClick('metadata')">受影响的产品: <span style="color: #1890ff; "> {{ productList.length }} </span></span>
+                <span @click="handleClick('metadata')">受影响的产品: <span style="color: #1890ff; "> {{count }} </span></span>
             </a-space>
         </div>
         <div class="protocol-items">
@@ -103,13 +103,15 @@ const _id = route.params?.id as any;
 
 const visible = ref(false);
 const productList = ref<any>([]);
+const count = ref(0)
 
 // 受协议影响的产品
 const getProtocol = async () => {
-    const res = await _queryProtocolNoPag(_id, { paging: false });
+    const res = await _queryProtocol(_id, {  });
     if (res.success) {
-        productList.value = res.result;
+        count.value = res.result.total;
     }
+    // await _queryProtocolNoPag(_id, { paging: false });
 };
 const handleClick = (type: any) => {
     visible.value = true;
