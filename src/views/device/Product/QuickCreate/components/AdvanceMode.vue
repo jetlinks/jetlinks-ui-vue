@@ -278,7 +278,8 @@ const selectResourceProtocol = (data) => {
         type: 'jar',
         configuration: {
             location: data.url,
-            sourceId: data.id
+            sourceId: data.id,
+            version: data.version
         },
     };
     selectedProtocolID.value = data.id
@@ -290,7 +291,8 @@ const selectResourcePlugin = (data) =>{
         provider: 'jar',
         configuration: {
             location: data.url,
-            sourceId: data.id
+            sourceId: data.id,
+            version: data.version
         },
     };
     selectedPluginID.value = data.id
