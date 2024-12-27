@@ -9,8 +9,9 @@
         </div>
         <div class="protocol-items">
             <CardItem
-                v-for="item in protocolList"
-                :data="item"
+                v-for="(item,index) in protocolList"
+                type="protocol"
+                v-model:value="protocolList[index]"
                 :options="[
                     { label: '更新', value: 'cover' },
                     { label: '忽略', value: 'ignore' },
@@ -24,7 +25,7 @@
                                 <div class="protocol-item-img">
                                     <img
                                         :src="
-                                            item.img ||
+                                           
                                             getImage(
                                                 '/device/instance/device-card.png',
                                             )
@@ -33,12 +34,12 @@
                                 </div>
                                 <div class="protocol-item-text">
                                     <j-ellipsis>
-                                        {{ item.old }}
+                                        {{ item.name }}
                                     </j-ellipsis>
                                 </div>
                                 <div class="protocol-item-version">
                                     <j-ellipsis>
-                                        {{ item.version }}
+                                        {{ item.configuration.version || '--' }}
                                     </j-ellipsis>
                                 </div>
                             </div>
@@ -55,7 +56,7 @@
                                 <div class="protocol-item-img">
                                     <img
                                         :src="
-                                            item.img ||
+                                           
                                             getImage(
                                                 '/device/instance/device-card.png',
                                             )
@@ -64,12 +65,12 @@
                                 </div>
                                 <div class="protocol-item-text">
                                     <j-ellipsis>
-                                        {{ item.new }}
+                                        {{ item.newProtocol?.name || '--' }}
                                     </j-ellipsis>
                                 </div>
                                 <div class="protocol-item-version">
                                     <j-ellipsis>
-                                        {{ item.version }}
+                                        {{ item.newProtocol?.version || '--' }}
                                     </j-ellipsis>
                                 </div>
                             </div>
@@ -86,45 +87,38 @@
 import { getImage } from '@/utils/comm';
 import CardItem from './CardItem.vue';
 import Product from './Product.vue';
-
+import {
+    _queryProtocol,_queryProtocolNoPag
+} from '@/api/link/resource';
 
 const props = defineProps({
-    productList: {
+    protocolList: {
         type: Array ,
         default: () => ([]),
     },
-    resourceMetadata:{
-        type: Object,
-        default: () => ({})
-    }
 });
 
-const protocolList = [
-    {
-        id: 1,
-        // name: '协议xxxxx',
-        old: 'old协议xxxxx',
-        version: '1.0.0.11158',
-        new: 'new协议xxxxxxxxxxxxxxxxxxxxx',
-    },
-];
-const expand = ref(false);
+const route = useRoute();
+const _id = route.params?.id as any;
+
 const visible = ref(false);
-const params = ref({});
+const productList = ref<any>([]);
 
-const handleClick = (type: any) => {
-    if (type === 'metadata') {
-        params.value = {
-            terms:[{ column: 'metadata', termType: 'eq', value: 'metadata' }]
-        };
-    }else{
-        params.value = {
-            terms:[{ column: 'metadata', termType: 'eq', value: 'metadata' }]
-        };
+// 受协议影响的产品
+const getProtocol = async () => {
+    const res = await _queryProtocolNoPag(_id, { paging: false });
+    if (res.success) {
+        productList.value = res.result;
     }
-
+};
+const handleClick = (type: any) => {
     visible.value = true;
 };
+
+onMounted(() => {
+    getProtocol();
+});
+
 </script>
 
 <style lang="less" scoped>

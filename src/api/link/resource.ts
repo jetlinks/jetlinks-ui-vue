@@ -13,15 +13,17 @@ export const _latest = (id: string) => server.get(`/resources/library/cloud/${id
 
 //应用资源受影响产品列表
 export const _queryProduct = (id: string, data: any) => server.post(`resources/library/${id}/affected/product/_query`, data)
-// export const _queryProductNoPaging = (id: string,data:any) => server.post(`resources/library/${id}/affected/product/_query/no-paging`,data)
+export const _queryProductNoPaging = (id: string,data:any) => server.post(`resources/library/${id}/affected/product/_query/no-paging`,data)
 
 //应用资源受影响采集器列表
 export const _queryCollector = (id: string, data: any) => server.post(`resources/library/${id}/affected/collector/_query`, data)
 //应用资源受协议影响的产品列表
 export const _queryProtocol = (id: string, data: any) => server.post(`/resources/library/${id}/protocol/affected/product/_query`, data)
+export const _queryProtocolNoPag = (id: string, data: any) => server.post(`/resources/library/${id}/protocol/affected/product/_query/no-paging`, data)
 
 //应用资源协议列表
 export const _queryProtocolNow = (id: string,data:any) => server.post(`/resources/library/${id}/affected/protocol/_query`,data)
+export const _queryProtocolNowNoPaging = (id: string,data:any) => server.post(`/resources/library/${id}/affected/protocol/_query/no-paging`,data)
 
 // //当前资源的最新版本协议列表
 // export const _queryProtocolNew = (id: string,data:any) => server.post(`/resources/library/${id}/protocol/current/_query`,data)
@@ -38,7 +40,7 @@ export const saveProtocol = (data: Object) => server.patch(`/protocol`, data);
 export const _queryProtocolResource = (id: string, data: any) => server.post(`/resources/library/${id}/affected/protocol/_query`, data)
 
 //当前资源的最新版本协议列表
-export const _queryProtocolNew = (id: string, data: any) => server.post(`/resources/library/${id}/protocol/current/_query`, data)
+export const _queryProtocolNew = (id: string,) => server.get(`/resources/library/${id}/protocol/current/_query`)
 
 //获取云端我的资源信息
 export const _queryResourceCloud = () => server.get('/resources/cloud')
