@@ -23,6 +23,7 @@
 
 <script setup lang="ts" name="Update">
 import { checkUpdate,_latest,installResource } from '@/api/link/resource';
+import { onlyMessage } from '@/utils/comm';
 
 const emits = defineEmits(['close']);
 
@@ -55,7 +56,8 @@ const onUpdate = async() => {
         }]
     });
     if(res.success){
-        
+        onlyMessage('操作成功')
+        emits('close')
     }
 };
 
