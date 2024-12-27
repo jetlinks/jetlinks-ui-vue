@@ -7,16 +7,26 @@
         :scroll="{ y: 'calc(100vh - 260px)' }"
     >
         <template #bodyCell="{ column, text, record }">
-            <template
-                v-if="['alarmTime', 'handleTime'].includes(column.dataIndex)"
-            >
-                {{ dayjs(text).format('YYYY-MM-DD HH:mm:ss') }}
+            <template v-if="column.dataIndex === 'alarmTime'">
+                <j-ellipsis>
+                    {{ dayjs(text).format('YYYY-MM-DD HH:mm:ss') }}
+                </j-ellipsis>
+            </template>
+            <template v-if="column.dataIndex === 'handleTime'">
+                <j-ellipsis>
+                    {{
+                        text ? dayjs(text).format('YYYY-MM-DD HH:mm:ss') : '--'
+                    }}
+                </j-ellipsis>
             </template>
             <template v-if="column.dataIndex === 'duration'">
                 <Duration :data="record" />
             </template>
+            <template v-if="column.dataIndex === 'state'">
+                {{ text?.text || '--' }}
+            </template>
             <template v-if="column.dataIndex === 'handleType'">
-                {{ text?.text }}
+                {{ text?.text || '--' }}
             </template>
             <template v-if="column.dataIndex === 'description'">
                 <Ellipsis>
@@ -68,9 +78,16 @@ const columns = [
         key: 'duration',
     },
     {
+        title: '处理状态',
+        dataIndex: 'state',
+        key: 'state',
+        width:100
+    },
+    {
         title: '处理类型',
         dataIndex: 'handleType',
         key: 'handleType',
+        width:100
     },
     {
         title: '处理结果',
@@ -79,7 +96,7 @@ const columns = [
     },
 ];
 const queryList = async () => {
-    const res = await queryHandleHistory(props.currentId,{
+    const res = await queryHandleHistory(props.currentId, {
         sorts: [{ name: 'createTime', order: 'desc' }],
         pageIndex: 0,
         pageSize: 51,
