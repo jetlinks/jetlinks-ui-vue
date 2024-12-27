@@ -21,9 +21,11 @@
                 <template #handleTime="slotsProps">
                     <span>
                         {{
-                            dayjs(slotsProps.handleTime).format(
-                                'YYYY-MM-DD HH:mm:ss',
-                            )
+                            slotsProps?.handleTime
+                                ? dayjs(slotsProps.handleTime).format(
+                                      'YYYY-MM-DD HH:mm:ss',
+                                  )
+                                : '--'
                         }}
                     </span>
                 </template>
@@ -33,6 +35,9 @@
                 <template #alarmDuration="slotProps">
                     <Ellipsis><Duration :data="slotProps" /></Ellipsis>
                 </template>
+                <template #state="slotProps">{{
+                    slotProps?.state?.text
+                }}</template>
                 <template #alarmTime="slotProps">
                     <span>
                         {{
@@ -56,6 +61,16 @@ const route = useRoute();
 const id = route.query?.id;
 const columns = [
     {
+        title: '告警时间',
+        dataIndex: 'alarmTime',
+        key: 'alarmTime',
+        scopedSlots: true,
+        search: {
+            type: 'date',
+        },
+        width: 180,
+    },
+    {
         title: '处理时间',
         dataIndex: 'handleTime',
         key: 'handleTime',
@@ -64,6 +79,20 @@ const columns = [
         search: {
             type: 'date',
         },
+    },
+    {
+        title: '告警持续时长',
+        dataIndex: 'alarmDuration',
+        key: 'alarmDuration',
+        scopedSlots: true,
+        width: 180,
+    },
+    {
+        title: '处理状态',
+        dataIndex: 'state',
+        key: 'state',
+        width: 100,
+        scopedSlots: true,
     },
     {
         dataIndex: 'handleType',
@@ -86,23 +115,6 @@ const columns = [
         },
     },
     {
-        title: '告警时间',
-        dataIndex: 'alarmTime',
-        key: 'alarmTime',
-        scopedSlots: true,
-        search: {
-            type: 'date',
-        },
-        width: 180,
-    },
-    {
-        title: '告警持续时长',
-        dataIndex: 'alarmDuration',
-        key: 'alarmDuration',
-        scopedSlots: true,
-        width: 180,
-    },
-    {
         title: '处理结果',
         dataIndex: 'description',
         key: 'description',
@@ -113,9 +125,9 @@ const columns = [
     },
 ];
 const params = ref();
-const query = async(queryParams) =>{
-    return queryHandleHistory(id,queryParams);
-}
+const query = async (queryParams) => {
+    return queryHandleHistory(id, queryParams);
+};
 const emit = defineEmits(['closeLog']);
 /**
  * 关闭弹窗
