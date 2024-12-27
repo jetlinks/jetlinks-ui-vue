@@ -126,7 +126,7 @@
             v-if="!advancedMode && accessData.channel === 'network'"
         >
             <div>网络组件配置</div>
-            <Network ref="networkRef" :accessData="accessData"/>
+            <Network ref="networkRef" :accessData="accessData" />
         </div>
         <div>
             <a-space>
@@ -181,7 +181,7 @@ const props = defineProps({
     },
 });
 
-const emits = defineEmits(['cancel'])
+const emits = defineEmits(['cancel']);
 
 const accessRef = ref();
 const networkRef = ref();
@@ -381,6 +381,7 @@ const getConfigurationByProtocol = async () => {
 
 //从插件中获取配置项
 const getConfigurationByPlugin = async () => {
+    console.log(props.plugin);
     const res = await queryPluginConfiguration(props.plugin);
     if (res.success) {
         res.result?.others?.configMetadata?.properties.forEach((item) => {
@@ -409,48 +410,30 @@ const getConfigurationByGB28181 = async () => {
     }
 };
 
-// watch(
-//     () => props.accessData,
-//     () => {
-//         if (
-//             ['network', 'OneNet', 'Ctwing'].includes(
-//                 props.accessData.channel,
-//             ) &&
-//             !['agent-media-device-gateway', 'agent-device-gateway'].includes(
-//                 props.accessData.provider,
-//             )
-//         ) {
-//             getConfigurationByProtocol();
-//         } else if (props.accessData.channel === 'plugin') {
-//             getConfigurationByPlugin();
-//         } else if (props.accessData.provider === 'gb28181-2016') {
-//             getConfigurationByGB28181();
-//         }
-//     },
-//     {
-//         deep: true,
-//         immediate: true,
-//     },
-// );
+watch(
+    () => props.accessData,
+    () => {
+        getStoragList().then((resp) => {
+            if (resp.status === 200) {
+                storageList.value = resp.result;
+            }
+        });
 
-onMounted(() => {
-    getStoragList().then((resp) => {
-        if (resp.status === 200) {
-            storageList.value = resp.result;
+        if (
+            ['network', 'OneNet', 'Ctwing'].includes(
+                props.accessData.channel,
+            ) &&
+            !['agent-media-device-gateway', 'agent-device-gateway'].includes(
+                props.accessData.provider,
+            )
+        ) {
+            getConfigurationByProtocol();
+        } else if (props.accessData.channel === 'plugin') {
+            getConfigurationByPlugin();
+        } else if (props.accessData.provider === 'gb28181-2016') {
+            getConfigurationByGB28181();
         }
-    });
-    if (
-        ['network', 'OneNet', 'Ctwing'].includes(props.accessData.channel) &&
-        !['agent-media-device-gateway', 'agent-device-gateway'].includes(
-            props.accessData.provider,
-        )
-    ) {
-        getConfigurationByProtocol();
-    } else if (props.accessData.channel === 'plugin') {
-        getConfigurationByPlugin();
-    } else if (props.accessData.provider === 'gb28181-2016') {
-        getConfigurationByGB28181();
-    }
-});
+    },
+);
 </script>
 <style lang="less" scoped></style>

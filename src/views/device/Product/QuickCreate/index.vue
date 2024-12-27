@@ -144,6 +144,63 @@ const classification = ref([
 const selectedClassification = ref();
 const selectedResource = ref(undefined);
 const resourceData = ref([
+    {
+        id: '1872245332395499520',
+        type: {
+            text: '设备模板',
+            value: 'device',
+        },
+        photoUrl: {
+            type: {
+                text: '本地上传',
+                value: 'internal',
+            },
+        },
+        name: '前端测试插件',
+        source: [],
+        docUrl: [],
+        loopPicUrl: [],
+        developDuration: 1,
+        charge: false,
+        version: 'v1.0.3',
+        state: {
+            text: '正常',
+            value: 'enabled',
+        },
+        creatorId: '1199596756811550720',
+        creatorName: '超级管理员',
+        createTime: 1735214052983,
+        modifyTime: 1735266181140,
+        modifierId: '1199596756811550720',
+        modifierName: '超级管理员',
+        deviceType: [
+            {
+                text: '直连设备',
+                value: 'device',
+            },
+        ],
+        accessInfos: [
+            {
+                provider: 'media-plugin',
+                channel: 'plugin',
+                bindInfo: [
+                    {
+                        id: '1872245295758254080',
+                        type: 'plugin',
+                        name: '测试插件',
+                        defaultAccess: true,
+                        url: 'http://192.168.32.139:9900/api/file/VZQF9o8rqrgtAHxiHy1Oa1CYWy0pqo9K.jar?accessKey=99416f1efefc46d6434090d7531167ec',
+                        metadata:
+                            '{"events":[],"functions":[],"modules":[],"properties":[],"tags":[]}',
+                    },
+                ],
+                transport: 'plugin',
+                configuration: {},
+                defaultAccess: true,
+            },
+        ],
+        metadata: '{"events":[],"properties":[],"functions":[],"tags":[]}',
+    },
 ]);
 const getClassificationType = async () => {
     const res = await queryClassificationType();

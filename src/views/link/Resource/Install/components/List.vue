@@ -1,5 +1,12 @@
 <template>
-    <div style="margin-top: 10px; max-height: 500px; min-height: 400px; overflow-y: auto">
+    <div
+        style="
+            margin-top: 10px;
+            max-height: 500px;
+            min-height: 400px;
+            overflow-y: auto;
+        "
+    >
         <div v-for="(i, index) in fileList" class="fileList">
             <img
                 :src="i.img"
@@ -20,11 +27,9 @@
                         </div>
                     </div>
                     <div class="control">
-                        <template v-if="!status.get(i.resourcesId)">
-                            <a-button @click="() => removeFile(index)"
-                                >移除</a-button
-                            >
-                        </template>
+                        <a-button @click="() => removeFile(index)"
+                            >移除</a-button
+                        >
                     </div>
                 </div>
                 <a-divider />
@@ -32,7 +37,7 @@
                     <div class="install_container">
                         <a-badge status="default" />
                         <div class="installStatue">
-                            {{ computedVersion(i) }}
+                            {{ computedVersion(resourceVersionMap, i) }}
                         </div>
                         <div v-if="resourceVersionMap.has(i.resourcesId)">
                             (当前版本:V{{
@@ -47,86 +52,51 @@
             </div>
         </div>
     </div>
-  <a-divider />
-  <div style="display: flex; justify-content: center; margin-top: 8px;">
-    <a-space>
-      <a-button @click="emits('cancel')">取消</a-button>
-      <a-button @click="onInstall" type="primary">全部安装</a-button>
-    </a-space>
-  </div>
+    <a-divider />
+    <div style="display: flex; justify-content: center; margin-top: 8px">
+        <a-space>
+            <a-button @click="emits('cancel')">取消</a-button>
+            <a-button @click="onInstall" type="primary">全部安装</a-button>
+        </a-space>
+    </div>
 </template>
 
 <script setup>
-import {
-    _queryTemplateNoPaging,
-    installResource,
-} from '@/api/link/resource';
+import { _queryTemplateNoPaging, installResource } from '@/api/link/resource';
 import { cloneDeep } from 'lodash-es';
-
+import { computedVersion } from '../data';
 const props = defineProps({
     value: {
         type: Array,
         default: [],
     },
-    source:{
-        type:String,
-        default: ''
-    }
+    source: {
+        type: String,
+        default: '',
+    },
+    resourceVersionMap: {
+        type: Object,
+        default: () => {},
+    },
 });
 const emits = defineEmits(['update:value', 'cancel', 'refresh']);
-const resourceVersionMap = ref(new Map());
 const fileList = ref([]);
-const status = new Map();
-const computedVersion = (data) => {
-    if (resourceVersionMap.value.has(data.resourcesId)) {
-        return resourceVersionMap.value.get(data.resourcesId) === data.version
-            ? '同版本覆盖'
-            : '版本更新';
-    } else {
-        return '首次安装';
-    }
-};
-
 const removeFile = (index) => {
     fileList.value.splice(index, 1);
     emits('update:value', fileList.value);
 };
 
 const onInstall = async () => {
-  const res = await installResource({
-    type: props.source,
-    resourceDetails: fileList.value.map((i) => {
-      return {
-        releaseDetail: i,
-      };
-    }),
-  })
-  if (res.success) {
-    emits('refresh');
-  }
-};
-
-const getVersion = async (ids) => {
-    const params = {
-        paging: false,
-        terms: [
-            {
-                terms: [
-                    {
-                        type: 'or',
-                        value: ids,
-                        termType: 'in',
-                        column: 'id',
-                    },
-                ],
-            },
-        ],
-    };
-    const res = await _queryTemplateNoPaging(params);
+    const res = await installResource({
+        type: props.source,
+        resourceDetails: fileList.value.map((i) => {
+            return {
+                releaseDetail: i,
+            };
+        }),
+    });
     if (res.success) {
-        res.result.forEach((i) => {
-            resourceVersionMap.value.set(i.id, i.version);
-        });
+        emits('refresh');
     }
 };
 
@@ -134,11 +104,6 @@ watch(
     () => props.value,
     () => {
         fileList.value = cloneDeep(props.value);
-        resourceVersionMap.value.clear();
-        const resourceIds = props.data?.map((i) => {
-            return i.resourcesId;
-        });
-        getVersion(resourceIds);
     },
     {
         deep: true,

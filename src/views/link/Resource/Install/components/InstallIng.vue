@@ -80,7 +80,7 @@
               <a-button v-if='i.state.value === "success"' @click="onDetail(i)">查看详情</a-button>
               <a-button v-if='i.state.value === "installing"' @click="onPause(i)">暂停</a-button>
               <a-button v-if='i.state.value === "canceled"' @click="onBegin(i)">开始</a-button>
-              <a-button v-if='i.state.value === "failed"' @click="onDelete(i)">移除</a-button>
+              <a-button v-if='i.state.value === "waiting_install"'  @click="onDelete(i)">移除</a-button>
               <a-button v-if='i.state.value === "failed"' @click="onReload(i)">重装</a-button>
             </a-space>
           </div>
@@ -88,10 +88,10 @@
           <div class="fileInfoFooter">
             <div class="install_container">
               <a-badge status="default"/>
-<!--                            <div class="installStatue">{{ computedVersion(i) }}</div>-->
-<!--                            <div v-if="resourceVersionMap.has(i.resourcesId)">-->
-<!--                              (当前版本:V{{ resourceVersionMap.get(i.resourcesId) }})-->
-<!--                            </div>-->
+                           <div class="installStatue">{{ computedVersion(resourceVersionMap,i) }}</div>
+                           <div v-if="resourceVersionMap.has(i.resourcesId)">
+                             (当前版本:V{{ resourceVersionMap.get(i.resourcesId) }})
+                           </div>
             </div>
             <div class="description">
               {{ i?.describe }}
@@ -109,6 +109,7 @@ import Status from './Status.vue'
 import {delTask, deployTask, stopTask} from "@/api/link/resource";
 import {map} from "lodash-es";
 import {statusIcon} from "@/views/link/Resource/Install/data";
+import { computedVersion } from "@/views/link/Resource/Install/data";
 
 const props = defineProps({
   taskList: {
@@ -119,6 +120,12 @@ const props = defineProps({
     type: String,
     default: 'cloud'
   },
+  resourceVersionMap:{
+    type:Object,
+    default: () =>{
+
+    }
+  }
 })
 const emits = defineEmits(['refresh'])
 const status = ref({})
@@ -171,8 +178,10 @@ const onPause = async (item) => {
   }
 }
 
-const onDetail = async () => {
-
+const onDetail = async (data) => {
+  menuStory.jumpPage('link/Resource/Detail',{
+        id: data.id
+    });
 }
 
 const onBegin = async (item) => {
