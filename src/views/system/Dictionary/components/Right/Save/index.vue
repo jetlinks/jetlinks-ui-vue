@@ -58,7 +58,7 @@ const formRef = ref()
  */
 const validateInput = async (_rule: Rule, value: string) => {
     if (value) {
-        if (!regular.isInputReg(value)) {
+        if (!/^[a-zA-Z0-9_\-]+$/.test(value)) {
             return Promise.reject($t('Save.index.134000-5'));
         }
     } else {

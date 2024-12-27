@@ -244,7 +244,6 @@
 </template>
 
 <script setup lang="ts" name="product">
-import PermissionButton from '@/components/PermissionButton/index.vue';
 
 import AddDeviceOrProductDialog from '../components/AddDeviceOrProductDialog.vue';
 import EditPermissionDialog from '../components/EditPermissionDialog.vue';
