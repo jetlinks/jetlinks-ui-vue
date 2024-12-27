@@ -85,122 +85,13 @@ const searchParams = ref('');
 const activeKey = ref(undefined);
 //分类类型
 const classificationType = ref([
-    {
-        id: '1866398366079029248',
-        name: '品牌',
-        creatorId: '1199596756811550720',
-        createTime: 1733819021132,
-    },
-    {
-        id: '1866398366091612160',
-        name: '行业',
-        creatorId: '1199596756811550720',
-        createTime: 1733819021132,
-    },
-    {
-        id: '1866398366091612161',
-        name: '品类',
-        creatorId: '1199596756811550720',
-        createTime: 1733819021132,
-    },
 ]);
 //分类数据
 const classification = ref([
-    {
-        id: '5e41c296-6abd-423b-8781-22a1c62ceec3',
-        path: 'SBur',
-        sortIndex: 1,
-        level: 1,
-        name: '建筑',
-        classificationTypeId: '1866398366091612160',
-        creatorId: '1199596756811550720',
-        createTime: 1733819161446,
-        children: [
-            {
-                id: '9cf1900f-e573-4f0d-aaab-6d18f59c6a34',
-                parentId: '5e41c296-6abd-423b-8781-22a1c62ceec3',
-                path: 'SBur-Oux9',
-                sortIndex: 1,
-                level: 2,
-                name: '桥梁建设',
-                classificationTypeId: '1866398366091612160',
-                creatorId: '1199596756811550720',
-                createTime: 1733819189718,
-            },
-            {
-                id: 'af881773-71a9-46b2-8ee0-718a5151bfe5',
-                parentId: '5e41c296-6abd-423b-8781-22a1c62ceec3',
-                path: 'SBur-CPE8',
-                sortIndex: 1,
-                level: 2,
-                name: '桥梁建设A',
-                classificationTypeId: '1866398366091612160',
-                creatorId: '1199596756811550720',
-                createTime: 1733822120806,
-            },
-        ],
-    },
 ]);
 const selectedClassification = ref();
 const selectedResource = ref(undefined);
 const resourceData = ref([
-    {
-        id: '1872245332395499520',
-        type: {
-            text: '设备模板',
-            value: 'device',
-        },
-        photoUrl: {
-            type: {
-                text: '本地上传',
-                value: 'internal',
-            },
-        },
-        name: '前端测试插件',
-        source: [],
-        docUrl: [],
-        loopPicUrl: [],
-        developDuration: 1,
-        charge: false,
-        version: 'v1.0.3',
-        state: {
-            text: '正常',
-            value: 'enabled',
-        },
-        creatorId: '1199596756811550720',
-        creatorName: '超级管理员',
-        createTime: 1735214052983,
-        modifyTime: 1735266181140,
-        modifierId: '1199596756811550720',
-        modifierName: '超级管理员',
-        deviceType: [
-            {
-                text: '直连设备',
-                value: 'device',
-            },
-        ],
-        accessInfos: [
-            {
-                provider: 'media-plugin',
-                channel: 'plugin',
-                bindInfo: [
-                    {
-                        id: '1872245295758254080',
-                        type: 'plugin',
-                        name: '测试插件',
-                        defaultAccess: true,
-                        url: 'http://192.168.32.139:9900/api/file/VZQF9o8rqrgtAHxiHy1Oa1CYWy0pqo9K.jar?accessKey=99416f1efefc46d6434090d7531167ec',
-                        metadata:
-                            '{"events":[],"functions":[],"modules":[],"properties":[],"tags":[]}',
-                    },
-                ],
-                transport: 'plugin',
-                configuration: {},
-                defaultAccess: true,
-            },
-        ],
-        metadata: '{"events":[],"properties":[],"functions":[],"tags":[]}',
-    },
 ]);
 const getClassificationType = async () => {
     const res = await queryClassificationType();
@@ -261,7 +152,7 @@ const getTemplateList = async () => {
     };
     const res = await queryTemplate(params);
     if (res.success) {
-        // resourceData.value = res.result?.data || [];
+        resourceData.value = res.result?.data || [];
     }
 };
 

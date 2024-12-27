@@ -17,17 +17,25 @@
                 <div class="fileInfoHeader">
                     <div>
                         <div>
-                            {{ i?.resourcesName }}
+                            {{
+                                i?.resourcesName ||
+                                i?.releaseDetail?.resourcesName
+                            }}
                             <span class="fileType">
-                                {{ i?.resourcesType?.text }}
+                                {{
+                                    i?.resourcesType?.text ||
+                                    i?.releaseDetail?.resourcesType?.text
+                                }}
                             </span>
                         </div>
                         <div>
-                            {{ 'v' + i?.version }}
+                            {{
+                                'v' + (i?.version || i?.releaseDetail?.version)
+                            }}
                         </div>
                     </div>
                     <div class="control">
-                        <a-button @click="() => removeFile(index)"
+                        <a-button @click.stop="() => removeFile(index)"
                             >移除</a-button
                         >
                     </div>
@@ -39,14 +47,14 @@
                         <div class="installStatue">
                             {{ computedVersion(resourceVersionMap, i) }}
                         </div>
-                        <div v-if="resourceVersionMap.has(i.resourcesId)">
+                        <div v-if="i.resourcesId ? resourceVersionMap.has(i.resourcesId) : resourceVersionMap.has(i.releaseDetail?.resourcesId)">
                             (当前版本:V{{
-                                resourceVersionMap.get(i.resourcesId)
+                               i.resourcesId ? resourceVersionMap.get(i.resourcesId) : resourceVersionMap.get(i.releaseDetail?.resourcesId)
                             }})
                         </div>
                     </div>
                     <div class="description">
-                        {{ i?.describe }}
+                        {{ i?.describe || i?.releaseDetail?.describe }}
                     </div>
                 </div>
             </div>
@@ -55,8 +63,8 @@
     <a-divider />
     <div style="display: flex; justify-content: center; margin-top: 8px">
         <a-space>
-            <a-button @click="emits('cancel')">取消</a-button>
-            <a-button @click="onInstall" type="primary">全部安装</a-button>
+            <a-button @click.stop="emits('cancel')">取消</a-button>
+            <a-button @click.stop="onInstall" type="primary">全部安装</a-button>
         </a-space>
     </div>
 </template>

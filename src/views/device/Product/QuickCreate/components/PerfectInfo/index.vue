@@ -289,6 +289,7 @@ const createProduct = async () => {
                 )
             ) {
                 data = {
+                    resourceId: props.data.id,
                     gateway: props.accessData,
                     network: props.advancedMode
                         ? props.network
@@ -303,6 +304,7 @@ const createProduct = async () => {
                 };
             } else {
                 data = {
+                    resourceId: props.data.id,
                     network: props.advancedMode
                         ? props.network
                         : {
@@ -381,7 +383,6 @@ const getConfigurationByProtocol = async () => {
 
 //从插件中获取配置项
 const getConfigurationByPlugin = async () => {
-    console.log(props.plugin);
     const res = await queryPluginConfiguration(props.plugin);
     if (res.success) {
         res.result?.others?.configMetadata?.properties.forEach((item) => {
@@ -433,6 +434,10 @@ watch(
         } else if (props.accessData.provider === 'gb28181-2016') {
             getConfigurationByGB28181();
         }
+    },
+    {
+        immediate: true,
+        deep: true,
     },
 );
 </script>

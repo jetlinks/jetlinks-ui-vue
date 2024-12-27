@@ -22,7 +22,7 @@
             @refresh="getTaskList"
         />
         <template v-else>
-            <Init v-model:source="source" v-model:value="fileList" />
+            <Init v-model:source="source" v-model:value="fileList" :resourceVersionMap="resourceVersionMap" @close="emits('close')" @refresh="getTaskList"/>
         </template>
     </a-modal>
 </template>
