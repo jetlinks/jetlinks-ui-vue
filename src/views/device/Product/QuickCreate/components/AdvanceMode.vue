@@ -153,9 +153,9 @@
                                 :class="{
                                     card: true,
                                     protocolCard: true,
-                                    selected: i.id === plugin?.id,
+                                    selected: i.id === plugin?.id || i.id === selectedPluginID,
                                 }"
-                                @click="() => selectResourceProtocol(i)"
+                                @click="() => selectResourcePlugin(i)"
                             >
                                 <img :src="getImage('/plug.png')" alt="" />
                                 <div style="margin-left: 20px">
@@ -278,10 +278,25 @@ const selectResourceProtocol = (data) => {
         type: 'jar',
         configuration: {
             location: data.url,
+            sourceId: data.id,
+            version: data.version
         },
     };
     selectedProtocolID.value = data.id
 };
+
+const selectResourcePlugin = (data) =>{
+    plugin.value = {
+        ...omit(data, ['id']),
+        provider: 'jar',
+        configuration: {
+            location: data.url,
+            sourceId: data.id,
+            version: data.version
+        },
+    };
+    selectedPluginID.value = data.id
+}
 
 const quitAdvanceMode = () => {
     emits('quit');

@@ -323,6 +323,8 @@ const getDefault = () => {
                     type: 'jar',
                     configuration: {
                         location: data.url,
+                        sourceId: data.id,
+                        version: data.version
                     },
                 };
             }
@@ -337,6 +339,8 @@ const getDefault = () => {
                     provider: 'jar',
                     configuration: {
                         location: data.url,
+                        sourceId: data.id,
+                        version: data.version
                     },
                 };
             }

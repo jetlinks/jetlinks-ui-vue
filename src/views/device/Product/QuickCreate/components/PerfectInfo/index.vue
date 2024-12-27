@@ -126,7 +126,7 @@
             v-if="!advancedMode && accessData.channel === 'network'"
         >
             <div>网络组件配置</div>
-            <Network ref="networkRef" :accessData="accessData"/>
+            <Network ref="networkRef" :accessData="accessData" />
         </div>
         <div>
             <a-space>
@@ -181,7 +181,7 @@ const props = defineProps({
     },
 });
 
-const emits = defineEmits(['cancel'])
+const emits = defineEmits(['cancel']);
 
 const accessRef = ref();
 const networkRef = ref();
@@ -289,6 +289,7 @@ const createProduct = async () => {
                 )
             ) {
                 data = {
+                    resourceId: props.data.id,
                     gateway: props.accessData,
                     network: props.advancedMode
                         ? props.network
@@ -303,6 +304,7 @@ const createProduct = async () => {
                 };
             } else {
                 data = {
+                    resourceId: props.data.id,
                     network: props.advancedMode
                         ? props.network
                         : {
@@ -409,48 +411,34 @@ const getConfigurationByGB28181 = async () => {
     }
 };
 
-// watch(
-//     () => props.accessData,
-//     () => {
-//         if (
-//             ['network', 'OneNet', 'Ctwing'].includes(
-//                 props.accessData.channel,
-//             ) &&
-//             !['agent-media-device-gateway', 'agent-device-gateway'].includes(
-//                 props.accessData.provider,
-//             )
-//         ) {
-//             getConfigurationByProtocol();
-//         } else if (props.accessData.channel === 'plugin') {
-//             getConfigurationByPlugin();
-//         } else if (props.accessData.provider === 'gb28181-2016') {
-//             getConfigurationByGB28181();
-//         }
-//     },
-//     {
-//         deep: true,
-//         immediate: true,
-//     },
-// );
+watch(
+    () => props.accessData,
+    () => {
+        getStoragList().then((resp) => {
+            if (resp.status === 200) {
+                storageList.value = resp.result;
+            }
+        });
 
-onMounted(() => {
-    getStoragList().then((resp) => {
-        if (resp.status === 200) {
-            storageList.value = resp.result;
+        if (
+            ['network', 'OneNet', 'Ctwing'].includes(
+                props.accessData.channel,
+            ) &&
+            !['agent-media-device-gateway', 'agent-device-gateway'].includes(
+                props.accessData.provider,
+            )
+        ) {
+            getConfigurationByProtocol();
+        } else if (props.accessData.channel === 'plugin') {
+            getConfigurationByPlugin();
+        } else if (props.accessData.provider === 'gb28181-2016') {
+            getConfigurationByGB28181();
         }
-    });
-    if (
-        ['network', 'OneNet', 'Ctwing'].includes(props.accessData.channel) &&
-        !['agent-media-device-gateway', 'agent-device-gateway'].includes(
-            props.accessData.provider,
-        )
-    ) {
-        getConfigurationByProtocol();
-    } else if (props.accessData.channel === 'plugin') {
-        getConfigurationByPlugin();
-    } else if (props.accessData.provider === 'gb28181-2016') {
-        getConfigurationByGB28181();
-    }
-});
+    },
+    {
+        immediate: true,
+        deep: true,
+    },
+);
 </script>
 <style lang="less" scoped></style>

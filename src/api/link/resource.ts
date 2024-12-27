@@ -1,4 +1,7 @@
 import server from '@/utils/request';
+import { BASE_API_PATH } from '@/utils/variable';
+
+export const RESOURCE_UPLOAD = `${BASE_API_PATH}/resources/install/task/_upload`;
 
 export const queryCollector = (data: any) =>
     server.post(`/data-collect/collector/_query`, data);
@@ -68,6 +71,7 @@ export const stopTask = (data: any) => server.post('/resources/install/task/_sto
  * @param data
  */
 const queryProvider = (data: any) => server.get(`/resources/center/type/provider`, data)
+
 
 /**
  * 分类树查询

@@ -23,3 +23,14 @@ statusColor.set('failed', 'red')
 statusColor.set('downloading', '')
 statusColor.set('waiting_install', '')
 statusColor.set('waiting_download', '')
+
+export const computedVersion = (resourceVersionMap:any,data:any) => {
+    const resourcesId = data?.resourcesId || data?.releaseDetail?.resourcesId
+    if (resourceVersionMap.has(resourcesId)) {
+        return resourceVersionMap.get(resourcesId) === data.version
+            ? '同版本覆盖'
+            : '版本更新';
+    } else {
+        return '首次安装';
+    }
+};
