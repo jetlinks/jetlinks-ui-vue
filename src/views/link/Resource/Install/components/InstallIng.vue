@@ -61,7 +61,7 @@
                 </a-button>
             </a-space>
         </div>
-        <!-- <div class="progressBar"></div> -->
+        <div class="progressBar"></div>
         <div
             style="
                 margin-top: 10px;
@@ -158,6 +158,7 @@ import { getWebSocket } from '@/utils/websocket';
 import Status from './Status.vue';
 import { delTask, deployTask, stopTask } from '@/api/link/resource';
 import { statusIcon } from '@/views/link/Resource/Install/data';
+import { map } from 'lodash-es';
 import { computedVersion } from '@/views/link/Resource/Install/data';
 
 const props = defineProps({
@@ -177,12 +178,11 @@ const props = defineProps({
 const emits = defineEmits(['refresh']);
 const status = ref({});
 let wsRef = null;
-const controlStatue = ref(false);
+const controlStatue = ref(true);
 
 const pauseAll = async () => {
-    const resp = await stopTask({
-        states: ['installing', 'waiting_install', 'waiting_download'],
-    });
+    const arr = map(props.taskList.filter(i => ['installing', 'downloading','waiting_install','waiting_download'].includes(i.state.value)), 'id')
+    const resp = await stopTask(arr);
     if (resp.success) {
         controlStatue.value = false;
     }
@@ -251,7 +251,7 @@ const onDelete = async (item) => {
     }
 };
 
-const onReload = async () => {
+const onReload = async (item) => {
     const resp = await deployTask({
         taskId: item.id,
         type: props.source,

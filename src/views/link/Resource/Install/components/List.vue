@@ -30,7 +30,7 @@
                         </div>
                         <div>
                             {{
-                                'v' + (i?.version || i?.releaseDetail?.version)
+                                i?.version || i?.releaseDetail?.version
                             }}
                         </div>
                     </div>
@@ -98,8 +98,10 @@ const onInstall = async () => {
     const res = await installResource({
         type: props.source,
         resourceDetails: fileList.value.map((i) => {
-            return {
+            return props.source === 'cloud' ? {
                 releaseDetail: i,
+            } : {
+                ...i,
             };
         }),
     });
