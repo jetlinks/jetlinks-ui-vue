@@ -163,7 +163,7 @@
           }}
         </template>
         <template #state="slotProps">
-          <BadgeStatus
+          <JBadgeStatus
             :status="slotProps.state.value"
             :text="slotProps.state.text"
             :statusNames="{
@@ -171,7 +171,7 @@
               offline: 'error',
               notActive: 'warning',
             }"
-          ></BadgeStatus>
+          ></JBadgeStatus>
         </template>
         <template #registryTime="slotProps">
         <span>{{

@@ -234,7 +234,6 @@ import {
 } from '@/api/system/apply';
 import { onlyMessage } from '@/utils/comm';
 import { useMenuStore } from '@/store/menu';
-import BadgeStatus from '@/components/BadgeStatus/index.vue';
 import Add from './Save/Add.vue';
 import {systemImg} from "@/assets";
 import { useI18n } from 'vue-i18n';

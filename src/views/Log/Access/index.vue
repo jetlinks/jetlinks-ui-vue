@@ -28,9 +28,9 @@
 
                     <!-- <j-tag color="geekblue"> -->
                     <div class="userName">
-                        <Ellipsis style="max-width: 100px;">
+                        <j-ellipsis style="max-width: 100px;">
                         {{ slotProps.context.userName }}
-                    </Ellipsis>
+                    </j-ellipsis>
                      <!-- </j-tag> -->
                 </div>
             </template>
