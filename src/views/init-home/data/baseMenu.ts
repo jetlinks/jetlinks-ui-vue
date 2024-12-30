@@ -1505,14 +1505,14 @@ export default [
           },
           {
             "id": "626c2738db8e5f748ac1e42c5968deba",
-            "path": "VXpO-AcRa-t3Uh",
             "sortIndex": 11,
             "owner": "iot",
             "name": "资源库",
-            "code": "link/Resources",
+            "code": "link/Resource",
             "describe": "",
-            "url": "/iot/link/resources",
+            "url": "/iot/link/resource",
             "icon": "SnippetsOutlined",
+            showPage: ['entity-template'],
             "permissions": [
                 {
                     "permission": "entity-template",
