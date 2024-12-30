@@ -93,11 +93,11 @@ const onStep = () => {
         onlyMessage('请选择更新方式', 'warning');
         return;
     }
-    console.log('type.value====',type.value);
+    console.log('type.value====', type.value);
     if (type.value[0] === 'create') {
-        menuStory.jumpPage('device/Product/QuickCreate',{
-            id: props.data.id
-        })
+        menuStory.jumpPage('device/Product/QuickCreate', {
+            id: props.data.id,
+        });
     } else {
         step.value = 1;
         getProduct();
@@ -123,19 +123,22 @@ const getProtocolList = async () => {
     if (res.success) {
         const resp: any = await _queryProtocolNew(props.data.id);
         if (resp.success) {
-            console.log('now====',res.result);
-            console.log('new====',resp.result);
+            console.log('now====', res.result);
+            console.log('new====', resp.result);
             const arr = res.result.map((item: any) => {
                 const obj = resp.result?.find(
-                    (i: any) => i.id === item.configuration.sourceId  
+                    (i: any) => i.id === item.configuration.sourceId,
                 );
                 if (obj) {
                     item.newProtocol = obj;
                     return item;
                 }
             });
-            
-            protocolList.value = arr.filter((item: any) => item.configuration.version!==item.newProtocol.version);
+
+            protocolList.value = arr.filter(
+                (item: any) =>
+                    item.configuration.version !== item.newProtocol.version,
+            );
         }
     }
 };
@@ -144,24 +147,30 @@ const onSave = async () => {
     // console.log('====', productList.value, protocolList.value);
     const _new = productList.value.filter((i: any) => i.newMetaData);
     const _newProtocol = protocolList.value.filter((i: any) => i.handle);
-    if (!_new.length || !_newProtocol.length) {
+    if (!_new.length) {
+        onlyMessage('请先选择处理方式', 'warning');
+        return;
+    }
+    if(!_newProtocol.length && protocolList.length > 0){
         onlyMessage('请先选择处理方式', 'warning');
         return;
     }
     if (_new.length) {
         const res = await saveProduct(productList.value);
     }
-    if (_newProtocol) {
-        const arr = protocolList.value.filter((i: any) => i.handle === 'cover').map(item=>({
-            id:item.id,
-            name:item.newProtocol.name,
-            type:'jar',
-            configuration:{
-                location:item.newProtocol.location,
-                version:item.newProtocol.version,
-                sourceId:item.configuration.sourceId
-            }
-        }));
+    if (_newProtocol.length) {
+        const arr = protocolList.value
+            .filter((i: any) => i.handle === 'cover')
+            .map((item) => ({
+                id: item.id,
+                name: item.newProtocol.name,
+                type: 'jar',
+                configuration: {
+                    location: item.newProtocol.location,
+                    version: item.newProtocol.version,
+                    sourceId: item.configuration.sourceId,
+                },
+            }));
         const res = await saveProtocol(arr);
     }
 };
