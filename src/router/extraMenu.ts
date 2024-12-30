@@ -18,6 +18,13 @@ export const getExtraRouters = () => {
         url: '/Detail/:id',
         name: '菜单详情'
       },
+    ],
+    'system/Apply': [
+      {
+        code: 'Save',
+        url: '/Save',
+        name: '详情'
+      },
     ]
   }
 

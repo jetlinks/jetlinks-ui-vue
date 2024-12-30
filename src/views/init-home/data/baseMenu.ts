@@ -723,6 +723,100 @@ export default [
         supportDataAccess: false
       },
       {
+        code: 'system/Apply',
+        name: '应用管理',
+        owner: 'iot',
+        //parentId: '3',
+        id: 'e0640f9621c21078cad62d5646a5579d',
+        sortIndex: 10,
+        url: '/system/Apply',
+        icon: 'icon-yingyongguanli',
+        showPage: ['application'],
+        permissions: [],
+        buttons: [
+          {
+            id: 'delete',
+            name: '删除',
+            permissions: [
+              {
+                permission: 'application',
+                actions: ['query', 'delete'],
+              },
+            ],
+          },
+          {
+            id: 'add',
+            name: '新增',
+            permissions: [
+              {
+                permission: 'role',
+                actions: ['query'],
+              },
+              {
+                permission: 'menu',
+                actions: ['query'],
+              },
+              {
+                permission: 'application',
+                actions: ['query', 'save'],
+              },
+              {
+                permission: 'open-api',
+                actions: ['query', 'save', 'delete'],
+              },
+            ],
+          },
+          {
+            id: 'update',
+            name: '编辑',
+            permissions: [
+              {
+                permission: 'role',
+                actions: ['query'],
+              },
+              {
+                permission: 'menu',
+                actions: ['query'],
+              },
+              {
+                permission: 'application',
+                actions: ['query', 'save'],
+              },
+              {
+                permission: 'open-api',
+                actions: ['query', 'save', 'delete'],
+              },
+            ],
+          },
+          {
+            id: 'view',
+            name: '查看',
+            permissions: [
+              {
+                permission: 'application',
+                actions: ['query'],
+              },
+              {
+                permission: 'role',
+                actions: ['query'],
+              },
+            ],
+          },
+          {
+            id: 'action',
+            name: '启/禁用',
+            permissions: [
+              {
+                permission: 'application',
+                actions: ['save'],
+              },
+            ],
+          },
+        ],
+        accessSupport: { text: "不支持", value: "unsupported" },
+        supportDataAccess: false
+      },
+      {
         code: 'system/NoticeRule',
         name: '订阅管理',
         owner: 'iot',
