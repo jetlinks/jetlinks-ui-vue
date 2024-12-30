@@ -110,8 +110,8 @@
                             </a-descriptions-item>
                             <a-descriptions-item label="更新时间">
                                 {{
-                                    detail.releaseTime
-                                        ? dayjs(detail.releaseTime).format(
+                                    detail.modifyTime
+                                        ? dayjs(detail.modifyTime).format(
                                               'YYYY-MM-DD HH:mm:ss',
                                           )
                                         : emptyValue
@@ -152,16 +152,16 @@
                 </div>
             </div>
         </FullPage>
-        <Update v-if="visible" :data="detail" @close="visible = false" />
+        <Update v-if="visible" :data="detail" @close="onClose" />
         <Apply
             v-if="visibleApply"
             :data="detail"
-            @close="visibleApply = false"
+            @close="onClose"
         />
         <ApplyCollector
             v-if="visibleCollector"
             :data="detail"
-            @close="visibleCollector = false"
+            @close="onClose"
         />
     </page-container>
 </template>
@@ -172,6 +172,7 @@ import Apply from './Apply/index.vue';
 import ApplyCollector from './ApplyCollector/index.vue';
 import { detailResource } from '@/api/link/resource';
 import Metadata from './Metadata.vue';
+import dayjs from 'dayjs';
 
 const route = useRoute();
 const visible = ref(false);
@@ -233,6 +234,13 @@ const onApply = () => {
         visibleApply.value = true;
     }
 };
+
+const onClose = () => {
+    visibleApply.value = false;
+    visibleCollector.value = false;
+    visible.value = false;
+    getDetail(_id);
+}
 
 watch(
     () => _id,

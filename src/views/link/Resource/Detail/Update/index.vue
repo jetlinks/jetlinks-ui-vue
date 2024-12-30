@@ -5,6 +5,7 @@
         @cancel="emits('close')"
         :maskClosable="false"
         :width="600"
+        @ok="emits('close')"
     >
         <div v-if="showUpate" class="content">
             <div class="title">
@@ -21,7 +22,8 @@
 </template>
 
 <script setup lang="ts" name="Update">
-import { checkUpdate,_latest } from '@/api/link/resource';
+import { checkUpdate,_latest,installResource } from '@/api/link/resource';
+import { onlyMessage } from '@/utils/comm';
 
 const emits = defineEmits(['close']);
 
@@ -47,7 +49,16 @@ const getUpdate = async () => {
 };
 
 const onUpdate = async() => {
-
+    const res = await installResource({
+        type: 'cloud',
+        resourceDetails:[{
+            releaseDetail: info.value
+        }]
+    });
+    if(res.success){
+        onlyMessage('操作成功')
+        emits('close')
+    }
 };
 
 onMounted(() => {

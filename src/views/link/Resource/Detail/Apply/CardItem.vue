@@ -46,6 +46,10 @@ const props = defineProps({
         type: Array,
         default: [],
     },
+    type: {
+        type: String,
+        default: 'metadata',
+    },
 });
 const emit = defineEmits(['change', 'update:value']);
 const _selectKey = ref('');
@@ -54,7 +58,20 @@ const _data = ref();
 
 const onSelect = (item) => {
     _selectKey.value = item.value;
-    handleChange(item.value)
+
+    if (props.type === 'metadata') {
+        console.log('resourceMetadata====',props.resourceMetadata);
+        handleChange(item.value);
+    } else {
+        emit('update:value', {
+            ..._data.value,
+            handle: item.value,
+        });
+        emit('change', {
+            ..._data.value,
+            handle: item.value,
+        });
+    }
 };
 
 /**
@@ -137,16 +154,14 @@ const handleChange = (val) => {
             _data.value.newMetaData = props.resourceMetadata;
             break;
         default:
-            _data.value.newMetaData = _data.value.metadata
+            _data.value.newMetaData = _data.value.metadata;
             break;
     }
-    console.log('_data.value.metadata====',_data.value.metadata);
-    console.log('newMetaData====',_data.value.newMetaData);
     const record = {
         ..._data.value,
-        metadata:JSON.stringify(_data.value.metadata)
-    }
-    emit('update:value',record);
+        metadata: JSON.stringify(_data.value.metadata),
+    };
+    emit('update:value', record);
     emit('change', record);
 };
 
@@ -154,11 +169,18 @@ watch(
     () => props.value,
     (val) => {
         if (val) {
-            _data.value = {
-                ...val,
-                metadata: JSON.parse(val.metadata || '{}'),
-                newMetaData:JSON.parse(val.metadata || '{}'),
-            };
+            if (props.type === 'metadata') {
+                _data.value = {
+                    ...val,
+                    metadata: JSON.parse(val.metadata || '{}'),
+                    newMetaData: JSON.parse(val.metadata || '{}'),
+                }
+            }else{
+                _data.value = {
+                    ...val,
+                    handle:val.handle
+                }
+            }
         }
     },
     { immediate: true, deep: true },
