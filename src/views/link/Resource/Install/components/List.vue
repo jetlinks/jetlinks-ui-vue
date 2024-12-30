@@ -9,7 +9,7 @@
     >
         <div v-for="(i, index) in fileList" class="fileList">
             <img
-                :src="i.img"
+                :src="i.coverUrl"
                 alt=""
                 style="width: 80px; height: 80px; margin-right: 16px"
             />
@@ -17,10 +17,6 @@
                 <div class="fileInfoHeader">
                     <div>
                         <div>
-                            {{
-                                i?.resourcesName ||
-                                i?.releaseDetail?.resourcesName
-                            }}
                             <span class="fileType">
                                 {{
                                     i?.resourcesType?.text ||
@@ -99,7 +95,12 @@ const onInstall = async () => {
         type: props.source,
         resourceDetails: fileList.value.map((i) => {
             return props.source === 'cloud' ? {
-                releaseDetail: i,
+                releaseDetail: {
+                    ...i,
+                    coverUrl:{
+                        url: i?.coverUrl
+                    }
+                },
             } : {
                 ...i,
             };

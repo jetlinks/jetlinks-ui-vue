@@ -10,7 +10,9 @@
                                 <a-input
                                     placeholder="请输入关键字"
                                     v-model:value="searchParams"
-                                ></a-input
+                                    ><template #suffix>
+                                        <AIcon type="SearchOutlined" />
+                                    </template> </a-input
                             ></a-col>
                         </a-row>
                     </div>
@@ -84,20 +86,18 @@ import Operation from './Operation.vue';
 const searchParams = ref('');
 const activeKey = ref(undefined);
 //分类类型
-const classificationType = ref([
-]);
+const classificationType = ref([]);
 //分类数据
-const classification = ref([
-]);
+const classification = ref([]);
 const selectedClassification = ref();
 const selectedResource = ref(undefined);
-const resourceData = ref([
-]);
+const resourceData = ref([]);
 const getClassificationType = async () => {
     const res = await queryClassificationType();
     if (res.success) {
         classificationType.value = res.result;
         activeKey.value = res.result?.[0]?.id;
+        typeChange(activeKey.value);
     }
 };
 
@@ -123,6 +123,7 @@ const typeChange = async (key) => {
 
 const select = (key) => {
     selectedClassification.value = key;
+    getTemplateList(key);
 };
 
 const chooseResource = (data) => {
@@ -133,7 +134,20 @@ const reselection = () => {
     selectedResource.value = undefined;
 };
 
-const getTemplateList = async () => {
+const getTemplateList = async (classification = undefined) => {
+    const terms = [
+        {
+            column: 'type',
+            value: 'device',
+        },
+    ];
+    if (classification) {
+        terms.push({
+            column: 'id',
+            termType: 'resource-bind$classification',
+            value: [classification],
+        });
+    }
     const params = {
         pageIndex: 0,
         pageSize: 12,
@@ -143,12 +157,7 @@ const getTemplateList = async () => {
                 order: 'desc',
             },
         ],
-        terms: [
-            {
-                column: 'type',
-                value: 'device',
-            },
-        ],
+        terms: terms,
     };
     const res = await queryTemplate(params);
     if (res.success) {

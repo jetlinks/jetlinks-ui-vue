@@ -72,7 +72,7 @@
         >
             <div v-for="i in taskList" :key="i.id" class="fileList">
                 <img
-                    :src="i.img"
+                    :src="i.resourceDetails?.releaseDetail?.coverUrl"
                     alt=""
                     style="width: 80px; height: 80px; margin-right: 16px"
                 />
@@ -174,6 +174,7 @@ import { delTask, deployTask, stopTask } from '@/api/link/resource';
 import { statusIcon } from '@/views/link/Resource/Install/data';
 import { map } from 'lodash-es';
 import { computedVersion } from '@/views/link/Resource/Install/data';
+import { useMenuStore } from '@/store/menu';
 
 const props = defineProps({
     taskList: {
@@ -190,9 +191,14 @@ const props = defineProps({
     },
 });
 const emits = defineEmits(['refresh']);
+const menuStory = useMenuStore();
 const status = ref({});
 let wsRef = null;
-const controlStatue = ref(false);
+const controlStatue = computed(()=>{
+    return !Object.values(status.value).every((i)=>{
+        return ['success','failed','canceled'].includes(i?.state?.value)
+    })
+});
 
 const pauseAll = async () => {
     const arr = map(
@@ -208,7 +214,7 @@ const pauseAll = async () => {
     );
     const resp = await stopTask(arr);
     if (resp.success) {
-        controlStatue.value = false;
+        
     }
 };
 
@@ -227,7 +233,7 @@ const startAll = async () => {
         states: ['canceled', 'failed'],
     });
     if (resp.success) {
-        controlStatue.value = true;
+        
     }
 };
 
