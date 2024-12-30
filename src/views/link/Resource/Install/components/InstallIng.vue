@@ -92,39 +92,53 @@
                                 </span>
                             </div>
                             <div>
-                                {{
-                                    i.resourceDetails?.releaseDetail?.version
-                                }}
+                                {{ i.resourceDetails?.releaseDetail?.version }}
                             </div>
                         </div>
                         <a-space>
                             <Status
                                 :value="
-                                    status[i.id]?.state?.value || i.state.value
+                                    status[i.id]?.state?.value 
                                 "
                             />
                             <a-button
-                                v-if="status[i.id]?.state?.value === 'success' || i.state.value === 'success'"
+                                v-if="
+                                    status[i.id]?.state?.value === 'success'
+                                "
                                 @click="onDetail(i)"
                                 >查看详情</a-button
                             >
                             <a-button
-                                v-if="status[i.id]?.state?.value === 'installing' || i.state.value === 'installing'"
+                                v-if="
+                                    ['installing', 'downloading'].includes(
+                                        status[i.id]?.state?.value,
+                                    )
+                                "
                                 @click="onPause(i)"
                                 >暂停</a-button
                             >
                             <a-button
-                                v-if="status[i.id]?.state?.value === 'canceled' || i.state.value === 'canceled'"
+                                v-if="
+                                    status[i.id]?.state?.value === 'canceled'
+                                "
                                 @click="onBegin(i)"
                                 >开始</a-button
                             >
                             <a-button
-                                v-if="status[i.id]?.state?.value === 'waiting_install' || i.state.value === 'waiting_install'"
+                                v-if="
+                                    [
+                                        'waiting_install',
+                                        'waiting_download',
+                                    ].includes(status[i.id]?.state?.value)
+                                    
+                                "
                                 @click="onDelete(i)"
                                 >移除</a-button
                             >
                             <a-button
-                                v-if="status[i.id]?.state?.value === 'failed' || i.state.value === 'failed'"
+                                v-if="
+                                    status[i.id]?.state?.value === 'failed'
+                                "
                                 @click="onReload(i)"
                                 >重装</a-button
                             >
@@ -178,10 +192,20 @@ const props = defineProps({
 const emits = defineEmits(['refresh']);
 const status = ref({});
 let wsRef = null;
-const controlStatue = ref(true);
+const controlStatue = ref(false);
 
 const pauseAll = async () => {
-    const arr = map(props.taskList.filter(i => ['installing', 'downloading','waiting_install','waiting_download'].includes(i.state.value)), 'id')
+    const arr = map(
+        props.taskList.filter((i) =>
+            [
+                'installing',
+                'downloading',
+                'waiting_install',
+                'waiting_download',
+            ].includes(i.state.value),
+        ),
+        'id',
+    );
     const resp = await stopTask(arr);
     if (resp.success) {
         controlStatue.value = false;
@@ -217,11 +241,7 @@ const removeAll = async () => {
 };
 
 const onPause = async (item) => {
-    const resp = await stopTask({
-        taskId: item.id,
-        type: props.source,
-        states: ['canceled'],
-    });
+    const resp = await stopTask([item.id]);
     if (resp.success) {
     }
 };
@@ -234,7 +254,7 @@ const onDetail = async (data) => {
 
 const onBegin = async (item) => {
     const resp = await deployTask({
-        taskId: item.id,
+        id: item.id,
         type: props.source,
         states: ['canceled'],
     });
@@ -253,7 +273,7 @@ const onDelete = async (item) => {
 
 const onReload = async (item) => {
     const resp = await deployTask({
-        taskId: item.id,
+        id: item.id,
         type: props.source,
         states: ['canceled', 'failed'],
     });
@@ -278,6 +298,13 @@ watch(
     () => {
         if (props.taskList.length) {
             installTask();
+            props.taskList.forEach((item)=>{
+                status.value[item.id] = {
+                    state:{
+                        value: item.state.value
+                    }
+                } 
+            })
         }
     },
     {
