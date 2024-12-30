@@ -70,15 +70,15 @@ export const stopTask = (data: any) => server.post('/resources/install/task/_sto
  * 类型查询
  * @param data
  */
-const queryProvider = (data: any) => server.get(`/resources/center/type/provider`, data)
+const queryProvider = (data: any) => server.get(`/resources/classification/type/provider`, data)
 
 
 /**
  * 分类树查询
  * @param data
  */
-const queryClassify = (data: any) => server.post(`/resources/center/_query/_children/tree`, data)
-const queryClassifyType = (data: any) => server.post(`/resources/center/classification-type/_query`, data)
+const queryClassify = (data: any) => server.post(`/resources/classification/_query/_children/tree`, data)
+const queryClassifyType = (data: any) => server.post(`/resources/classification-type/_query`, data)
 
 export const ResourceApi = {
     queryProvider,

@@ -72,7 +72,7 @@ import { resource } from '@/assets'
   border: 2px solid transparent;
   color: @font-gray-900;
   background-color: #fff;
-
+  border: 1px solid #EFF0F1;
   .item-center {
     padding: 12px;
   }
