@@ -9,7 +9,7 @@
     >
         <div v-for="(i, index) in fileList" class="fileList">
             <img
-                :src="i.coverUrl"
+                :src="i?.photoUrl?.url || i?.photoUrl"
                 alt=""
                 style="width: 80px; height: 80px; margin-right: 16px"
             />
@@ -113,8 +113,8 @@ const onInstall = async () => {
                       releaseDetail: {
                           ...i,
                       },
-                      coverUrl: {
-                          url: i?.coverUrl,
+                      photoUrl: {
+                          url: i?.photoUrl,
                       },
                   }
                 : {

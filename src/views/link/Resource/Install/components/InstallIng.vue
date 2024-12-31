@@ -72,7 +72,7 @@
         >
             <div v-for="i in taskList" :key="i.id" class="fileList">
                 <img
-                    :src="i.resourceDetails?.releaseDetail?.coverUrl"
+                    :src="i.resourceDetails?.releaseDetail?.photoUrl"
                     alt=""
                     style="width: 80px; height: 80px; margin-right: 16px"
                 />

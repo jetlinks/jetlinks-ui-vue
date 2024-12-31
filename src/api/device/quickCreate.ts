@@ -18,5 +18,8 @@ export const queryProtocolDetail =(id:string) => server.get(`/protocol/${id}`)
 
 export const quickCreateProduct = (data:any) => server.post('/resources/library/quick/product',data)
 
+//查看平台网络可复用组件
+export const queryAliveNetWork = (networkType:string) => server.get(`/network/config/${networkType}/_alive`)
+
 
 

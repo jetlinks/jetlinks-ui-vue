@@ -37,7 +37,7 @@
                 <a-step>
                     <template #title>
                         <div>
-                            <span style="margin-right: 8px;">接入配置</span>
+                            <span style="margin-right: 8px">接入配置</span>
                             <a-space>
                                 <a-button
                                     v-if="advancedMode"
@@ -155,15 +155,20 @@
 <script setup>
 import { cloneDeep, omit } from 'lodash-es';
 import Metadata from './components/Metadata.vue';
-import { queryNetWorkConfig } from '@/api/device/quickCreate';
+import {
+    queryNetWorkConfig,
+    queryAliveNetWork,
+    queryNetWork,
+} from '@/api/device/quickCreate';
 import { BackMap } from '@/views/link/AccessConfig/data';
-import { getResourcesCurrent } from '@/api/link/accessConfig';
+import { getResourcesCurrent, getProtocolList } from '@/api/link/accessConfig';
 import { NetworkTypeMapping } from './data';
 import { UDPList, TCPList } from './data';
 import AdvanceMode from './components/AdvanceMode.vue';
 import { getProviders } from '@/api/device/product';
 import PerfectInfo from './components/PerfectInfo/index.vue';
 import { gatewayType } from './data';
+import { ProtocolMapping } from './components/Protocol/data';
 
 const props = defineProps({
     data: {
@@ -179,13 +184,15 @@ const advancedMode = ref(false);
 const metadata = ref();
 //network类型无可用端口
 const unmet = computed(() => {
-    if (accessConfig.value.channel === 'network') {
-        return JSON.stringify(network.value) === '{}';
+    if (accessData.value.channel === 'network') {
+        return Object.keys(network.value).length === 0;;
+    }else{
+        return true
     }
 });
 const accessConfig = ref({});
 const accessData = ref({});
-const randomString = ref()
+const randomString = ref();
 const generateString = () => {
     const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     const numbers = '0123456789';
@@ -193,7 +200,7 @@ const generateString = () => {
     let randomNum1 = numbers[Math.floor(Math.random() * numbers.length)];
     let randomNum2 = numbers[Math.floor(Math.random() * numbers.length)];
     randomString.value = randomLetter + randomNum1 + randomNum2;
-}
+};
 
 //资源库选中协议
 const protocol = ref({});
@@ -204,7 +211,7 @@ const accessDescriptions = ref(new Map());
 //选中使用的网络组件
 const network = ref({});
 //默认创建的网络组件
-const defaultNetwork = ref({})
+const defaultNetwork = ref({});
 const current = ref(1);
 
 const metadataVisible = ref(false);
@@ -244,11 +251,50 @@ const showAdvancedMode = () => {
 };
 //恢复默认配置
 const restoreDefault = () => {
-    if(accessConfig.value.channel === 'network'){
-        network.value = defaultNetwork.value
+    if (accessConfig.value.channel === 'network') {
+        network.value = defaultNetwork.value;
     }
     getDefault();
-    advancedMode.value = false
+    advancedMode.value = false;
+};
+
+//查询有可以复用的网络组件
+const getUseableNetWork = async () => {
+    const res = await queryAliveNetWork(
+        NetworkTypeMapping.get(accessConfig.value.provider),
+    );
+    if (res.success && res.result.length) {
+        const networkId = res.result[0].id;
+        const params = {
+            paging: false,
+            sorts: [
+                {
+                    name: 'createTime',
+                    order: 'desc',
+                },
+            ],
+            terms: [
+                {
+                    terms: [
+                        {
+                            type: 'or',
+                            value: NetworkTypeMapping.get(
+                                accessConfig.value.provider,
+                            ),
+                            termType: 'eq',
+                            column: 'type',
+                        },
+                    ],
+                },
+            ],
+        };
+        const req = await queryNetWork(params);
+        if (req.success) {
+            return req.result.find((i) => {
+                return i.id === networkId;
+            });
+        }
+    }
 };
 
 //查询默认接入方式网络组件可用端口
@@ -307,8 +353,25 @@ const advanceComplete = (data) => {
     visibleAdvanceMode.value = false;
 };
 
+//查询协议是否已经存在平台中
+const protocolExist = async (id) => {
+    const resp = await getProtocolList(
+        ProtocolMapping.get(accessConfig.value?.provider),
+        {
+            'sorts[0].name': 'createTime',
+            'sorts[0].order': 'desc',
+            paging: false,
+        },
+    );
+    if (resp.status === 200) {
+        return resp.result.find((i) => {
+            return i?.configuration?.sourceId === id;
+        });
+    }
+};
+
 //获取默认协议或插件
-const getDefault = () => {
+const getDefault = async () => {
     if (accessConfig.value?.bindInfo) {
         if (
             ['network', 'OneNet', 'Ctwing'].includes(accessConfig.value.channel)
@@ -318,15 +381,18 @@ const getDefault = () => {
                     return i.defaultAccess;
                 })?.[0] || {};
             if (JSON.stringify(data) !== '{}') {
-                protocol.value = {
-                    ...omit(data, ['id']),
-                    type: 'jar',
-                    configuration: {
-                        location: data.url,
-                        sourceId: data.id,
-                        version: data.version
-                    },
-                };
+                const existProtocol = await protocolExist(data.id);
+                protocol.value = existProtocol
+                    ? existProtocol
+                    : {
+                          ...omit(data, ['id']),
+                          type: 'jar',
+                          configuration: {
+                              location: data.url,
+                              sourceId: data.id,
+                              version: data.version,
+                          },
+                      };
             }
         } else if (accessConfig.value?.channel === 'plugin') {
             const data =
@@ -340,16 +406,17 @@ const getDefault = () => {
                     configuration: {
                         location: data.url,
                         sourceId: data.id,
-                        version: data.version
+                        version: data.version,
                     },
                 };
             }
         }
     }
     accessData.value = {
-        name: accessConfig.value.provider?.split('-')?.[0] +
-                '网关' +
-                randomString.value,
+        name:
+            accessConfig.value.provider?.split('-')?.[0] +
+            '网关' +
+            randomString.value,
         ...omit(accessConfig.value, ['bindInfo', 'defaultAccess']),
         gatewayType: gatewayType.get(accessConfig.value.provider),
     };
@@ -366,7 +433,7 @@ watch(
     },
 );
 
-onMounted(() => {
+onMounted(async () => {
     getDescription();
     generateString();
     metadata.value = JSON.parse(props.data?.metadata || '{}');
@@ -376,10 +443,17 @@ onMounted(() => {
             return i.defaultAccess;
         })?.[0] || {};
     if (accessConfig.value?.channel === 'network') {
-        queryAvailablePort();
+        const data = await getUseableNetWork();
+        if (data) {
+            network.value = data;
+            defaultNetwork.value = cloneDeep(network.value);
+        } else {
+            queryAvailablePort();
+        }
     }
     getDefault();
 });
+
 </script>
 <style lang="less" scoped>
 .container {

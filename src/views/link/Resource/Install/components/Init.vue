@@ -26,14 +26,13 @@
                     <div style="min-height: 400px; padding: 0 10px">
                         <div v-if="!fileList.length" class="noData">
                             <AIcon
-                                type="PlusSquareOutlined"
+                                type="CloudUploadOutlined"
                                 style="font-size: 100px"
                             />
                             <div class="tips">
                                 <div>
                                     拖放安装资源或者点击上方按钮从本地文件中选取资源安装;
                                 </div>
-                                <div>单次支持最多选取10个资源文件</div>
                             </div>
                         </div>
                         <div v-else>
