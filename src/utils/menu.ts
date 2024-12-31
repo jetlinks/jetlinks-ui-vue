@@ -7,6 +7,7 @@ type Buttons = Array<{ id: string }>
 type MenuItem = {
     icon: string,
     name: string
+    i18nName: string
     code: string
     url: string
     isShow?: boolean
@@ -27,7 +28,7 @@ const handleButtons = (buttons?: Buttons) => {
 const handleMeta = (item: MenuItem, isApp: boolean) => {
     return {
         icon: item.icon,
-        title: item.name,
+        title: item.i18nName || item.name,
         hideInMenu: item.isShow === false,
         buttons: handleButtons(item.buttons),
         isApp
