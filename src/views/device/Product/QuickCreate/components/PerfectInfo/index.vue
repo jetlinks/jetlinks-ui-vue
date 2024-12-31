@@ -28,7 +28,7 @@
                         {
                             required: true,
                             validator: validateDeviceType,
-                            trigger: 'blur',
+                            trigger: ['blur','change'],
                         },
                     ]"
                 >
@@ -272,6 +272,7 @@ const validateDeviceType = async (_rule, value) => {
 
 const changeDeviceType = (value) => {
     form.value.deviceType = value[0];
+    formRef.value.validateFields()
 };
 
 const createProduct = async () => {
