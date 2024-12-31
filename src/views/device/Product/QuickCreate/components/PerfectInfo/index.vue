@@ -130,8 +130,8 @@
         </div>
         <div>
             <a-space>
-                <a-button @click="emits('cancel')">取消</a-button>
-                <a-button @click="createProduct">确定</a-button>
+                <a-button @click="emits('cancel')" :disabled="loading">取消</a-button>
+                <a-button @click="createProduct" :loading="loading">确定</a-button>
             </a-space>
         </div>
     </div>
@@ -150,6 +150,7 @@ import GB28181 from './GB28181/index.vue';
 import Ctwing from './Ctwing/index.vue';
 import OneNet from './OneNet/index.vue';
 import Network from './Network/index.vue';
+import { useMenuStore } from '@/store/menu';
 const props = defineProps({
     data: {
         type: Object,
@@ -187,6 +188,9 @@ const accessRef = ref();
 const networkRef = ref();
 const formRef = ref();
 const storageList = ref([]);
+const menuStory = useMenuStore()
+const loading = ref(false)
+
 //设备类型
 const deviceList = [
     {
@@ -267,6 +271,7 @@ const changeDeviceType = (value) => {
 };
 
 const createProduct = async () => {
+    loading.value = true
     const allPromise = [formRef.value.validate()];
     //accessRef和networkRef 接入网关类型同时只能满足一个存在
     if (accessRef.value) {
@@ -358,7 +363,10 @@ const createProduct = async () => {
         const res = await quickCreateProduct(data);
         if (res.success) {
             onlyMessage('操作成功');
+            menuStory.jumpPage('device/Product')
         }
+    }).catch((err)=>{
+        loading.value = false
     });
 };
 

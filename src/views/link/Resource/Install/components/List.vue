@@ -17,6 +17,10 @@
                 <div class="fileInfoHeader">
                     <div>
                         <div>
+                            {{
+                                i?.resourcesName ||
+                                i?.releaseDetail?.resourcesName
+                            }}
                             <span class="fileType">
                                 {{
                                     i?.resourcesType?.text ||
@@ -25,9 +29,7 @@
                             </span>
                         </div>
                         <div>
-                            {{
-                                i?.version || i?.releaseDetail?.version
-                            }}
+                            {{ i?.version || i?.releaseDetail?.version }}
                         </div>
                     </div>
                     <div class="control">
@@ -43,9 +45,21 @@
                         <div class="installStatue">
                             {{ computedVersion(resourceVersionMap, i) }}
                         </div>
-                        <div v-if="i.resourcesId ? resourceVersionMap.has(i.resourcesId) : resourceVersionMap.has(i.releaseDetail?.resourcesId)">
-                            (当前版本:V{{
-                               i.resourcesId ? resourceVersionMap.get(i.resourcesId) : resourceVersionMap.get(i.releaseDetail?.resourcesId)
+                        <div
+                            v-if="
+                                i.resourcesId
+                                    ? resourceVersionMap.has(i.resourcesId)
+                                    : resourceVersionMap.has(
+                                          i.releaseDetail?.resourcesId,
+                                      )
+                            "
+                        >
+                            (当前版本:{{
+                                i.resourcesId
+                                    ? resourceVersionMap.get(i.resourcesId)
+                                    : resourceVersionMap.get(
+                                          i.releaseDetail?.resourcesId,
+                                      )
                             }})
                         </div>
                     </div>
@@ -94,16 +108,18 @@ const onInstall = async () => {
     const res = await installResource({
         type: props.source,
         resourceDetails: fileList.value.map((i) => {
-            return props.source === 'cloud' ? {
-                releaseDetail: {
-                    ...i,
-                    coverUrl:{
-                        url: i?.coverUrl
-                    }
-                },
-            } : {
-                ...i,
-            };
+            return props.source === 'cloud'
+                ? {
+                      releaseDetail: {
+                          ...i,
+                      },
+                      coverUrl: {
+                          url: i?.coverUrl,
+                      },
+                  }
+                : {
+                      ...i,
+                  };
         }),
     });
     if (res.success) {
