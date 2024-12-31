@@ -5,70 +5,74 @@
             max-height: 500px;
             min-height: 400px;
             overflow-y: auto;
+            position: relative;
         "
     >
-        <div v-for="(i, index) in fileList" class="fileList">
-            <img
-                :src="i?.photoUrl?.url || i?.photoUrl"
-                alt=""
-                style="width: 80px; height: 80px; margin-right: 16px"
-            />
-            <div style="width: calc(100% - 80px)">
-                <div class="fileInfoHeader">
-                    <div>
+        <template v-if="fileList.length">
+            <div v-for="(i, index) in fileList" class="fileList">
+                <img
+                    :src="i?.photoUrl?.url || i?.photoUrl"
+                    alt=""
+                    style="width: 80px; height: 80px; margin-right: 16px"
+                />
+                <div style="width: calc(100% - 80px)">
+                    <div class="fileInfoHeader">
                         <div>
-                            {{
-                                i?.resourcesName ||
-                                i?.releaseDetail?.resourcesName
-                            }}
-                            <span class="fileType">
+                            <div>
                                 {{
-                                    i?.resourcesType?.text ||
-                                    i?.releaseDetail?.resourcesType?.text
+                                    i?.resourcesName ||
+                                    i?.releaseDetail?.resourcesName
                                 }}
-                            </span>
+                                <span class="fileType">
+                                    {{
+                                        i?.resourcesType?.text ||
+                                        i?.releaseDetail?.resourcesType?.text
+                                    }}
+                                </span>
+                            </div>
+                            <div>
+                                {{ i?.version || i?.releaseDetail?.version }}
+                            </div>
                         </div>
-                        <div>
-                            {{ i?.version || i?.releaseDetail?.version }}
-                        </div>
-                    </div>
-                    <div class="control">
-                        <a-button @click.stop="() => removeFile(index)"
-                            >移除</a-button
-                        >
-                    </div>
-                </div>
-                <a-divider />
-                <div class="fileInfoFooter">
-                    <div class="install_container">
-                        <a-badge status="default" />
-                        <div class="installStatue">
-                            {{ computedVersion(resourceVersionMap, i) }}
-                        </div>
-                        <div
-                            v-if="
-                                i.resourcesId
-                                    ? resourceVersionMap.has(i.resourcesId)
-                                    : resourceVersionMap.has(
-                                          i.releaseDetail?.resourcesId,
-                                      )
-                            "
-                        >
-                            (当前版本:{{
-                                i.resourcesId
-                                    ? resourceVersionMap.get(i.resourcesId)
-                                    : resourceVersionMap.get(
-                                          i.releaseDetail?.resourcesId,
-                                      )
-                            }})
+                        <div class="control">
+                            <a-button @click.stop="() => removeFile(index)"
+                                >移除</a-button
+                            >
                         </div>
                     </div>
-                    <div class="description">
-                        {{ i?.describe || i?.releaseDetail?.describe }}
+                    <a-divider />
+                    <div class="fileInfoFooter">
+                        <div class="install_container">
+                            <a-badge status="default" />
+                            <div class="installStatue">
+                                {{ computedVersion(resourceVersionMap, i) }}
+                            </div>
+                            <div
+                                v-if="
+                                    i.resourcesId
+                                        ? resourceVersionMap.has(i.resourcesId)
+                                        : resourceVersionMap.has(
+                                              i.releaseDetail?.resourcesId,
+                                          )
+                                "
+                            >
+                                (当前版本:{{
+                                    i.resourcesId
+                                        ? resourceVersionMap.get(i.resourcesId)
+                                        : resourceVersionMap.get(
+                                              i.releaseDetail?.resourcesId,
+                                          )
+                                }})
+                            </div>
+                        </div>
+                        <div class="description">
+                            {{ i?.describe || i?.releaseDetail?.describe }}
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </template>
+        <j-empty v-else class="empty"></j-empty>
     </div>
     <a-divider />
     <div style="display: flex; justify-content: center; margin-top: 8px">
@@ -137,6 +141,28 @@ watch(
         immediate: true,
     },
 );
+
+watch(
+    () => props.resourceVersionMap,
+    () => {
+        if (props.source === 'cloud') {
+            fileList.value = props.value.filter((i) => {
+                const resourcesId =
+                    i?.resourcesId || i?.releaseDetail?.resourcesId;
+                if (props.resourceVersionMap.has(resourcesId)) {
+                    return (
+                        props.resourceVersionMap.get(resourcesId) !== i.version
+                    );
+                } else {
+                    return true;
+                }
+            });
+        }
+    },
+    {
+        deep: true,
+    },
+);
 </script>
 <style lang="less" scoped>
 .fileList {
@@ -175,5 +201,11 @@ watch(
             }
         }
     }
+}
+.empty {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 </style>

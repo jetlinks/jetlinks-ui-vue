@@ -15,7 +15,7 @@
         />
         <List
             :source="source"
-            v-else-if="fileList.length"
+            v-else-if="source === 'cloud'"
             v-model:value="fileList"
             :resourceVersionMap="resourceVersionMap"
             @cancel="emits('close')"
