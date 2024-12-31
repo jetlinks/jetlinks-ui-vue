@@ -130,8 +130,12 @@
         </div>
         <div>
             <a-space>
-                <a-button @click="emits('cancel')" :disabled="loading">取消</a-button>
-                <a-button @click="createProduct" :loading="loading">确定</a-button>
+                <a-button @click="emits('cancel')" :disabled="loading"
+                    >取消</a-button
+                >
+                <a-button @click="createProduct" :loading="loading"
+                    >确定</a-button
+                >
             </a-space>
         </div>
     </div>
@@ -188,8 +192,8 @@ const accessRef = ref();
 const networkRef = ref();
 const formRef = ref();
 const storageList = ref([]);
-const menuStory = useMenuStore()
-const loading = ref(false)
+const menuStory = useMenuStore();
+const loading = ref(false);
 
 //设备类型
 const deviceList = [
@@ -271,7 +275,7 @@ const changeDeviceType = (value) => {
 };
 
 const createProduct = async () => {
-    loading.value = true
+    loading.value = true;
     const allPromise = [formRef.value.validate()];
     //accessRef和networkRef 接入网关类型同时只能满足一个存在
     if (accessRef.value) {
@@ -280,102 +284,107 @@ const createProduct = async () => {
     if (networkRef.value) {
         allPromise.push(networkRef.value.submitData());
     }
-    Promise.all(allPromise).then(async (dataArr) => {
-        const product = {
-            ...form.value,
-            transportProtocol: props.accessData.transport,
-            metadata: JSON.stringify(props.metadata),
-        };
-        let data;
-        if (props.accessData.channel === 'network') {
-            if (
-                ['agent-media-device-gateway', 'agent-device-gateway'].includes(
+    Promise.all(allPromise)
+        .then(async (dataArr) => {
+            const product = {
+                ...form.value,
+                transportProtocol: props.accessData.transport,
+                metadata: JSON.stringify(props.metadata),
+            };
+            let data;
+            if (props.accessData.channel === 'network') {
+                if (
+                    [
+                        'agent-media-device-gateway',
+                        'agent-device-gateway',
+                    ].includes(props.accessData.provider)
+                ) {
+                    data = {
+                        resourceId: props.data.id,
+                        gateway: props.accessData,
+                        network: props.advancedMode
+                            ? props.network
+                            : {
+                                  ...props.network,
+                                  configuration: {
+                                      ...props.network.configuration,
+                                      ...dataArr[1],
+                                  },
+                              },
+                        product,
+                    };
+                } else {
+                    data = {
+                        resourceId: props.data.id,
+                        network: props.advancedMode
+                            ? props.network
+                            : {
+                                  ...props.network,
+                                  configuration: {
+                                      ...props.network.configuration,
+                                      ...dataArr[1],
+                                  },
+                              },
+                        gateway: props.accessData,
+                        protocol: props.protocol,
+                        product,
+                    };
+                }
+            } else if (
+                ['OneNet', 'Ctwing'].includes(props.accessData.channel)
+            ) {
+                data = {
+                    resourceId: props.data.id,
+                    gateway: props.accessData,
+                    protocol: props.protocol,
+                    product,
+                };
+            } else if (props.accessData.channel === 'plugin') {
+                data = {
+                    resourceId: props.data.id,
+                    gateway: props.accessData,
+                    plugin: props.plugin,
+                    product,
+                };
+            } else if (
+                ['gb28181-2016', 'Ctwing', 'OneNet'].includes(
                     props.accessData.provider,
                 )
             ) {
                 data = {
                     resourceId: props.data.id,
-                    gateway: props.accessData,
-                    network: props.advancedMode
-                        ? props.network
-                        : {
-                              ...props.network,
-                              configuration: {
-                                  ...props.network.configuration,
-                                  ...dataArr[1],
-                              },
-                          },
-                    product,
+                    gateway: {
+                        ...props.accessData,
+                        configuration: {
+                            ...props.accessData?.configuration,
+                            ...dataArr[1],
+                        },
+                    },
                 };
             } else {
                 data = {
                     resourceId: props.data.id,
-                    network: props.advancedMode
-                        ? props.network
-                        : {
-                              ...props.network,
-                              configuration: {
-                                  ...props.network.configuration,
-                                  ...dataArr[1],
-                              },
-                          },
                     gateway: props.accessData,
-                    protocol: props.protocol,
                     product,
                 };
             }
-        } else if (['OneNet', 'Ctwing'].includes(props.accessData.channel)) {
-            data = {
-                resourceId: props.data.id,
-                gateway: props.accessData,
-                protocol: props.protocol,
-                product,
-            };
-        } else if (props.accessData.channel === 'plugin') {
-            data = {
-                resourceId: props.data.id,
-                gateway: props.accessData,
-                plugin: props.plugin,
-                product,
-            };
-        } else if (
-            ['gb28181-2016', 'Ctwing', 'OneNet'].includes(
-                props.accessData.provider,
-            )
-        ) {
-            data = {
-                resourceId: props.data.id,
-                gateway: {
-                    ...props.accessData,
-                    configuration: {
-                        ...props.accessData?.configuration,
-                        ...dataArr[1],
-                    },
-                },
-            };
-        } else {
-            data = {
-                resourceId: props.data.id,
-                gateway: props.accessData,
-                product,
-            };
-        }
-        const res = await quickCreateProduct(data);
-        if (res.success) {
-            onlyMessage('操作成功');
-            menuStory.jumpPage('device/Product')
-        }
-    }).catch((err)=>{
-        loading.value = false
-    });
+            const res = await quickCreateProduct(data);
+            if (res.success) {
+                onlyMessage('操作成功');
+                menuStory.jumpPage('device/Product');
+            }
+        })
+        .catch((err) => {
+            loading.value = false;
+        });
 };
 
 //从协议中获取配置项
 const getConfigurationByProtocol = async () => {
-    const res = await queryProtocolConfiguration(
-        props.accessData.transport,
-        props.protocol,
-    );
+    const res = await queryProtocolConfiguration(props.accessData.transport, {
+        ...props.protocol,
+        type: 'jar',
+    });
     if (res.success) {
         res.result?.transports?.forEach((i) => {
             i.configs.properties.forEach((item) => {
