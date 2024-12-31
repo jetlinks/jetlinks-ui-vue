@@ -66,18 +66,17 @@
                                         </span>
                                     </Ellipsis>
                                 </div> -->
-                              <div style="display: flex;max-width: 50%;">
-                                <LevelIcon :level="slotProps.level" ></LevelIcon>
-                                <Ellipsis>
-                                  {{ levelMap[slotProps.level] }}
-                                </Ellipsis>
-                              </div>
+                                <div style="display: flex; max-width: 50%">
+                                    <LevelIcon
+                                        :level="slotProps.level"
+                                    ></LevelIcon>
+                                    <Ellipsis>
+                                        {{ levelMap[slotProps.level] }}
+                                    </Ellipsis>
+                                </div>
                             </div>
                             <j-row :gutter="24">
-                                <j-col
-                                    :span="6"
-                                    class="content-left"
-                                >
+                                <j-col :span="6" class="content-left">
                                     <div class="content-title">告警目标</div>
                                     <Ellipsis
                                         ><div>
@@ -85,9 +84,7 @@
                                         </div></Ellipsis
                                     >
                                 </j-col>
-                                <j-col
-                                    :span="6"
-                                >
+                                <j-col :span="6">
                                     <div class="content-title">
                                         最近告警时间
                                     </div>
@@ -95,26 +92,14 @@
                                         <div>
                                             {{
                                                 dayjs(
-                                                    slotProps?.lastAlarmTime || slotProps?.alarmTime,
-                                                ).format(
-                                                    'YYYY-MM-DD HH:mm:ss',
-                                                ) +
-                                                '至' +
-                                                (slotProps?.state?.value ===
-                                                'warning'
-                                                    ? '当前时间'
-                                                    : dayjs(
-                                                          slotProps?.handleTime,
-                                                      ).format(
-                                                          'YYYY-MM-DD HH:mm:ss',
-                                                      ))
+                                                    slotProps?.lastAlarmTime ||
+                                                        slotProps?.alarmTime,
+                                                ).format('YYYY-MM-DD HH:mm:ss')
                                             }}
                                         </div>
                                     </Ellipsis>
                                 </j-col>
-                                <j-col
-                                    :span="6"
-                                >
+                                <j-col :span="6">
                                     <div class="content-title">
                                         告警持续时长
                                     </div>
@@ -122,10 +107,7 @@
                                         ><Duration :data="slotProps"></Duration
                                     ></Ellipsis>
                                 </j-col>
-                                <j-col
-                                    :span="6"
-                                  
-                                >
+                                <j-col :span="6">
                                     <div class="content-title">告警原因</div>
                                     <Ellipsis
                                         ><div>
@@ -178,7 +160,12 @@
 
 <script lang="ts" setup>
 import { getImage } from '@/utils/comm';
-import { getOrgList, query, getAlarmProduct , queryAlarmRecordByType } from '@/api/rule-engine/log';
+import {
+    getOrgList,
+    query,
+    getAlarmProduct,
+    queryAlarmRecordByType,
+} from '@/api/rule-engine/log';
 import { useAlarmStore } from '@/store/alarm';
 import { storeToRefs } from 'pinia';
 import dayjs from 'dayjs';
@@ -190,7 +177,7 @@ import Duration from '../components/Duration.vue';
 import { useAlarmLevel } from '@/hook';
 const menuStory = useMenuStore();
 const tableRef = ref();
-const { levelMap, getLevelList} = useAlarmLevel();
+const { levelMap, getLevelList } = useAlarmLevel();
 const alarmStore = useAlarmStore();
 const { data } = storeToRefs(alarmStore);
 const drawerData = ref();
@@ -203,7 +190,7 @@ const props = defineProps<{
 const imgMap = new Map();
 imgMap.set('product', getImage('/alarm/product.png'));
 imgMap.set('device', getImage('/alarm/device.png'));
-imgMap.set('scene', getImage('/alarm/other.png'));
+imgMap.set('other', getImage('/alarm/other.png'));
 imgMap.set('organization', getImage('/alarm/org.png'));
 
 const titleMap = new Map();
@@ -321,7 +308,7 @@ const newColumns = computed(() => {
                         },
                     ];
                     const resp: any = await getAlarmProduct({
-                        paging:false,
+                        paging: false,
                         sorts: [{ name: 'alarmTime', order: 'desc' }],
                         terms: termType,
                     });
@@ -354,7 +341,10 @@ let params: any = ref({
     terms: [],
 });
 const handleSearch = async (params: any) => {
-    const resp: any =props.type !== 'all' ? await queryAlarmRecordByType(props.type,params) : await query(params);
+    const resp: any =
+        props.type !== 'all'
+            ? await queryAlarmRecordByType(props.type, params)
+            : await query(params);
     if (resp.status === 200) {
         const res: any = await getOrgList();
         if (res.status === 200) {
