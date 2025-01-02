@@ -104,7 +104,7 @@ const columns = [
   },
   {
     title: $t('Menu.index.599742-7'),
-    dataIndex: 'name',
+    dataIndex: 'i18nName',
     key: 'name',
     ellipsis: true,
     search: {

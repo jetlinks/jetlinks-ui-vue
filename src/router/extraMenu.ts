@@ -1,29 +1,30 @@
 const modulesFiles = import.meta.glob('../modules/*/index.ts', { eager: true})
+import i18n from "@/locales";
 
 export const getExtraRouters = () => {
   const extraMenu = {
     'system/Role': [{ // 角色管理
       code: 'Detail',
       url: '/Detail/:id',
-      name: '角色详情'
+      name: i18n.global.t('router.extraMenu.260658-0')
     }],
     'system/Menu': [
       {
         code: 'Setting',
         url: '/Setting',
-        name: '菜单配置'
+        name: i18n.global.t('router.extraMenu.260658-1')
       },
       {
         code: 'Detail',
         url: '/Detail/:id',
-        name: '菜单详情'
+        name: i18n.global.t('router.extraMenu.260658-2')
       },
     ],
     'system/Apply': [
       {
         code: 'Save',
         url: '/Save',
-        name: '详情'
+        name: i18n.global.t('router.extraMenu.260658-3')
       },
     ]
   }

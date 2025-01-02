@@ -54,7 +54,7 @@
                         v-model:checked="record.granted"
                         :indeterminate="record.indeterminate"
                         @change="menuChange(record, true)"
-                        >{{ record.name }}</a-checkbox
+                        >{{ record.i18nName }}</a-checkbox
                     >
                     <!-- :disabled='record.code === USER_CENTER_MENU_CODE' -->
                 </div>
@@ -66,7 +66,7 @@
                             v-model:checked="button.granted"
                             @change="actionChange(record)"
                             :key="button.id"
-                            >{{ button.name }}</a-checkbox
+                            >{{ button.i18nName }}</a-checkbox
                         >
                         <!-- :disabled='[USER_CENTER_MENU_BUTTON_CODE].includes(button.id)' -->
                     </div>

@@ -29,9 +29,9 @@
                             </a-collapse-panel>
                             <a-collapse-panel key="3" forceRender>
                                 <template #header>
-                                    <span class="title">角色初始化</span>
+                                    <span class="title">{{ $t('init-home.index.011072-0') }}</span>
                                     <span class="sub-title"
-                                        >初始化内置角色与权限数据</span
+                                        >{{ $t('init-home.index.011072-1') }}</span
                                     >
                                 </template>
                                 <Role ref="roleRef"></Role>

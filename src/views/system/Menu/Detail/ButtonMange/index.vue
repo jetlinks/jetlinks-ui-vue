@@ -79,8 +79,8 @@ const columns = [
   },
   {
     title: $t('ButtonMange.index.544049-6'),
-    dataIndex: 'name',
-    key: 'name',
+    dataIndex: 'i18nName',
+    key: 'i18nName',
     ellipsis: true
   },
   {

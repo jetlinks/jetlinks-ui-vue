@@ -9,6 +9,13 @@ export const USER_CENTER_MENU_DATA = {
   supportDataAccess: false,
   code: USER_CENTER_MENU_CODE,
   name: '个人中心',
+  i18nMessages: {
+    name: {
+      zh_CN: '个人中心',
+      en_US: 'User Center',
+      en: 'User Center'
+    }
+  },
   url: '/account/center',
   sortIndex: 9999,
   granted: true,
@@ -26,6 +33,11 @@ export const USER_CENTER_MENU_DATA = {
     {
       id: 'view',
       name: '查看',
+      i18nMessages: {
+        zh_CN: "查看",
+        en_US: "View",
+        en: "View"
+      },
       permissions: [
 
       ]
@@ -33,6 +45,11 @@ export const USER_CENTER_MENU_DATA = {
     {
       id: USER_CENTER_MENU_BUTTON_CODE,
       name: '修改密码',
+      i18nMessages: {
+        zh_CN: "修改密码",
+        en_US: "Update Password",
+        en: "Update Password"
+      },
       permissions: [
         {
           permission: 'user',
@@ -53,6 +70,13 @@ export default [
     code: 'system',
     name: '系统管理',
     owner: 'iot',
+    i18nMessages: {
+      name: {
+        zh_CN: "系统管理",
+        en_US: "System Management",
+        en: "System Management"
+      }
+    },
     id: 'fd1670b860ae58cc58bcd01d027ccd35',
     url: '/system',
     icon: 'icon-xitongguanli1',
@@ -63,6 +87,13 @@ export default [
       {
         code: 'system/Basis',
         name: '基础配置',
+        i18nMessages: {
+          name: {
+            zh_CN: "基础配置",
+            en_US: "Basic Configuration",
+            en: "Basic Configuration"
+          }
+        },
         owner: 'iot',
         //parentId: '3',
         id: '96e4bd287adbe0486e2168c59450841f',
@@ -75,6 +106,11 @@ export default [
           {
             id: 'view',
             name: '查看',
+            i18nMessages: {
+              zh_CN: "查看",
+              en_US: "View",
+              en: "View"
+            },
             permissions: [
               {
                 permission: 'system_config',
@@ -85,6 +121,11 @@ export default [
           {
             id: 'update',
             name: '保存',
+            i18nMessages: {
+              zh_CN: "保存",
+              en_US: "Save",
+              en: "Save"
+            },
             permissions: [
               {
                 permission: 'system_config',
@@ -111,10 +152,22 @@ export default [
         icon: 'icon-yonghuguanli',
         showPage: ['user'],
         permissions: [],
+        i18nMessages: {
+          name: {
+            zh_CN: "用户管理",
+            en_US: "User Management",
+            en: "User Management"
+          }
+        },
         buttons: [
           {
             id: 'view',
             name: '查看',
+            i18nMessages: {
+              zh_CN: "查看",
+              en_US: "View",
+              en: "View"
+            },
             permissions: [
               {
                 permission: 'user',
@@ -125,6 +178,11 @@ export default [
           {
             id: 'action',
             name: '启/禁用',
+            i18nMessages: {
+              zh_CN: "启/禁用",
+              en_US: "Enable/Disable",
+              en: "Enable/Disable"
+            },
             permissions: [
               {
                 permission: 'user',
@@ -135,6 +193,11 @@ export default [
           {
             id: 'delete',
             name: '删除',
+            i18nMessages: {
+              zh_CN: "删除",
+              en_US: "Delete",
+              en: "Delete"
+            },
             permissions: [
               {
                 permission: 'user',
@@ -145,6 +208,11 @@ export default [
           {
             id: 'update',
             name: '编辑',
+            i18nMessages: {
+              zh_CN: "编辑",
+              en_US: "Edit",
+              en: "Edit"
+            },
             permissions: [
               {
                 permission: 'user',
@@ -167,6 +235,11 @@ export default [
           {
             id: 'add',
             name: '新增',
+            i18nMessages: {
+              zh_CN: "新增",
+              en_US: "Add",
+              en: "Add"
+            },
             permissions: [
               {
                 permission: 'user',
@@ -194,6 +267,13 @@ export default [
       {
         code: 'system/Department',
         name: '组织管理',
+        i18nMessages: {
+          name: {
+            zh_CN: "组织管理",
+            en_US: "Organization Management",
+            en: "Organization Management"
+          }
+        },
         owner: 'iot',
         //parentId: '3',
         id: '3962ec0835f3b4a68c1f63b955625046',
@@ -206,6 +286,11 @@ export default [
           {
             id: 'view',
             name: '查看',
+            i18nMessages: {
+              zh_CN: "查看",
+              en_US: "View",
+              en: "View"
+            },
             permissions: [
               {
                 permission: 'organization',
@@ -232,6 +317,11 @@ export default [
           {
             id: 'bind',
             name: '资产解绑',
+            i18nMessages: {
+              zh_CN: "资产解绑",
+              en_US: "Assets Unbind",
+              en: "Assets Unbind"
+            },
             permissions: [
               {
                 permission: 'assets-bind',
@@ -258,6 +348,11 @@ export default [
           {
             id: 'bind-user',
             name: '绑定用户',
+            i18nMessages: {
+              zh_CN: "绑定用户",
+              en_US: "Bind User",
+              en: "Bind User"
+            },
             permissions: [
               {
                 permission: 'organization',
@@ -284,6 +379,11 @@ export default [
           {
             id: 'assert',
             name: '资产分配',
+            i18nMessages: {
+              zh_CN: "资产分配",
+              en_US: "Assets Allocation",
+              en: "Assets Allocation"
+            },
             permissions: [
               {
                 permission: 'user',
@@ -310,6 +410,11 @@ export default [
           {
             id: 'delete',
             name: '删除',
+            i18nMessages: {
+              zh_CN: "删除",
+              en_US: "Delete",
+              en: "Delete"
+            },
             permissions: [
               {
                 permission: 'organization',
@@ -336,6 +441,11 @@ export default [
           {
             id: 'update',
             name: '编辑',
+            i18nMessages: {
+              zh_CN: "编辑",
+              en_US: "Edit",
+              en: "Edit"
+            },
             permissions: [
               {
                 permission: 'organization',
@@ -362,6 +472,11 @@ export default [
           {
             id: 'add',
             name: '新增',
+            i18nMessages: {
+              zh_CN: "新增",
+              en_US: "Add",
+              en: "Add"
+            },
             permissions: [
               {
                 permission: 'organization',
@@ -393,6 +508,13 @@ export default [
       {
         code: 'system/Role',
         name: '角色管理',
+        i18nMessages: {
+          name: {
+            zh_CN: "角色管理",
+            en_US: "Role Management",
+            en: "Role Management"
+          }
+        },
         owner: 'iot',
         //parentId: '3',
         id: '9d1e96f17649ef5e7b8e7c6bb8e7b775',
@@ -410,6 +532,11 @@ export default [
           {
             id: 'delete',
             name: '删除',
+            i18nMessages: {
+              zh_CN: "删除",
+              en_US: "Delete",
+              en: "Delete"
+            },
             permissions: [
               {
                 permission: 'role',
@@ -420,6 +547,11 @@ export default [
           {
             id: 'update',
             name: '编辑',
+            i18nMessages: {
+              zh_CN: "编辑",
+              en_US: "Edit",
+              en: "Edit"
+            },
             permissions: [
               {
                 permission: 'user',
@@ -438,6 +570,11 @@ export default [
           {
             id: 'add',
             name: '新增',
+            i18nMessages: {
+              zh_CN: "新增",
+              en_US: "Add",
+              en: "Add"
+            },
             permissions: [
               {
                 permission: 'user',
@@ -456,6 +593,11 @@ export default [
           {
             id: 'view',
             name: '查看',
+            i18nMessages: {
+              zh_CN: "查看",
+              en_US: "View",
+              en: "View"
+            },
             permissions: [
               {
                 permission: 'role',
@@ -470,6 +612,11 @@ export default [
           {
             id: 'groupUpdate',
             name: '角色组编辑',
+            i18nMessages: {
+              zh_CN: "角色组编辑",
+              en_US: "Role Group Edit",
+              en: "Role Group Edit"
+            },
             permissions: [
               {
                 permission: 'role-group',
@@ -480,6 +627,11 @@ export default [
           {
             id: 'groupDelete',
             name: '角色组删除',
+            i18nMessages: {
+              zh_CN: "角色组删除",
+              en_US: "Delete Role Group",
+              en: "Delete Role Group"
+            },
             permissions: [
               {
                 permission: 'role-group',
@@ -495,6 +647,13 @@ export default [
       {
         code: 'system/Menu',
         name: '菜单管理',
+        i18nMessages: {
+          name: {
+            zh_CN: "菜单管理",
+            en_US: "Menu Management",
+            en: "Menu Management"
+          }
+        },
         owner: 'iot',
         //parentId: '3',
         id: 'dcb6fa15da2eae8a4fdb71755edbc2bb',
@@ -507,6 +666,11 @@ export default [
           {
             id: 'view',
             name: '查看',
+            i18nMessages: {
+              zh_CN: "查看",
+              en_US: "View",
+              en: "View"
+            },
             permissions: [
               {
                 permission: 'menu',
@@ -521,6 +685,11 @@ export default [
           {
             id: 'update',
             name: '编辑',
+            i18nMessages: {
+              zh_CN: "编辑",
+              en_US: "Edit",
+              en: "Edit"
+            },
             permissions: [
               {
                 permission: 'assets-bind',
@@ -543,6 +712,11 @@ export default [
           {
             id: 'delete',
             name: '删除',
+            i18nMessages: {
+              zh_CN: "删除",
+              en_US: "Delete",
+              en: "Delete"
+            },
             permissions: [
               {
                 permission: 'menu',
@@ -553,6 +727,11 @@ export default [
           {
             id: 'add',
             name: '新增',
+            i18nMessages: {
+              zh_CN: "新增",
+              en_US: "Add",
+              en: "Add"
+            },
             permissions: [
               {
                 permission: 'assets-bind',
@@ -579,6 +758,13 @@ export default [
       {
         code: 'system/Permission',
         name: '权限管理',
+        i18nMessages: {
+          name: {
+            zh_CN: "权限管理",
+            en_US: "Permission Management",
+            en: "Permission Management"
+          }
+        },
         owner: 'iot',
         //parentId: '3',
         id: 'da14fad88888dc13024e8261ff8fc2b5',
@@ -591,6 +777,11 @@ export default [
           {
             id: 'view',
             name: '查看',
+            i18nMessages: {
+              zh_CN: "查看",
+              en_US: "View",
+              en: "View"
+            },
             permissions: [
               {
                 permission: 'permission',
@@ -601,6 +792,11 @@ export default [
           {
             id: 'action',
             name: '启/禁用',
+            i18nMessages: {
+              zh_CN: "启/禁用",
+              en_US: "Enable/Disable",
+              en: "Enable/Disable"
+            },
             permissions: [
               {
                 permission: 'permission',
@@ -611,6 +807,11 @@ export default [
           {
             id: 'export',
             name: '导出',
+            i18nMessages: {
+              zh_CN: "导出",
+              en_US: "Export",
+              en: "Export"
+            },
             permissions: [
               {
                 permission: 'permission',
@@ -621,6 +822,11 @@ export default [
           {
             id: 'import',
             name: '导入',
+            i18nMessages: {
+              zh_CN: "导入",
+              en_US: "Import",
+              en: "Import"
+            },
             permissions: [
               {
                 permission: 'file',
@@ -635,6 +841,11 @@ export default [
           {
             id: 'delete',
             name: '删除',
+            i18nMessages: {
+              zh_CN: "删除",
+              en_US: "Delete",
+              en: "Delete"
+            },
             permissions: [
               {
                 permission: 'permission',
@@ -645,6 +856,11 @@ export default [
           {
             id: 'update',
             name: '编辑',
+            i18nMessages: {
+              zh_CN: "编辑",
+              en_US: "Edit",
+              en: "Edit"
+            },
             permissions: [
               {
                 permission: 'permission',
@@ -655,6 +871,11 @@ export default [
           {
             id: 'add',
             name: '新增',
+            i18nMessages: {
+              zh_CN: "新增",
+              en_US: "Add",
+              en: "Add"
+            },
             permissions: [
               {
                 permission: 'permission',
@@ -669,6 +890,13 @@ export default [
       {
         code: 'system/Relationship',
         name: '关系配置',
+        i18nMessages: {
+          name: {
+            zh_CN: "关系配置",
+            en_US: "Relationship Configuration",
+            en: "Relationship Configuration"
+          }
+        },
         owner: 'iot',
         //parentId: '3',
         id: '2fa02b8758fe82a6b9666f4ebb1bbd03',
@@ -681,6 +909,11 @@ export default [
           {
             id: 'update',
             name: '编辑',
+            i18nMessages: {
+              zh_CN: "编辑",
+              en_US: "Edit",
+              en: "Edit"
+            },
             permissions: [
               {
                 permission: 'relation',
@@ -691,6 +924,11 @@ export default [
           {
             id: 'delete',
             name: '删除',
+            i18nMessages: {
+              zh_CN: "删除",
+              en_US: "Delete",
+              en: "Delete"
+            },
             permissions: [
               {
                 permission: 'relation',
@@ -701,6 +939,11 @@ export default [
           {
             id: 'view',
             name: '查看',
+            i18nMessages: {
+              zh_CN: "查看",
+              en_US: "View",
+              en: "View"
+            },
             permissions: [
               {
                 permission: 'relation',
@@ -711,6 +954,11 @@ export default [
           {
             id: 'add',
             name: '新增',
+            i18nMessages: {
+              zh_CN: "新增",
+              en_US: "Add",
+              en: "Add"
+            },
             permissions: [
               {
                 permission: 'relation',
@@ -725,6 +973,13 @@ export default [
       {
         code: 'system/Apply',
         name: '应用管理',
+        i18nMessages: {
+          name: {
+            zh_CN: "应用管理",
+            en_US: "Application Management",
+            en: "Application Management"
+          }
+        },
         owner: 'iot',
         //parentId: '3',
         id: 'e0640f9621c21078cad62d5646a5579d',
@@ -737,6 +992,11 @@ export default [
           {
             id: 'delete',
             name: '删除',
+            i18nMessages: {
+              zh_CN: "删除",
+              en_US: "Delete",
+              en: "Delete"
+            },
             permissions: [
               {
                 permission: 'application',
@@ -747,6 +1007,11 @@ export default [
           {
             id: 'add',
             name: '新增',
+            i18nMessages: {
+              zh_CN: "新增",
+              en_US: "Add",
+              en: "Add"
+            },
             permissions: [
               {
                 permission: 'role',
@@ -769,6 +1034,11 @@ export default [
           {
             id: 'update',
             name: '编辑',
+            i18nMessages: {
+              zh_CN: "编辑",
+              en_US: "Edit",
+              en: "Edit"
+            },
             permissions: [
               {
                 permission: 'role',
@@ -791,6 +1061,11 @@ export default [
           {
             id: 'view',
             name: '查看',
+            i18nMessages: {
+              zh_CN: "查看",
+              en_US: "View",
+              en: "View"
+            },
             permissions: [
               {
                 permission: 'application',
@@ -805,6 +1080,11 @@ export default [
           {
             id: 'action',
             name: '启/禁用',
+            i18nMessages: {
+              zh_CN: "启/禁用",
+              en_US: "Enable/Disable",
+              en: "Enable/Disable"
+            },
             permissions: [
               {
                 permission: 'application',
@@ -819,6 +1099,13 @@ export default [
       {
         code: 'system/NoticeRule',
         name: '订阅管理',
+        i18nMessages: {
+          name: {
+            zh_CN: "订阅管理",
+            en_US: "Subscription Management",
+            en: "Subscription Management"
+          }
+        },
         owner: 'iot',
         id: '522f790d4422a608d491bc9e2fa12b4e',
         sortIndex: 11,
@@ -830,6 +1117,11 @@ export default [
           {
             id: 'delete',
             name: '删除',
+            i18nMessages: {
+              zh_CN: "删除",
+              en_US: "Delete",
+              en: "Delete"
+            },
             permissions: [
               {
                 permission: 'role',
@@ -852,6 +1144,11 @@ export default [
           {
             id: 'add',
             name: '新增',
+            i18nMessages: {
+              zh_CN: "新增",
+              en_US: "Add",
+              en: "Add"
+            },
             permissions: [
               {
                 permission: 'role',
@@ -874,6 +1171,11 @@ export default [
           {
             id: 'update',
             name: '编辑',
+            i18nMessages: {
+              zh_CN: "编辑",
+              en_US: "Edit",
+              en: "Edit"
+            },
             permissions: [
               {
                 permission: 'role',
@@ -896,6 +1198,11 @@ export default [
           {
             id: 'action',
             name: '启/禁用',
+            i18nMessages: {
+              zh_CN: "启/禁用",
+              en_US: "Enable/Disable",
+              en: "Enable/Disable"
+            },
             permissions: [
               {
                 permission: 'role',
@@ -922,6 +1229,13 @@ export default [
       {
         code: 'system/Dictionary',
         name: '数据字典',
+        i18nMessages: {
+          name: {
+            zh_CN: "数据字典",
+            en_US: "Data Dictionary",
+            en: "Data Dictionary"
+          }
+        },
         owner: 'iot',
         id: 'b69782873cc24be8165c6ad292359092',
         sortIndex: 12,
@@ -933,6 +1247,11 @@ export default [
           {
             id: "add",
             name: "新增",
+            i18nMessages: {
+              zh_CN: "新增",
+              en_US: "Add",
+              en: "Add"
+            },
             permissions: [
               {
                 permission: "dictionary",
@@ -945,6 +1264,11 @@ export default [
           {
             id: "delete",
             name: "删除",
+            i18nMessages: {
+              zh_CN: "删除",
+              en_US: "Delete",
+              en: "Delete"
+            },
             permissions: [
               {
                 permission: "dictionary",
@@ -957,6 +1281,11 @@ export default [
           {
             id: "update",
             name: "编辑",
+            i18nMessages: {
+              zh_CN: "编辑",
+              en_US: "Edit",
+              en: "Edit"
+            },
             permissions: [
               {
                 permission: "dictionary",
@@ -969,6 +1298,11 @@ export default [
           {
             id: "import",
             name: "导入",
+            i18nMessages: {
+              zh_CN: "导入",
+              en_US: "Import",
+              en: "Import"
+            },
             permissions: [
               {
                 permission: "dictionary",
@@ -981,6 +1315,11 @@ export default [
           {
             id: "down",
             name: "下载",
+            i18nMessages: {
+              zh_CN: "下载",
+              en_US: "Download",
+              en: "Download"
+            },
             permissions: [
               {
                 permission: "dictionary",
@@ -993,6 +1332,11 @@ export default [
           {
             id: "action",
             name: "启用/禁用",
+            i18nMessages: {
+              zh_CN: "启用/禁用",
+              en_US: "Enable/Disable",
+              en: "Enable/Disable"
+            },
             permissions: [
               {
                 permission: "dictionary",
@@ -1009,6 +1353,13 @@ export default [
       {
         code: 'system/Region',
         name: '地区管理',
+        i18nMessages: {
+          name: {
+            zh_CN: "地区管理",
+            en_US: "Area Management",
+            en: "Area Management"
+          }
+        },
         owner: 'iot',
         id: 'b69782873cc24be8165c6ad29233333',
         sortIndex: 13,
@@ -1020,6 +1371,11 @@ export default [
           {
             id: "add",
             name: "新增",
+            i18nMessages: {
+              zh_CN: "新增",
+              en_US: "Add",
+              en: "Add"
+            },
             permissions: [
               {
                 permission: "area",
@@ -1032,6 +1388,11 @@ export default [
           {
             id: "delete",
             name: "删除",
+            i18nMessages: {
+              zh_CN: "删除",
+              en_US: "Delete",
+              en: "Delete"
+            },
             permissions: [
               {
                 permission: "area",
@@ -1044,6 +1405,11 @@ export default [
           {
             id: "update",
             name: "编辑",
+            i18nMessages: {
+              zh_CN: "编辑",
+              en_US: "Edit",
+              en: "Edit"
+            },
             permissions: [
               {
                 permission: "area",
@@ -1060,6 +1426,13 @@ export default [
       {
         code: 'system/Calendar',
         name: '日历维护',
+        i18nMessages: {
+          name: {
+            zh_CN: "日历维护",
+            en_US: "Calendar Maintenance",
+            en: "Calendar Maintenance"
+          }
+        },
         owner: 'iot',
         id: '9d03fb403f3edb4ceb796dd81167562f',
         showPage: ["calendar-manager"],
@@ -1078,6 +1451,11 @@ export default [
           {
             id: "add",
             name: "新增",
+            i18nMessages: {
+              zh_CN: "新增",
+              en_US: "Add",
+              en: "Add"
+            },
             permissions: [
               {
                 permission: "calendar-manager",
@@ -1090,6 +1468,11 @@ export default [
           {
             id: "update",
             name: "编辑",
+            i18nMessages: {
+              zh_CN: "编辑",
+              en_US: "Edit",
+              en: "Edit"
+            },
             permissions: [
               {
                 permission: "calendar-manager",
@@ -1102,6 +1485,11 @@ export default [
           {
             id: "delete",
             name: "删除",
+            i18nMessages: {
+              zh_CN: "删除",
+              en_US: "Delete",
+              en: "Delete"
+            },
             permissions: [
               {
                 permission: "calendar-manager",
@@ -1120,6 +1508,13 @@ export default [
   {
     code: 'iot',
     name: '物联网',
+    i18nMessages: {
+      name: {
+        zh_CN: "物联网",
+        en_US: "IoT",
+        en: "IoT"
+      }
+    },
     owner: 'iot',
     id: '9c21f88182e7cc75cbdfa8e4b7844272',
     url: '/iot',
@@ -1130,6 +1525,13 @@ export default [
       {
         code: 'link',
         name: '运维管理',
+        i18nMessages: {
+          name: {
+            zh_CN: "运维管理",
+            en_US: "Operation Management",
+            en: "Operation Management"
+          }
+        },
         owner: 'iot',
         //parentId: '1',
         id: 'bd55cdc9d0c1700afe628f572f91c22e',
@@ -1141,6 +1543,13 @@ export default [
           {
             code: 'Log',
             name: '日志管理',
+            i18nMessages: {
+              name: {
+                zh_CN: "日志管理",
+                en_US: "Log Management",
+                en: "Log Management"
+              }
+            },
             owner: 'iot',
             //parentId: '1-4',
             id: 'c340f8977e0d221da893715cab58ae8c',

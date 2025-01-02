@@ -8,11 +8,11 @@
       <a-menu @click="click">
         <a-menu-item key="userCenter">
           <AIcon type="UserOutlined" style="margin-right: 8px;" />
-          <span>个人中心</span>
+          <span>{{ $t('components.User.635192-0') }}</span>
         </a-menu-item>
         <a-menu-item key="logout">
           <AIcon type="LogoutOutlined" style="margin-right: 8px;" />
-          <span>退出登录</span>
+          <span>{{ $t('components.User.635192-1') }}</span>
         </a-menu-item>
       </a-menu>
     </template>
