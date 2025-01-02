@@ -72,7 +72,13 @@
         >
             <div v-for="i in taskList" :key="i.id" class="fileList">
                 <img
-                    :src="i.resourceDetails?.releaseDetail?.photoUrl"
+                    :src="
+                        i.resourceDetails?.releaseDetail?.photoUrl ||
+                        imageMap.get(
+                            i.resourceDetails?.releaseDetail?.resourcesType
+                                ?.value,
+                        )
+                    "
                     alt=""
                     style="width: 80px; height: 80px; margin-right: 16px"
                 />
@@ -96,15 +102,9 @@
                             </div>
                         </div>
                         <a-space>
-                            <Status
-                                :value="
-                                    status[i.id]?.state?.value 
-                                "
-                            />
+                            <Status :value="status[i.id]?.state?.value" />
                             <a-button
-                                v-if="
-                                    status[i.id]?.state?.value === 'success'
-                                "
+                                v-if="status[i.id]?.state?.value === 'success'"
                                 @click="onDetail(i)"
                                 >查看详情</a-button
                             >
@@ -118,9 +118,7 @@
                                 >暂停</a-button
                             >
                             <a-button
-                                v-if="
-                                    status[i.id]?.state?.value === 'canceled'
-                                "
+                                v-if="status[i.id]?.state?.value === 'canceled'"
                                 @click="onBegin(i)"
                                 >开始</a-button
                             >
@@ -130,15 +128,12 @@
                                         'waiting_install',
                                         'waiting_download',
                                     ].includes(status[i.id]?.state?.value)
-                                    
                                 "
                                 @click="onDelete(i)"
                                 >移除</a-button
                             >
                             <a-button
-                                v-if="
-                                    status[i.id]?.state?.value === 'failed'
-                                "
+                                v-if="status[i.id]?.state?.value === 'failed'"
                                 @click="onReload(i)"
                                 >重装</a-button
                             >
@@ -175,7 +170,7 @@ import { statusIcon } from '@/views/link/Resource/Install/data';
 import { map } from 'lodash-es';
 import { computedVersion } from '@/views/link/Resource/Install/data';
 import { useMenuStore } from '@/store/menu';
-
+import { resource } from '@/assets';
 const props = defineProps({
     taskList: {
         type: Array,
@@ -192,12 +187,17 @@ const props = defineProps({
 });
 const emits = defineEmits(['refresh']);
 const menuStory = useMenuStore();
+const imageMap = new Map([
+    ['device', resource.deviceDefaultImage],
+    ['collector', resource.collectorDefaultImage],
+    ['protocol', resource.protocolDefaultImage],
+]);
 const status = ref({});
 let wsRef = null;
-const controlStatue = computed(()=>{
-    return !Object.values(status.value).every((i)=>{
-        return ['success','failed','canceled'].includes(i?.state?.value)
-    })
+const controlStatue = computed(() => {
+    return !Object.values(status.value).every((i) => {
+        return ['success', 'failed', 'canceled'].includes(i?.state?.value);
+    });
 });
 
 const pauseAll = async () => {
@@ -214,7 +214,6 @@ const pauseAll = async () => {
     );
     const resp = await stopTask(arr);
     if (resp.success) {
-        
     }
 };
 
@@ -233,7 +232,6 @@ const startAll = async () => {
         states: ['canceled', 'failed'],
     });
     if (resp.success) {
-        
     }
 };
 
@@ -304,13 +302,13 @@ watch(
     () => {
         if (props.taskList.length) {
             installTask();
-            props.taskList.forEach((item)=>{
+            props.taskList.forEach((item) => {
                 status.value[item.id] = {
-                    state:{
-                        value: item.state.value
-                    }
-                } 
-            })
+                    state: {
+                        value: item.state.value,
+                    },
+                };
+            });
         }
     },
     {

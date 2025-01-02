@@ -41,17 +41,6 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- <div v-else>
-                            <div class="header">
-                                <div>
-                                    您可继续拖放资源或从本地文件中选取资源
-                                </div>
-                                <div>
-                                    <a-button type="primary">继续添加</a-button>
-                                </div>
-                            </div>
-                           
-                        </div> -->
                     </div>
                 </a-upload-dragger>
                 <List
@@ -101,7 +90,14 @@ const handleChange = ({ file }) => {
 
 const getResourceByCloud = async () => {
     source.value = 'cloud';
-    const res = await _queryResourceCloud();
+    const res = await _queryResourceCloud({
+        sorts: [
+            {
+                name: 'createTime',
+                order: 'desc',
+            },
+        ],
+    });
     if (res.success) {
         fileList.value = res.result;
         emits('update:value', fileList.value);

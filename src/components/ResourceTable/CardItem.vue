@@ -21,13 +21,20 @@ import { resource } from '@/assets'
       collector: '#52C41A', // 数采
       protocol: '#FAAD14', // 协议
   }
+
+  const imageMap = new Map([
+    ['device',resource.deviceDefaultImage],
+    ['collector',resource.collectorDefaultImage],
+    ['protocol',resource.protocolDefaultImage]
+  ])
+
 </script>
 
 <template>
   <div :class="classNames">
     <div class="item-center">
       <div class="table-item-img">
-        <img :src="record.photoUrl?.url || resource.defaultImage" />
+        <img :src="record.photoUrl?.url || imageMap.get(record.type?.value)" />
       </div>
       <div class="item-center-bottom">
         <div class="table-item-title fz-16">
@@ -108,8 +115,6 @@ import { resource } from '@/assets'
 
   .table-item-img {
     background-color: @font-gray-50;
-    height: 194px;
-    width: 258px;
     border-radius: 4px;
     overflow: hidden;
 

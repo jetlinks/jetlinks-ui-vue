@@ -11,7 +11,11 @@
         <template v-if="fileList.length">
             <div v-for="(i, index) in fileList" class="fileList">
                 <img
-                    :src="i?.photoUrl?.url || i?.photoUrl"
+                    :src="
+                        i.photoUrl?.url ||
+                        i.photoUrl ||
+                        imageMap.get(i.resourcesType?.value || i.releaseDetail?.resourcesType?.value)
+                    "
                     alt=""
                     style="width: 80px; height: 80px; margin-right: 16px"
                 />
@@ -87,6 +91,7 @@
 import { _queryTemplateNoPaging, installResource } from '@/api/link/resource';
 import { cloneDeep } from 'lodash-es';
 import { computedVersion } from '../data';
+import { resource } from '@/assets';
 const props = defineProps({
     value: {
         type: Array,
@@ -102,6 +107,11 @@ const props = defineProps({
     },
 });
 const emits = defineEmits(['update:value', 'cancel', 'refresh']);
+const imageMap = new Map([
+    ['device', resource.deviceDefaultImage],
+    ['collector', resource.collectorDefaultImage],
+    ['protocol', resource.protocolDefaultImage],
+]);
 const fileList = ref([]);
 const removeFile = (index) => {
     fileList.value.splice(index, 1);
@@ -131,6 +141,18 @@ const onInstall = async () => {
     }
 };
 
+watch(
+    () => props.value,
+    () => {
+        if (props.source === 'local') {
+            fileList.value = cloneDeep(props.value);
+        }
+    },
+    {
+        immediate:true,
+        deep:true
+    }
+);
 
 watch(
     () => props.resourceVersionMap,
@@ -147,8 +169,6 @@ watch(
                     return true;
                 }
             });
-        }else{
-            fileList.value = cloneDeep(props.value);
         }
     },
     {

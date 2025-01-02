@@ -47,16 +47,20 @@
                                     @click="() => chooseResource(i)"
                                 >
                                     <img
-                                        :src="i.photoUrl?.url"
+                                        :src="i.photoUrl?.url || imageMap.get(i.type?.value)"
                                         alt=""
                                         class="resourceImg"
                                     />
-                                    <div>
+                                    <div style="margin-left: 10px;">
                                         <div>
-                                            {{ i.name }}
+                                            <j-ellipsis>
+                                                {{ i.name }}
+                                            </j-ellipsis>
                                         </div>
-                                        <div style="color: #8e8e8e">
-                                            {{ i.describe }}
+                                        <div style="color: #8e8e8e;margin-top: 20px;">
+                                            <j-ellipsis>
+                                                {{ i.describe || '--'}}
+                                            </j-ellipsis>
                                         </div>
                                     </div>
                                 </div>
@@ -81,8 +85,15 @@ import {
     queryClassificationType,
     queryClassification,
 } from '@/api/device/quickCreate.ts';
-import { queryTemplate } from '@/api/device/product.ts';
+import { queryTemplate, queryTemplateDetail } from '@/api/device/product.ts';
 import Operation from './Operation.vue';
+import { resource } from '@/assets';
+const imageMap = new Map([
+    ['device', resource.deviceDefaultImage],
+    ['collector', resource.collectorDefaultImage],
+    ['protocol', resource.protocolDefaultImage],
+]);
+
 const searchParams = ref('');
 const activeKey = ref(undefined);
 //分类类型
@@ -126,8 +137,18 @@ const select = (key) => {
     getTemplateList(key);
 };
 
-const chooseResource = (data) => {
-    selectedResource.value = data;
+const chooseResource = async(data) => {
+    const res = await queryTemplateDetail({
+        terms:[{
+            column: 'id',
+            termType: 'eq',
+            value: data.id
+        }]
+    })
+    if(res.success && res.result.data?.length){
+        selectedResource.value = res.result.data[0];
+    }
+    
 };
 
 const reselection = () => {
@@ -149,8 +170,7 @@ const getTemplateList = async (classification = undefined) => {
         });
     }
     const params = {
-        pageIndex: 0,
-        pageSize: 12,
+        paging:false,
         sorts: [
             {
                 name: 'createTime',
@@ -161,7 +181,7 @@ const getTemplateList = async (classification = undefined) => {
     };
     const res = await queryTemplate(params);
     if (res.success) {
-        resourceData.value = res.result?.data || [];
+        resourceData.value = res.result || [];
     }
 };
 
@@ -190,6 +210,7 @@ onMounted(() => {
     .right_list {
         flex: 3;
         padding: 20px;
+        overflow-y: auto;
     }
 }
 
@@ -202,8 +223,8 @@ onMounted(() => {
     align-self: center;
 
     .resourceImg {
-        height: 40px;
-        width: 40px;
+        height: 80px;
+        width: 80px;
         margin-right: 8px;
     }
 }

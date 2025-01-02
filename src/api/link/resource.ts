@@ -46,7 +46,7 @@ export const _queryProtocolResource = (id: string, data: any) => server.post(`/r
 export const _queryProtocolNew = (id: string,) => server.get(`/resources/library/${id}/protocol/current/_query`)
 
 //获取云端我的资源信息
-export const _queryResourceCloud = () => server.get('/resources/cloud')
+export const _queryResourceCloud = (data:any) => server.post('/resources/cloud',data)
 
 //获取资源库信息
 export const _queryTemplate = (data: any) => server.post('/resources/instance/detail/_query', data)
