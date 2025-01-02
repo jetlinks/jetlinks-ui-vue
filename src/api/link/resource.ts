@@ -78,7 +78,7 @@ const queryProvider = (data: any) => server.get(`/resources/classification/type/
  * @param data
  */
 const queryClassify = (data: any) => server.post(`/resources/classification/_query/_children/tree`, data)
-const queryClassifyType = (data: any) => server.post(`/resources/classification-type/_query`, data)
+const queryClassifyType = (data: any) => server.post(`/resources/classification-type/_query/no-paging`, data)
 
 export const ResourceApi = {
     queryProvider,
