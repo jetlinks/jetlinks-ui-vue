@@ -115,7 +115,6 @@ const imageMap = new Map([
 const fileList = ref([]);
 const removeFile = (index) => {
     fileList.value.splice(index, 1);
-    emits('update:value', fileList.value);
 };
 
 const onInstall = async () => {

@@ -114,7 +114,7 @@
                                     </a-row>
                                 </div>
                             </template>
-                            <div v-else>未满足条件,请点击高级模式</div>
+                            <div v-else>{{ accessConfig.provider === 'mqtt-client-gateway' ? 'MQTT Broker接入请点击高级模式配置' :'未满足条件,请点击高级模式'}}</div>
                         </div>
                         <AdvanceMode
                             v-else
@@ -442,7 +442,7 @@ onMounted(async () => {
         props.data?.accessInfos?.filter((i) => {
             return i.defaultAccess;
         })?.[0] || {};
-    if (accessConfig.value?.channel === 'network') {
+    if (accessConfig.value?.channel === 'network' && accessConfig.value.provider !== 'mqtt-client-gateway') {
         const data = await getUseableNetWork();
         if (data) {
             network.value = data;
