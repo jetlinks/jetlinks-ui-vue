@@ -14,7 +14,6 @@
                     v-model:fileList="uploadFile"
                     name="file"
                     :multiple="true"
-                    :maxCount="10"
                     :headers="{
                         [TOKEN_KEY]: LocalStore.get(TOKEN_KEY),
                     }"
