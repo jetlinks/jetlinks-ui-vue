@@ -159,7 +159,8 @@ const getTemplateList = async (classification = undefined) => {
     const terms = [
         {
             column: 'type',
-            value: 'device',
+            termType: 'in',
+            value: ['device','protocol'],
         },
     ];
     if (classification) {
