@@ -28,14 +28,13 @@
                         {
                             required: true,
                             validator: validateDeviceType,
-                            trigger: ['blur','change'],
+                            trigger: 'change'
                         },
                     ]"
                 >
-                    <j-card-select
-                        :value="form.deviceType"
+                    <CardSelect
+                        v-model:value="form.deviceType"
                         :options="deviceOptions"
-                        @change="changeDeviceType"
                     >
                         <template #title="item">
                             <span>{{ item.title }}</span>
@@ -46,7 +45,7 @@
                                 />
                             </a-tooltip>
                         </template>
-                    </j-card-select>
+                    </CardSelect>
                 </a-form-item>
                 <a-form-item
                     v-for="i in configuration"
@@ -155,6 +154,7 @@ import Ctwing from './Ctwing/index.vue';
 import OneNet from './OneNet/index.vue';
 import Network from './Network/index.vue';
 import { useMenuStore } from '@/store/menu';
+import CardSelect from '@/components/CardSelect/CardSelect.vue'
 const props = defineProps({
     data: {
         type: Object,
@@ -272,7 +272,6 @@ const validateDeviceType = async (_rule, value) => {
 
 const changeDeviceType = (value) => {
     form.value.deviceType = value[0];
-    formRef.value.validateFields()
 };
 
 const createProduct = async () => {

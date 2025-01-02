@@ -131,16 +131,6 @@ const onInstall = async () => {
     }
 };
 
-watch(
-    () => props.value,
-    () => {
-        fileList.value = cloneDeep(props.value);
-    },
-    {
-        deep: true,
-        immediate: true,
-    },
-);
 
 watch(
     () => props.resourceVersionMap,
@@ -157,6 +147,8 @@ watch(
                     return true;
                 }
             });
+        }else{
+            fileList.value = cloneDeep(props.value);
         }
     },
     {
