@@ -18,6 +18,7 @@
 
     <template #rightContentRender>
       <div class="right-content">
+        <Language />
         <Notice style="margin: 0 24px" />
         <User />
       </div>
@@ -33,7 +34,7 @@
 import { reactive, computed, watchEffect } from 'vue'
 import { useSystemStore } from '@/store/system'
 import { useMenuStore } from '@/store/menu'
-import { User, Notice } from './components'
+import { User, Notice, Language } from './components'
 import { storeToRefs } from 'pinia'
 
 const router = useRouter();
