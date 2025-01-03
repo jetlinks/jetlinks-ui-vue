@@ -301,7 +301,10 @@ const createProduct = async () => {
                 ) {
                     data = {
                         resourceId: props.data.id,
-                        gateway: props.accessData,
+                        gateway: {
+                            ...props.accessData,
+                            protocol: props.accessData.provider,
+                        },
                         network: props.advancedMode
                             ? props.network
                             : {
