@@ -29,7 +29,18 @@
                                 : descriptionList[type],
                             type: 'network',
                         }"
-                    ></AccessCard>
+                    >
+                        <template #other>
+                            <div class="other">
+                                <a-tooltip
+                                    placement="top"
+                                    :title="getDetails(item)"
+                                >
+                                {{ getDetails(item) }}
+                                </a-tooltip>
+                            </div>
+                        </template></AccessCard
+                    >
                 </a-col>
             </a-row>
             <a-empty v-else style="margin-top: 10%" description="暂无数据" />
@@ -67,7 +78,7 @@ const addVisible = ref(false);
 const networkCurrent = ref();
 
 const queryNetworkList = async (data = {}) => {
-    addVisible.value = false
+    addVisible.value = false;
     const params = {
         paging: false,
         sorts: [
@@ -108,6 +119,53 @@ const networkSearch = (val) => {
 
 const checkedChange = (data) => {
     networkCurrent.value = data;
+};
+
+const getDetails = (slotProps) => {
+    const { typeObject, shareCluster, configuration, cluster } = slotProps;
+    const headers =
+        typeObject.name.replace(/[^j-zA-Z]/g, '').toLowerCase() + '://';
+    const content = !!shareCluster
+        ? (configuration.publicHost || configuration.remoteHost) +
+          ':' +
+          (configuration.publicPort || configuration.remotePort)
+        : (cluster[0].configuration.publicHost ||
+              cluster[0].configuration.remoteHost) +
+          ':' +
+          (cluster[0].configuration.publicPort ||
+              cluster[0].configuration.remotePort);
+    let head = '远程:';
+    if (!!shareCluster) {
+        !!configuration.publicHost && (head = '公网:');
+    } else {
+        !!cluster[0].configuration.publicHos && (head = '公网:');
+    }
+    if (!shareCluster && cluster.length > 1) {
+        const contentItem2 =
+            (cluster[0].configuration.publicHost ||
+                cluster[0].configuration.remoteHost) +
+            ':' +
+            (cluster[0].configuration.publicPort ||
+                cluster[0].configuration.remotePort);
+        let headItme2 = '远程';
+        !!cluster[0].configuration.publicHos && (headItme2 = '公网:');
+        if (cluster.length > 2) {
+            return (
+                head +
+                headers +
+                content +
+                ' ' +
+                headItme2 +
+                headers +
+                contentItem2 +
+                '。。。'
+            );
+        }
+        return (
+            head + headers + content + ' ' + headItme2 + headers + contentItem2
+        );
+    }
+    return head + headers + content;
 };
 
 onMounted(() => {

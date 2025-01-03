@@ -78,10 +78,18 @@
                                             <div>
                                                 网络:
                                                 {{
-                                                    network.configuration
-                                                        ?.host +
-                                                    ':' +
-                                                    network.configuration?.port
+                                                    accessData.provider ===
+                                                    'mqtt-client-gateway'
+                                                        ? network.configuration
+                                                              ?.remoteHost +
+                                                          ':' +
+                                                          network.configuration
+                                                              ?.remotePort
+                                                        : network.configuration
+                                                              ?.host +
+                                                          ':' +
+                                                          network.configuration
+                                                              ?.port
                                                 }}
                                             </div>
                                         </a-col>
@@ -114,7 +122,14 @@
                                     </a-row>
                                 </div>
                             </template>
-                            <div v-else>{{ accessConfig.provider === 'mqtt-client-gateway' ? 'MQTT Broker接入请点击高级模式配置' :'未满足条件,请点击高级模式'}}</div>
+                            <div v-else>
+                                {{
+                                    accessConfig.provider ===
+                                    'mqtt-client-gateway'
+                                        ? 'MQTT Broker接入请点击高级模式配置'
+                                        : '未满足条件,请点击高级模式'
+                                }}
+                            </div>
                         </div>
                         <AdvanceMode
                             v-else
@@ -185,9 +200,9 @@ const metadata = ref();
 //network类型无可用端口
 const unmet = computed(() => {
     if (accessData.value.channel === 'network') {
-        return Object.keys(network.value).length === 0;;
-    }else{
-        return false
+        return Object.keys(network.value).length === 0;
+    } else {
+        return false;
     }
 });
 const accessConfig = ref({});
@@ -442,7 +457,10 @@ onMounted(async () => {
         props.data?.accessInfos?.filter((i) => {
             return i.defaultAccess;
         })?.[0] || {};
-    if (accessConfig.value?.channel === 'network' && accessConfig.value.provider !== 'mqtt-client-gateway') {
+    if (
+        accessConfig.value?.channel === 'network' &&
+        accessConfig.value.provider !== 'mqtt-client-gateway'
+    ) {
         const data = await getUseableNetWork();
         if (data) {
             network.value = data;
@@ -453,7 +471,6 @@ onMounted(async () => {
     }
     getDefault();
 });
-
 </script>
 <style lang="less" scoped>
 .container {

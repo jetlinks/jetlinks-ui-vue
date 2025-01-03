@@ -206,12 +206,14 @@ onMounted(() => {
         flex: 1;
         padding: 0 10px;
         border-right: 1px solid #cdcdcd;
+        height: calc(100vh - 200px);
     }
 
     .right_list {
         flex: 3;
         padding: 20px;
         overflow-y: auto;
+        height: calc(100vh - 200px);
     }
 }
 
