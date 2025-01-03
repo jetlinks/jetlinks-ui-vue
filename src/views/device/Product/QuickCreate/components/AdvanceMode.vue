@@ -78,6 +78,14 @@
                                         <div class="cardName">
                                             {{ network.name }}
                                         </div>
+                                        <div class="address">
+                                            <a-tooltip
+                                                placement="top"
+                                                :title="getDetails(network)"
+                                            >
+                                                {{ getDetails(network) }}
+                                            </a-tooltip>
+                                        </div>
                                         <div class="cardDes">
                                             <j-ellipsis>
                                                 {{ network.description }}
@@ -119,7 +127,9 @@
                                     :class="{
                                         card: true,
                                         protocolCard: true,
-                                        selected: i.id === protocol?.id || i.id === selectedProtocolID,
+                                        selected:
+                                            i.id === protocol?.id ||
+                                            i.id === selectedProtocolID,
                                     }"
                                     @click="() => selectResourceProtocol(i)"
                                 >
@@ -153,7 +163,9 @@
                                 :class="{
                                     card: true,
                                     protocolCard: true,
-                                    selected: i.id === plugin?.id || i.id === selectedPluginID,
+                                    selected:
+                                        i.id === plugin?.id ||
+                                        i.id === selectedPluginID,
                                 }"
                                 @click="() => selectResourcePlugin(i)"
                             >
@@ -217,10 +229,10 @@ const props = defineProps({
         type: Object,
         default: () => {},
     },
-    randomString:{
-        type:String,
-        default:''
-    }
+    randomString: {
+        type: String,
+        default: '',
+    },
 });
 const emits = defineEmits(['quit', 'submit']);
 const accessConfig = ref();
@@ -231,9 +243,9 @@ const visibleAddNetwork = ref(false);
 const visibleAddProtocol = ref(false);
 const visibleAddPlugin = ref(false);
 //资源库选中插件id
-const selectedPluginID = ref()
+const selectedPluginID = ref();
 //资源库选中协议id
-const selectedProtocolID = ref()
+const selectedProtocolID = ref();
 const protocolList = computed(() => {
     const resource = accessConfig.value.bindInfo.some((i) => {
         return i.id === protocol.value?.id;
@@ -263,13 +275,13 @@ const selectedNetWork = (data) => {
 const selectedProtocol = (data) => {
     protocol.value = data;
     visibleAddProtocol.value = false;
-    selectedProtocolID.value = ''
+    selectedProtocolID.value = '';
 };
 
 const selectedPlugin = (data) => {
     plugin.value = data;
     visibleAddPlugin.value = false;
-    selectedPluginID.value = ''
+    selectedPluginID.value = '';
 };
 
 const selectResourceProtocol = (data) => {
@@ -279,27 +291,75 @@ const selectResourceProtocol = (data) => {
         configuration: {
             location: data.url,
             sourceId: data.id,
-            version: data.version
+            version: data.version,
         },
     };
-    selectedProtocolID.value = data.id
+    selectedProtocolID.value = data.id;
 };
 
-const selectResourcePlugin = (data) =>{
+const selectResourcePlugin = (data) => {
     plugin.value = {
         ...omit(data, ['id']),
         provider: 'jar',
         configuration: {
             location: data.url,
             sourceId: data.id,
-            version: data.version
+            version: data.version,
         },
     };
-    selectedPluginID.value = data.id
-}
+    selectedPluginID.value = data.id;
+};
 
 const quitAdvanceMode = () => {
     emits('quit');
+};
+
+//获取网络组件地址
+const getDetails = (slotProps) => {
+    const { typeObject, shareCluster, configuration, cluster } = slotProps;
+    const headers =
+        typeObject.name.replace(/[^j-zA-Z]/g, '').toLowerCase() + '://';
+    const content = !!shareCluster
+        ? (configuration.publicHost || configuration.remoteHost) +
+          ':' +
+          (configuration.publicPort || configuration.remotePort)
+        : (cluster[0].configuration.publicHost ||
+              cluster[0].configuration.remoteHost) +
+          ':' +
+          (cluster[0].configuration.publicPort ||
+              cluster[0].configuration.remotePort);
+    let head = '远程:';
+    if (!!shareCluster) {
+        !!configuration.publicHost && (head = '公网:');
+    } else {
+        !!cluster[0].configuration.publicHos && (head = '公网:');
+    }
+    if (!shareCluster && cluster.length > 1) {
+        const contentItem2 =
+            (cluster[0].configuration.publicHost ||
+                cluster[0].configuration.remoteHost) +
+            ':' +
+            (cluster[0].configuration.publicPort ||
+                cluster[0].configuration.remotePort);
+        let headItme2 = '远程';
+        !!cluster[0].configuration.publicHos && (headItme2 = '公网:');
+        if (cluster.length > 2) {
+            return (
+                head +
+                headers +
+                content +
+                ' ' +
+                headItme2 +
+                headers +
+                contentItem2 +
+                '。。。'
+            );
+        }
+        return (
+            head + headers + content + ' ' + headItme2 + headers + contentItem2
+        );
+    }
+    return head + headers + content;
 };
 
 const submitDada = () => {
