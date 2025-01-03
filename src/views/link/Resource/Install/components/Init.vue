@@ -85,7 +85,6 @@ const loading = ref(false);
 const source = ref('');
 const handleChange = ({ file }) => {
     source.value = 'local';
-    console.log(file, 'file');
     if (file.status === 'uploading') {
         loading.value = true;
     }
@@ -108,7 +107,6 @@ const getResourceByCloud = async () => {
             },
         ],
     });
-    // const res = await _queryResourceCloud()
     if (res.success) {
         fileList.value = res.result;
         emits('update:value', fileList.value);
