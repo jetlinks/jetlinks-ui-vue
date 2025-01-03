@@ -99,15 +99,16 @@ const handleChange = ({ file }) => {
 
 const getResourceByCloud = async () => {
     source.value = 'cloud';
-    // const res = await _queryResourceCloud({
-    //     sorts: [
-    //         {
-    //             name: 'createTime',
-    //             order: 'desc',
-    //         },
-    //     ],
-    // });
-    const res = await _queryResourceCloud()
+    const res = await _queryResourceCloud({
+        paging:false,
+        sorts: [
+            {
+                name: 'createTime',
+                order: 'desc',
+            },
+        ],
+    });
+    // const res = await _queryResourceCloud()
     if (res.success) {
         fileList.value = res.result;
         emits('update:value', fileList.value);

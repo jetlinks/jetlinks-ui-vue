@@ -13,7 +13,6 @@
                 <img
                     :src="
                         i.photoUrl?.url ||
-                        i.photoUrl ||
                         imageMap.get(i.resourcesType?.value || i.releaseDetail?.resourcesType?.value)
                     "
                     alt=""
@@ -92,6 +91,7 @@ import { _queryTemplateNoPaging, installResource } from '@/api/link/resource';
 import { cloneDeep } from 'lodash-es';
 import { computedVersion } from '../data';
 import { resource } from '@/assets';
+import { omit } from 'lodash-es'
 const props = defineProps({
     value: {
         type: Array,
@@ -124,10 +124,10 @@ const onInstall = async () => {
             return props.source === 'cloud'
                 ? {
                       releaseDetail: {
-                          ...i,
+                          ...omit(i,['photoUrl']),
                       },
                       photoUrl: {
-                          url: i?.photoUrl,
+                          ...(i.photoUrl || {})
                       },
                   }
                 : {

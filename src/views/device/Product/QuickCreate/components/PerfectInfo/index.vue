@@ -363,6 +363,7 @@ const createProduct = async () => {
                             ...dataArr[1],
                         },
                     },
+                    product
                 };
             } else {
                 data = {
