@@ -17,6 +17,7 @@
             <a-descriptions-item label="创建方式">
                 {{ info?.configuration?.autoCreate ? '自动创建' : '手动创建' }}
                 <a-tooltip
+                    v-if="info?.configuration?.autoCreate"
                     title="资源库中数采类型的资源将为您自动安装。为了系统正常运行，自动安装的资源暂不允许编辑和删除"
                     ><AIcon
                         type="QuestionCircleOutlined"

@@ -147,16 +147,21 @@ const onSave = async () => {
     // console.log('====', productList.value, protocolList.value);
     const _new = productList.value.filter((i: any) => i.newMetaData);
     const _newProtocol = protocolList.value.filter((i: any) => i.handle);
+  
     if (!_new.length) {
         onlyMessage('请先选择处理方式', 'warning');
         return;
     }
-    if(!_newProtocol.length && protocolList.length > 0){
+    if (!_newProtocol.length && protocolList.length > 0) {
         onlyMessage('请先选择处理方式', 'warning');
         return;
     }
     if (_new.length) {
-        const res = await saveProduct(productList.value);
+        const _data = productList.value.map((item: any) => ({
+            ...item,
+            metadata: JSON.stringify(item.newMetaData),
+        }));
+       await saveProduct(_data);
     }
     if (_newProtocol.length) {
         const arr = protocolList.value
@@ -171,8 +176,10 @@ const onSave = async () => {
                     sourceId: item.configuration.sourceId,
                 },
             }));
-        const res = await saveProtocol(arr);
+        await saveProtocol(arr);
     }
+    emits('close');
+    onlyMessage('保存成功', 'success');
 };
 </script>
 
