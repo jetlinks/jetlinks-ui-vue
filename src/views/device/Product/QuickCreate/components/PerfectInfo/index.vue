@@ -127,12 +127,12 @@
             <div>网络组件配置</div>
             <Network ref="networkRef" :accessData="accessData" />
         </div>
-        <div>
+        <div style="text-align: right;">
             <a-space>
                 <a-button @click="emits('cancel')" :disabled="loading"
                     >取消</a-button
                 >
-                <a-button @click="createProduct" :loading="loading"
+                <a-button @click="createProduct" :loading="loading" type="primary"
                     >确定</a-button
                 >
             </a-space>

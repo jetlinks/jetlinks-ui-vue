@@ -122,26 +122,36 @@
                             </template>
                         </Title>
                         <a-row :gutter="[12, 12]">
-                            <a-col :span="8" v-for="i in protocolList">
-                                <div
-                                    :class="{
-                                        card: true,
-                                        protocolCard: true,
-                                        selected:
-                                            i.id === protocol?.id ||
-                                            i.id === selectedProtocolID,
-                                    }"
-                                    @click="() => selectResourceProtocol(i)"
-                                >
-                                    <img
-                                        :src="getImage('/protocol.png')"
-                                        alt=""
-                                    />
-                                    <div style="margin-left: 20px">
-                                        <div class="cardName">
-                                            {{ i.name }}
+                            <template v-if="protocolList.length">
+                                <a-col :span="8" v-for="i in protocolList">
+                                    <div
+                                        :class="{
+                                            card: true,
+                                            protocolCard: true,
+                                            selected:
+                                                i.id === protocol?.id ||
+                                                i.id === selectedProtocolID,
+                                        }"
+                                        @click="() => selectResourceProtocol(i)"
+                                    >
+                                        <img
+                                            :src="getImage('/protocol.png')"
+                                            alt=""
+                                        />
+                                        <div style="margin-left: 20px">
+                                            <div class="cardName">
+                                                {{ i.name }}
+                                            </div>
                                         </div>
                                     </div>
+                                </a-col>
+                            </template>
+                            <a-col :span="24" v-else>
+                                <div
+                                    class="noNetWork"
+                                    @click="visibleAddProtocol = true"
+                                >
+                                    请选择协议
                                 </div>
                             </a-col>
                         </a-row>
