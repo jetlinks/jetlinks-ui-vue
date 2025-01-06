@@ -107,7 +107,7 @@
         <div
             class="configuration"
             v-if="
-                ['gb28181-2016', 'Ctwing', 'OneNet'].includes(
+                ['gb28181-2016', 'Ctwing', 'OneNet-platform'].includes(
                     accessData.provider,
                 )
             "
@@ -118,7 +118,7 @@
                 v-if="accessData.provider === 'gb28181-2016'"
             />
             <Ctwing ref="accessRef" v-if="accessData.provider === 'Ctwing'" />
-            <OneNet ref="accessRef" v-if="accessData.provider === 'OneNet'" />
+            <OneNet ref="accessRef" v-if="accessData.provider === 'OneNet-platform'" />
         </div>
         <div
             class="configuration"
