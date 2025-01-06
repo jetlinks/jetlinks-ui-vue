@@ -300,8 +300,7 @@
                                             <j-form-item
                                                 :name="[
                                                     'configuration',
-
-                                                    'rtpIp',
+                                                    'apiHost',
                                                 ]"
                                                 :rules="[
                                                     {
@@ -313,7 +312,7 @@
                                                 <j-input
                                                     v-model:value="
                                                         formData.configuration
-                                                            .rtpIp
+                                                            .apiHost
                                                     "
                                                     :disabled="true"
                                                     placeholder="请输入内网IP"
