@@ -281,33 +281,22 @@ const getUseableNetWork = async () => {
     if (res.success && res.result.length) {
         const networkId = res.result[0].id;
         const params = {
-            paging: false,
-            sorts: [
-                {
-                    name: 'createTime',
-                    order: 'desc',
-                },
-            ],
             terms: [
                 {
                     terms: [
                         {
                             type: 'or',
-                            value: NetworkTypeMapping.get(
-                                accessConfig.value.provider,
-                            ),
+                            value: networkId,
                             termType: 'eq',
-                            column: 'type',
+                            column: 'id',
                         },
                     ],
                 },
             ],
         };
         const req = await queryNetWork(params);
-        if (req.success) {
-            return req.result.find((i) => {
-                return i.id === networkId;
-            });
+        if (req.success && req.result) {
+            return req.result[0]
         }
     }
 };
