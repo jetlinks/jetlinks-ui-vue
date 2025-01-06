@@ -1,5 +1,6 @@
 import { createI18n } from 'vue-i18n'
 import type { Locale } from 'vue-i18n';
+import {langKey} from "@/utils/consts";
 
 const mainModules = import.meta.glob('./lang/*.json', {eager: true})
 const modules = import.meta.glob('../modules/*/locales/lang/*.json', {eager: true});
@@ -33,7 +34,7 @@ const language = (navigator.language || 'en').toLocaleLowerCase() // 这是获�
 const i18n = createI18n({
   legacy: false,
   silentTranslationWarn: true,
-  locale: localStorage.getItem('lang') || language.split('-')[0] || 'en',
+  locale: localStorage.getItem(langKey) || language.split('-')[0] || 'en',
   fallbackLocale: language,
   messages,
 })

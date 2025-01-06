@@ -1,24 +1,34 @@
 <template>
-  <a-select style="width: 100px;" v-model:value="language" :options="options" @change="handleChangeLanguage" />
+  <a-select style="width: 100px;" v-model:value="systemStore.language" :options="options" @change="handleChangeLanguage" />
 </template>
 
 <script setup lang="ts">
 import { LocalStore } from '@jetlinks-web/utils';
-const language = ref(LocalStore.get('lang') || navigator.language || 'zh-CN');
+import { useSystemStore, useUserStore, useMenuStore } from '@/store'
+import {langKey} from "@/utils/consts";
+import i18n from "@/locales";
+
+const systemStore = useSystemStore()
+const userStore = useUserStore()
+const menuStore = useMenuStore()
+
 const options = [
   {
     label: '中文',
-    value: 'zh-CN'
+    value: 'zh'
   },
   {
     label: 'English',
-    value: 'en-US'
+    value: 'en'
   }
 ]
 
-const handleChangeLanguage = () => {
-  LocalStore.set('lang', language.value)
-  location.reload()
+const handleChangeLanguage = async () => {
+  LocalStore.set(langKey, systemStore.language)
+  i18n.global.locale.value = systemStore.language
+  await userStore.getUserInfo()
+  await systemStore.queryInfo()
+  await menuStore.queryMenus()
 }
 </script>
 

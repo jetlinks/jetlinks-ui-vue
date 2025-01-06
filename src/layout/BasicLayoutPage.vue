@@ -24,7 +24,7 @@
       </div>
     </template>
 
-      <router-view v-slot="{ Component }">
+      <router-view v-if="updateRoute" v-slot="{ Component }">
         <component :is="components || Component" />
       </router-view>
   </j-pro-layout>
@@ -42,6 +42,7 @@ const route = useRoute();
 const systemStore = useSystemStore()
 const menuStore = useMenuStore()
 const layoutType = ref('list')
+const updateRoute = ref(true)
 
 const { theme, layout } = storeToRefs(systemStore)
 
@@ -52,7 +53,6 @@ const components = computed(() => {
   }
   return undefined
 })
-
 
 const config = computed(() => ({
   ...layout.value,
@@ -105,6 +105,13 @@ const init = () => {
 }
 
 init()
+
+watch(() => systemStore.language, () => {
+  updateRoute.value = false
+  nextTick(() => {
+    updateRoute.value = true
+  })
+})
 
 /**
  * 处理菜单选中，展开状态

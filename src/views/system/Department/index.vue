@@ -6,17 +6,12 @@
           <LeftTree @change="onChange" />
         </div>
         <div class="right">
-          <a-tabs v-if='isNoCommunity && Object.keys(modules).length' v-model:activeKey="activeKey" destroyInactiveTabPane>
-            <a-tab-pane key="product" :tab="$t('Department.index.945805-0')">
-              <Product
-                  v-if="Object.keys(modules).length"
+          <a-tabs v-if='isNoCommunity && extraComponents?.length' v-model:activeKey="activeKey" destroyInactiveTabPane>
+            <a-tab-pane v-for="item in extraComponents" :key="item.name" :tab="$t(item.label)">
+              <component
+                :is="item.component"
                 :parentId="departmentId"
                 @open-device-bind="openDeviceBind"
-              />
-            </a-tab-pane>
-            <a-tab-pane key="device" :tab="$t('Department.index.945805-1')">
-              <Device
-                :parentId="departmentId"
                 v-model:bindBool="bindBool"
               />
             </a-tab-pane>
@@ -34,15 +29,12 @@
 <script setup lang="ts" name="Department">
 import LeftTree from './components/LeftTree.vue'
 import User from './user/index.vue';
-import Product from './product/index.vue';
-import Device from './device/index.vue';
-import { isNoCommunity } from "@/utils";
-
-const modules = import.meta.glob('../../../modules/device-manager-ui/index.ts');
+import {getModulesComponents, isNoCommunity} from "@/utils";
 
 const activeKey = ref<'product' | 'device' | 'user'>('product');
 
 const departmentId = ref<string>('');
+const extraComponents = ref([])
 
 const bindBool = ref<boolean>(false);
 const openDeviceBind = () => {
@@ -53,6 +45,10 @@ const openDeviceBind = () => {
 const onChange = (id: string) => {
   departmentId.value = id
 }
+
+onMounted(() => {
+  extraComponents.value = getModulesComponents('department')
+})
 </script>
 
 <style lang="less" scoped>

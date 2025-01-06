@@ -4,6 +4,7 @@ import {getFileUrlById} from "@/api/comm";
 import { message } from 'ant-design-vue';
 import {BASE_API} from "@jetlinks-web/constants";
 
+const modules = import.meta.glob('../modules/*/index.ts', { eager: true});
 
 export const downloadJson = (record: Record<string, any>, fileName: string, format?: string) => {
     const _time = dayjs(new Date()).format(format || 'YYYY_MM_DD')
@@ -86,4 +87,22 @@ export const isFullScreen = () => {
         document.webkitIsFullScreen ||
         document.webkitFullScreen ||
         document.msFullScreen)
+}
+
+export const getModulesComponents = (name: string) =>{
+    const components: any = {}
+    Object.values(modules).forEach(item => {
+        const c = (item as any).default.getComponents?.()
+        if (c) {
+            Object.keys(c).forEach((key: string) => {
+                if (components[key]) {
+                    components[key].push(...c[key])
+                } else {
+                    components[key] = c[key]
+                }
+          })
+        }
+    })
+
+    return components[name]
 }

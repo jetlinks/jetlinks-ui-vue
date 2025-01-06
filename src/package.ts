@@ -4,6 +4,7 @@ import {BASE_API, TOKEN_KEY} from "@jetlinks-web/constants";
 import {crateAxios} from '@jetlinks-web/core'
 import {jumpLogin} from '@/router'
 import { notification } from 'ant-design-vue'
+import {langKey} from "@/utils/consts";
 
 /**
  * 初始化package
@@ -31,6 +32,7 @@ export const initPackages = () => {
 export const initAxios = () => {
     crateAxios(
         {
+            langKey: langKey,
             tokenExpiration: () => {
                 jumpLogin()
             },
@@ -44,11 +46,6 @@ export const initAxios = () => {
                 '/application/',
                 '/application/sso/_all',
             ],
-            requestOptions: () => {
-                return {
-                    lang: localStorage.getItem('lang')
-                }
-            },
             handleError: (description, key, err) => {
                 if (!err.config.hiddenError) {
                     notification.error({

@@ -37,8 +37,6 @@ const handleMeta = (item: MenuItem, isApp: boolean) => {
 
 const findComponents = (code: string, level: number, isApp: boolean, components: any, mate: any, hasChildren: false) => {
     const myComponents = components[code]
-    console.log(code, myComponents)
-    // console.log(myComponents, code, components)
     if (level === 1) { // BasicLayoutPage
         if (myComponents && !hasChildren) {
             return mate?.hasLayout === false ? () => myComponents() : h(BasicLayoutPage, {}, h(defineAsyncComponent(() => myComponents()), {}))

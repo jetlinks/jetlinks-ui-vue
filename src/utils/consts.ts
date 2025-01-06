@@ -16,3 +16,5 @@ export const protocolList = [
     { label: 'IEC104', value: 'iec104', alias: 'IEC104' },
     { label: 'BACNetIp', value: 'BACNetIp', alias: 'BACNet/IP' }
 ]
+
+export const langKey = 'Accept-Language'
