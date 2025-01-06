@@ -426,25 +426,34 @@ const getCertificateList = async () => {
 const getProvidersList = async () => {
     const resp: any = await getProviders();
     if (resp.status === 200) {
-        const arr = resp.result
-            .filter((item: any) =>
-                [
-                    'GATEWAY',
-                    'Modbus/TCP',
-                    'opc-ua',
-                    'snap7',
-                    'IEC104',
-                    'BACNet/IP',
-                ].includes(item.name),
-            )
-            .map((it: any) => it.name);
-        const providers: any = protocolList.filter((item: any) =>
-            arr.includes(item.alias),
-        );
-        providersList.value = providers;
-        if (arr.includes('opc-ua')) {
-            getOptionsList();
-        }
+        // const arr = resp.result
+        //     .filter((item: any) =>
+        //         [
+        //             'GATEWAY',
+        //             'Modbus/TCP',
+        //             'opc-ua',
+        //             'snap7',
+        //             'IEC104',
+        //             'BACNet/IP',
+        //         ].includes(item.name),
+        //     )
+        //     .map((it: any) => it.name);
+        // const providers: any = protocolList.filter((item: any) =>
+        //     arr.includes(item.alias),
+        // );
+        // providersList.value = providers;
+        providersList.value = resp.result.map((i:any)=>{
+            if(i.name === 'opc-ua'){
+                getOptionsList();
+            }
+            return {
+                label: i.name,
+                value: i.id
+            }
+        })
+        // if (arr.includes('opc-ua')) {
+        //     getOptionsList();
+        // }
     }
 };
 getProvidersList();

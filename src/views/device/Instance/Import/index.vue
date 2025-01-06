@@ -53,13 +53,6 @@
 import { queryNoPagingPost } from '@/api/device/product';
 
 const emit = defineEmits(['close', 'save']);
-const props = defineProps({
-    data: {
-        type: Object,
-        default: undefined,
-    },
-    type: String,
-});
 const productList = ref<Record<string, any>[]>([]);
 
 const modelRef = reactive({
@@ -71,32 +64,6 @@ const modelRef = reactive({
     },
 });
 
-watch(
-    () => props.data,
-    () => {
-        queryNoPagingPost({
-            paging: false,
-            terms: [
-                {
-                    column: 'state',
-                    value: '1',
-                    type: 'and'
-                },
-                {
-                    column: 'accessProvider',
-                    value: props?.type
-                }
-            ],
-            sorts: [{ name: 'createTime', order: 'desc' }]
-        }).then((resp) => {
-            if (resp.status === 200) {
-                productList.value = resp.result as Record<string, any>[];
-            }
-        });
-    },
-    { immediate: true, deep: true },
-);
-
 const handleCancel = () => {
     emit('close');
 };
@@ -105,4 +72,27 @@ const handleSave = () => {
     emit('close');
     emit('save');
 };
+
+onMounted(() => {
+    queryNoPagingPost({
+        paging: false,
+        terms: [
+            {
+                column: 'state',
+                value: '1',
+                type: 'and',
+            },
+            {
+                column: 'accessProvider',
+                termType: 'in',
+                value: ['agent-device-gateway','agent-media-device-gateway','official-edge-gateway'],
+            },
+        ],
+        sorts: [{ name: 'createTime', order: 'desc' }],
+    }).then((resp) => {
+        if (resp.status === 200) {
+            productList.value = resp.result as Record<string, any>[];
+        }
+    });
+});
 </script>
