@@ -9,7 +9,7 @@
                 <div class="detail-header">
                     <div class="header-title">
                         <div class="header-title-img">
-                            <img :src="detail.photo" />
+                            <img :src="detail.photoUrl?.url || imageMap.get(detail.type?.value)" />
                         </div>
                         <div class="header-title-center">
                             <j-ellipsis>
@@ -39,8 +39,8 @@
                         <template #customPaging="record">
                             <a>
                                 <img
-                                    v-if="viewsList[record.i].type === 'img'"
-                                    :src="viewsList[record.i].url"
+                                    v-if="viewsList[record.i].type === 'img' || viewsList[record.i]?.coverUrl?.url"
+                                    :src="viewsList[record.i].type === 'img' ? viewsList[record.i].url : viewsList[record.i].coverUrl.url"
                                 />
                                 <video v-else poster>
                                     <source :src="viewsList[record.i].url" />
@@ -173,7 +173,14 @@ import ApplyCollector from './ApplyCollector/index.vue';
 import { detailResource } from '@/api/link/resource';
 import Metadata from './Metadata.vue';
 import dayjs from 'dayjs';
+import { resource } from '@/assets'
 
+
+const imageMap = new Map([
+    ['device',resource.deviceDefaultImage],
+    ['collector',resource.collectorDefaultImage],
+    ['protocol',resource.protocolDefaultImage]
+])
 const route = useRoute();
 const visible = ref(false);
 const visibleApply = ref(false);
@@ -208,7 +215,6 @@ const viewsList = computed(() => {
             ...detail.value.loopPicUrl.map((src) => ({ ...src, type: 'img' })),
         );
     }
-
     return arr;
 });
 
