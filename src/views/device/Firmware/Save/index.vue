@@ -348,7 +348,7 @@ const { resetFields, validate, validateInfos } = useForm(
         signMethod: [{ required: true, message: '请选择签名方式' }],
         sign: [
             { required: true, message: '请输入签名' },
-            { validator: validatorSign },
+            // { validator: validatorSign },
         ],
         url: [{ required: true, message: '请上传文件' }],
         description: [{ max: 200, message: '最多可输入200个字符' }],
