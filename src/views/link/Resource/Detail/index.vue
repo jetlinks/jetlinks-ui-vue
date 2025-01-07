@@ -57,27 +57,26 @@
                         </div>
                     </a-carousel>
                 </div>
-                <div class="detail-desc mb-16">
+                <div class="detail-desc mb-16" v-if="detail.describe">
                     <p class="module-title">描述</p>
                     <div>
-                        {{ detail.describe || emptyValue }}
+                        {{ detail.describe }}
                     </div>
                 </div>
                 <div
                     class="detail-access mb-16"
-                    v-if="detail?.type?.value === 'device'"
+                    v-if="detail?.type?.value === 'device' && detail.access?.length"
                 >
                     <p class="module-title">接入途径</p>
-                    <template v-if="detail.access?.length">
+                    <template>
                         <div class="access-item" v-for="item in detail.access">
                             {{ item }}
                         </div>
                     </template>
-                    <span v-else> {{ emptyValue }} </span>
                 </div>
-                <div class="detail-doc mb-16">
+                <div class="detail-doc mb-16" v-if="detail.docUrl?.length">
                     <p class="module-title">技术文档</p>
-                    <div class="doc-items" v-if="detail.docUrl?.length">
+                    <div class="doc-items">
                         <div class="doc-item" v-for="item in detail.docUrl">
                             <a-space>
                                 <AIcon type="FileTextOutlined" />
@@ -89,12 +88,11 @@
                             </a-space>
                         </div>
                     </div>
-                    <span v-else> -- </span>
                 </div>
-                <div class="detail-version mb-16">
+                <div class="detail-version mb-16" v-if="detail.version">
                     <p class="module-title">适用型号</p>
                     <div>
-                        {{ detail.version || emptyValue }}
+                        {{ detail.version }}
                     </div>
                 </div>
                 <div class="detail-info mb-16">
