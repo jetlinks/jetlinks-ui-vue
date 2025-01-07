@@ -119,7 +119,6 @@
                             :name="item.property"
                             v-for="item in i?.properties || []"
                             :key="item"
-                            :label="item.name"
                             :rules="[
                                 {
                                     required: !!item?.type?.expands?.required,
@@ -131,6 +130,16 @@
                                 },
                             ]"
                         >
+                         <template #label>
+                           <div>
+                            {{ item.name }}
+                                <j-tooltip
+                                v-if="item.description"
+                                :title="item.description"
+                                ><AIcon type="QuestionCircleOutlined"
+                            /></j-tooltip>
+                           </div>
+                         </template>
                             <j-input
                                 placeholder="请输入"
                                 v-if="item.type.type === 'string'"
@@ -407,10 +416,7 @@ const getOptions = (i: any) => {
     }
     return undefined;
 };
-const fun = () => {
-    console.log(formData.data, productStore.current?.configuration);
-};
-fun();
+
 // 产品类型
 const productTypes = ref([]);
 const productData = reactive({

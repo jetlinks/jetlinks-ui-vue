@@ -127,7 +127,7 @@
             </JProTable>
         </FullPage>
         <Save v-if="visible" :data="current" @close="visible = false" @save="saveBtn" />
-        <Import @save="onRefresh" @close="importVisible = false" v-if="importVisible" type="official-edge-gateway" />
+        <Import @save="onRefresh" @close="importVisible = false" v-if="importVisible"  />
     </page-container>
 </template>
 
@@ -139,7 +139,6 @@ import { useMenuStore } from '@/store/menu';
 import { getImage, onlyMessage, openEdgeUrl } from '@/utils/comm';
 import dayjs from 'dayjs';
 import { query, _delete, _deploy, _undeploy } from '@/api/device/instance';
-import { getRemoteProxyUrl, getRemoteToken, getRemoteSystem } from '@/api/edge/device';
 import Save from './Save/index.vue';
 import Import from '@/views/device/Instance/Import/index.vue';
 import BadgeStatus from '@/components/BadgeStatus/index.vue';

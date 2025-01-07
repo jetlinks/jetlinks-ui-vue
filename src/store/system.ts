@@ -51,13 +51,16 @@ export const useSystem = defineStore('system', {
     actions: {
         getSystemVersion(): Promise<any[]> {
             this.getSystemConfig();
-            this.getThreshold()
+            
             return new Promise(async (res, rej) => {
                 const resp = await systemVersion()
                 if (resp.success && resp.result) {
                     const isCommunity = resp.result.edition === 'community'
                     LocalStore.set(SystemConst.VERSION_CODE, resp.result.edition)
                     this.isCommunity = isCommunity
+                    if(!isCommunity){
+                        this.getThreshold()
+                    }
                     //  获取菜单
                     const menu = useMenuStore()
                     const menuData: any[] = await menu.queryMenuTree(isCommunity)

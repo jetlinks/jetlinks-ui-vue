@@ -209,22 +209,28 @@ const columns = [
             options: async () => {
                 const resp: any = await getProviders();
                 if (resp.status === 200) {
-                    const arr = resp.result
-                        .filter((item: any) =>
-                            [
-                                'GATEWAY',
-                                'Modbus/TCP',
-                                'opc-ua',
-                                'snap7',
-                                'IEC104',
-                                'BACNet/IP',
-                            ].includes(item.name),
-                        )
-                        .map((it: any) => it.name);
-                    const providers: any = protocolList.filter((item: any) =>
-                        arr.includes(item.alias),
-                    );
-                    return providers;
+                    // const arr = resp.result
+                    //     .filter((item: any) =>
+                    //         [
+                    //             'GATEWAY',
+                    //             'Modbus/TCP',
+                    //             'opc-ua',
+                    //             'snap7',
+                    //             'IEC104',
+                    //             'BACNet/IP',
+                    //         ].includes(item.name),
+                    //     )
+                    //     .map((it: any) => it.name);
+                    // const providers: any = protocolList.filter((item: any) =>
+                    //     arr.includes(item.alias),
+                    // );
+                    // return providers;
+                    return resp.result.map((i:any)=>{
+                        return {
+                            label: i.name,
+                            value: i.id
+                        }
+                    })
                 }
             },
         },

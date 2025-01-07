@@ -218,7 +218,7 @@ const getTodayFlow = async () => {
   }
   const resp: any = await queryFlow(beginTime, endTime, dParams);
   resp.result.map((item: any) => {
-    currentSource.value += parseFloat((item.value / 1024).toFixed(2));
+    currentSource.value += parseFloat((item.value).toFixed(2));
   });
 };
 
@@ -243,7 +243,7 @@ const get15DaysTrafficConsumption = async () => {
   barChartData.value = resp.result
       .map((item: any) => ({
         ...item,
-        value: item.value / 1024
+        value: item.value
       }))
       .reverse();
   createBarChart();

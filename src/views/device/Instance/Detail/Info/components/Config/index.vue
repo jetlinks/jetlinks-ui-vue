@@ -152,6 +152,9 @@ watch(
     () => instanceStore.current.id,
     (val) => {
         if (val) {
+            if(instanceStore.current?.accessProvider === 'gb28181-2016'){
+                return
+            }
             getConfigMetadata(val).then((resp) => {
                 if (resp.status === 200) {
                     config.value = resp?.result as ConfigMetadata[];
