@@ -30,20 +30,20 @@
             :valueName='valueName'
             @click='menuSelect'
           />
-          <div style='min-width: 400px' v-else>
+          <div style='min-width: 400px;' v-else>
             <j-tree
               v-model:expandedKeys="treeOpenKeys"
               :selectedKeys='selectValue ? [selectValue] : []'
               :treeData='options'
-              :height='350'
+              style="width: auto;  height: 350px;overflow: auto;"
               :virtual='true'
               @select='treeSelect'
             >
               <template #title="{ name, fullName, description }">
-                <j-space>
-                  {{ name || fullName }}
-                  <span v-if='description' class='tree-title-description'>{{ description }}</span>
-                </j-space>
+                  <j-space>
+                    {{ name || fullName }}
+                    <span v-if='description' class='tree-title-description'>{{ description }}</span>
+                  </j-space>
               </template>
             </j-tree>
           </div>
