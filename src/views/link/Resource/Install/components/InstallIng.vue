@@ -73,7 +73,7 @@
             <div v-for="i in taskList" :key="i.id" class="fileList">
                 <img
                     :src="
-                        i.resourceDetails?.releaseDetail?.photoUrl ||
+                        i.resourceDetails?.photoUrl?.url ||
                         imageMap.get(
                             i.resourceDetails?.releaseDetail?.resourcesType
                                 ?.value,
