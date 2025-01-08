@@ -102,7 +102,7 @@
                             <a-descriptions-item label="版本">
                                 {{
                                     detail.version
-                                        ? 'V' + detail.version
+                                        ? detail.version
                                         : emptyValue
                                 }}
                             </a-descriptions-item>
