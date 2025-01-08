@@ -338,7 +338,13 @@ const createProduct = async () => {
             ) {
                 data = {
                     resourceId: props.data.id,
-                    gateway: props.accessData,
+                    gateway: {
+                        ...props.accessData,
+                        configuration: {
+                            ...props.accessData?.configuration,
+                            ...dataArr[1],
+                        },
+                    },
                     protocol: props.protocol,
                     product,
                 };
@@ -350,7 +356,7 @@ const createProduct = async () => {
                     product,
                 };
             } else if (
-                ['gb28181-2016', 'Ctwing', 'OneNet'].includes(
+                ['gb28181-2016'].includes(
                     props.accessData.provider,
                 )
             ) {
