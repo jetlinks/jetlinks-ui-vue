@@ -67,7 +67,6 @@
 
 <script lang="ts" setup>
 import { detail, queryLogList } from '@/api/rule-engine/log';
-import { detail as configurationDetail } from '@/api/rule-engine/configuration';
 import { useRoute } from 'vue-router';
 import dayjs from 'dayjs';
 import { useAlarmStore } from '@/store/alarm';
@@ -149,8 +148,8 @@ const terms = [
  * 获取详情列表
  */
 const queryList = async (params: any) => {
-    if (data.current?.alarmConfigId) {
-        const res: any = await queryLogList(data.current?.alarmConfigId, {
+    if (id) {
+        const res: any = await queryLogList(id, {
             ...params,
             // sorts: [{ name: 'alarmTime', order: 'desc' }],
         });
