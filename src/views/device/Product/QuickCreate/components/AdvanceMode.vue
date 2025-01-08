@@ -374,6 +374,7 @@ const getDetails = (slotProps) => {
 
 const submitDada = () => {
     let data;
+    const accessName = accessConfig.value.provider?.split('-')?.[0]
     const gateway = {
         name:
             accessConfig.value.provider?.split('-')?.[0] +
@@ -434,7 +435,7 @@ const submitDada = () => {
             gateway,
         };
     }
-    emits('submit', data);
+    emits('submit',data,accessName);
 };
 </script>
 <style lang="less" scoped>

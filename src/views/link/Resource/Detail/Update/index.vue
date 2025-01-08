@@ -7,7 +7,7 @@
         :width="600"
         @ok="emits('close')"
     >
-        <div v-if="showUpate" class="content">
+        <div v-if="showUpdata" class="content">
             <div class="title">
                 <div><a-badge status="success" />检测到有新版本</div>
                 <a-button type="primary" @click="onUpdate">更新</a-button>
@@ -21,7 +21,7 @@
     </a-modal>
 </template>
 
-<script setup lang="ts" name="Update">
+<script setup name="Update">
 import { checkUpdate,_latest,installResource } from '@/api/link/resource';
 import { onlyMessage } from '@/utils/comm';
 
@@ -33,12 +33,12 @@ const props = defineProps({
         default: () => ({}),
     },
 });
-const showUpate = ref(false);
-const info = ref();
+const showUpdata = ref(false);
+const info = ref({});
 const getUpdate = async () => {
     const res = await checkUpdate(props.data.id);
     if(res.success){
-        showUpate.value = res.result;
+        showUpdata.value = res.result;
         if(res.result){
             const resp = await _latest(props.data.id);
             if(resp.success){

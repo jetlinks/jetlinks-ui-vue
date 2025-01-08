@@ -6,67 +6,88 @@
                     <div class="header">
                         <a-row align="middle">
                             <a-col :span="18">请选择资源</a-col>
-                            <a-col :span="6">
+                        </a-row>
+                    </div>
+                    <div class="classificationType">
+                        <div
+                            v-for="item in classificationType"
+                            :key="item.id"
+                            :class="{
+                                'header-button': true,
+                                active: activeKey === item.id,
+                            }"
+                            @click="() => typeChange(item.id)"
+                        >
+                            {{ item.name }}
+                        </div>
+                    </div>
+                    <div class="content">
+                        <div class="left_search">
+                            <SearchTree
+                                :data="classification"
+                                @select="select"
+                            />
+                        </div>
+                        <div class="right_content">
+                            <div class="right_header">
+                                <TitleComponent
+                                    data="已安装资源"
+                                    style="margin-bottom: 0"
+                                />
                                 <a-input
                                     placeholder="请输入关键字"
+                                    style="width: 30%"
                                     v-model:value="searchParams"
                                     ><template #suffix>
                                         <AIcon type="SearchOutlined" />
-                                    </template> </a-input
-                            ></a-col>
-                        </a-row>
-                    </div>
-                </div>
-                <div class="content">
-                    <div class="left_search">
-                        <a-tabs
-                            v-model:activeKey="activeKey"
-                            @change="typeChange"
-                        >
-                            <a-tab-pane
-                                v-for="i in classificationType"
-                                :key="i.id"
-                                :tab="i.name"
-                            >
-                                <SearchTree
-                                    :data="classification"
-                                    @select="select"
-                                />
-                            </a-tab-pane>
-                        </a-tabs>
-                    </div>
-                    <div class="right_list">
-                        <a-row :gutter="[16, 16]" v-if="resourceData.length">
-                            <a-col
-                                :span="8"
-                                v-for="i in resourceData"
-                                :key="i.id"
-                            >
-                                <div
-                                    class="resource"
-                                    @click="() => chooseResource(i)"
+                                    </template>
+                                </a-input>
+                            </div>
+                            <div class="right_list">
+                                <a-row
+                                    :gutter="[16, 16]"
+                                    v-if="resourceData.length"
                                 >
-                                    <img
-                                        :src="i.photoUrl?.url || imageMap.get(i.type?.value)"
-                                        alt=""
-                                        class="resourceImg"
-                                    />
-                                    <div style="margin-left: 10px;">
-                                        <div>
-                                            <j-ellipsis>
-                                                {{ i.name }}
-                                            </j-ellipsis>
+                                    <a-col
+                                        :span="8"
+                                        v-for="i in resourceData"
+                                        :key="i.id"
+                                    >
+                                        <div
+                                            class="resource"
+                                            @click="() => chooseResource(i)"
+                                        >
+                                            <img
+                                                :src="
+                                                    i.photoUrl?.url ||
+                                                    imageMap.get(i.type?.value)
+                                                "
+                                                alt=""
+                                                class="resourceImg"
+                                            />
+                                            <div style="margin-left: 10px">
+                                                <div>
+                                                    <j-ellipsis>
+                                                        {{ i.name }}
+                                                    </j-ellipsis>
+                                                </div>
+                                                <div
+                                                    style="
+                                                        color: #8e8e8e;
+                                                        margin-top: 20px;
+                                                    "
+                                                >
+                                                    <j-ellipsis>
+                                                        {{ i.describe || '--' }}
+                                                    </j-ellipsis>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div style="color: #8e8e8e;margin-top: 20px;">
-                                            <j-ellipsis>
-                                                {{ i.describe || '--'}}
-                                            </j-ellipsis>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a-col>
-                        </a-row>
-                        <a-empty v-else></a-empty>
+                                    </a-col>
+                                </a-row>
+                                <a-empty v-else></a-empty>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </template>
@@ -129,49 +150,65 @@ const getClassification = async (classificationTypeId) => {
 };
 
 const typeChange = async (key) => {
+    activeKey.value = key;
     getClassification(key);
+    selectedClassification.value = undefined;
 };
 
 const select = (key) => {
     selectedClassification.value = key;
-    getTemplateList(key);
 };
 
-const chooseResource = async(data) => {
+const chooseResource = async (data) => {
     const res = await queryTemplateDetail({
-        terms:[{
-            column: 'id',
-            termType: 'eq',
-            value: data.id
-        }]
-    })
-    if(res.success && res.result.data?.length){
+        terms: [
+            {
+                column: 'id',
+                termType: 'eq',
+                value: data.id,
+            },
+        ],
+    });
+    if (res.success && res.result.data?.length) {
         selectedResource.value = res.result.data[0];
     }
-    
 };
 
 const reselection = () => {
     selectedResource.value = undefined;
 };
 
-const getTemplateList = async (classification = undefined) => {
-    const terms = [
-        {
-            column: 'type',
-            termType: 'in',
-            value: ['device','protocol'],
-        },
-    ];
-    if (classification) {
+const getTemplateList = async () => {
+    const terms = searchParams.value
+        ? [
+              {
+                  column: 'type',
+                  termType: 'in',
+                  value: ['device', 'protocol'],
+              },
+              {
+                  column: 'name',
+                  termType: 'like',
+                  type: 'or',
+                  value: `%${searchParams.value}%`,
+              },
+          ]
+        : [
+              {
+                  column: 'type',
+                  termType: 'in',
+                  value: ['device', 'protocol'],
+              },
+          ];
+    if (selectedClassification.value) {
         terms.push({
             column: 'id',
             termType: 'resource-bind$classification',
-            value: [classification],
+            value: [selectedClassification.value],
         });
     }
     const params = {
-        paging:false,
+        paging: false,
         sorts: [
             {
                 name: 'createTime',
@@ -186,21 +223,50 @@ const getTemplateList = async (classification = undefined) => {
     }
 };
 
+watch(
+    () => [selectedClassification.value, searchParams.value],
+    () => {
+        getTemplateList();
+    },
+);
+
 onMounted(() => {
     getClassificationType();
     getTemplateList();
 });
 </script>
 <style lang="less" scoped>
+.container {
+    padding: 20px;
+}
 .header {
     background-color: #fff;
     padding: 5px 10px;
     color: #7f7f7f;
 }
-
+.classificationType {
+    background-color: rgba(210, 227, 252, 0.432);
+    padding: 12px;
+    border-radius: 4px;
+    margin-bottom: 12px;
+    display: flex;
+    .header-button {
+        width: 100px;
+        height: 40px;
+        background-color: #fff;
+        border-radius: 4px;
+        margin-right: 12px;
+        text-align: center;
+        line-height: 40px;
+        &.active {
+            color: #1d39c4;
+            border-bottom: 3px solid #3b5af5;
+        }
+    }
+}
 .content {
     display: flex;
-    height: calc(100% - 40px);
+    height: calc(100% - 200px);
 
     .left_search {
         flex: 1;
@@ -208,12 +274,19 @@ onMounted(() => {
         border-right: 1px solid #cdcdcd;
         height: calc(100vh - 200px);
     }
-
-    .right_list {
+    .right_content {
         flex: 3;
         padding: 20px;
-        overflow-y: auto;
-        height: calc(100vh - 200px);
+        .right_list {
+            overflow-y: auto;
+            height: calc(100vh - 240px);
+            padding: 0 20px;
+        }
+        .right_header {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 16px;
+        }
     }
 }
 

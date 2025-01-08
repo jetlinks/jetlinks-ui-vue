@@ -67,7 +67,7 @@
                                 />
                                 <div style="margin-left: 24px">
                                     <div class="accessName">
-                                        {{ accessData?.name }}
+                                        {{ accessName }}
                                     </div>
                                     <a-row :gutter="[12, 12]">
                                         <a-col
@@ -227,6 +227,8 @@ const accessDescriptions = ref(new Map());
 const network = ref({});
 //默认创建的网络组件
 const defaultNetwork = ref({});
+//显示的网关名称
+const accessName = ref()
 const current = ref(1);
 
 const metadataVisible = ref(false);
@@ -347,7 +349,7 @@ const getDescription = async () => {
     }
 };
 //高级模式选择完成
-const advanceComplete = (data) => {
+const advanceComplete = (data,name) => {
     protocol.value = data?.protocol;
     plugin.value = data?.plugin;
     network.value = data?.network;
@@ -355,6 +357,7 @@ const advanceComplete = (data) => {
     unmet.value = false;
     advancedMode.value = true;
     visibleAdvanceMode.value = false;
+    accessName.value = name
 };
 
 //查询协议是否已经存在平台中
@@ -416,6 +419,7 @@ const getDefault = async () => {
             }
         }
     }
+    accessName.value = accessConfig.value.provider?.split('-')?.[0]
     accessData.value = {
         name:
             accessConfig.value.provider?.split('-')?.[0] +
