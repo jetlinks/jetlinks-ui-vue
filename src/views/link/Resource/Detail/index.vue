@@ -65,14 +65,12 @@
                 </div>
                 <div
                     class="detail-access mb-16"
-                    v-if="detail?.type?.value === 'device' && detail.access?.length"
+                    v-if="detail?.type?.value === 'device' && detail.source?.length"
                 >
                     <p class="module-title">接入途径</p>
-                    <template>
-                        <div class="access-item" v-for="item in detail.access">
+                        <div class="access-item" v-for="item in detail.source">
                             {{ item }}
                         </div>
-                    </template>
                 </div>
                 <div class="detail-doc mb-16" v-if="detail.docUrl?.length">
                     <p class="module-title">技术文档</p>
