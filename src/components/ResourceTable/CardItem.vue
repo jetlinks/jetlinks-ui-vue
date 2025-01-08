@@ -22,6 +22,12 @@ import { resource } from '@/assets'
       protocol: '#FAAD14', // 协议
   }
 
+  const icon = {
+    device: 'icon-a-rongqi21',
+    collector: 'icon-rongqi3',
+    protocol: 'icon-a-rongqi11'
+  }
+
   const imageMap = new Map([
     ['device',resource.deviceDefaultImage],
     ['collector',resource.collectorDefaultImage],
@@ -44,7 +50,7 @@ import { resource } from '@/assets'
         </div>
         <div class="table-item-tag">
           <a-space>
-            <AIcon type="FireFilled" :style="{ color: typeColor[record.type?.value]}" />
+            <AIcon :type="icon[record.type?.value]" :style="{ color: typeColor[record.type?.value]}" />
             <span class="fc-600">
               {{ record.type?.text || '-' }}
             </span>
