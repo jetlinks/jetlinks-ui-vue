@@ -18,6 +18,12 @@ const getSourceStr = (types) => {
   return sourceType.filter(item => !types?.includes(item.value) || false ).map(item => item.label).join(',')
 }
 
+const sourceMap = {
+    'device': '设备',
+    'manual': '手动',
+    'rule': '规则',
+}
+
 onMounted(() => {
   nextTick(() => {
     visible.value = true
@@ -38,7 +44,7 @@ onMounted(() => {
           {{ dataTypeTableMap[record.valueType.type] }}
         </template>
         <template #expands='{ record }'>
-          {{ getSourceStr(record.expands.type)}}
+          {{ sourceMap[record.expands.source] }}
         </template>
         <template #other="{ record }">
           查看
