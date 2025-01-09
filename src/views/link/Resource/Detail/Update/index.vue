@@ -5,8 +5,10 @@
         @cancel="emits('close')"
         :maskClosable="false"
         :width="600"
+        :footer="null"
         @ok="emits('close')"
     >
+    <div class="ht_40">
         <div v-if="showUpdata" class="content">
             <div class="title">
                 <div><a-badge status="success" />检测到有新版本</div>
@@ -17,7 +19,8 @@
                 <p>{{ info.describe }}</p>
             </div>
         </div>
-        <div v-else><a-badge status="success" />当前已是最新版本</div>
+        <div class="noUpdate" v-else><a-badge status="success" />当前已是最新版本</div>
+    </div>
     </a-modal>
 </template>
 
@@ -68,6 +71,9 @@ onMounted(() => {
 </script>
 
 <style lang="less" scoped>
+.ht_40{
+    min-height: 40vh;
+}
 .content {
     background-color: #eee;
     padding: 12px;
@@ -80,5 +86,10 @@ onMounted(() => {
     .log {
         margin-top: 12px;
     }
+}
+.noUpdate{
+    background-color: #eee;
+    padding: 12px;
+    border-radius: 6px;
 }
 </style>
