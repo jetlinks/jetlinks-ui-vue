@@ -142,7 +142,7 @@
               <div class="card">
                 <Guide title="流量统计">
                   <template #extra>
-                    <TimeSelect :type="'week'" :quickBtnList="quickBtnList" @change="getEcharts" />
+                    <TimeSelect :type="'week'" :is-timer="isTimer" :quickBtnList="quickBtnList" @change="getEcharts" />
                   </template>
                 </Guide>
                 <LineChart :showX="true" :showY="true" style="min-height: 490px" :chartData="flowData" />
@@ -334,7 +334,7 @@
               <div class="card">
                 <Guide title="流量统计">
                   <template #extra>
-                    <TimeSelect :type="'week'" :quickBtnList="quickBtnList" @change="getEcharts" />
+                    <TimeSelect :type="'week'" :is-timer="isTimer" :quickBtnList="quickBtnList" @change="getEcharts" />
                   </template>
                 </Guide>
                 <LineChart :showX="true" :showY="true" style="min-height: 490px" :chartData="flowData" />

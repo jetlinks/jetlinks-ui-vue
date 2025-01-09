@@ -63,6 +63,10 @@ const props = defineProps({
         type: String,
         default: 'today',
     },
+    isTimer: {
+        type: Boolean,
+        default: undefined,
+    },
 });
 
 const radioValue = ref(props.type || 'week' || undefined);
@@ -70,11 +74,11 @@ const rangeVal = ref<[string, string]>();
 
 const rangeChange = (val: any) => {
     radioValue.value = undefined;
-    const differenceTime = dayjs(val[1]).valueOf() - dayjs(val[0]).valueOf()
+    const differenceTime = dayjs(val[1]).valueOf() - dayjs(val[0]).valueOf();
     emit('change', {
         start: dayjs(val[0]).valueOf(),
         end: dayjs(val[1]).valueOf(),
-        type: differenceTime > (24 * 60 * 60 * 1000) ? undefined : 'day',
+        type: differenceTime > 24 * 60 * 60 * 1000 ? undefined : 'day',
     });
 };
 
@@ -101,10 +105,14 @@ const handleBtnChange = (val?: string) => {
         endTime = dayjs().subtract(1, 'days').endOf('day').valueOf();
     }
     rangeVal.value = [
-      dayjs(startTime).format('YYYY-MM-DD HH:mm:ss'),
-      dayjs(endTime).format('YYYY-MM-DD HH:mm:ss'),
+        dayjs(startTime).format('YYYY-MM-DD HH:mm:ss'),
+        dayjs(endTime).format('YYYY-MM-DD HH:mm:ss'),
     ];
-    console.log(startTime, endTime)
+    console.log({
+        start: startTime,
+        end: endTime,
+        type: val,
+    })
     emit('change', {
         start: startTime,
         end: endTime,
@@ -112,8 +120,12 @@ const handleBtnChange = (val?: string) => {
     });
 };
 
-nextTick(() => {
-  handleBtnChange(radioValue.value)
-})
-
+watch(
+    () => props.isTimer,
+    () => {
+        nextTick(() => {
+            handleBtnChange(radioValue.value);
+        });
+    },
+);
 </script>
