@@ -34,6 +34,7 @@
                         :statusNames="{
                             processing: 'processing',
                         }"
+                        @click="()=>viewDetail(slotProps)"
                         status="processing"
                     >
                         <template #img>
@@ -253,27 +254,21 @@ const cancel = () => {
     editData.value = undefined;
 };
 
+const viewDetail = (data:any) =>{
+    visibleDetail.value = true;
+    editData.value = data;
+}
+
 const getActions = (data: any) => {
     return [
-    {
-            key: 'view',
-            text: '查看',
-            tooltip: {
-                title: '查看',
-            },
-            icon: 'EyeOutlined',
-            onClick: () => {
-                visibleDetail.value = true;
-                editData.value = data;
-            },
-        },
         {
             key: 'update',
             text: '编辑',
             tooltip: {
-                title: '编辑',
+                title:  data.configuration?.sourceId ?  '资源库中数采类型的资源将为您自动安装。为了系统正常运行，自动安装的资源暂不允许编辑' :'编辑',
             },
             icon: 'EditOutlined',
+            disabled: data.configuration?.sourceId,
             onClick: () => {
                 visible.value = true;
                 editData.value = data;
@@ -283,8 +278,9 @@ const getActions = (data: any) => {
             key: 'delete',
             text: '删除',
             tooltip: {
-                title: '删除',
+                title: data.configuration?.sourceId ?  '资源库中数采类型的资源将为您自动安装。为了系统正常运行，自动安装的资源暂不允许删除' : '删除',
             },
+            disabled: data.configuration?.sourceId,
             popConfirm: {
                 title: '确认删除?',
                 onConfirm: () => {
