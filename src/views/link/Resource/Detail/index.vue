@@ -34,25 +34,36 @@
                         </div>
                     </div>
                 </div>
-                <div class="detail-preview" v-if="viewsList.length">
+                <div class="detail-preview mb-40"  v-if="viewsList.length">
                     <a-carousel arrows dots-class="slick-dots slick-thumb">
+                        <template #prevArrow>
+                        <div class="custom-slick-arrow">
+                            <AIcon type='LeftOutlined' />
+                        </div>
+                        </template>
+                        <template #nextArrow>
+                        <div class="custom-slick-arrow">
+                            <AIcon type='RightOutlined' />
+                        </div>
+                        </template>
                         <template #customPaging="record">
                             <a>
                                 <img
                                     v-if="viewsList[record.i].type === 'img' || viewsList[record.i]?.coverUrl?.url"
                                     :src="viewsList[record.i].type === 'img' ? viewsList[record.i].url : viewsList[record.i].coverUrl.url"
                                 />
-                                <video v-else poster>
-                                    <source :src="viewsList[record.i].url" />
-                                </video>
                             </a>
                         </template>
-                        <div v-for="item in viewsList" :key="item.url">
+                        <div class='detail-preview-item' v-for="item in viewsList" :key="item.url">
                             <img v-if="item.type === 'img'" :src="item.url" />
                             <div v-else class="video">
-                                <video ref="videoRef" autoplay poster controls>
-                                    <source :src="item.url" />
-                                </video>
+                                <LivePlayer  
+                                    class='preview-video'
+                                    ref='videoRef'
+                                    :url='item.url'
+                                    :onLoadeddata='onLoadeddata'
+                                    :onCanplay='onCanplay'
+                                    :poster='item.coverUrl.url'></LivePlayer>
                             </div>
                         </div>
                     </a-carousel>
@@ -170,6 +181,7 @@ import { detailResource } from '@/api/link/resource';
 import Metadata from './Metadata.vue';
 import dayjs from 'dayjs';
 import { resource } from '@/assets'
+import LivePlayer from '@/components/Player/index.vue';
 
 
 const imageMap = new Map([
@@ -244,6 +256,38 @@ const onClose = () => {
     getDetail(_id);
 }
 
+
+const onLoadeddata = () => {
+  if (!viewsList.value[0].coverUrl) {
+    const video = document.querySelector('video')
+    video.currentTime = 1
+  }
+}
+
+
+const onCanplay = () => {
+    console.log(viewsList.value[0].coverUrl,'test')
+  if (!viewsList.value[0].coverUrl) {
+    setTimeout(() => {
+      const video = document.querySelector('.slick-active video')
+
+      const canvas = document.createElement('canvas')
+      canvas.width = video.videoWidth
+      canvas.height = video.videoHeight
+
+      const ctx = canvas.getContext('2d')
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
+
+      try {
+        viewsList.value[0].coverUrl = canvas.toDataURL('image/png')
+      } catch (e) {
+        console.error(e)
+      }
+    }, 300)
+  }
+}
+
+
 watch(
     () => _id,
     () => {
@@ -306,7 +350,22 @@ watch(
             }
         }
     }
+    .detail-preview{
+        width: 904px;
+        margin: 0 auto;
+        .detail-preview-item{
+            height: 510px;
+            border-radius: 6px;
+            .video{
+                height: 100%;
+            }
 
+            img, & video {
+                height: 100%;
+                max-width: 100%;
+            }
+        }
+    }
     .access-item {
         position: relative;
         padding-left: 20px;
@@ -344,6 +403,9 @@ watch(
 
     .mb-16 {
         margin-bottom: 16px;
+    }
+    .mb-40{
+        margin-bottom: 40px;
     }
 
     .recommend {
@@ -401,13 +463,40 @@ watch(
             border: 5px solid #fff;
             display: block;
             margin: auto;
-            max-width: 80%;
         }
     }
 
     .slick-arrow {
         display: none !important;
     }
+
+    .slick-arrow.custom-slick-arrow {
+    width: 24px;
+    height: 83px;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    color: @font-gray-900;
+    background-color: @font-gray-50;
+    z-index: 1;
+    font-size: 20px;
+    top: 530px;
+
+    &.slick-prev {
+      left: 0;
+    }
+
+    &.slick-next {
+      right: 0;
+    }
+  }
+
+  .custom-slick-arrow:before {
+    display: none;
+  }
+  .custom-slick-arrow:hover {
+    display: none;
+  }
 
     .slick-thumb {
         bottom: 0px;
