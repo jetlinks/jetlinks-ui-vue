@@ -882,8 +882,6 @@ const handleImport = async () => {
                     const _object = JSON.parse(
                         (data?.type === 'copy' ? productMetadataMap.get(data.copy) : data.import) || '{}'
                     );
-                    console.log(_object,'object');
-                    debugger
                     if (data?.type !== 'copy') {
                         Object.keys(_object)?.forEach((i: any) => {
                             const map = new Map();
