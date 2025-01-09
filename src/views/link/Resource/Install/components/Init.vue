@@ -99,11 +99,18 @@ const handleChange = ({ file }) => {
 const getResourceByCloud = async () => {
     source.value = 'cloud';
     const res = await _queryResourceCloud({
-        paging:false,
+        paging: false,
         sorts: [
             {
                 name: 'createTime',
                 order: 'desc',
+            },
+        ],
+        terms: [
+            {
+                column: 'state',
+                termType: 'eq',
+                value: 'success',
             },
         ],
     });
