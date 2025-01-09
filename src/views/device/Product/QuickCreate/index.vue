@@ -23,8 +23,17 @@
                     </div>
                     <div class="content">
                         <div class="left_search">
+                            <a-input
+                                placeholder="请输入关键词"
+                                allowClear
+                                v-model:value="searchValue"
+                            >
+                                <template #suffix>
+                                    <AIcon type="SearchOutlined" />
+                                </template>
+                            </a-input>
                             <SearchTree
-                                :data="classification"
+                                :data="treeData"
                                 @select="select"
                             />
                         </div>
@@ -109,21 +118,37 @@ import {
 import { queryTemplate, queryTemplateDetail } from '@/api/device/product.ts';
 import Operation from './Operation.vue';
 import { resource } from '@/assets';
+import { treeFilter } from '@/utils/tree';
+import { cloneDeep } from 'lodash-es';
 const imageMap = new Map([
     ['device', resource.deviceDefaultImage],
     ['collector', resource.collectorDefaultImage],
     ['protocol', resource.protocolDefaultImage],
 ]);
 
+const searchValue = ref();
 const searchParams = ref('');
 const activeKey = ref(undefined);
 //分类类型
 const classificationType = ref([]);
 //分类数据
-const classification = ref([]);
+const allTreeData = ref([]);
 const selectedClassification = ref();
 const selectedResource = ref(undefined);
 const resourceData = ref([]);
+
+const treeData = computed(()=>{
+    const arr = cloneDeep(allTreeData.value)
+    if(searchValue.value){
+      return  treeFilter(
+            arr,
+            searchValue.value,
+            'name'
+        )
+    }
+    return arr
+})
+
 const getClassificationType = async () => {
     const res = await queryClassificationType();
     if (res.success) {
@@ -133,25 +158,26 @@ const getClassificationType = async () => {
     }
 };
 
-const getClassification = async (classificationTypeId) => {
+const getClassification = async () => {
     const params = {
-        terms: [
-            {
-                column: 'classificationTypeId',
-                termType: 'eq',
-                value: classificationTypeId,
-            },
-        ],
+        terms: [],
     };
+    if (activeKey.value) {
+        params.terms.push({
+            column: 'classificationTypeId',
+            termType: 'eq',
+            value: activeKey.value,
+        });
+    }
     const res = await queryClassification(params);
     if (res.success) {
-        classification.value = res.result;
+        allTreeData.value = res.result;
     }
 };
 
 const typeChange = async (key) => {
     activeKey.value = key;
-    getClassification(key);
+    getClassification();
     selectedClassification.value = undefined;
 };
 
@@ -200,6 +226,22 @@ const getTemplateList = async () => {
                   value: ['device', 'protocol'],
               },
           ];
+    if (activeKey.value) {
+        terms.push({
+            column: 'id$resource-bind',
+            value: [
+                {
+                    column: 'key$resources-classification',
+                    value: [
+                        {
+                            column: 'classificationTypeId',
+                            value: activeKey.value,
+                        },
+                    ],
+                },
+            ],
+        });
+    }
     if (selectedClassification.value) {
         terms.push({
             column: 'id',
@@ -224,7 +266,7 @@ const getTemplateList = async () => {
 };
 
 watch(
-    () => [selectedClassification.value, searchParams.value],
+    () => [selectedClassification.value, searchParams.value, activeKey.value],
     () => {
         getTemplateList();
     },
@@ -232,7 +274,6 @@ watch(
 
 onMounted(() => {
     getClassificationType();
-    getTemplateList();
 });
 </script>
 <style lang="less" scoped>

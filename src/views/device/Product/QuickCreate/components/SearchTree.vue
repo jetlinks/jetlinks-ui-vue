@@ -1,9 +1,4 @@
 <template>
-    <a-input placeholder="请输入关键词">
-        <template #suffix>
-            <AIcon type="SearchOutlined" />
-        </template>
-    </a-input>
     <div style="margin-top: 8px">
         <a-tree
             :fieldNames="{
