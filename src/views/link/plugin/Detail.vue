@@ -17,8 +17,7 @@
             <a-descriptions-item label="创建方式">
                 {{ info?.configuration?.sourceId ? '自动创建' : '手动创建' }}
                 <a-tooltip
-                    v-if="info?.configuration?.sourceId"
-                    title="资源库中数采类型的资源将为您自动安装。为了系统正常运行，自动安装的资源暂不允许编辑和删除"
+                    :title="info?.configuration?.sourceId ? '资源库中数采类型的资源将为您自动安装。为了系统正常运行，自动安装的资源暂不允许编辑和删除' : '手动创建是指用户自主在插件管理页面中创建插件的方式'"
                     ><AIcon
                         type="QuestionCircleOutlined"
                         style="margin-left: 2px"
