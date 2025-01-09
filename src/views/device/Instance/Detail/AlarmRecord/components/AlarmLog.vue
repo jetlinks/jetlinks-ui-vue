@@ -10,9 +10,6 @@
             <div class="title">告警日志</div>
             <div class="alarmInfoRight">
                 <div>
-                    {{ levelMap?.[AlarmData?.level] || AlarmData?.level }}
-                </div>
-                <div>
                     <BadgeStatus
                         :status="AlarmData?.state.value"
                         :statusNames="{
@@ -45,7 +42,6 @@
 </template>
 
 <script setup>
-import { queryLevel } from '@/api/rule-engine/config';
 import Log from '@/views/rule-engine/Alarm/Log/TabComponent/components/Log.vue';
 import SolveComponent from '@/views/rule-engine/Alarm/Log/SolveComponent/index.vue';
 import { useAlarmLevel } from '@/hook';

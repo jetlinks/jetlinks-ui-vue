@@ -78,7 +78,7 @@ export const queryPreHandleHistory = (recordId:any,data:any) => server.post(`/al
 /**
  * 获取告警日志（新）
  */
-export const queryLogList = (alarmConfigId:any,data:any) => server.post(`/alarm/history/${alarmConfigId}/_query`,data)
+export const queryLogList = (alarmConfigId:any,data:any) => server.post(`/alarm/history/alarm-record/${alarmConfigId}/_query`,data)
 
 /**
  * 获取预处理数据告警日志

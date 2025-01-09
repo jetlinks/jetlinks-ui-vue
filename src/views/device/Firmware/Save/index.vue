@@ -63,6 +63,7 @@
                                     formData.versionOrder
                                 " /></j-form-item
                     ></j-col>
+                    
                     <j-col :span="12"
                         ><j-form-item
                             label="签名方式"
@@ -109,6 +110,11 @@
                                 v-model:extraValue="extraValue"
                             /> </j-form-item
                     ></j-col>
+                    <j-col :span="24">
+                        <j-form-item label="文件大小" v-bind="validateInfos.size">
+                            <a-input-number style="width: 100%;" v-model:value="formData.size" placeholder="请输入文件大小" :min="0"></a-input-number>
+                        </j-form-item>
+                    </j-col>
                     <j-col :span="24">
                         <j-form-item
                             label="其他配置"
@@ -270,6 +276,7 @@ const formData: any = ref({
     url: '',
     properties: [],
     description: '',
+    size: ''
 });
 
 const extraValue: any = ref({});
@@ -345,6 +352,11 @@ const { resetFields, validate, validateInfos } = useForm(
             { validator: validatorVersionOrder, trigger: 'blur' },
             { validator: validatorVersionValue, trigger: 'change' },
         ],
+        size:[
+            {
+                required: true, message: '请输入文件大小'
+            }
+        ],
         signMethod: [{ required: true, message: '请选择签名方式' }],
         sign: [
             { required: true, message: '请输入签名' },
@@ -368,13 +380,13 @@ const handleOk = async () => {
                 (item: any) => item?.value === res.productId,
             );
             const productName = product?.label || props.data?.url;
-            const size = extraValue.value?.length || props.data?.size;
+           
 
             const params = {
                 ...toRaw(formData.value),
                 properties: !!properties ? properties : [],
                 productName,
-                size,
+              
             };
             loading.value = true;
             const response = !id
@@ -399,6 +411,7 @@ const handleCancel = () => {
 const changeSignMethod = () => {
     formData.value.sign = '';
     formData.value.url = '';
+    formData.value.size = undefined
 };
 
 watch(
@@ -413,7 +426,10 @@ watch(
 );
 watch(
     () => extraValue.value,
-    () => validate('sign'),
+    () => {
+        validate('sign')
+        formData.value.size = extraValue.value?.length
+    },
     { deep: true },
 );
 </script>

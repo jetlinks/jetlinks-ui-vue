@@ -74,6 +74,7 @@
                 <TimeSelect
                     key="flow-static"
                     :type="'week'"
+                    :isTimer="isTimer"
                     :quickBtnList="quickBtnList"
                     @change="getEcharts"
                 />
@@ -99,6 +100,7 @@
                 <TimeSelect
                     key="flow-top10"
                     :quickBtn="false"
+                    :isTimer="isTimer"
                     :type="'week'"
                     @change="getTopRang"
                 />
@@ -169,7 +171,7 @@ const yearOptions = ref<any[]>([]);
 const flowData = ref<any[]>([]);
 const topList = ref<any[]>([]);
 const topTotal = ref(0);
-const isTimer = ref(false)
+const isTimer = ref(undefined)
 
 const quickBtnList = [
   {label: '昨日', value: 'yesterday'},
