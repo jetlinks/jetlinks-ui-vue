@@ -147,7 +147,7 @@ const map = {
     product: '产品',
     device: '设备',
     org: '组织',
-    other: '其他',
+    scene: '场景',
 };
 
 const columns = [

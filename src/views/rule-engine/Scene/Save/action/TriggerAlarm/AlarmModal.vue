@@ -134,7 +134,9 @@ const columns = [
         if (resp.success) {
           return resp.result.filter(item => {
             return props.targetType === 'device' || item.id === 'scene'
-          }).map(item => ({ label: item.name, value: item.id }))
+          }).map(item => ({ label: item.name, value: item.id })).filter((i)=>{
+            return i.value !== 'collector'
+          })
         } else {
           return []
         }

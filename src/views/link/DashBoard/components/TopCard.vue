@@ -124,7 +124,7 @@ onMounted(() => {
       serverNode().then((resp: any) => {
           if (resp.success) {
               serverNodeOptions.value = resp.result.map((item: any) => ({
-                  label: item.name,
+                  label: item.id,
                   value: item.id,
               }));
               if (serverNodeOptions.value.length) {

@@ -235,7 +235,7 @@ const getDataTotal = () => {
       time: "1d",
       from: mTime?.[0],
       to: mTime?.[1],
-      limit: 30
+      limit: 31
     }
   } : {
     orderBy: 'date',
@@ -302,7 +302,6 @@ const getEcharts = (data: any) => {
   } else if (dt > hour && dt <= days) {
     _time = '1h'
     limit = 24;
-
   } else if (dt > days && dt < year) {
     limit = Math.abs(Math.ceil(dt / days)) + 1;
     _time = '1d';
