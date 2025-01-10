@@ -58,6 +58,7 @@ import { getNoticeList_api } from '@/api/account/notificationSubscription';
 import { getInitData } from '../data';
 import Item from './components/Item.vue';
 import { useMenuStore } from '@/store/menu';
+import { omit } from 'lodash-es';
 const menuStore = useMenuStore();
 const subscribe = ref<any[]>([]);
 const dataSource = ref<any[]>([]);
@@ -68,32 +69,56 @@ const handleSearch = () => {
     loading.value = true
     getAllNotice().then((resp: any) => {
         if (resp.status === 200) {
-            const arr = initData
-                .map((item: any) => {
-                    const _child = item.children.map((i: any) => {
-                        const _item = (resp.result || []).find(
-                            (t: any) => t?.provider === i?.provider,
-                        );
-                        return {
-                            ...i,
-                            ..._item,
-                        };
-                    });
-                    return {
-                        ...item,
-                        children: _child,
-                    };
+            // const arr = initData
+            //     .map((item: any) => {
+            //         const _child = item.children.map((i: any) => {
+            //             const _item = (resp.result || []).find(
+            //                 (t: any) => t?.provider === i?.provider,
+            //             );
+            //             return {
+            //                 ...i,
+            //                 ..._item,
+            //             };
+            //         });
+            //         return {
+            //             ...item,
+            //             children: _child,
+            //         };
+            //     })
+            //     .filter((it: any) => {
+            //         return it.children.filter((lt: any) => lt?.id)?.length;
+            //     })
+            //     .map((item) => {
+            //         return {
+            //             ...item,
+            //             children: item.children.filter((lt: any) => lt?.id),
+            //         };
+            //     });
+            // dataSource.value = arr;
+            const dataMap = new Map()
+            resp.result.forEach((i: any) => {
+                if (!dataMap.has(i.type.id)) {
+                    dataMap.set(i.type.id, {
+                        name: i.type.name,
+                        provider: i.type.id,
+                        children: [
+                            {
+                                ...omit(i, ['type'])
+                            }
+                        ]
+                    })
+                } else {
+                    dataMap.get(i.type.id).children.push({
+                        ...omit(i, ['type'])
+                    })
+                }
+            })
+            dataSource.value = [...dataMap.values()];
+            if (!activeKey.value) {
+                activeKey.value = dataSource.value.map((i:any)=>{
+                    return i?.provider
                 })
-                .filter((it: any) => {
-                    return it.children.filter((lt: any) => lt?.id)?.length;
-                })
-                .map((item) => {
-                    return {
-                        ...item,
-                        children: item.children.filter((lt: any) => lt?.id),
-                    };
-                });
-            dataSource.value = arr;
+            }
         }
     });
     getNoticeList_api().then((resp: any) => {
@@ -106,12 +131,12 @@ const handleSearch = () => {
 };
 
 onMounted(() => {
-  const keys = ['alarm', 'system-monitor', 'system-business']
-  if (menuStore.hasMenu('process')) {
-    keys.push('workflow-notification')
-  }
-    activeKey.value = keys
-    initData = getInitData()
+//   const keys = ['alarm', 'system-monitor', 'system-business']
+//   if (menuStore.hasMenu('process')) {
+//     keys.push('workflow-notification')
+//   }
+//     activeKey.value = keys
+//     initData = getInitData()
     handleSearch();
 });
 </script>

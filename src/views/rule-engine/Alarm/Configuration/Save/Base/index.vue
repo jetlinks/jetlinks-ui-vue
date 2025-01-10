@@ -200,8 +200,10 @@ const getSupports = async () => {
             (item: { id: string; name: string }) => ({
                 label: item.name,
                 value: item.id,
-            }),
-        );
+            })
+        ).filter((i:any)=>{
+                return i.value !== 'collector'
+            });
     }
 };
 getSupports();
