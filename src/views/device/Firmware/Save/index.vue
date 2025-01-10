@@ -112,7 +112,7 @@
                     ></j-col>
                     <j-col :span="24">
                         <j-form-item label="文件大小" v-bind="validateInfos.size">
-                            <a-input-number style="width: 100%;" v-model:value="formData.size" placeholder="请输入文件大小" :min="0"></a-input-number>
+                            <a-input-number style="width: 100%;" v-model:value="formData.size" placeholder="请输入文件大小" :min="0" addon-after="b"></a-input-number>
                         </j-form-item>
                     </j-col>
                     <j-col :span="24">
