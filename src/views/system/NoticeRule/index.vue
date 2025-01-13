@@ -63,7 +63,7 @@ import { useI18n } from "vue-i18n";
 
 const { t: $t } = useI18n();
 
-const activeKey = ref<string[]>();
+const activeKey = ref<string[]>([]);
 const tabs = ref<any[]>([]);
 const handleSearch = () => {
   queryChannelConfig().then((resp) => {
