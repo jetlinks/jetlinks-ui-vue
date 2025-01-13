@@ -372,9 +372,10 @@ const isAgent = ['agent-device-gateway', 'agent-media-device-gateway'].includes(
 );
 const current = ref(0);
 const stepCurrent = ref(0);
-const steps = computed(() => {
-    return !isAgent ? ['网络组件', '消息协议', '完成'] : ['网络组件', '完成'];
-});
+// const steps = computed(() => {
+//     return !isAgent ? ['网络组件', '消息协议', '完成'] : ['网络组件', '完成'];
+// });
+const steps = ref();
 const networkList: any = ref([]);
 const allNetworkList: any = ref([]);
 const procotolList: any = ref([]);
@@ -606,15 +607,25 @@ const next = async () => {
 };
 const prev = () => {
     if (isAgent) {
-        current.value = 1;
+        current.value = 0;
     } else {
         current.value = current.value - 1;
     }
 };
 
 onMounted(() => {
+    console.log(props, 'props', type !== 'child-device');
     if (props.data && props.data.id) {
-        if (props.data.provider !== 'child-device') {
+        if (
+            ['agent-device-gateway', 'agent-media-device-gateway'].includes(
+                props.data.provider,
+            )
+        ) {
+            steps.value = ['网络组件', '完成'];
+            current.value = 0;
+            networkCurrent.value = props.data.channelId;
+            queryNetworkList(props.provider.id, networkCurrent.value);
+        } else if (props.data.provider !== 'child-device') {
             procotolCurrent.value = props.data.protocol;
             current.value = 0;
             networkCurrent.value = props.data.channelId;
@@ -628,7 +639,15 @@ onMounted(() => {
         }
     } else {
         if (props.provider?.id) {
-            if (type !== 'child-device') {
+            if (
+                ['agent-device-gateway', 'agent-media-device-gateway'].includes(
+                    props.provider.id,
+                )
+            ) {
+                queryNetworkList(props.provider.id, '');
+                steps.value = ['网络组件', '完成'];
+                current.value = 0;
+            } else if (type !== 'child-device') {
                 queryNetworkList(props.provider.id, '');
                 steps.value = ['网络组件', '消息协议', '完成'];
                 current.value = 0;
