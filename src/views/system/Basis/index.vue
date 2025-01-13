@@ -1,7 +1,7 @@
 <template>
   <j-page-container>
-    <FullPage>
-      <div style="overflow-y: auto; height: 100%; padding: 24px;">
+    <FullPage :fixed="false">
+      <div style="padding: 24px;">
           <BasicForm />
       </div>
     </FullPage>

@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "clean": "pnpm rimraf node_modules && pnpm rimraf dist && pnpm rimraf .turbo",
     "modules:init": "git submodule init && git submodule update && git submodule foreach git checkout master && git submodule foreach git pull origin master",
-    "modules:update": "git submodule update"
+    "modules:update": "git submodule update",
+    "test": "playwright test"
   },
   "dependencies": {
     "@ant-design/icons-vue": "^7.0.1",
@@ -45,6 +46,7 @@
     "xgplayer-hls": "^3.0.20"
   },
   "devDependencies": {
+    "@playwright/test": "^1.49.1",
     "@types/lodash-es": "^4.17.11",
     "@vitejs/plugin-vue": "^4.2.3",
     "@vitejs/plugin-vue-jsx": "^3.0.1",
@@ -54,6 +56,7 @@
     "dotenv": "^16.1.4",
     "less": "^4.2.0",
     "pkg-types": "^1.0.3",
+    "playwright": "^1.49.1",
     "rollup": "^3.23.1",
     "rollup-plugin-visualizer": "^5.9.0",
     "typescript": "^5.1.3",
