@@ -15,6 +15,7 @@
         />
         <List
             :source="source"
+            ref="listRef"
             v-else-if="source === 'cloud'"
             v-model:value="fileList"
             :resourceVersionMap="resourceVersionMap"
@@ -38,6 +39,7 @@ import {
 
 const emits = defineEmits(['close']);
 const source = ref('');
+const listRef = ref()
 const fileList = ref([]);
 const taskList = ref([]);
 
@@ -79,6 +81,7 @@ const getVersion = async (ids) => {
         res.result.forEach((i) => {
             resourceVersionMap.value.set(i.id, i.version);
         });
+        listRef.value?.compareVersion()
     }
 };
 

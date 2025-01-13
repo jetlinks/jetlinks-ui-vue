@@ -13,7 +13,10 @@
                 <img
                     :src="
                         i.photoUrl?.url ||
-                        imageMap.get(i.resourcesType?.value || i.releaseDetail?.resourcesType?.value)
+                        imageMap.get(
+                            i.resourcesType?.value ||
+                                i.releaseDetail?.resourcesType?.value,
+                        )
                     "
                     alt=""
                     style="width: 80px; height: 80px; margin-right: 16px"
@@ -91,7 +94,8 @@ import { _queryTemplateNoPaging, installResource } from '@/api/link/resource';
 import { cloneDeep } from 'lodash-es';
 import { computedVersion } from '../data';
 import { resource } from '@/assets';
-import { omit } from 'lodash-es'
+import { omit } from 'lodash-es';
+import { defineExpose } from 'vue'
 const props = defineProps({
     value: {
         type: Array,
@@ -124,10 +128,10 @@ const onInstall = async () => {
             return props.source === 'cloud'
                 ? {
                       releaseDetail: {
-                          ...omit(i,['photoUrl']),
+                          ...omit(i, ['photoUrl']),
                       },
                       photoUrl: {
-                          ...(i.photoUrl || {})
+                          ...(i.photoUrl || {}),
                       },
                   }
                 : {
@@ -140,6 +144,19 @@ const onInstall = async () => {
     }
 };
 
+const compareVersion = async () => {
+    fileList.value = props.value.filter((i) => {
+        const resourcesId = i?.resourcesId || i?.releaseDetail?.resourcesId;
+        if (props.resourceVersionMap.has(resourcesId)) {
+            return props.resourceVersionMap.get(resourcesId) !== i.version;
+        } else {
+            return true;
+        }
+    });
+};
+
+defineExpose({compareVersion})
+
 watch(
     () => props.value,
     () => {
@@ -148,32 +165,11 @@ watch(
         }
     },
     {
-        immediate:true,
-        deep:true
-    }
-);
-
-watch(
-    () => props.resourceVersionMap,
-    () => {
-        if (props.source === 'cloud') {
-            fileList.value = props.value.filter((i) => {
-                const resourcesId =
-                    i?.resourcesId || i?.releaseDetail?.resourcesId;
-                if (props.resourceVersionMap.has(resourcesId)) {
-                    return (
-                        props.resourceVersionMap.get(resourcesId) !== i.version
-                    );
-                } else {
-                    return true;
-                }
-            });
-        }
-    },
-    {
+        immediate: true,
         deep: true,
     },
 );
+
 </script>
 <style lang="less" scoped>
 .fileList {
