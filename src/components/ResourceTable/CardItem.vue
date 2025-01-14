@@ -21,13 +21,26 @@ import { resource } from '@/assets'
       collector: '#52C41A', // 数采
       protocol: '#FAAD14', // 协议
   }
+
+  const icon = {
+    device: 'icon-a-rongqi21',
+    collector: 'icon-rongqi3',
+    protocol: 'icon-a-rongqi11'
+  }
+
+  const imageMap = new Map([
+    ['device',resource.deviceDefaultImage],
+    ['collector',resource.collectorDefaultImage],
+    ['protocol',resource.protocolDefaultImage]
+  ])
+
 </script>
 
 <template>
   <div :class="classNames">
     <div class="item-center">
       <div class="table-item-img">
-        <img :src="record.photoUrl?.url || resource.defaultImage" />
+        <img :src="record.photoUrl?.url || imageMap.get(record.type?.value)" />
       </div>
       <div class="item-center-bottom">
         <div class="table-item-title fz-16">
@@ -37,7 +50,7 @@ import { resource } from '@/assets'
         </div>
         <div class="table-item-tag">
           <a-space>
-            <AIcon type="FireFilled" :style="{ color: typeColor[record.type?.value]}" />
+            <AIcon :type="icon[record.type?.value]" :style="{ color: typeColor[record.type?.value]}" />
             <span class="fc-600">
               {{ record.type?.text || '-' }}
             </span>
@@ -72,7 +85,7 @@ import { resource } from '@/assets'
   border: 2px solid transparent;
   color: @font-gray-900;
   background-color: #fff;
-
+  border: 1px solid #EFF0F1;
   .item-center {
     padding: 12px;
   }
@@ -108,8 +121,6 @@ import { resource } from '@/assets'
 
   .table-item-img {
     background-color: @font-gray-50;
-    height: 194px;
-    width: 258px;
     border-radius: 4px;
     overflow: hidden;
 

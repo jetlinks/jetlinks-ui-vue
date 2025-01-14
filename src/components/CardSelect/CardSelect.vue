@@ -99,7 +99,7 @@
 
 <script lang="ts" setup>
 import { computed, PropType, ref, toRefs, watch } from 'vue';
-
+import { Form } from 'ant-design-vue'
 interface CardOption {
     value: string | number;
     label: string;
@@ -155,7 +155,7 @@ const props = defineProps({
     },
 });
 const { multiple, type, disabled, float } = toRefs(props);
-
+const formItemContext = Form.useInjectFormItemContext();
 const emits = defineEmits(['update:value', 'change', 'select']);
 const activeKeys = ref<Array<string | number>>([]);
 const itemOptions = computed(() => props.options);
@@ -191,10 +191,10 @@ const handleSelect = (key: string | number, item: CardOption) => {
     const options = multiple.value ? getOptions(activeKeys.value) : item;
 
     const values = props.multiple ? activeKeys.value : activeKeys.value[0]
-
     emits('update:value', values);
     emits('change', values, options);
     emits('select', values, key, !isActive)
+    formItemContext.onFieldChange()
 };
 
 watch(

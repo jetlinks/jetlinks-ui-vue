@@ -10,51 +10,50 @@
                 从云端获取
             </a-button>
             <div class="upload">
-                <a-upload-dragger
-                    v-model:fileList="uploadFile"
-                    name="file"
-                    :multiple="true"
-                    :maxCount="10"
-                    :headers="{
-                        [TOKEN_KEY]: LocalStore.get(TOKEN_KEY),
-                    }"
-                    :showUploadList="false"
-                    :action="RESOURCE_UPLOAD"
-                    @change="handleChange"
-                    @drop="handleDrop"
-                >
-                    <div style="min-height: 400px; padding: 0 10px">
-                        <div v-if="!fileList.length" class="noData">
-                            <AIcon
-                                type="PlusSquareOutlined"
-                                style="font-size: 100px"
-                            />
-                            <div class="tips">
-                                <div>
-                                    拖放安装资源或者点击上方按钮从本地文件中选取资源安装;
-                                </div>
-                                <div>单次支持最多选取10个资源文件</div>
-                            </div>
-                        </div>
-                        <div v-else>
-                            <div class="header">
-                                <div>
-                                    您可继续拖放资源或从本地文件中选取资源
-                                </div>
-                                <div>
-                                    <a-button type="primary">继续添加</a-button>
+                <a-spin :spinning="loading">
+                    <a-upload-dragger
+                        v-model:fileList="uploadFile"
+                        name="file"
+                        :multiple="true"
+                        :headers="{
+                            [TOKEN_KEY]: LocalStore.get(TOKEN_KEY),
+                        }"
+                        :showUploadList="false"
+                        :action="RESOURCE_UPLOAD"
+                        @change="handleChange"
+                        @drop="handleDrop"
+                    >
+                        <div
+                            :style="{
+                                height: fileList.length
+                                    ? 180 + 'px'
+                                    : 400 + 'px',
+                                padding: 10 + 'px',
+                                display: relative,
+                            }"
+                        >
+                            <div class="noData">
+                                <AIcon
+                                    type="CloudUploadOutlined"
+                                    style="font-size: 60px"
+                                />
+                                <div class="tips">
+                                    <div>
+                                        拖放安装资源或者点击上方按钮从本地文件中选取资源安装;
+                                    </div>
                                 </div>
                             </div>
-                            <List
-                                :source="source"
-                                v-model:value="fileList"
-                                :resourceVersionMap="resourceVersionMap"
-                                @cancel="emits('close')"
-                                @refresh="emits('refresh')"
-                            />
                         </div>
-                    </div>
-                </a-upload-dragger>
+                    </a-upload-dragger>
+                </a-spin>
+                <List
+                    v-if="fileList.length"
+                    :source="source"
+                    v-model:value="fileList"
+                    :resourceVersionMap="resourceVersionMap"
+                    @cancel="emits('close')"
+                    @refresh="emits('refresh')"
+                />
             </div>
         </div>
     </div>
@@ -79,20 +78,42 @@ const props = defineProps({
         default: () => {},
     },
 });
-const emits = defineEmits(['update:value', 'update:source','close']);
+const emits = defineEmits(['update:value', 'update:source', 'close']);
 const fileList = ref([]);
 const uploadFile = ref([]);
+const loading = ref(false);
 const source = ref('');
 const handleChange = ({ file }) => {
-    source.value = 'local'
+    source.value = 'local';
+    if (file.status === 'uploading') {
+        loading.value = true;
+    }
     if (file.status === 'done') {
+        loading.value = false;
         fileList.value = [...fileList.value, ...(file.response?.result || [])];
+        emits('update:value', fileList.value);
+        emits('update:source', source.value);
     }
 };
 
 const getResourceByCloud = async () => {
     source.value = 'cloud';
-    const res = await _queryResourceCloud();
+    const res = await _queryResourceCloud({
+        paging: false,
+        sorts: [
+            {
+                name: 'createTime',
+                order: 'desc',
+            },
+        ],
+        terms: [
+            {
+                column: 'state',
+                termType: 'eq',
+                value: 'success',
+            },
+        ],
+    });
     if (res.success) {
         fileList.value = res.result;
         emits('update:value', fileList.value);
@@ -128,7 +149,10 @@ watch(
     }
 
     .noData {
-        margin-top: 20%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%); /* 将子元素的中心点移到父容器的中心 */
     }
 
     .header {

@@ -4,7 +4,7 @@
         visible
         :width="1000"
         :maskClosable="false"
-        @ok="emits('selectedNetWork', networkCurrent)"
+        @ok="submitNetWork"
         @cancel="emits('close')"
     >
         <div class="header">
@@ -29,7 +29,40 @@
                                 : descriptionList[type],
                             type: 'network',
                         }"
-                    ></AccessCard>
+                    >
+                        <template #other>
+                                    <div class="other">
+                                        <a-tooltip
+                                            placement="top"
+                                            :title="
+                                                addressesTip(item.addresses)
+                                            "
+                                        >
+                                            <div
+                                                v-for="i in (
+                                                    item.addresses || []
+                                                ).slice(0, 1)"
+                                                :key="i.address"
+                                                class="item"
+                                            >
+                                                <j-badge
+                                                    :status="getColor(i)"
+                                                    :text="i.address"
+                                                />
+                                                <span
+                                                    v-if="
+                                                        (item.addresses || [])
+                                                            .length > 1
+                                                    "
+                                                    >等{{
+                                                        item.addresses.length
+                                                    }}条</span
+                                                >
+                                            </div>
+                                        </a-tooltip>
+                                    </div>
+                                </template></AccessCard
+                    >
                 </a-col>
             </a-row>
             <a-empty v-else style="margin-top: 10%" description="暂无数据" />
@@ -44,7 +77,7 @@
 </template>
 
 <script setup>
-import { queryNetWork } from '@/api/device/quickCreate';
+import { queryNetWork,queryAliveNetWork } from '@/api/device/quickCreate';
 import AccessCard from '../AccessCard/index.vue';
 import { cloneDeep } from 'lodash-es';
 import { NetworkTypeMapping, descriptionList } from './data';
@@ -65,34 +98,22 @@ const networkList = ref([]);
 const allNetworkList = ref([]);
 const addVisible = ref(false);
 const networkCurrent = ref();
-
+const getColor = (i) => (i.health === -1 ? 'error' : 'processing');
+const addressesTip = (data) => {
+    let tip = '';
+    data.forEach((item) => {
+        tip = tip + ' ' + item.address;
+    });
+    return tip;
+};
 const queryNetworkList = async (data = {}) => {
-    addVisible.value = false
-    const params = {
-        paging: false,
-        sorts: [
-            {
-                name: 'createTime',
-                order: 'desc',
-            },
-        ],
-        terms: [
-            {
-                terms: [
-                    {
-                        type: 'or',
-                        value: NetworkTypeMapping.get(props.type),
-                        termType: 'eq',
-                        column: 'type',
-                    },
-                ],
-            },
-        ],
-    };
-    const resp = await queryNetWork(params);
-    if (resp.status === 200) {
-        networkList.value = resp.result;
-        allNetworkList.value = resp.result;
+    addVisible.value = false;
+    const res = await queryAliveNetWork(
+        NetworkTypeMapping.get(props.type),
+    );
+    if(res.success){
+        networkList.value = res.result;
+        allNetworkList.value = res.result;
     }
 };
 
@@ -109,6 +130,29 @@ const networkSearch = (val) => {
 const checkedChange = (data) => {
     networkCurrent.value = data;
 };
+
+const submitNetWork = async() =>{
+    const params = {
+        terms: [
+            {
+                terms: [
+                    {
+                        type: 'or',
+                        value: networkCurrent.value.id,
+                        termType: 'eq',
+                        column: 'id',
+                    },
+                ],
+            },
+        ],
+    };
+    const resp = await queryNetWork(params);
+    if (resp.success && resp.result) {
+        console.log(resp.result[0],'data')
+        emits('selectedNetWork', resp.result[0])
+    }
+}
+
 
 onMounted(() => {
     networkCurrent.value = cloneDeep(props.data);

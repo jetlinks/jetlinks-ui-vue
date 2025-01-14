@@ -37,7 +37,7 @@
                 <a-step>
                     <template #title>
                         <div>
-                            <span style="margin-right: 8px;">接入配置</span>
+                            <span style="margin-right: 8px">接入配置</span>
                             <a-space>
                                 <a-button
                                     v-if="advancedMode"
@@ -67,7 +67,7 @@
                                 />
                                 <div style="margin-left: 24px">
                                     <div class="accessName">
-                                        {{ accessData?.name }}
+                                        {{ accessName }}
                                     </div>
                                     <a-row :gutter="[12, 12]">
                                         <a-col
@@ -78,10 +78,18 @@
                                             <div>
                                                 网络:
                                                 {{
-                                                    network.configuration
-                                                        ?.host +
-                                                    ':' +
-                                                    network.configuration?.port
+                                                    accessData.provider ===
+                                                    'mqtt-client-gateway'
+                                                        ? network.configuration
+                                                              ?.remoteHost +
+                                                          ':' +
+                                                          network.configuration
+                                                              ?.remotePort
+                                                        : network.configuration
+                                                              ?.host +
+                                                          ':' +
+                                                          network.configuration
+                                                              ?.port
                                                 }}
                                             </div>
                                         </a-col>
@@ -114,7 +122,14 @@
                                     </a-row>
                                 </div>
                             </template>
-                            <div v-else>未满足条件,请点击高级模式</div>
+                            <div v-else>
+                                {{
+                                    accessConfig.provider ===
+                                    'mqtt-client-gateway'
+                                        ? 'MQTT Broker接入请点击高级模式配置'
+                                        : '未满足条件,请点击高级模式'
+                                }}
+                            </div>
                         </div>
                         <AdvanceMode
                             v-else
@@ -155,15 +170,20 @@
 <script setup>
 import { cloneDeep, omit } from 'lodash-es';
 import Metadata from './components/Metadata.vue';
-import { queryNetWorkConfig } from '@/api/device/quickCreate';
+import {
+    queryNetWorkConfig,
+    queryAliveNetWork,
+    queryNetWork,
+} from '@/api/device/quickCreate';
 import { BackMap } from '@/views/link/AccessConfig/data';
-import { getResourcesCurrent } from '@/api/link/accessConfig';
+import { getResourcesCurrent, getProtocolList } from '@/api/link/accessConfig';
 import { NetworkTypeMapping } from './data';
 import { UDPList, TCPList } from './data';
 import AdvanceMode from './components/AdvanceMode.vue';
 import { getProviders } from '@/api/device/product';
 import PerfectInfo from './components/PerfectInfo/index.vue';
 import { gatewayType } from './data';
+import { ProtocolMapping } from './components/Protocol/data';
 
 const props = defineProps({
     data: {
@@ -179,13 +199,15 @@ const advancedMode = ref(false);
 const metadata = ref();
 //network类型无可用端口
 const unmet = computed(() => {
-    if (accessConfig.value.channel === 'network') {
-        return JSON.stringify(network.value) === '{}';
+    if (accessData.value.channel === 'network') {
+        return Object.keys(network.value).length === 0;
+    } else {
+        return false;
     }
 });
 const accessConfig = ref({});
 const accessData = ref({});
-const randomString = ref()
+const randomString = ref();
 const generateString = () => {
     const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     const numbers = '0123456789';
@@ -193,7 +215,7 @@ const generateString = () => {
     let randomNum1 = numbers[Math.floor(Math.random() * numbers.length)];
     let randomNum2 = numbers[Math.floor(Math.random() * numbers.length)];
     randomString.value = randomLetter + randomNum1 + randomNum2;
-}
+};
 
 //资源库选中协议
 const protocol = ref({});
@@ -204,7 +226,9 @@ const accessDescriptions = ref(new Map());
 //选中使用的网络组件
 const network = ref({});
 //默认创建的网络组件
-const defaultNetwork = ref({})
+const defaultNetwork = ref({});
+//显示的网关名称
+const accessName = ref()
 const current = ref(1);
 
 const metadataVisible = ref(false);
@@ -244,11 +268,39 @@ const showAdvancedMode = () => {
 };
 //恢复默认配置
 const restoreDefault = () => {
-    if(accessConfig.value.channel === 'network'){
-        network.value = defaultNetwork.value
+    if (accessConfig.value.channel === 'network') {
+        network.value = defaultNetwork.value;
     }
     getDefault();
-    advancedMode.value = false
+    advancedMode.value = false;
+};
+
+//查询有可以复用的网络组件
+const getUseableNetWork = async () => {
+    const res = await queryAliveNetWork(
+        NetworkTypeMapping.get(accessConfig.value.provider),
+    );
+    if (res.success && res.result.length) {
+        const networkId = res.result[0].id;
+        const params = {
+            terms: [
+                {
+                    terms: [
+                        {
+                            type: 'or',
+                            value: networkId,
+                            termType: 'eq',
+                            column: 'id',
+                        },
+                    ],
+                },
+            ],
+        };
+        const req = await queryNetWork(params);
+        if (req.success && req.result) {
+            return req.result[0]
+        }
+    }
 };
 
 //查询默认接入方式网络组件可用端口
@@ -297,7 +349,7 @@ const getDescription = async () => {
     }
 };
 //高级模式选择完成
-const advanceComplete = (data) => {
+const advanceComplete = (data,name) => {
     protocol.value = data?.protocol;
     plugin.value = data?.plugin;
     network.value = data?.network;
@@ -305,10 +357,28 @@ const advanceComplete = (data) => {
     unmet.value = false;
     advancedMode.value = true;
     visibleAdvanceMode.value = false;
+    accessName.value = name
+};
+
+//查询协议是否已经存在平台中
+const protocolExist = async (id) => {
+    const resp = await getProtocolList(
+        ProtocolMapping.get(accessConfig.value?.provider),
+        {
+            'sorts[0].name': 'createTime',
+            'sorts[0].order': 'desc',
+            paging: false,
+        },
+    );
+    if (resp.status === 200) {
+        return resp.result.find((i) => {
+            return i?.configuration?.sourceId === id;
+        });
+    }
 };
 
 //获取默认协议或插件
-const getDefault = () => {
+const getDefault = async () => {
     if (accessConfig.value?.bindInfo) {
         if (
             ['network', 'OneNet', 'Ctwing'].includes(accessConfig.value.channel)
@@ -318,15 +388,18 @@ const getDefault = () => {
                     return i.defaultAccess;
                 })?.[0] || {};
             if (JSON.stringify(data) !== '{}') {
-                protocol.value = {
-                    ...omit(data, ['id']),
-                    type: 'jar',
-                    configuration: {
-                        location: data.url,
-                        sourceId: data.id,
-                        version: data.version
-                    },
-                };
+                const existProtocol = await protocolExist(data.id);
+                protocol.value = existProtocol
+                    ? existProtocol
+                    : {
+                          ...omit(data, ['id']),
+                          type: 'jar',
+                          configuration: {
+                              location: data.url,
+                              sourceId: data.id,
+                              version: data.version,
+                          },
+                      };
             }
         } else if (accessConfig.value?.channel === 'plugin') {
             const data =
@@ -340,16 +413,18 @@ const getDefault = () => {
                     configuration: {
                         location: data.url,
                         sourceId: data.id,
-                        version: data.version
+                        version: data.version,
                     },
                 };
             }
         }
     }
+    accessName.value = accessConfig.value.provider?.split('-')?.[0]
     accessData.value = {
-        name: accessConfig.value.provider?.split('-')?.[0] +
-                '网关' +
-                randomString.value,
+        name:
+            accessConfig.value.provider?.split('-')?.[0] +
+            '网关' +
+            randomString.value,
         ...omit(accessConfig.value, ['bindInfo', 'defaultAccess']),
         gatewayType: gatewayType.get(accessConfig.value.provider),
     };
@@ -366,7 +441,7 @@ watch(
     },
 );
 
-onMounted(() => {
+onMounted(async () => {
     getDescription();
     generateString();
     metadata.value = JSON.parse(props.data?.metadata || '{}');
@@ -375,8 +450,17 @@ onMounted(() => {
         props.data?.accessInfos?.filter((i) => {
             return i.defaultAccess;
         })?.[0] || {};
-    if (accessConfig.value?.channel === 'network') {
-        queryAvailablePort();
+    if (
+        accessConfig.value?.channel === 'network' &&
+        accessConfig.value.provider !== 'mqtt-client-gateway'
+    ) {
+        const data = await getUseableNetWork();
+        if (data) {
+            network.value = data;
+            defaultNetwork.value = cloneDeep(network.value);
+        } else {
+            queryAvailablePort();
+        }
     }
     getDefault();
 });

@@ -13,7 +13,7 @@ statusIcon.set('canceled', 'PauseCircleOutlined')
 statusIcon.set('failed', 'ExclamationCircleOutlined')
 statusIcon.set('downloading', 'ClockCircleOutlined')
 statusIcon.set('waiting_install', 'IssuesCloseOutlined')
-statusIcon.set('waiting_download', 'LoadingOutlined')
+statusIcon.set('waiting_download', 'ReloadOutlined')
 
 export const statusColor = new Map()
 statusColor.set('success', 'green')

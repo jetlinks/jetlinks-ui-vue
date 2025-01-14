@@ -5,9 +5,11 @@
         @cancel="emits('close')"
         :maskClosable="false"
         :width="600"
+        :footer="null"
         @ok="emits('close')"
     >
-        <div v-if="showUpate" class="content">
+    <div class="ht_40">
+        <div v-if="showUpdata" class="content">
             <div class="title">
                 <div><a-badge status="success" />检测到有新版本</div>
                 <a-button type="primary" @click="onUpdate">更新</a-button>
@@ -17,11 +19,12 @@
                 <p>{{ info.describe }}</p>
             </div>
         </div>
-        <div v-else><a-badge status="success" />当前已是最新版本</div>
+        <div class="noUpdate" v-else><a-badge status="success" />当前已是最新版本</div>
+    </div>
     </a-modal>
 </template>
 
-<script setup lang="ts" name="Update">
+<script setup name="Update">
 import { checkUpdate,_latest,installResource } from '@/api/link/resource';
 import { onlyMessage } from '@/utils/comm';
 
@@ -33,12 +36,12 @@ const props = defineProps({
         default: () => ({}),
     },
 });
-const showUpate = ref(false);
-const info = ref();
+const showUpdata = ref(false);
+const info = ref({});
 const getUpdate = async () => {
     const res = await checkUpdate(props.data.id);
     if(res.success){
-        showUpate.value = res.result;
+        showUpdata.value = res.result;
         if(res.result){
             const resp = await _latest(props.data.id);
             if(resp.success){
@@ -68,6 +71,9 @@ onMounted(() => {
 </script>
 
 <style lang="less" scoped>
+.ht_40{
+    min-height: 40vh;
+}
 .content {
     background-color: #eee;
     padding: 12px;
@@ -80,5 +86,10 @@ onMounted(() => {
     .log {
         margin-top: 12px;
     }
+}
+.noUpdate{
+    background-color: #eee;
+    padding: 12px;
+    border-radius: 6px;
 }
 </style>

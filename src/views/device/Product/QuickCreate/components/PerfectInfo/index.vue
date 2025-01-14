@@ -28,14 +28,13 @@
                         {
                             required: true,
                             validator: validateDeviceType,
-                            trigger: 'blur',
+                            trigger: 'change'
                         },
                     ]"
                 >
-                    <j-card-select
-                        :value="form.deviceType"
+                    <CardSelect
+                        v-model:value="form.deviceType"
                         :options="deviceOptions"
-                        @change="changeDeviceType"
                     >
                         <template #title="item">
                             <span>{{ item.title }}</span>
@@ -46,7 +45,7 @@
                                 />
                             </a-tooltip>
                         </template>
-                    </j-card-select>
+                    </CardSelect>
                 </a-form-item>
                 <a-form-item
                     v-for="i in configuration"
@@ -108,7 +107,7 @@
         <div
             class="configuration"
             v-if="
-                ['gb28181-2016', 'Ctwing', 'OneNet'].includes(
+                ['gb28181-2016', 'Ctwing', 'OneNet-platform'].includes(
                     accessData.provider,
                 )
             "
@@ -119,7 +118,7 @@
                 v-if="accessData.provider === 'gb28181-2016'"
             />
             <Ctwing ref="accessRef" v-if="accessData.provider === 'Ctwing'" />
-            <OneNet ref="accessRef" v-if="accessData.provider === 'OneNet'" />
+            <OneNet ref="accessRef" v-if="accessData.provider === 'OneNet-platform'" />
         </div>
         <div
             class="configuration"
@@ -128,10 +127,14 @@
             <div>网络组件配置</div>
             <Network ref="networkRef" :accessData="accessData" />
         </div>
-        <div>
+        <div style="text-align: right;">
             <a-space>
-                <a-button @click="emits('cancel')">取消</a-button>
-                <a-button @click="createProduct">确定</a-button>
+                <a-button @click="emits('cancel')" :disabled="loading"
+                    >取消</a-button
+                >
+                <a-button @click="createProduct" :loading="loading" type="primary"
+                    >确定</a-button
+                >
             </a-space>
         </div>
     </div>
@@ -150,6 +153,8 @@ import GB28181 from './GB28181/index.vue';
 import Ctwing from './Ctwing/index.vue';
 import OneNet from './OneNet/index.vue';
 import Network from './Network/index.vue';
+import { useMenuStore } from '@/store/menu';
+import CardSelect from '@/components/CardSelect/CardSelect.vue'
 const props = defineProps({
     data: {
         type: Object,
@@ -187,6 +192,9 @@ const accessRef = ref();
 const networkRef = ref();
 const formRef = ref();
 const storageList = ref([]);
+const menuStory = useMenuStore();
+const loading = ref(false);
+
 //设备类型
 const deviceList = [
     {
@@ -267,6 +275,7 @@ const changeDeviceType = (value) => {
 };
 
 const createProduct = async () => {
+    loading.value = true;
     const allPromise = [formRef.value.validate()];
     //accessRef和networkRef 接入网关类型同时只能满足一个存在
     if (accessRef.value) {
@@ -275,99 +284,117 @@ const createProduct = async () => {
     if (networkRef.value) {
         allPromise.push(networkRef.value.submitData());
     }
-    Promise.all(allPromise).then(async (dataArr) => {
-        const product = {
-            ...form.value,
-            transportProtocol: props.accessData.transport,
-            metadata: JSON.stringify(props.metadata),
-        };
-        let data;
-        if (props.accessData.channel === 'network') {
-            if (
-                ['agent-media-device-gateway', 'agent-device-gateway'].includes(
+    Promise.all(allPromise)
+        .then(async (dataArr) => {
+            const product = {
+                ...form.value,
+                transportProtocol: props.accessData.transport,
+                metadata: JSON.stringify(props.metadata),
+            };
+            let data;
+            if (props.accessData.channel === 'network') {
+                if (
+                    [
+                        'agent-media-device-gateway',
+                        'agent-device-gateway',
+                    ].includes(props.accessData.provider)
+                ) {
+                    data = {
+                        resourceId: props.data.id,
+                        gateway: {
+                            ...props.accessData,
+                            protocol: props.accessData.provider,
+                        },
+                        network: props.advancedMode
+                            ? props.network
+                            : {
+                                  ...props.network,
+                                  configuration: {
+                                      ...props.network.configuration,
+                                      ...dataArr[1],
+                                  },
+                              },
+                        product,
+                    };
+                } else {
+                    data = {
+                        resourceId: props.data.id,
+                        network: props.advancedMode
+                            ? props.network
+                            : {
+                                  ...props.network,
+                                  configuration: {
+                                      ...props.network.configuration,
+                                      ...dataArr[1],
+                                  },
+                              },
+                        gateway: props.accessData,
+                        protocol: props.protocol,
+                        product,
+                    };
+                }
+            } else if (
+                ['OneNet', 'Ctwing'].includes(props.accessData.channel)
+            ) {
+                data = {
+                    resourceId: props.data.id,
+                    gateway: {
+                        ...props.accessData,
+                        configuration: {
+                            ...props.accessData?.configuration,
+                            ...dataArr[1],
+                        },
+                    },
+                    protocol: props.protocol,
+                    product,
+                };
+            } else if (props.accessData.channel === 'plugin') {
+                data = {
+                    resourceId: props.data.id,
+                    gateway: props.accessData,
+                    plugin: props.plugin,
+                    product,
+                };
+            } else if (
+                ['gb28181-2016'].includes(
                     props.accessData.provider,
                 )
             ) {
                 data = {
                     resourceId: props.data.id,
-                    gateway: props.accessData,
-                    network: props.advancedMode
-                        ? props.network
-                        : {
-                              ...props.network,
-                              configuration: {
-                                  ...props.network.configuration,
-                                  ...dataArr[1],
-                              },
-                          },
-                    product,
+                    gateway: {
+                        ...props.accessData,
+                        configuration: {
+                            ...props.accessData?.configuration,
+                            ...dataArr[1],
+                        },
+                    },
+                    product
                 };
             } else {
                 data = {
                     resourceId: props.data.id,
-                    network: props.advancedMode
-                        ? props.network
-                        : {
-                              ...props.network,
-                              configuration: {
-                                  ...props.network.configuration,
-                                  ...dataArr[1],
-                              },
-                          },
                     gateway: props.accessData,
-                    protocol: props.protocol,
                     product,
                 };
             }
-        } else if (['OneNet', 'Ctwing'].includes(props.accessData.channel)) {
-            data = {
-                resourceId: props.data.id,
-                gateway: props.accessData,
-                protocol: props.protocol,
-                product,
-            };
-        } else if (props.accessData.channel === 'plugin') {
-            data = {
-                resourceId: props.data.id,
-                gateway: props.accessData,
-                plugin: props.plugin,
-                product,
-            };
-        } else if (
-            ['gb28181-2016', 'Ctwing', 'OneNet'].includes(
-                props.accessData.provider,
-            )
-        ) {
-            data = {
-                resourceId: props.data.id,
-                gateway: {
-                    ...props.accessData,
-                    configuration: {
-                        ...props.accessData?.configuration,
-                        ...dataArr[1],
-                    },
-                },
-            };
-        } else {
-            data = {
-                resourceId: props.data.id,
-                gateway: props.accessData,
-                product,
-            };
-        }
-        const res = await quickCreateProduct(data);
-        if (res.success) {
-            onlyMessage('操作成功');
-        }
-    });
+            const res = await quickCreateProduct(data);
+            if (res.success) {
+                onlyMessage('操作成功');
+                menuStory.jumpPage('device/Product');
+            }
+        })
+        .catch((err) => {
+            loading.value = false;
+        });
 };
 
 //从协议中获取配置项
 const getConfigurationByProtocol = async () => {
-    const res = await queryProtocolConfiguration(
-        props.accessData.transport,
-        props.protocol,
-    );
+    const res = await queryProtocolConfiguration(props.accessData.transport, {
+        ...props.protocol,
+        type: 'jar',
+    });
     if (res.success) {
         res.result?.transports?.forEach((i) => {
             i.configs.properties.forEach((item) => {

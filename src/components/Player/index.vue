@@ -78,6 +78,8 @@ type PlayerProps = {
     onCustomButtons?: (name: any) => void;
     onEnded?: (e?: any) => void;
     onClick?: () => void;
+    onLoadeddata?: () => void;
+    onCanplay?: () => void;
 };
 
 const props = defineProps<PlayerProps>();
@@ -139,11 +141,16 @@ const initEvent = () => {
   player[fn](Events.TIME_UPDATE, (ev) => {
     props.onTimeUpdate?.(ev)
   })
+  player.on(Events.LOADED_DATA, (e) => {
+      console.log('-媒体数据加载好了-', e);
+      props.onLoadeddata?.(e)
+  })
   player[fn](Events.CANPLAY, (ev) => {
     console.log('-媒体数据加载好了-', ev);
     if (props.autoplay !== false) {
       play()
     }
+    props.onCanplay?.(ev)
   })
   player[fn](Events.SEEKED, (ev) => {
     if (props.live) {
@@ -177,11 +184,12 @@ const init = () => {
   } else {
     destroy()
     setTimeout(() => {
-
+      console.log(props.poster,'poster')
       player = new Player({
         el: playerElement.value,
         // autoplay: props.autoplay ?? true,
         url: props.url,
+        poster: props.poster,
         isLive: props.live,
         width: '100%',
         height: '100%',

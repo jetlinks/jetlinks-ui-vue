@@ -1,12 +1,15 @@
 <template>
-    <a-input placeholder="请输入关键词"></a-input>
-    <div style="margin-top: 8px;">
-        <a-tree :fieldNames="{
-            title: 'name',
-            key: 'id',
-            children: 'children'
-        }" :tree-data="data" v-model:selectedKeys="selectedKeys" @select="select">
-
+    <div style="margin-top: 8px">
+        <a-tree
+            :fieldNames="{
+                title: 'name',
+                key: 'id',
+                children: 'children',
+            }"
+            :tree-data="data"
+            v-model:selectedKeys="selectedKeys"
+            @select="select"
+        >
         </a-tree>
     </div>
 </template>
@@ -15,15 +18,13 @@
 const props = defineProps({
     data: {
         type: Object,
-        default: () => {
-
-        }
-    }
-})
-const emits = defineEmits(['select'])
-const selectedKeys = ref()
+        default: () => {},
+    },
+});
+const emits = defineEmits(['select']);
+const selectedKeys = ref();
 const select = (selectedKeys) => {
-    emits('select', selectedKeys)
-}
+    emits('select', selectedKeys);
+};
 </script>
-<style lang='less' scoped></style>
+<style lang="less" scoped></style>

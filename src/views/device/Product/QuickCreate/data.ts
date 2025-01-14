@@ -405,7 +405,10 @@ export const gatewayType = new Map([
     ["gb28181-2016","gb28181_2016"],
     ["media-plugin","media_plugin"],
     ["OneNet-platform","oneNet_platform"],
-    ["Ctwing","ctwing"]
+    ["Ctwing","ctwing"],
+    ["collector-gateway","collector_gateway"],
+    ["agent-device-gateway","agent_device_gateway"],
+    ["agent-media-device-gateway","agent_media_device_gateway"],
 ]);
 
 
