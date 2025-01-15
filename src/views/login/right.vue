@@ -152,8 +152,12 @@ const { loading, run } = useRequest(login, {
   },
   onWarn: () => {
     formData.verifyCode = undefined;
-    getCode()
-    reloadEncryption()
+    if (config.value) {
+      getCode();
+    }
+    if (encryption.value?.encrypt?.enabled) {
+      reloadEncryption()
+    }
   }
 })
 
