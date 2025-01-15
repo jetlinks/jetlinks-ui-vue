@@ -1,7 +1,7 @@
 <template>
-    <page-container>
+    <j-page-container>
         <Api :mode="'appManger'" hasHome :code="code" /> 
-    </page-container>
+    </j-page-container>
 </template>
 
 <script setup lang="ts" name="apiPage">
