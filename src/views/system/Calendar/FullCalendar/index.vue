@@ -139,12 +139,12 @@ const queryEventsData = async (startDate, endDate, updateView) => {
                     eventsData.value.push({
                         date: i.date,
                         id: item.id,
-                        name: item.name,
+                        name: item.i18nName || item.name,
                     });
                     initialData.value.push({
                         date: i.date,
                         id: item.id,
-                        name: item.name,
+                        name: item.i18nName || item.name,
                     });
                 });
             }
