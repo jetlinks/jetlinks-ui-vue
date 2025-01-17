@@ -22,7 +22,7 @@ export const useSystemStore = defineStore('system', () => {
   const microApp = ref<Record<string, any>>({})
   const calendarTagColor = new Map([['holiday','rgb(161, 180, 204)'],['weekend','rgb(149, 222, 100)'],['workday', 'rgba(105,177,255)']])
   const showThreshold = ref(true)
-  const language = ref(LocalStore.get(langKey) || navigator.language || 'zh');
+  const language = ref(LocalStore.get(langKey) || 'zh');
 
   const layout = reactive<LayoutType>({
     siderWidth: 208,
