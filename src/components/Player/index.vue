@@ -165,6 +165,7 @@ const init = () => {
                 el: playerElement.value,
                 // autoplay: props.autoplay ?? true,
                 url: props.url,
+                poster: props.poster,
                 isLive: props.live,
                 width: '100%',
                 height: '100%',
