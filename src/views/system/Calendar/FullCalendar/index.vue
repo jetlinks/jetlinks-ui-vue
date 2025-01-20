@@ -603,7 +603,7 @@ setTimeout(() => {
         position: absolute;
         right: 20%;
         top: 27px;
-        transform: translateX(50%);
+        transform: translateX(40%);
     }
     .skip {
         position: absolute;
