@@ -18,13 +18,13 @@
         <div
             class="card-content-bg1"
             :style="{
-                        background: getBackgroundColor(statusNames[status]),
+                        background: showStatus ? getBackgroundColor(statusNames[status]) : 'transparent',
                     }"
         ></div>
         <div
             class="card-content-bg2"
             :style="{
-                        background: getBackgroundColor(statusNames[status]),
+                        background: showStatus ? getBackgroundColor(statusNames[status]) : 'transparent',
                     }"
         ></div>
         <div style="display: flex">
