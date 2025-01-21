@@ -25,7 +25,7 @@
             <div v-else>
                 <a-avatar :src="urlValue[item.value] || defaultImg[item.value]" shape="square" :size="64" />
             </div>
-            <span>{{ item.label }}</span>
+            <j-ellipsis style="margin-top: 8px">{{ item.label }}</j-ellipsis>
         </div>
     </div>
 </template>
@@ -104,11 +104,12 @@ const onImgChange = (url: string, _key: string) => {
 .radio-container {
     display: flex;
     flex-wrap: wrap;
-
+    margin: 0 auto;
     .radio-container-item {
         display: flex;
         padding: 8px 0;
         flex-direction: column;
+        justify-content: space-around;
         align-items: center;
         width: 120px;
         border-radius: 6px;
