@@ -130,7 +130,7 @@
             <div>{{ $t('components.Does.860107-25') }}</div>
             <div>
                 <span>{{ $t('components.Does.860107-57') }}</span
-                >{{ $t('components.Does.860107-44') }}API服务配置，请求物联网平台接口，实现<span
+                >{{ $t('components.Does.860107-44') }}<span
                     >{{ $t('components.Does.860107-18') }}</span
                 >
                 {{ $t('components.Does.860107-63') }}<span>{{ $t('components.Does.860107-28') }}</span>。
