@@ -85,7 +85,7 @@
                                 :value="asset.supportId"
                                 v-for="asset in record.assetAccesses"
                                 :key="asset.name"
-                                >{{ asset.name }}</a-radio
+                                >{{ asset.i18nName }}</a-radio
                             >
                         </a-radio-group>
                     </div>
@@ -187,24 +187,6 @@ const selectAllChange = () => {
 // 表头-批量设置
 const bulkShow = ref<boolean>(false);
 const bulkOptions = ref([]);
-// const bulkOptions = [
-//     {
-//         label: '全部数据',
-//         value: 'ignore',
-//     },
-//     {
-//         label: '所在组织及下级组织',
-//         value: 'org-include-children',
-//     },
-//     {
-//         label: '所在组织',
-//         value: 'org',
-//     },
-//     {
-//         label: '自己创建的',
-//         value: 'creator',
-//     },
-// ];
 const bulkValue = ref<string>('');
 const bulkChange = () => {
     if (!bulkValue) return;
@@ -455,7 +437,7 @@ function treeToSimple(_treeData: tableItemType[]) {
             assets = [...assets, ...item.assetAccesses];
         });
         bulkOptions.value = uniqBy(assets, 'supportId')?.map((m: any) => ({
-            label: m.name,
+            label: m.i18nName,
             value: m.supportId,
         }));
     }
