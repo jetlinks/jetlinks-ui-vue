@@ -6,7 +6,7 @@
             </template>
         </a-input>
         <div class="controls">
-            <j-permission-button type="primary" hasPermission="system/Dictionary:add" style="width: 160px" @click="showSave" >
+            <j-permission-button type="primary" hasPermission="system/Dictionary:add" style="width: 120px" @click="showSave" >
                 {{ $t('Left.index.036608-1') }}
             </j-permission-button>
             <j-permission-button type="text" hasPermission="system/Dictionary:down" @click="downVisible = true">
