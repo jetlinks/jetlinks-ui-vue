@@ -22,7 +22,7 @@
                                     :data="i"
                                     :type="item.key"
                                     @action="emits('action')"
-                                    @refresh="onRefresh(item.key,index)"
+                                    @refresh="onRefresh(item.key)"
                                 />
                             </template>
                             <div
@@ -134,11 +134,9 @@ const onChange = (_key: string) => {
     getData(type.value);
 };
 
-onMounted(async () => {
-    onChange(props.tabs?.[0]?.key || "alarm");
-});
 
-const onRefresh = (id: string,index:number) => {
+
+const onRefresh = (id: string) => {
     const flag = cloneDeep(refreshObj.value[id]);
     refreshObj.value = {
         ...refreshObj.value,
@@ -165,6 +163,10 @@ const onMore = (key: string) => {
 
     emits('action');
 };
+
+onMounted(async () => {
+    onChange(props.tabs?.[0]?.key || "alarm");
+});
 </script>
 
 <style lang="less" scoped>

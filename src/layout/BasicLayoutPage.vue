@@ -44,7 +44,7 @@ const menuStore = useMenuStore()
 const layoutType = ref('list')
 const updateRoute = ref(true)
 
-const { theme, layout } = storeToRefs(systemStore)
+const { theme, layout, language } = storeToRefs(systemStore)
 
 const components = computed(() => {
   const componentName = route.matched[route.matched.length - 1]?.components?.default?.name
@@ -79,7 +79,7 @@ const breadcrumb = computed(() =>
         index,
         isLast: index === (paths.length -1),
         path: item.path,
-        breadcrumbName: (item.meta as any).title || '',
+        breadcrumbName: menuStore.menusMap.get(item.name)?.title || (item.meta as any).title || '',
       }
     })
   }

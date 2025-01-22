@@ -78,7 +78,7 @@ import { getList_api, changeStatus_api } from '@/api/account/notificationRecord'
 import dayjs from 'dayjs'
 import { useUserStore } from '@/store/user'
 import { useRouterParams } from '@jetlinks-web/hooks'
-import { getTypeList_api } from '@/api/account/notificationSubscription'
+import { getTypeListNew } from '@/api/account/notificationSubscription'
 import { onlyMessage } from '@jetlinks-web/utils'
 import { useI18n } from 'vue-i18n';
 
@@ -111,7 +111,7 @@ const getType = computed(() => {
       'alarm',
       'alarm-product',
       'alarm-device',
-      'alarm-other',
+      'alarm-scene',
       'alarm-org',
     ]
   }
@@ -126,18 +126,12 @@ const columns = [
       type: 'select',
       termFilter: ['in', 'nin'],
       options: () =>
-        getTypeList_api().then((resp: any) => {
-          return resp.result
-            .map((item: any) => ({
-              label: item.name,
-              value: item.id,
+      getTypeListNew(props.type).then((resp: any) => {
+                    return resp.result
+                        .map((item: any) => ({
+                            label: item.name,
+                            value: item.id,
             }))
-            .filter((item: any) => {
-              return [...getType.value].includes(item?.value)
-            })
-            .sort((a: any, b: any) => {
-              return b?.value?.length - a?.value?.length
-            })
         }),
     },
     scopedSlots: true,

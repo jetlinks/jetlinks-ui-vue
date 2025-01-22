@@ -1,5 +1,5 @@
 <template>
-    <page-container>
+    <j-page-container>
         <Api mode="api">
             <template #top>
                 <p>
@@ -10,7 +10,7 @@
                 </p>
             </template>
         </Api>
-    </page-container>
+    </j-page-container>
 </template>
 
 <script setup lang="ts" name="Platforms">

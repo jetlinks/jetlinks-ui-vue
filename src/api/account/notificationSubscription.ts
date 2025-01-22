@@ -8,6 +8,8 @@ export const save_api = (data:any) => request.patch(`/notifications/subscribe`, 
 // 获取订阅类型
 export const getTypeList_api = () => request.get(`/notifications/providers`);
 
+//获取订阅类型 新
+export const getTypeListNew = (type:string) => request.get(`/notifications/current/${type}/providers`)
 
 // 判断获取当前用户绑定信
 export const getIsBindThird = () => request.get(`/user/third-party/me`);

@@ -141,7 +141,6 @@ type GrantType = {
     role: {
         idList?: string[];
     };
-    permissions: any[];
 };
 
 type ConfigurationType = {
@@ -191,7 +190,6 @@ const formModel = reactive<{
     name: '',
     channelProvider: '',
     grant: {
-        permissions: [],
         role: {},
     },
     channelConfiguration: {},
@@ -359,10 +357,6 @@ const onChange = (cur: number) => {
 
 const onSave = async () => {
     await formRef.value?.validate();
-    formModel.grant.permissions =
-        props.provider === 'alarm'
-            ? [{ id: 'alarm-config', actions: ['query'] }]
-            : [];
     emit('save', formModel);
 };
 </script>
