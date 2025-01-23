@@ -20,6 +20,7 @@
                 <a-menu @click="handleMenuClick">
                     <a-menu-item v-for="item in actions" :key="item.key">
                         <j-permission-button
+                            style="width: 100%"
                             :hasPermission="
                                 item.permission ? item.permission : true
                             "
