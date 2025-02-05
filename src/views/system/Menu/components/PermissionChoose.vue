@@ -135,13 +135,13 @@ const handleData = (_arr: any[], checkedValue: any[]) => {
     const options =
       (item.actions &&
         item.actions.map((actionItem: any) => ({
-          label: actionItem.name,
+          label: actionItem.i18nName || actionItem.name,
           value: actionItem.action,
         }))) ||
       []
     return {
       id: item.id,
-      name: item.name,
+      name: item.i18nName ||item.name,
       checkedList: (checked && checked.actions) || [],
       checkAll:
         (checked &&
