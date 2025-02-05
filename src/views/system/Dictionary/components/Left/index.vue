@@ -25,7 +25,7 @@
                 <template #title="item">
                     <div class="treeItem" @click="() => selectDic(item.data)">
                         <div class="itemText">
-                            <j-ellipsis >{{ item.name }}</j-ellipsis>
+                            <j-ellipsis >{{ item.i18nName }}</j-ellipsis>
                         </div>
                         <div @click="(e) => e.stopPropagation()">
                             <a-popconfirm
@@ -246,6 +246,7 @@ onMounted(() => {
     .itemText {
         line-height: 32px;
         flex: 1 1 0;
+        padding-right: 12px;
     }
 }
 </style>
