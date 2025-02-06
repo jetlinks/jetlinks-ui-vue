@@ -27,7 +27,7 @@
                             <template #content>
                                 <a-form
                                     ref="formRef"
-                                    :mode="formData"
+                                    :model="formData"
                                     layout="vertical"
                                 >
                                     <a-form-item

@@ -104,7 +104,6 @@ const onImgChange = (url: string, _key: string) => {
 .radio-container {
     display: flex;
     flex-wrap: wrap;
-    margin: 0 auto;
     .radio-container-item {
         display: flex;
         padding: 8px 0;

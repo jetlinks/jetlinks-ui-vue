@@ -28,7 +28,9 @@
               @change="(e) => selectAllOptions(e, rowItem)"
               :disabled="disabled"
             >
-              {{ rowItem.name }}
+              <j-ellipsis>
+               {{ rowItem.name }}
+              </j-ellipsis>
             </a-checkbox>
           </a-col>
           <a-col :span="24 - firstWidth">

@@ -6,7 +6,7 @@
             </template>
         </a-input>
         <div class="controls">
-            <j-permission-button type="primary" hasPermission="system/Dictionary:add" style="width: 160px" @click="showSave" >
+            <j-permission-button type="primary" hasPermission="system/Dictionary:add" style="width: 120px" @click="showSave" >
                 {{ $t('Left.index.036608-1') }}
             </j-permission-button>
             <j-permission-button type="text" hasPermission="system/Dictionary:down" @click="downVisible = true">
@@ -25,7 +25,7 @@
                 <template #title="item">
                     <div class="treeItem" @click="() => selectDic(item.data)">
                         <div class="itemText">
-                            <j-ellipsis >{{ item.name }}</j-ellipsis>
+                            <j-ellipsis >{{ item.i18nName }}</j-ellipsis>
                         </div>
                         <div @click="(e) => e.stopPropagation()">
                             <a-popconfirm
@@ -246,6 +246,7 @@ onMounted(() => {
     .itemText {
         line-height: 32px;
         flex: 1 1 0;
+        padding-right: 12px;
     }
 }
 </style>

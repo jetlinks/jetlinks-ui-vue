@@ -130,7 +130,7 @@ const queryMenuTree = () => {
 const queryAssetsType = () => {
   getAssetsType().then((resp: any) => {
     assetsType.value = resp.result.map((item: any) => ({
-      label: item.name,
+      label: item.i18nName || item.name,
       value: item.id,
     }))
   })
