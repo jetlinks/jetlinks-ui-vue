@@ -146,7 +146,6 @@
     <SaveProduct
         v-model:visible="visible"
         v-model:productId="modelRef.productId"
-        :channel="'official-edge-gateway'"
         :channels="provider"
         :deviceType="'gateway'"
         @close="onClose"
