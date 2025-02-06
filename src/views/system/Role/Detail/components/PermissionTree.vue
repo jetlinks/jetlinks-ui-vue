@@ -54,7 +54,7 @@
                         v-model:checked="record.granted"
                         :indeterminate="record.indeterminate"
                         @change="menuChange(record, true)"
-                        >{{ record.i18nName }}</a-checkbox
+                        >{{ record.i18nName || record.name }}</a-checkbox
                     >
                     <!-- :disabled='record.code === USER_CENTER_MENU_CODE' -->
                 </div>
@@ -66,7 +66,7 @@
                             v-model:checked="button.granted"
                             @change="actionChange(record)"
                             :key="button.id"
-                            >{{ button.i18nName }}</a-checkbox
+                            >{{ button.i18nName || button.name }}</a-checkbox
                         >
                         <!-- :disabled='[USER_CENTER_MENU_BUTTON_CODE].includes(button.id)' -->
                     </div>
@@ -85,7 +85,7 @@
                                 :value="asset.supportId"
                                 v-for="asset in record.assetAccesses"
                                 :key="asset.name"
-                                >{{ asset.i18nName }}</a-radio
+                                >{{ asset.i18nName || asset.name }}</a-radio
                             >
                         </a-radio-group>
                     </div>
@@ -437,7 +437,7 @@ function treeToSimple(_treeData: tableItemType[]) {
             assets = [...assets, ...item.assetAccesses];
         });
         bulkOptions.value = uniqBy(assets, 'supportId')?.map((m: any) => ({
-            label: m.i18nName,
+            label: m.i18nName | m.name,
             value: m.supportId,
         }));
     }

@@ -43,7 +43,7 @@
                                 v-for="item in form.objectList"
                                 :value="item.id"
                             >
-                                {{ item.i18nName }}
+                                {{ item.i18nName || item.name }}
                             </a-select-option>
                         </a-select>
                     </a-form-item>
@@ -64,7 +64,7 @@
                                 v-for="item in targetList"
                                 :value="item.id"
                             >
-                                {{ item.i18nName }}
+                                {{ item.i18nName || item.name }}
                             </a-select-option>
                         </a-select>
                     </a-form-item>
