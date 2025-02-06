@@ -10,6 +10,7 @@ import Player from './Player/index.vue'
 import BatchDropdown from './BatchDropdown/index.vue'
 import ConfirmModal from './ConfirmModal/index.vue'
 import CheckButton from './CheckButton/CheckButton.vue'
+import RenderComponents from './RenderComponents'
 export default {
     install(app: App) {
         app.component('TitleComponent', TitleComponent)
@@ -25,5 +26,6 @@ export default {
             .component('BatchDropdown', BatchDropdown)
             .component('ConfirmModal',ConfirmModal)
             .component('CheckButton',CheckButton)
+            .component(RenderComponents.name,RenderComponents)
     }
 }
