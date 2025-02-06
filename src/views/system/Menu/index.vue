@@ -219,7 +219,6 @@ const getList = async (_params: any) => {
     (i: any) => i.code !== 'account-center',
   );
   const lastItem = menuArr[menuArr.length - 1];
-  console.log(lastItem, 'lastItem');
   //个人中心排序为9999需要做过滤特殊处理
   total.value = lastItem
     ? lastItem.sortIndex + 1 === 9999
@@ -254,7 +253,7 @@ const toDetails = (row: any) => {
       id: row.id || ':id',
     },
     query: {
-      pid: row.id,
+      pid: row.parentId,
       basePath: row.url || '',
       sortIndex: total.value,
     },

@@ -26,6 +26,13 @@ export const getExtraRouters = () => {
         url: '/Save',
         name: i18n.global.t('router.extraMenu.260658-3')
       },
+    ],
+    'system/Positions': [
+      {
+        code: 'Detail',
+        url: '/Detail/:id',
+        name: i18n.global.t('router.extraMenu.260658-3')
+      }
     ]
   }
 

@@ -1582,7 +1582,6 @@ onMounted(async () => {
         typeOptions.value = typeOptions.value.filter((i: any) => {
             return i.value === routeQuery.provider;
         });
-        console.log(typeOptions.value[0].value)
         form.data.logoUrl = defaultImg[typeOptions.value[0].value]
     }
 });

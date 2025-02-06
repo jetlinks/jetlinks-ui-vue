@@ -16,6 +16,9 @@
           <AIcon type="PlusOutlined" />{{ $t('ButtonMange.index.544049-0') }}
         </j-permission-button>
       </template>
+      <template #name="slotProps">
+        {{ slotProps?.i18nName || slotProps?.name}}
+      </template>
       <template #action="slotProps">
         <a-space :size="16">
           <j-permission-button
@@ -79,8 +82,9 @@ const columns = [
   },
   {
     title: $t('ButtonMange.index.544049-6'),
-    dataIndex: 'i18nName',
-    key: 'i18nName',
+    dataIndex: 'name',
+    key: 'name',
+    scopedSlots: true,
     ellipsis: true
   },
   {

@@ -24,7 +24,7 @@
                         width: 120px;
                     "
                         :id="i.id"
-                    >{{ i.name }}
+                    >{{ i.i18nName || i.name }}
                     </j-ellipsis>
                 </div>
                 <div class="controls">

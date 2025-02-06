@@ -1,4 +1,4 @@
-import { defineConfig, loadEnv } from 'vite'
+ import { defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import Components from 'unplugin-vue-components/vite'
@@ -38,7 +38,13 @@ export default defineConfig(({ mode }) => {
                 output: {
                     entryFileNames: `assets/[name].${ new Date().getTime() }.js`,
                     chunkFileNames: `assets/[name].${ new Date().getTime() }.js`,
-                    assetFileNames: `assets/[name].${ new Date().getTime() }.[ext]`,
+                    assetFileNames: (pre) => {
+                        const fileType = pre.name.split('.')?.pop()
+                        if (['png', 'svg', 'ico', 'jpg'].includes(fileType)) {
+                            return `assets/[name].[ext]`
+                        }
+                        return `assets/[name].${ new Date().getTime() }.[ext]`
+                    },
                     compact: true,
                     manualChunks: {
                         vue: ['vue', 'vue-router', 'pinia'],
@@ -77,7 +83,6 @@ export default defineConfig(({ mode }) => {
             port: Number(env.VITE_PORT),
             proxy: {
                 [env.VITE_APP_BASE_API]: {
-                    // target: 'http://192.168.33.46:8844',
                     target: 'http://192.168.33.99:8844',
                     // target: 'http://192.168.35.114:8844',
                     ws: true,

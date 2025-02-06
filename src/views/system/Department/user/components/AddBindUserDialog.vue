@@ -48,7 +48,7 @@ const props = defineProps({
   },
 })
 
-const queryParams = ref({})
+const queryParams = ref({ terms: [] })
 const _selectedRowKeys = ref<string[]>([])
 
 // 保存数据
@@ -97,8 +97,8 @@ const onSelectAll = (selected: boolean, _: any[], changeRows: any) => {
     })
   } else {
     const arr = changeRows.map((item: any) => item.id)
-    const _ids: string[] = []
-    ;[..._selectedRowKeys.value].map((i: any) => {
+    const _ids: string[] = [];
+    [..._selectedRowKeys.value].map((i: any) => {
       if (!arr.includes(i)) {
         _ids.push(i)
       }
@@ -109,21 +109,19 @@ const onSelectAll = (selected: boolean, _: any[], changeRows: any) => {
 
 // 请求数据
 const handleSearch = (oParams: any) =>
-  requestFun(props.parentId, oParams, [
-    {
-      terms: [
-        {
-          column: 'id$in-dimension$org$not',
-          value: props.parentId,
-        },
-      ],
-    },
-  ])
+    requestFun(props.parentId, oParams, [
+      {
+        terms: [
+          {
+            column: 'id$in-dimension$org$not',
+            value: props.parentId,
+          },
+        ],
+      },
+    ])
 
 //
-const onSearch = (e: any[]) => {
-  queryParams.value = {
-    terms: e,
-  }
+const onSearch = (e: any) => {
+  queryParams.value = e
 }
 </script>

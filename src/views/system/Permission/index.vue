@@ -26,7 +26,7 @@
             >
               <AIcon type="PlusOutlined" />{{ $t('Permission.index.473829-0') }}
             </j-permission-button>
-            <a-dropdown trigger="hover">
+            <a-dropdown trigger="hover" visible>
               <a-button>{{ $t('Permission.index.473829-1') }}</a-button>
               <template #overlay>
                 <a-menu>
@@ -39,7 +39,7 @@
                       :before-upload="clickImport"
                       :disabled="!hasPerm"
                     >
-                      <j-permission-button :hasPermission="`${permission}:import`">
+                      <j-permission-button :hasPermission="`${permission}:import`" >
                         {{ $t('Permission.index.473829-2') }}
                       </j-permission-button>
                     </a-upload>
@@ -139,6 +139,7 @@ import { onlyMessage } from '@jetlinks-web/utils'
 import { downloadJson } from '@/utils/comm'
 import { columns } from './util'
 import { useI18n } from 'vue-i18n';
+import {FullPage} from "@/layout";
 
 const { t: $t } = useI18n();
 const permission = 'system/Permission'

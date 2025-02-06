@@ -89,9 +89,9 @@ export const useMenuStore = defineStore('menu', () => {
         })
         setParamsValue(name, params)
     }
-    const handleMenusMapById = (item: { name: string; path: string }) => {
-        const {name, path} = item
-        menusMap.value.set(name, {path})
+    const handleMenusMapById = (item: { name: string; path: string,meta:any }) => {
+        const {name, path,meta} = item
+        menusMap.value.set(name, {path,title:meta?.title})
     }
 
     const queryMenus = async () => {

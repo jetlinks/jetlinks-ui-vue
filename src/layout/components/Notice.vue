@@ -3,7 +3,6 @@
     <a-dropdown
       v-model:visible="visible"
       :trigger="['click']"
-      @visible-change="visibleChange"
     >
       <a-badge :count="total" :offset="[3, -3]">
         <AIcon type="BellOutlined" style="font-size: 16px" />
@@ -84,9 +83,9 @@ const { send } = useWebSocket({
   }
 })
 
-const visibleChange = (v: boolean) => {
-  v && getList();
-}
+// const visibleChange = (v: boolean) => {
+//   v && getList();
+// }
 
 
 
@@ -95,7 +94,6 @@ const read = (type: string, data: any) => {
         if (resp.status !== 200) return;
         // notification.close(data.payload.id);
         getList();
-        console.log(data,type)
         if (type !== '_read') {
             menuStory.routerPush('account/center', {
                params:{
@@ -107,35 +105,12 @@ const read = (type: string, data: any) => {
     });
 };
 
-const tab = [
-    {
-        key: 'alarm',
-        tab: $t('components.Notice.573407-1'),
-        type: [
-            'alarm-product',
-            'alarm-device',
-            'alarm-other',
-            'alarm-org',
-            'alarm',
-        ],
-    },
-    {
-        key: 'system-monitor',
-        tab: $t('components.Notice.573407-2'),
-        type: ['system-event'],
-    },
-    {
-        key: 'system-business',
-        tab: $t('components.Notice.573407-3'),
-        type: ['device-transparent-codec'],
-    },
-];
-
 // 查询未读数量
 const getList = () => {
     if(tabs.value.length <= 0) return;
     loading.value = true; 
-    const params = {
+      const params = {
+      paging:false,
         sorts: [{
           name: 'notifyTime',
           order: 'desc'
@@ -177,35 +152,39 @@ const handleRead = () => {
 };
 
 
-watch(updateCount, () => getList());
+
 
 const tabs = ref<any>([]);
 
-const queryTypeList = async (_tab: any[]) => {
+const queryTypeList = async () => {
     const resp: any = await getAllNotice();
     if (resp.status === 200) {
-        const provider = resp.result.map((i: any) => i.provider) || [];
-        const arr = _tab.filter((item: any) => {
-            return item.type.some((i: any) => provider.includes(i))
-        });
-        tabs.value = arr;
-        if(arr.length > 0) {
-            send('notification','/notifications',{})
+      const typeMap = new Map()
+        resp.result.forEach((i: any) => {
+            if (!typeMap.has(i.type.id)) {
+                typeMap.set(i.type.id, {
+                    key: i.type.id,
+                    tab: i.type.name,
+                    type: [
+                        i.provider
+                    ]
+                })
+            } else {
+                typeMap.get(i.type.id).type.push(i.provider)
+            }
+        })
+        tabs.value = [...typeMap.values()]
+        if (tabs.value.length > 0) {
+            send('notification', '/notifications', {});
             getList();
         }
     }
 };
 
+watch(updateCount, () => getList());
+
 onMounted(() => {
-    const _list: any[] = [...tab]
-    if(menuStory.hasMenu('process')){
-        _list.push({
-            key: 'workflow-notification',
-            tab: $t('components.Notice.573407-4'),
-            type: ['workflow-task-todo', 'workflow-task-reject', 'workflow-task-cc', 'workflow-process-finish', 'workflow-process-repealed'],
-        })
-    }
-    queryTypeList(_list)
+    queryTypeList()
 })
 
 </script>

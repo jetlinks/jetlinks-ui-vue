@@ -139,12 +139,12 @@ const queryEventsData = async (startDate, endDate, updateView) => {
                     eventsData.value.push({
                         date: i.date,
                         id: item.id,
-                        name: item.name,
+                        name: item.i18nName || item.name,
                     });
                     initialData.value.push({
                         date: i.date,
                         id: item.id,
-                        name: item.name,
+                        name: item.i18nName || item.name,
                     });
                 });
             }
@@ -603,7 +603,7 @@ setTimeout(() => {
         position: absolute;
         right: 20%;
         top: 27px;
-        transform: translateX(50%);
+        transform: translateX(40%);
     }
     .skip {
         position: absolute;

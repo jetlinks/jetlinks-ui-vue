@@ -23,7 +23,7 @@
 					<div v-else class="treeItem" @click="() => selectGroup(item.data.id)">
 						<template v-if="!item?.children">
 							<div class="itemText">
-								<j-ellipsis style="width: calc(100%-100px)">{{ item.name }}</j-ellipsis>
+								<j-ellipsis style="width: calc(100%-100px)">{{ item.i18nName }}</j-ellipsis>
 							</div>
 							<div v-if="item.id !== 'default_group' && isAdmin" @click="(e) => e.stopPropagation()">
 								<j-permission-button :disabled="item.id === 'default_group'" :popConfirm="{

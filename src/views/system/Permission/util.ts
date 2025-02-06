@@ -15,8 +15,8 @@ export const columns = [
     },
     {
       title: i18n.global.t('Permission.util.968438-2'),
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'i18nName',
+      key: 'i18nName',
       ellipsis: true,
       search: {
         type: 'string',

@@ -15,84 +15,77 @@
 </template>
 
 <script lang="ts" setup>
-import NotificationRecord from './components/NotificationRecord/index.vue'
-import { getInitData } from '../data'
-import { getAllNotice } from '@/api/account/center'
-import { useRouterParams } from '@jetlinks-web/hooks'
-import { useUserStore } from '@/store/user'
+import NotificationRecord from "./components/NotificationRecord/index.vue";
+import { getInitData } from "../data";
+import { getAllNotice } from "@/api/account/center";
+import { useRouterParams } from "@jetlinks-web/hooks";
+import { useUserStore } from "@/store/user";
+import { omit } from "lodash-es";
 
-const tabs = ref<any[]>([])
-const router = useRouterParams()
-const user = useUserStore()
-let initData: any[]
+const tabs = ref<any[]>([]);
+const router = useRouterParams();
+const user = useUserStore();
+// let initData: any[]
 const queryTypeList = () => {
   getAllNotice().then((resp: any) => {
     if (resp.status === 200) {
-      const arr = initData
-        .map((item: any) => {
-          const _child = item.children.map((i: any) => {
-            const _item = (resp.result || []).find(
-              (t: any) => t?.provider === i?.provider,
-            )
-            return {
-              ...i,
-              ..._item,
-            }
-          })
-          return {
-            ...item,
-            children: _child,
-          }
-        })
-        .filter((it: any) => {
-          return it.children.filter((lt: any) => lt?.id)?.length
-        })
-        .map((item) => {
-          return {
-            ...item,
-            children: item.children.filter((lt: any) => lt?.id),
-          }
-        })
+      const dataMap = new Map();
+      resp.result.forEach((i: any) => {
+        if (!dataMap.has(i.type.id)) {
+          dataMap.set(i.type.id, {
+            name: i.type.name,
+            provider: i.type.id,
+            children: [
+              {
+                ...omit(i, ["type"]),
+              },
+            ],
+          });
+        } else {
+          dataMap.get(i.type.id).children.push({
+            ...omit(i, ["type"]),
+          });
+        }
+      });
+      tabs.value = [...dataMap.values()];
       if (!user.other.tabKey) {
-        user.other.tabKey = arr?.[0]?.provider
+        user.other.tabKey = tabs.value?.[0]?.provider;
       }
-      tabs.value = arr
     }
-  })
-}
+  });
+};
 
 watchEffect(() => {
   if (router.params.value?.other?.tabKey) {
-    user.other.tabKey = router.params.value?.other?.tabKey
+    user.other.tabKey = router.params.value?.other?.tabKey;
   }
   if (router.params?.value.row) {
     if (
-      ['device-transparent-codec'].includes(
-        router.params?.value.row.topicProvider,
+      ["device-transparent-codec"].includes(
+        router.params?.value.row.topicProvider
       )
     ) {
-      user.other.tabKey = 'system-business'
+      user.other.tabKey = "system-business";
     }
-    if (['system-event'].includes(router.params?.value.row.topicProvider)) {
-      user.other.tabKey = 'system-monitor'
+    if (["system-event"].includes(router.params?.value.row.topicProvider)) {
+      user.other.tabKey = "system-monitor";
     }
     if (
       [
-        'workflow-task-cc',
-        'workflow-task-todo',
-        'workflow-task-reject',
-        'workflow-process-finish',
-        'workflow-process-repealed',
-        'workflow-task-transfer-todo',
+        "workflow-task-cc",
+        "workflow-task-todo",
+        "workflow-task-reject",
+        "workflow-process-finish",
+        "workflow-process-repealed",
+        "workflow-task-transfer-todo",
       ].includes(router.params?.value.row.topicProvider)
     ) {
-      user.other.tabKey = 'workflow-notification'
+      user.other.tabKey = "workflow-notification";
     }
   }
-})
+});
 
 onMounted(() => {
-  initData = getInitData()
-  queryTypeList()
-})
+  queryTypeList();
+});
 </script>
