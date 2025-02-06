@@ -1,7 +1,7 @@
 <template>
     <a-modal
         class="edit-dialog-container"
-        :title="$t('componenets.ThirdMenu.045501-0')"
+        :title="$t('components.ThirdMenu.045501-0')"
         visible
         width="800px"
         :maskClosable="false"
@@ -10,14 +10,14 @@
     >
         <div style="display: flex">
             <div class="menuList">
-                {{ $t('componenets.ThirdMenu.045501-1') }}
+                {{ $t('components.ThirdMenu.045501-1') }}
                 <div class="content">
                     <j-permission-button
                         type="link"
                         :hasPermission="`${permission}:add`"
                         @click="addMenu"
                     >
-                        {{ $t('componenets.ThirdMenu.045501-2') }}
+                        {{ $t('components.ThirdMenu.045501-2') }}
                     </j-permission-button>
                     <div class="treeContainer">
                         <a-tree
@@ -38,7 +38,7 @@
                                             v-if="data.options?.owner"
                                             type="link"
                                             :hasPermission="`${permission}:update`"
-                                            :tooltip="$t('componenets.ThirdMenu.045501-3')"
+                                            :tooltip="$t('components.ThirdMenu.045501-3')"
                                             @click="() => editMenu(data)"
                                         >
                                             <AIcon type="EditOutlined" />
@@ -49,8 +49,8 @@
                                             :tooltip="{
                                                 title:
                                                     data.level >= 3
-                                                        ? $t('componenets.ThirdMenu.045501-4')
-                                                        : $t('componenets.ThirdMenu.045501-5'),
+                                                        ? $t('components.ThirdMenu.045501-4')
+                                                        : $t('components.ThirdMenu.045501-5'),
                                             }"
                                             :disabled="
                                                 data.level >= 3 ||
@@ -64,9 +64,9 @@
                                             v-if="data.options?.owner"
                                             type="link"
                                             :hasPermission="`${permission}:delete`"
-                                            :tooltip="$t('componenets.ThirdMenu.045501-6')"
+                                            :tooltip="$t('components.ThirdMenu.045501-6')"
                                             :popConfirm="{
-                                                title: $t('componenets.ThirdMenu.045501-7'),
+                                                title: $t('components.ThirdMenu.045501-7'),
                                                 onConfirm: () =>
                                                     deleteMenu(data),
                                             }"
@@ -81,7 +81,7 @@
                 </div>
             </div>
             <div class="configuration" v-if="showControls">
-                {{ $t('componenets.ThirdMenu.045501-8') }}
+                {{ $t('components.ThirdMenu.045501-8') }}
                 <div class="content">
                     <div class="saveBtn">
                         <j-permission-button
@@ -92,7 +92,7 @@
                             :loading="saveLoading"
                             @click="saveMenu"
                         >
-                            {{ $t('componenets.ThirdMenu.045501-9') }}
+                            {{ $t('components.ThirdMenu.045501-9') }}
                         </j-permission-button>
                     </div>
                     <a-form
@@ -104,12 +104,12 @@
                         <div class="row" style="display: flex">
                             <a-form-item
                                 ref="uploadIcon"
-                                :label="$t('componenets.ThirdMenu.045501-10')"
+                                :label="$t('components.ThirdMenu.045501-10')"
                                 name="icon"
                                 :rules="[
                                     {
                                         required: true,
-                                        message: $t('componenets.ThirdMenu.045501-11'),
+                                        message: $t('components.ThirdMenu.045501-11'),
                                         trigger: 'change',
                                     },
                                 ]"
@@ -126,7 +126,7 @@
                                     <span
                                         class="mark"
                                         @click="dialogVisible = true"
-                                        >{{ $t('componenets.ThirdMenu.045501-12') }}</span
+                                        >{{ $t('components.ThirdMenu.045501-12') }}</span
                                     >
                                 </div>
 
@@ -140,45 +140,45 @@
                                             type="PlusOutlined"
                                             style="font-size: 30px"
                                         />
-                                        <p>{{ $t('componenets.ThirdMenu.045501-13') }}</p>
+                                        <p>{{ $t('components.ThirdMenu.045501-13') }}</p>
                                     </span>
                                 </div>
                             </a-form-item>
                             <a-row>
                                 <a-col :span="24">
                                     <a-form-item
-                                        :label="$t('componenets.ThirdMenu.045501-14')"
+                                        :label="$t('components.ThirdMenu.045501-14')"
                                         name="name"
                                         :rules="[
                                             {
                                                 required: true,
-                                                message: $t('componenets.ThirdMenu.045501-15'),
+                                                message: $t('components.ThirdMenu.045501-15'),
                                             },
                                             {
                                                 max: 64,
-                                                message: $t('componenets.ThirdMenu.045501-16'),
+                                                message: $t('components.ThirdMenu.045501-16'),
                                             },
                                         ]"
                                     >
                                         <a-input
                                             v-model:value="formData.name"
-                                            :placeholder="$t('componenets.ThirdMenu.045501-15')"
+                                            :placeholder="$t('components.ThirdMenu.045501-15')"
                                         />
                                     </a-form-item>
                                 </a-col>
                                 <a-col :span="24">
                                     <a-form-item
-                                        :label="$t('componenets.ThirdMenu.045501-17')"
+                                        :label="$t('components.ThirdMenu.045501-17')"
                                         name="code"
                                         :validateFirst="true"
                                         :rules="[
                                             {
                                                 required: true,
-                                                message: $t('componenets.ThirdMenu.045501-18'),
+                                                message: $t('components.ThirdMenu.045501-18'),
                                             },
                                             {
                                                 max: 64,
-                                                message: $t('componenets.ThirdMenu.045501-16'),
+                                                message: $t('components.ThirdMenu.045501-16'),
                                             },
                                             {
                                                 validator: checkCode,
@@ -188,31 +188,31 @@
                                     >
                                         <a-input
                                             v-model:value="formData.code"
-                                            :placeholder="$t('componenets.ThirdMenu.045501-18')"
+                                            :placeholder="$t('components.ThirdMenu.045501-18')"
                                         />
                                     </a-form-item>
                                 </a-col>
                             </a-row>
                         </div>
                         <a-form-item
-                            :label="$t('componenets.ThirdMenu.045501-19')"
+                            :label="$t('components.ThirdMenu.045501-19')"
                             name="url"
                             :validateFirst="true"
                             :rules="[
                                 {
                                     required: true,
-                                    message: $t('componenets.ThirdMenu.045501-20'),
+                                    message: $t('components.ThirdMenu.045501-20'),
                                 },
-                                { max: 128, message: $t('componenets.ThirdMenu.045501-21') },
+                                { max: 128, message: $t('components.ThirdMenu.045501-21') },
                                 {
                                     pattern: /^\//,
-                                    message: $t('componenets.ThirdMenu.045501-22'),
+                                    message: $t('components.ThirdMenu.045501-22'),
                                 },
                             ]"
                         >
                             <a-input
                                 v-model:value="formData.url"
-                                :placeholder="$t('componenets.ThirdMenu.045501-20')"
+                                :placeholder="$t('components.ThirdMenu.045501-20')"
                             />
                         </a-form-item>
                     </a-form>
@@ -349,7 +349,7 @@ const deleteMenu = (data: any) => {
     const response = delMenuInfo_api(data.id);
     response.then((resp: any) => {
         if (resp.status === 200) {
-            onlyMessage($t('componenets.ThirdMenu.045501-23'));
+            onlyMessage($t('components.ThirdMenu.045501-23'));
             queryMenu();
         }
     });
@@ -380,10 +380,10 @@ const saveMenu = () => {
         api(params)
             .then((res) => {
                 if (res.status === 200) {
-                    onlyMessage($t('componenets.ThirdMenu.045501-23'));
+                    onlyMessage($t('components.ThirdMenu.045501-23'));
                     queryMenu();
                 } else {
-                    onlyMessage($t('componenets.ThirdMenu.045501-24'));
+                    onlyMessage($t('components.ThirdMenu.045501-24'));
                 }
             })
             .finally(() => (saveLoading.value = false));
@@ -391,9 +391,9 @@ const saveMenu = () => {
 };
 const checkCode = async (_rule: Rule, value: string): Promise<any> => {
     if (!value) return Promise.reject('');
-    else if (value.length > 64) return Promise.reject($t('componenets.ThirdMenu.045501-16'));
+    else if (value.length > 64) return Promise.reject($t('components.ThirdMenu.045501-16'));
     // 编辑时不校验原本的编码
-    else if ((editType.value = 'edit' && value === sourceCode.value))
+    else if ((editType.value === 'edit' && value === sourceCode.value))
         return Promise.resolve('');
     else {
         const resp: any = await validCode_api({
@@ -401,7 +401,7 @@ const checkCode = async (_rule: Rule, value: string): Promise<any> => {
             owner: 'iot',
         });
         if (resp.result.passed) return Promise.resolve();
-        else return Promise.reject($t('componenets.ThirdMenu.045501-25'));
+        else return Promise.reject($t('components.ThirdMenu.045501-25'));
     }
 };
 const cancel = () => {

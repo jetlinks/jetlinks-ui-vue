@@ -106,12 +106,12 @@ const init = () => {
 
 init()
 
-watch(() => systemStore.language, () => {
-  updateRoute.value = false
-  nextTick(() => {
-    updateRoute.value = true
-  })
-})
+// watch(() => systemStore.language, () => {
+//   updateRoute.value = false
+//   nextTick(() => {
+//     updateRoute.value = true
+//   })
+// })
 
 /**
  * 处理菜单选中，展开状态
