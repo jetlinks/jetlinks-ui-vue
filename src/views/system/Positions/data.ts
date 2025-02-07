@@ -121,7 +121,7 @@ export const useColumns = () => {
 export const usePositionList = (params: any) => {
   const { data } = useRequest(queryPageNoPage, {
     onSuccess(resp) {
-      return resp.result.map(item => ({ ...item, value: item.id, label: item.name }))
+      return resp.result.map((item: any) => ({ ...item, value: item.id, label: item.name }))
     },
     defaultParams: params
   })

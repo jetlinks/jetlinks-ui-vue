@@ -130,7 +130,7 @@ watch(() => route.params.id, (v) => {
                 </a-col>
                 <a-col :span="12">
                   <a-form-item :label="$t('positions.index.223804-1')">
-                    <a-select v-model:value="formModel.parentId" :options="positionsList" :placeholder="$t('positions.index.223804-2)" />
+                    <a-select v-model:value="formModel.parentId" :options="positionsList" :placeholder="$t('positions.index.223804-2')" />
                   </a-form-item>
                 </a-col>
               </a-row>
