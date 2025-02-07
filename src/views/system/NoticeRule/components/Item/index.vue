@@ -104,7 +104,7 @@
                                 </template>
                             </a-dropdown>
                             <div class="box-item-text">
-                                <j-ellipsis>{{ slotProps?.i18nName }}</j-ellipsis>
+                                <j-ellipsis>{{ slotProps?.i18nName || slotProps.name }}</j-ellipsis>
                             </div>
                         </div>
                     </template>

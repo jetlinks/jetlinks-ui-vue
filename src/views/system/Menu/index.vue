@@ -27,6 +27,12 @@
             >
               <AIcon type="PlusOutlined" />{{ $t('Menu.index.599742-0') }}
             </j-permission-button>
+            <a-button
+              v-if="admin"
+              style="margin-left: 12px"
+              @click="router.push('/system/Menu/Setting')"
+            >菜单配置</a-button
+            >
           </template>
           <template #createTime="slotProps">
             <span v-time-format="'YYYY-MM-DD HH:mm:ss'">
@@ -81,11 +87,21 @@ import { useMenuStore } from '@/store/menu'
 import { onlyMessage } from '@jetlinks-web/utils'
 import {OWNER_KEY} from "@/utils/consts";
 import { useI18n } from 'vue-i18n';
+import { useUserStore } from '@/store/user';
+import { storeToRefs } from 'pinia'
 
 const { t: $t } = useI18n();
 const permission = 'system/Menu'
 
 const menuStore = useMenuStore()
+const router = useRouter();
+
+const userInfoStore = useUserStore();
+const { userInfo } = storeToRefs(userInfoStore);
+
+const admin = computed(() => {
+  return userInfo.value?.username === 'admin';
+});
 
 const columns = [
   {
