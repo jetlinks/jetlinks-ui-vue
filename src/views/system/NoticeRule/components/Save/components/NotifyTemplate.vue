@@ -200,6 +200,7 @@ const handleData = async (e: any) => {
             total: resp.result.length,
         },
         status: resp.status,
+        success: resp.message === 'success'
     };
 };
 

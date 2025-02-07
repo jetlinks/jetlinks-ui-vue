@@ -104,7 +104,7 @@
                                 </template>
                             </a-dropdown>
                             <div class="box-item-text">
-                                <j-ellipsis>{{ slotProps?.name }}</j-ellipsis>
+                                <j-ellipsis>{{ slotProps?.i18nName }}</j-ellipsis>
                             </div>
                         </div>
                     </template>
@@ -298,6 +298,15 @@ const onAction = (e: boolean) => {
                                 idList: [],
                             },
                         },
+                        i18nMessage: {
+                          name:
+                            {
+                              'zh_CN': '站内信',
+                              'en_US': 'In-site Message',
+                              'zh': '站内信',
+                              'en': 'In-site Message'
+                            }
+                        }
                     },
                 ],
             };
