@@ -3098,5 +3098,8 @@
 	"components.NoticeItem.265390-4": "Mark as unread",
 	"components.NoticeItem.265390-5": "Operation successful!",
 	"components.User.635192-0": "Personal Center",
-	"components.User.635192-1": "Log out"
+	"components.User.635192-1": "Log out",
+	"positions.index.223804-1": "Superior organization",
+	"positions.index.223804-2": "Please select the superior organization",
+	"positions.index.223804-3": "Please add job information first"
 }

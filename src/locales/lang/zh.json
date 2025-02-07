@@ -3098,5 +3098,8 @@
 	"components.NoticeItem.265390-4": "标为未读",
 	"components.NoticeItem.265390-5": "操作成功！",
 	"components.User.635192-0": "个人中心",
-	"components.User.635192-1": "退出登录"
+	"components.User.635192-1": "退出登录",
+	"positions.index.223804-1": "上级组织",
+	"positions.index.223804-2": "请选择上级组织",
+	"positions.index.223804-3": "请先新增职位信息"
 }
