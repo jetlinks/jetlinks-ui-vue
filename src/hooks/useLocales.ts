@@ -24,7 +24,6 @@ export const useLocales = (protocol: string) => {
     }
 
     const $lang = (key) => {
-        console.log(langJson.value)
         return langJson.value?.[key] || ''
     }
 
