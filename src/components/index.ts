@@ -11,6 +11,9 @@ import BatchDropdown from './BatchDropdown/index.vue'
 import ConfirmModal from './ConfirmModal/index.vue'
 import CheckButton from './CheckButton/CheckButton.vue'
 import RenderComponents from './RenderComponents'
+
+import FormItemValue from './FormItem'
+
 export default {
     install(app: App) {
         app.component('TitleComponent', TitleComponent)
@@ -27,5 +30,10 @@ export default {
             .component('ConfirmModal',ConfirmModal)
             .component('CheckButton',CheckButton)
             .component(RenderComponents.name,RenderComponents)
+            .component('CheckButton',CheckButton);
+
+        Object.keys(FormItemValue).forEach(key => {
+            app.component(key, FormItemValue[key])
+        })
     }
 }

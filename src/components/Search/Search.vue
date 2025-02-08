@@ -8,7 +8,7 @@
       :deleteRequest='(_target: string, id: string) => deleteSearchHistory(target, id)'
       :columns='columns'
       :class='props.class'
-      style='padding-top: 18px; padding-bottom: 18px;'
+      :style='myStyles'
       @search='searchSubmit'
     />
   </div>
@@ -17,6 +17,7 @@
 <script setup lang='ts' name='ProSearch'>
 import { PropType } from 'vue'
 import { saveSearchHistory, getSearchHistory, deleteSearchHistory } from '@/api/comm'
+import {isObject} from "lodash-es";
 
 interface Emit {
   (e: 'search', data: any): void
@@ -44,6 +45,13 @@ const props = defineProps({
   noMargin: {
     type: Boolean,
     default: false
+  },
+  style: {
+    type: [String, Object],
+    default: () => ({
+      paddingTop: '18px',
+      paddingBottom: '18px',
+    })
   }
 })
 
@@ -54,6 +62,17 @@ const classNames = computed(() => {
     'j-advanced-search-warp': true,
     'no-margin': props.noMargin !== false
   }
+})
+
+const myStyles = computed(() => {
+  if (isObject(props.style)) {
+    return {
+      paddingTop: '18px',
+      paddingBottom: '18px',
+      ...props.style
+    }
+  }
+  return props.style
 })
 
 /**

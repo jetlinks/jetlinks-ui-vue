@@ -1,10 +1,11 @@
 import { useI18n } from 'vue-i18n';
 import {queryRole_api} from "@/api/system/user";
 import {queryOrgThree} from "@/modules/device-manager-ui/api/product";
+import {useRequest} from "@jetlinks-web/hooks";
+import {queryPageNoPage} from "@/api/system/positions";
 
-export const useColumns = (permission) => {
+export const useColumns = () => {
   const { t: $t } = useI18n();
-
   return [
     {
       title: 'ID',
@@ -16,7 +17,7 @@ export const useColumns = (permission) => {
       },
     },
     {
-      title: '名称',
+      title: $t('components.EditUserDialog.939453-3'),
       dataIndex: 'name',
       key: 'name',
       ellipsis: true,
@@ -26,8 +27,8 @@ export const useColumns = (permission) => {
     },
     {
       title: $t('User.index.673867-13'),
-      dataIndex: 'roleList',
-      key: 'roleList',
+      dataIndex: 'roles',
+      key: 'roles',
       search: {
         type: 'select',
         // rename:'id$in-dimension$role',
@@ -52,16 +53,23 @@ export const useColumns = (permission) => {
       scopedSlots: true,
     },
     {
-      title: '上级职位',
+      title: $t('positions.index.223804-1'),
       dataIndex: 'parentId',
       key: 'parentId',
       ellipsis: true,
       search: {
-        type: 'string',
+        type: 'select',
+        options: () => queryPageNoPage().then(resp => {
+          return resp.result?.map((item: any) => ({
+            ...item,
+            label: item.name,
+            value: item.id
+          })) || []
+        })
       },
     },
     {
-      dataIndex: 'id$dim-assets',
+      dataIndex: 'orgId',
       title: $t('Instance.index.133466-16'),
       hideInTable: true,
       search: {
@@ -79,15 +87,8 @@ export const useColumns = (permission) => {
                   }
                   _list.push({
                     ...item,
-                    id: JSON.stringify({
-                      assetType: 'positions',
-                      targets: [
-                        {
-                          type: 'org',
-                          id: item.id,
-                        },
-                      ],
-                    }),
+                    label: item.name,
+                    value: item.id
                   });
                 });
                 return _list;
@@ -111,8 +112,19 @@ export const useColumns = (permission) => {
       dataIndex: 'action',
       key: 'action',
       fixed: 'right',
-      width: 180,
+      width: 100,
       scopedSlots: true,
     },
   ]
+}
+
+export const usePositionList = (params: any) => {
+  const { data } = useRequest(queryPageNoPage, {
+    onSuccess(resp) {
+      return resp.result.map((item: any) => ({ ...item, value: item.id, label: item.name }))
+    },
+    defaultParams: params
+  })
+
+  return { data }
 }
