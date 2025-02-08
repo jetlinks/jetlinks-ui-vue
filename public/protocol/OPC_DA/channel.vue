@@ -1,45 +1,45 @@
 <template>
   <a-form-item
-    label="主机地址"
+    :label="$lang('OPC_DA.channel.20250207-1')"
     :name="['configuration', 'host']"
     :rules="[
-      { required: true, message: '请输入主机地址' },
+      { required: true, message: $lang('OPC_DA.channel.20250207-2') },
       {
         trigger: 'blur',
         validator: validateUrl,
-        message: '请输入正确的主机地址',
+        message: $lang('OPC_DA.channel.20250207-3')
       },
     ]"
   >
     <a-input
       v-model:value="formData.configuration.host"
-      placeholder="请输入IP地址"
+      :placeholder="$lang('OPC_DA.channel.20250207-2')"
     />
   </a-form-item>
   <a-form-item
-    label="用户名"
+    :label="$lang('OPC_DA.channel.20250207-4')"
     :name="['configuration', 'username']"
-    :rules="[{ required: true, message: '请输入用户名' }]"
+    :rules="[{ required: true, message: $lang('OPC_DA.channel.20250207-5') }]"
   >
     <a-input
       v-model:value="formData.configuration.username"
       :maxlength="64"
       autocomplete="off"
       style="width: 100%"
-      placeholder="请输入端口"
+      :placeholder="$lang('OPC_DA.channel.20250207-5')"
     />
   </a-form-item>
   <a-form-item
-    label="密码"
+    :label="$lang('OPC_DA.channel.20250207-6')"
     :name="['configuration', 'password']"
-    :rules="[{ required: true, message: '请输入密码' }]"
+    :rules="[{ required: true, message: $lang('OPC_DA.channel.20250207-7') }]"
   >
     <a-input
       v-model:value="formData.configuration.password"
       :maxlength="64"
       autocomplete="off"
       style="width: 100%"
-      placeholder="请输入密码"
+      :placeholder="$lang('OPC_DA.channel.20250207-7')"
     />
   </a-form-item>
 </template>
@@ -47,7 +47,9 @@
 <script setup>
 import { inject, ref } from "vue";
 import {testIpv4_6} from 'local-utils'
+import {useLocales} from '@hooks'
 
+const {$lang} = useLocales('OPC_DA')
 const formData = inject("plugin-form", {
   configuration: {},
 });
@@ -58,7 +60,7 @@ const validateUrl = async (_rule, value) => {
     return Promise.resolve();
   } else {
     if (!testIpv4_6(value)) {
-      return Promise.reject("请输入正确的主机地址");
+      return Promise.reject($lang('OPC_DA.channel.20250207-3'));
     }
     return Promise.resolve();
   }

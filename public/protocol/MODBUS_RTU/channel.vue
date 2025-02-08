@@ -1,31 +1,49 @@
 <template>
-  <a-form-item label="串口" :rules="rules.serialPortId" :name="['configuration', 'serialPortId']">
-    <a-select :options="serialPort" placeholder="请选择串口" v-model:value="formData.configuration.serialPortId" @change="handleSerialPortChange"/>
+  <a-form-item :label="$lang('MODBUS_RTU.channel.20250207-1')" :rules="[
+    {
+      required: true,
+      message: $lang('MODBUS_RTU.channel.20250207-2')
+    },
+  ]" :name="['configuration', 'serialPortId']">
+    <a-select :options="serialPort" :placeholder="$lang('MODBUS_RTU.channel.20250207-2')" v-model:value="formData.configuration.serialPortId" @change="handleSerialPortChange"/>
   </a-form-item>
-  <a-form-item label="请求超时" :rules="rules.requestTimeout" :name="['configuration', 'requestTimeout']">
+  <a-form-item :label="$lang('MODBUS_RTU.channel.20250207-3')" :rules="[
+    {
+      required: true,
+      message: $lang('MODBUS_RTU.channel.20250207-4')
+    },
+  ]" :name="['configuration', 'requestTimeout']">
     <a-input-number
       :min="0"
       :max="9999999999999"
       v-model:value="formData.configuration.requestTimeout"
       addon-after="ms"
       style="width: 100%"
-      placeholder="请输入请求超时时间"/>
+      :placeholder="$lang('MODBUS_RTU.channel.20250207-4')"
+    />
   </a-form-item>
-  <a-form-item label="通讯间隔" :rules="rules.communicationInterval" :name="['configuration', 'communicationInterval']">
+  <a-form-item :label="$lang('MODBUS_RTU.channel.20250207-5')" :rules="[
+    {
+      required: true,
+      message: $lang('MODBUS_RTU.channel.20250207-6')
+    },
+  ]" :name="['configuration', 'communicationInterval']">
     <a-input-number
       :min="0"
       :max="9999999999999"
       v-model:value="formData.configuration.communicationInterval"
       addon-after="ms"
       style="width: 100%"
-      placeholder="请输入通讯间隔" />
+      :placeholder="$lang('MODBUS_RTU.channel.20250207-6')" />
   </a-form-item>
 </template>
 
 <script setup>
 import {request} from "@jetlinks-web/core";
-import {inject, ref, watch} from "vue";
+import {inject, ref} from "vue";
+import {useLocales} from '@hooks'
 
+const {$lang} = useLocales('MODBUS_RTU')
 const formData = inject('plugin-form')
 const serialPort = ref([])
 
@@ -39,28 +57,6 @@ if (!('configuration' in formData)) {
     type: 'rtu',
   };
 }
-
-const rules = {
-  serialPortId: [
-    {
-      required: true,
-      message: '请输入串口',
-    },
-  ],
-  requestTimeout: [
-    {
-      required: true,
-      message: '请输入请求超时',
-    },
-  ],
-  communicationInterval: [
-    {
-      required: true,
-      message: '请输入通讯间隔',
-    },
-  ],
-}
-
 const handleSerialPortChange = (_, option) => {
   formData.configuration.serialPortProperties = option.source;
 }

@@ -1,29 +1,65 @@
 <template>
-  <a-form-item label="功能码" :name="['configuration', 'function']" :rules="rules.function">
-    <a-select style="width: 100%" v-model:value="formData.configuration.function" :options="options" placeholder="请选择所功能码"
-              allowClear show-search :filter-option="filterOption" @change="functionChange" />
+  <a-form-item :label="$lang('MODBUS_TCP.point.20250207-1')" :name="['configuration', 'function']"
+               :rules="[
+    {
+      required: true,
+      message: $lang('MODBUS_TCP.point.20250207-2')
+    },
+  ]">
+    <a-select style="width: 100%" v-model:value="formData.configuration.function"
+              :options="[
+  { label: $lang('MODBUS_TCP.point.20250207-24'), value: 'Coils' },
+  { label: $lang('MODBUS_TCP.point.20250207-25'), value: 'DiscreteInputs' },
+  { label: $lang('MODBUS_TCP.point.20250207-26'), value: 'HoldingRegisters' },
+  { label: $lang('MODBUS_TCP.point.20250207-27'), value: 'InputRegisters' },
+]"
+              :placeholder="$lang('MODBUS_TCP.point.20250207-2')"
+              allowClear show-search :filter-option="filterOption" @change="functionChange"/>
   </a-form-item>
-  <a-form-item label="地址" name="pointKey" :rules="rules.pointKey">
+  <a-form-item :label="$lang('MODBUS_TCP.point.20250207-3')" name="pointKey" :rules="[
+    {
+      validator: checkPointKey,
+      trigger: 'blur',
+    },
+  ]">
     <a-input-number v-model:value="formData.pointKey" :controls="false" :max="9999999" :maxlength="64" :min="0"
-                    :precision="0" placeholder="请输入地址" style="width: 100%" />
+                    :precision="0"
+                    :placeholder="$lang('MODBUS_TCP.point.20250207-4')"
+                    style="width: 100%"/>
     <p v-show="plcFormat" style="margin: 10px 0; color: #616161">
       PLC地址：{{ formData.pointKey != undefined ? plcFormat : '' }}
     </p>
   </a-form-item>
   <a-form-item v-if="showProvider" :name="['configuration', 'codec', 'provider']" :rules="[
-    ...rules.provider,
+    {
+      required: true,
+      message: $lang('MODBUS_TCP.point.20250207-7')
+    },
     {
       validator: checkProvider,
       trigger: 'change',
     },
-  ]" label="数据类型">
-    <a-select v-model:value="formData.configuration.codec.provider" :options="filterProvOptions" placeholder="请选择数据类型"
-              show-search @change="providerChange" />
+  ]"
+               :label="$lang('MODBUS_TCP.point.20250207-6')"
+  >
+    <a-select v-model:value="formData.configuration.codec.provider" :options="filterProvOptions"
+              :placeholder="$lang('MODBUS_TCP.point.20250207-7')"
+              show-search @change="providerChange"/>
   </a-form-item>
 
-  <a-form-item :name="['configuration', 'parameter', 'quantity']" :rules="rules.quantity" label="寄存器数量（word）">
+  <a-form-item :name="['configuration', 'parameter', 'quantity']" :rules="[
+    {
+      required: true,
+      message: $lang('MODBUS_TCP.point.20250207-9')
+    },
+    {
+      pattern: new RegExp(/^\d+$/),
+      message: $lang('MODBUS_TCP.point.20250207-10')
+    },
+  ]" :label="$lang('MODBUS_TCP.point.20250207-8')">
     <a-input-number v-model:value="formData.configuration.parameter.quantity" :controls="false" :max="65535" :min="1"
-                    :precision="0" placeholder="请输入寄存器数量" style="width: 100%" />
+                    :precision="0"
+                    :placeholder="$lang('MODBUS_TCP.point.20250207-9')" style="width: 100%"/>
   </a-form-item>
 
   <a-form-item v-if="showScaleFactor" :name="[
@@ -31,13 +67,19 @@
     'codec',
     'configuration',
     'scaleFactor',
-  ]" label="缩放因子">
-    <a-input-number v-model:value="formData.configuration.codec.configuration.scaleFactor" :controls="false" :max="65535"
-                    :maxlength="64" placeholder="请输入缩放因子" style="width: 100%" type="number" />
+  ]" :label="$lang('MODBUS_TCP.point.20250207-11')"
+  >
+    <a-input-number v-model:value="formData.configuration.codec.configuration.scaleFactor" :controls="false"
+                    :max="65535"
+                    :maxlength="64"
+                    :placeholder="$lang('MODBUS_TCP.point.20250207-12')" style="width: 100%" type="number"/>
   </a-form-item>
-  <a-form-item v-if="showCodecProvider" :name="['configuration', 'codec', 'configuration', 'scale']" label="小数保留位数">
+  <a-form-item v-if="showCodecProvider" :name="['configuration', 'codec', 'configuration', 'scale']"
+               :label="$lang('MODBUS_TCP.point.20250207-13')">
     <a-input-number v-model:value="formData.configuration.codec.configuration.scale" :controls="false" :max="65535"
-                    :maxlength="64" :min="0" :precision="0" placeholder="请输入小数保留位数" style="width: 100%" type="number" />
+                    :maxlength="64" :min="0" :precision="0"
+                    :placeholder="$lang('MODBUS_TCP.point.20250207-14')" style="width: 100%"
+    />
   </a-form-item>
   <div v-if="showWriteByteConfig">
     <a-form-item style="
@@ -47,32 +89,51 @@
             margin: 0;
           ">
       <a-form-item-rest>
-        <span>非标准协议写入配置</span>
+        <span>{{ $lang('MODBUS_TCP.point.20250207-15') }}</span>
       </a-form-item-rest>
-      <a-switch v-model:checked="writeByteConfig" style="margin-left: 20px" />
+      <a-switch v-model:checked="writeByteConfig" style="margin-left: 20px"/>
     </a-form-item>
     <a-form-item v-if="writeByteConfig" :name="['configuration', 'parameter', 'writeByteCount']"
-                 :rules="rules.writeByteCount" label="是否写入数据区长度">
+                 :rules="[
+    {
+      required: true,
+      message: $lang('MODBUS_TCP.point.20250207-16')
+    },
+  ]" :label="$lang('MODBUS_TCP.point.20250207-17')">
       <a-radio-group v-model:value="formData.configuration.parameter.writeByteCount">
         <a-space>
-          <a-radio-button :value="true">是</a-radio-button>
-          <a-radio-button :value="false">否</a-radio-button>
+          <a-radio-button :value="true">{{ $lang('MODBUS_TCP.point.20250207-18') }}</a-radio-button>
+          <a-radio-button :value="false">{{ $lang('MODBUS_TCP.point.20250207-19') }}</a-radio-button>
         </a-space>
       </a-radio-group>
     </a-form-item>
-    <a-form-item v-if="writeByteConfig" :name="['configuration', 'parameter', 'byteCount']" :rules="rules.byteCount"
-                 label="自定义数据区长度（byte）">
-      <a-input placeholder="请输入自定义数据区长度（byte）" v-model:value="formData.configuration.parameter.byteCount" />
+    <a-form-item v-if="writeByteConfig" :name="['configuration', 'parameter', 'byteCount']" :rules="[
+    {
+      required: true,
+      message: $lang('MODBUS_TCP.point.20250207-20')
+    },
+  ]"
+                 :label="$lang('MODBUS_TCP.point.20250207-21')">
+      <a-input
+          :placeholder="$lang('MODBUS_TCP.point.20250207-20')" v-model:value="formData.configuration.parameter.byteCount"/>
     </a-form-item>
   </div>
-  <a-form-item :rules="rules.accessModes" label="访问类型" name="accessModes">
-    <j-check-button v-model:value="formData.accessModes" :multiple="true" :options="accessModesOptions" />
+  <a-form-item :rules="[
+    {
+      required: true,
+      message: $lang('MODBUS_TCP.point.20250207-23')
+    },
+  ]"
+               :label="$lang('MODBUS_TCP.point.20250207-22')" name="accessModes">
+    <j-check-button v-model:value="formData.accessModes" :multiple="true" :options="accessModesOptions"/>
   </a-form-item>
 </template>
 <script setup>
-import { computed, inject, ref, watch } from 'vue'
-import { request } from '@jetlinks-web/core'
+import {computed, inject, ref, watch} from 'vue'
+import {request} from '@jetlinks-web/core'
+import {useLocales} from '@hooks'
 
+const {$lang} = useLocales('MODBUS_TCP')
 const formData = inject('plugin-form', {
   accessModes: [],
   pointKey: undefined,
@@ -133,83 +194,6 @@ if (!('accessModes' in formData)) {
 
 const oldPointKey = formData.pointKey;
 
-const rules = {
-  name: [
-    {
-      required: true,
-      message: '请输入点位名称',
-    },
-    {
-      max: 64,
-      message: '最多可输入64个字符',
-    },
-  ],
-  function: [
-    {
-      required: true,
-      message: '请选择功能码',
-    },
-  ],
-  pointKey: [
-    {
-      validator: checkPointKey,
-      trigger: 'blur',
-    },
-  ],
-  quantity: [
-    {
-      required: true,
-      message: '请输入寄存器数量',
-    },
-    {
-      pattern: new RegExp(/^\d+$/),
-      message: '请输入1-255之间的正整数',
-    },
-  ],
-  provider: [
-    {
-      required: true,
-      message: '请选择数据类型',
-    },
-  ],
-  scaleFactor: [
-    {
-      required: true,
-      message: '请输入缩放因子',
-    },
-  ],
-  accessModes: [
-    {
-      required: true,
-      message: '请选择访问类型',
-    },
-  ],
-  writeByteCount: [
-    {
-      required: true,
-      message: '请选择是否写入数据区长度',
-    },
-  ],
-  byteCount: [
-    {
-      required: true,
-      message: '请输入自定义数据区长度(byte)',
-    },
-  ],
-  interval: [
-    {
-      required: true,
-      message: '请输入采集频率',
-    },
-    {
-      pattern: new RegExp(/^\d+$/),
-      message: '请输入0或者正整数',
-    },
-  ],
-
-  description: [{ max: 200, message: '最多可输入200个字符' }],
-}
-
 const filterOption = (input, option) => {
   return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 };
@@ -217,13 +201,6 @@ const filterOption = (input, option) => {
 const showProvider = computed(() => {
   return ['HoldingRegisters', 'InputRegisters'].includes(formData.configuration.function)
 })
-
-const options = [
-  { label: '01线圈寄存器', value: 'Coils' },
-  { label: '02离散输入寄存器', value: 'DiscreteInputs' },
-  { label: '03保存寄存器', value: 'HoldingRegisters' },
-  { label: '04输入寄存器', value: 'InputRegisters' },
-]
 
 const checkProviderData = {
   int8: 1,
@@ -239,32 +216,32 @@ const getOptions = () => {
   request.get('/things/collector/codecs', {}).then(resp => {
 
     provOptions.value = resp.result
-      .filter((i) => i.id !== 'property' && i.id !== 'bool')
-      .map((item) => ({
-        value: item.id,
-        label: item.name,
-      }))
+        .filter((i) => i.id !== 'property' && i.id !== 'bool')
+        .map((item) => ({
+          value: item.id,
+          label: item.name,
+        }))
   })
 }
 
 const checkProvider = (_rule, value) =>
-  new Promise(async (resolve, reject) => {
-    if (value) {
-      const { quantity } = formData.configuration.parameter;
-      return checkProviderData[value] > Number(quantity) * 2
-        ? reject('数据类型长度需 <= 寄存器数量 * 2')
-        : resolve('');
-    } else {
-      return reject('');
-    }
-  });
+    new Promise(async (resolve, reject) => {
+      if (value) {
+        const {quantity} = formData.configuration.parameter;
+        return checkProviderData[value] > Number(quantity) * 2
+            ? reject($lang('MODBUS_TCP.point.20250207-28'))
+            : resolve('');
+      } else {
+        return reject('');
+      }
+    });
 
-function checkPointKey (_rule, value) {
+function checkPointKey(_rule, value) {
   return new Promise(async (resolve, reject) => {
     if (value || value === 0) {
       const reg = new RegExp(/^\d+$/)
       if (!reg.test(value)) {
-        return reject('请输入0-999999之间的正整数')
+        return reject($lang('MODBUS_TCP.point.20250207-29'))
       }
 
       if (Number(oldPointKey) === Number(value)) return resolve('');
@@ -274,7 +251,7 @@ function checkPointKey (_rule, value) {
       });
       return res.result?.passed ? resolve('') : reject(res.result.reason);
     } else {
-      return reject('请输入地址');
+      return reject($lang('MODBUS_TCP.point.20250207-4'));
     }
   });
 }
@@ -299,17 +276,17 @@ const plcFormat = computed(() => {
 const accessModesOptions = computed(() => {
   return formData.configuration.function === 'InputRegisters' ||
   formData.configuration.function === 'DiscreteInputs'
-    ? [{ label: '读', value: 'read' }]
-    : [
-      { label: '读', value: 'read' },
-      { label: '写', value: 'write' },
-    ]
+      ? [{label: $lang('MODBUS_TCP.point.20250207-30'), value: 'read'}]
+      : [
+        {label: $lang('MODBUS_TCP.point.20250207-30'), value: 'read'},
+        {label: $lang('MODBUS_TCP.point.20250207-31'), value: 'write'},
+      ]
 })
 
 const showScaleFactor = computed(() => {
   return formData.configuration.codec.provider?.indexOf('int') !== -1 ||
-    formData.configuration.codec.provider?.indexOf('float') !== -1 ||
-    formData.configuration.codec.provider?.indexOf('double') !== -1
+      formData.configuration.codec.provider?.indexOf('float') !== -1 ||
+      formData.configuration.codec.provider?.indexOf('double') !== -1
 })
 
 const showCodecProvider = computed(() => !['hex', 'bool'].includes(formData.configuration.codec.provider))
@@ -342,7 +319,7 @@ const providerValueMap = {
 }
 
 const providerChange = (val) => {
-  console.log('providerValueMap[val]====',providerValueMap[val],providerValueMap);
+  console.log('providerValueMap[val]====', providerValueMap[val], providerValueMap);
   formData.configuration.parameter.quantity = providerValueMap[val]
 
   if (val === 'bool') {
@@ -363,26 +340,26 @@ const functionChange = (v) => {
 getOptions()
 
 watch(
-  () => writeByteConfig.value,
-  (val) => {
-    if (
-      val &&
-      !formData.configuration.parameter.byteCount &&
-      formData.configuration.parameter.quantity
-    ) {
-      formData.configuration.parameter.byteCount = formData.configuration.parameter.quantity * 2;
-    }
-  },
+    () => writeByteConfig.value,
+    (val) => {
+      if (
+          val &&
+          !formData.configuration.parameter.byteCount &&
+          formData.configuration.parameter.quantity
+      ) {
+        formData.configuration.parameter.byteCount = formData.configuration.parameter.quantity * 2;
+      }
+    },
 );
 
 watch(
-  () => formData.configuration.parameter?.byteCount,
-  () => {
-    if (formData.configuration.parameter?.byteCount) {
-      writeByteConfig.value = true;
-    }
-  },
-  { deep: true },
+    () => formData.configuration.parameter?.byteCount,
+    () => {
+      if (formData.configuration.parameter?.byteCount) {
+        writeByteConfig.value = true;
+      }
+    },
+    {deep: true},
 );
 
 </script>

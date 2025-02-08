@@ -1,27 +1,33 @@
 <template>
   <a-form-item label="IP" :name="['configuration', 'address']"
-               :rules="[{ required: true, message: '请输入IP地址' }, { trigger: 'blur',validator: validateUrl, message: '请输入正确的ip地址'}]">
-    <a-input v-model:value="formData.configuration.address" placeholder="请输入IP地址"/>
+               :rules="[{ required: true, message: $lang('OMRON_FINS.collector.20250207-1') }, { trigger: 'blur',validator: validateUrl}]">
+    <a-input v-model:value="formData.configuration.address"
+             :placeholder="$lang('OMRON_FINS.collector.20250207-1')"/>
   </a-form-item>
-  <a-form-item label="协议类型" :name="['configuration', 'protocolType']"
-               :rules="[{ required: true, message: '请选择协议类型' }]">
-    <a-select v-model:value="formData.configuration.protocolType" :options="protocolTypeList || []" placeholder="请选择协议类型"/>
+  <a-form-item :label="$lang('OMRON_FINS.collector.20250207-10') " :name="['configuration', 'protocolType']"
+               :rules="[{ required: true, message: $lang('OMRON_FINS.collector.20250207-2') }]">
+    <a-select v-model:value="formData.configuration.protocolType" :options="protocolTypeList || []"
+              :placeholder="$lang('OMRON_FINS.collector.20250207-2') "/>
   </a-form-item>
-  <a-form-item label="端口" :name="['configuration', 'port']" :rules="[{ required: true, message: '请输入端口' }]">
+  <a-form-item :label="$lang('OMRON_FINS.collector.20250207-3') " :name="['configuration', 'port']"
+               :rules="[{ required: true, message: $lang('OMRON_FINS.collector.20250207-4')  }]">
     <a-input-number :precision="0"
                     :min="0"
-                    :max="65535" v-model:value="formData.configuration.port" style="width: 100%" placeholder="请输入端口"/>
+                    :max="65535" v-model:value="formData.configuration.port" style="width: 100%"
+                    :placeholder="$lang('OMRON_FINS.collector.20250207-4') "/>
   </a-form-item>
-  <a-form-item label="节点号" :name="['configuration', 'local-node']"
-               :rules="[{ required: true, message: '请输入节点号' }]">
+  <a-form-item :label="$lang('OMRON_FINS.collector.20250207-5') " :name="['configuration', 'local-node']"
+               :rules="[{ required: true,
+               message: $lang('OMRON_FINS.collector.20250207-6')  }]">
     <a-input-number :precision="0"
                     :max="255"
                     :min="0" v-model:value="formData.configuration['local-node']" style="width: 100%"
                     placeholder="请输入节点号"/>
   </a-form-item>
-  <a-form-item label="设备型号" :name="['configuration', 'deviceSeries']"
-               :rules="[{ required: true, message: '请选择设备型号' }]">
-    <a-select v-model:value="formData.configuration.deviceSeries" placeholder="请选择设备型号"
+  <a-form-item :label="$lang('OMRON_FINS.collector.20250207-7') " :name="['configuration', 'deviceSeries']"
+               :rules="[{ required: true, message: $lang('OMRON_FINS.collector.20250207-8')  }]">
+    <a-select v-model:value="formData.configuration.deviceSeries"
+              :placeholder="$lang('OMRON_FINS.collector.20250207-8') "
               :options="deviceList || []"/>
   </a-form-item>
 </template>
@@ -30,7 +36,9 @@
 import {inject, ref} from 'vue'
 import {request} from '@jetlinks-web/core'
 import {testIpv4_6} from 'local-utils'
+import {useLocales} from '@hooks'
 
+const {$lang} = useLocales('OMRON_FINS')
 const formData = inject('plugin-form', {
   configuration: {}
 })
@@ -41,7 +49,7 @@ const validateUrl = async (_rule, value) => {
     return Promise.resolve();
   } else {
     if (!testIpv4_6(value)) {
-      return Promise.reject('请输入正确的IP地址');
+      return Promise.reject($lang('OMRON_FINS.collector.20250207-9'));
     }
     return Promise.resolve();
   }

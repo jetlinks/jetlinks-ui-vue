@@ -1,42 +1,42 @@
 <template>
   <a-form-item
-    label="主机地址"
+      :label="$lang('EtherNetIp.collector.20250207-1')"
     :name="['configuration', 'host']"
     :rules="[
-      { required: true, message: '请输入主机地址' },
+      { required: true, message: $lang('EtherNetIp.collector.20250207-2') },
       {
         trigger: 'blur',
         validator: validateUrl,
-        message: '请输入正确的主机地址',
+        message: $lang('EtherNetIp.collector.20250207-3'),
       },
     ]"
   >
     <a-input
       v-model:value="formData.configuration.host"
-      placeholder="请输入主机地址"
+      :placeholder="$lang('EtherNetIp.collector.20250207-2')"
     />
   </a-form-item>
   <a-form-item
-    label="端口"
+    :label="$lang('EtherNetIp.collector.20250207-4')"
     :name="['configuration', 'port']"
-    :rules="[{ required: true, message: '请输入端口', trigger: 'change' }]"
+    :rules="[{ required: true, message: $lang('EtherNetIp.collector.20250207-5'), trigger: 'change' }]"
   >
     <a-input-number
         style="width: 100%;"
       v-model:value="formData.configuration.port"
-      placeholder="请输入端口"
+      :placeholder="$lang('EtherNetIp.collector.20250207-5')"
       :max="65535"
       :min="1"
     />
   </a-form-item>
   <a-form-item
-    label="连接池大小"
+    :label="$lang('EtherNetIp.collector.20250207-6')"
     :name="['configuration', 'connectionLimit']"
-    :rules="[{ required: true, message: '请输入连接池大小', trigger: 'blur' }]"
+    :rules="[{ required: true, message: $lang('EtherNetIp.collector.20250207-7'), trigger: 'blur' }]"
   >
     <a-input-number
       v-model:value="formData.configuration.connectionLimit"
-      placeholder="请输入连接池大小"
+      :placeholder="$lang('EtherNetIp.collector.20250207-7')"
       :precision="0"
       :min="1"
       :max="2147483647"
@@ -48,7 +48,9 @@
 <script setup>
 import { inject } from "vue";
 import { testIpv4_6 } from "local-utils";
+import {useLocales} from '@hooks'
 
+const {$lang} = useLocales('EtherNetIp')
 const formData = inject("plugin-form", {
   configuration: {},
 });
@@ -58,7 +60,7 @@ const validateUrl = async (_rule, value) => {
     return Promise.resolve();
   } else {
     if (!testIpv4_6(value)) {
-      return Promise.reject("请输入正确的主机地址");
+      return Promise.reject($lang('EtherNetIp.collector.20250207-3'));
     }
     return Promise.resolve();
   }

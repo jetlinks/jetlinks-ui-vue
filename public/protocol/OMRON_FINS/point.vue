@@ -1,23 +1,23 @@
 <template>
   <a-form-item
-      label="寄存器"
+      :label="$lang('OMRON_FINS.point.20250207-1')"
       :name="['configuration', 'memoryArea']"
-      :rules="[{ required: true, message: '请选择寄存器' }]"
+      :rules="[{ required: true, message: $lang('OMRON_FINS.point.20250207-2) }]"
   >
     <a-select
         v-model:value="formData.configuration.memoryArea"
-        placeholder="请选择设备型号"
+        :placeholder="$lang('OMRON_FINS.point.20250207-2')"
         :options="list"
     />
   </a-form-item>
   <a-form-item
-      label="地址"
+      :label="$lang('OMRON_FINS.point.20250207-3')"
       :name="['configuration', 'address']"
-      :rules="[{ required: true, message: '请输入地址' }]"
+      :rules="[{ required: true, message: $lang('OMRON_FINS.point.20250207-4') }]"
   >
     <a-input-number
         v-model:value="formData.configuration.address"
-        placeholder="请输入地址"
+        :placeholder="$lang('OMRON_FINS.point.20250207-4')"
         :min="0"
         :max="65535"
         style="width: 100%"
@@ -25,13 +25,13 @@
     />
   </a-form-item>
   <a-form-item
-    label="项目数"
+    :label="$lang('OMRON_FINS.point.20250207-5')"
     :name="['configuration', 'itemCount']"
-    :rules="[{ required: true, message: '请输入项目数' }]"
+    :rules="[{ required: true, message: $lang('OMRON_FINS.point.20250207-6') }]"
   >
     <a-input-number
       v-model:value="formData.configuration.itemCount"
-      placeholder="请输入项目数"
+      :placeholder="$lang('OMRON_FINS.point.20250207-6')"
       :min="0"
       :max="999999999"
       style="width: 100%"
@@ -39,33 +39,33 @@
     />
   </a-form-item>
   <a-form-item
-      label="数据类型"
+      :label="$lang('OMRON_FINS.point.20250207-7')"
       :name="['configuration', 'dataTypes']"
-      :rules="[{ required: true, message: '请选择数据类型' }]"
+      :rules="[{ required: true, message: $lang('OMRON_FINS.point.20250207-8') }]"
   >
     <a-select
         v-model:value="formData.configuration.dataTypes"
-        placeholder="请选择数据类型"
+        :placeholder="$lang('OMRON_FINS.point.20250207-8')"
         :options="typeList || []"
         @change="onChange"
     />
   </a-form-item>
   <a-form-item
-      label="偏移量"
+      :label="$lang('OMRON_FINS.point.20250207-9')"
       :name="['configuration', 'bitOffset']"
-      :rules="[{ required: true, message: '请输入偏移量' }]"
+      :rules="[{ required: true, message: $lang('OMRON_FINS.point.20250207-10') }]"
   >
     <a-input-number
         style="width: 100%"
         v-model:value="formData.configuration.bitOffset"
-        placeholder="请输入偏移量"
+        :placeholder="$lang('OMRON_FINS.point.20250207-10')"
         :disabled="disabled"
     />
   </a-form-item>
-  <a-form-item label="访问类型" name="accessModes" :rules="[
+  <a-form-item :label="$lang('OMRON_FINS.point.20250207-11')" name="accessModes" :rules="[
     {
       required: true,
-        message: '请选择访问类型'
+        message: $lang('OMRON_FINS.point.20250207-12')
     },
   ]"
   >
@@ -73,8 +73,8 @@
         v-model:value="formData.accessModes"
         :multiple="true"
         :options="[
-        { label: '读', value: 'read' },
-        { label: '写', value: 'write' },
+        { label: $lang('OMRON_FINS.point.20250207-13'), value: 'read' },
+        { label: $lang('OMRON_FINS.point.20250207-14'), value: 'write' },
       ]"
     />
   </a-form-item>
@@ -84,7 +84,9 @@
 import {inject, computed, ref} from 'vue'
 import {request} from '@jetlinks-web/core'
 import {randomString} from '@jetlinks-web/utils';
+import {useLocales} from '@hooks'
 
+const {$lang} = useLocales('OMRON_FINS')
 const formData = inject('plugin-form', {
   configuration: {
     bitOffset: 0

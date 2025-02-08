@@ -1,26 +1,28 @@
 <template>
   <a-form-item
-    label="寄存器类型"
+    :label="$lang('MELSEC_TCP.point.20250207-1')"
     :name="['configuration', 'registerType']"
-    :rules="rules.registerType"
+    :rules="[
+    { required: true, message: $lang('MELSEC_TCP.point.20250207-2')},
+  ]"
   >
     <a-select
       v-model:value="formData.configuration.registerType"
       :options="registerTypeOptions"
-      placeholder="请选择寄存器类型"
+      :placeholder="$lang('MELSEC_TCP.point.20250207-2')"
       :fieldNames="{ label: 'name', value: 'ID' }"
       @change="handleChangeRegisterType"
     ></a-select>
   </a-form-item>
   <a-form-item
-    label="数据类型"
+    :label="$lang('MELSEC_TCP.point.20250207-3')"
     :name="['configuration', 'type']"
-    :rules="rules.type"
+    :rules="[{ required: true, message: $lang('MELSEC_TCP.point.20250207-4')}]"
   >
     <a-select
       v-model:value="formData.configuration.type"
       @change="handleChangeDataType"
-      placeholder="请选择数据类型"
+      :placeholder="$lang('MELSEC_TCP.point.20250207-4')"
     >
       <a-select-option
         v-for="item in dataTypeOptions"
@@ -31,22 +33,22 @@
     </a-select>
   </a-form-item>
   <a-form-item
-    label="寄存器数量(word)"
+    :label="$lang('MELSEC_TCP.point.20250207-5')"
     :name="['configuration', 'quantity']"
-    :rules="rules.quantity"
+    :rules="[{ required: true, message: $lang('MELSEC_TCP.point.20250207-14'), trigger: 'blur'}]"
     v-if="formData.configuration.type === 'Hex'"
   >
     <a-input-number
       v-model:value="formData.configuration.quantity"
-      placeholder="请输入寄存器数量"
+      :placeholder="$lang('MELSEC_TCP.point.20250207-6')"
       :min="1"
       :max="960"
     />
   </a-form-item>
   <a-form-item
-    label="寄存器地址"
+    :label="$lang('MELSEC_TCP.point.20250207-7')"
     :name="['configuration', 'address']"
-    :rules="rules.address"
+    :rules="[{ required: true, message: $lang('MELSEC_TCP.point.20250207-15'), trigger: 'blur' }]"
   >
     <a-input-number
       v-model:value="formData.configuration.address"
@@ -54,24 +56,24 @@
       :precision="0"
       :min="0"
       :max="65535"
-      placeholder="请输入寄存器地址"
+      :placeholder="$lang('MELSEC_TCP.point.20250207-8')"
     />
   </a-form-item>
-  <a-form-item label="位号" name="bits" v-if="showBits">
+  <a-form-item :label="$lang('MELSEC_TCP.point.20250207-9')" name="bits" v-if="showBits">
     <a-input-number
       v-model:value="formData.configuration.bits"
-      placeholder="请输入位号"
+      :placeholder="$lang('MELSEC_TCP.point.20250207-10')"
       :min="0"
       :max="16"
     />
   </a-form-item>
-  <a-form-item label="访问类型" name="accessModes" :rules="rules.accessModes">
+  <a-form-item :label="$lang('MELSEC_TCP.point.20250207-11')" name="accessModes" :rules="[{ required: true, message: $lang('MELSEC_TCP.point.20250207-16'), trigger: 'blur' }]">
     <j-check-button
       multiple
       v-model:value="formData.accessModes"
       :options="[
-        { label: '读', value: 'read' },
-        { label: '写', value: 'write' },
+        { label: $lang('MELSEC_TCP.point.20250207-12'), value: 'read' },
+        { label: $lang('MELSEC_TCP.point.20250207-13'), value: 'write' },
       ]"
       :column="3"
     />
@@ -82,6 +84,9 @@
 import { request } from "@jetlinks-web/core";
 import { omit } from "lodash-es";
 import { inject, ref, computed, watch } from "vue";
+import {useLocales} from '@hooks'
+
+const {$lang} = useLocales('MELSEC_TCP')
 const formData = inject("plugin-form");
 const registerTypeOptions = ref([]);
 const dataTypeList = ref([]);
@@ -102,15 +107,6 @@ if (!("configuration" in formData)) {
     bits: 0,
   };
 }
-
-const rules = {
-  type: [{ required: true, message: "请选择数据类型", trigger: "change" }],
-  registerType: [
-    { required: true, message: "请选择寄存器", trigger: "change" },
-  ],
-  quantity: [{ required: true, message: "请输入数量", trigger: "blur" }],
-  address: [{ required: true, message: "请输入地址", trigger: "blur" }],
-};
 
 if (!("pointKey" in formData)) {
   formData.pointKey = generateUUID();

@@ -1,18 +1,18 @@
 <template>
   <a-form-item
-    label="从机地址"
+    :label="$lang('iec104.collector.20250207-1')"
     :name="['configuration', 'host']"
     :rules="rules.host"
   >
     <a-input
       v-model:value="formData.configuration.host"
       autocomplete="off"
-      placeholder="请输入"
+      :placeholder="$lang('iec104.collector.20250207-2')"
       :disabled="false"
     />
   </a-form-item>
   <a-form-item
-    label="从机端口"
+    :label="$lang('iec104.collector.20250207-3')"
     :name="['configuration', 'port']"
     :rules="rules.port"
   >
@@ -23,11 +23,11 @@
       :max="65535"
       :precision="0"
       autocomplete="off"
-      placeholder="请输入从机端口"
+      :placeholder="$lang('iec104.collector.20250207-4')"
     />
   </a-form-item>
   <a-form-item
-    label="分组地址"
+    :label="$lang('iec104.collector.20250207-5')"
     :name="['configuration', 'terminnalAddress']"
     :rules="rules.terminnalAddress"
   >
@@ -38,13 +38,16 @@
       :precision="0"
       v-model:value="formData.configuration.terminnalAddress"
       autocomplete="off"
-      placeholder="请输入分组地址"
+      :placeholder="$lang('iec104.collector.20250207-6')"
     ></a-input-number>
   </a-form-item>
 </template>
 
 <script setup>
-import { inject, computed } from "vue";
+import { inject } from "vue";
+import {useLocales} from '@hooks'
+
+const {$lang} = useLocales('iec104')
 const formData = inject("plugin-form");
 if (!("configuration" in formData)) {
   formData.configuration = {
@@ -67,10 +70,10 @@ const regular = {
  */
 const validator1 = (rule, value, callback) => {
   if (value === undefined || value === "" || value === null) {
-    return Promise.reject("请输入通道端口");
+    return Promise.reject($lang('iec104.collector.20250207-7'));
   } else {
     if (value < 1 || value > 65535) {
-      return Promise.reject("请输入1~65535的整数");
+      return Promise.reject($lang('iec104.collector.20250207-8'));
     }
     return Promise.resolve();
   }
@@ -80,10 +83,10 @@ const validatorUrl = (rule, value, callback) => {
   const reg = regular.DOMAIN_NAME;
   const reg1 = regular.IP_URL;
   if (value === undefined || value === "" || value === null) {
-    return Promise.reject("请输入通道Ip");
+    return Promise.reject($lang('iec104.collector.20250207-9'));
   } else {
     if (reg.test(value) === false && reg1.test(value) === false) {
-      return Promise.reject("请输入正确的域名或ip地址");
+      return Promise.reject($lang('iec104.collector.20250207-10'));
     }
     return Promise.resolve();
   }
@@ -93,7 +96,7 @@ const rules = {
   host: [{ required: true, trigger: "blur", validator: validatorUrl }],
   port: [{ required: true, trigger: "blur", validator: validator1 }],
   terminnalAddress: [
-    { required: true, trigger: "blur", message: "请输入分组地址" },
+    { required: true, trigger: "blur", message: $lang('iec104.collector.20250207-11') },
   ],
 };
 </script>

@@ -1,12 +1,29 @@
 <template>
-  <a-form-item label="串口" :rules="rules.serialPortId" :name="['configuration', 'serialPortId']">
-    <a-select :options="serialPort" placeholder="请选择串口" v-model:value="formData.configuration.serialPortId" />
+  <a-form-item :label="$lang('DL645.channel.20250207-1')"
+               :rules="[
+    {
+      required: true,
+      message: $lang('DL645.channel.20250207-2')
+    },
+  ]"
+               :name="['configuration', 'serialPortId']">
+    <a-select :options="serialPort" :placeholder="$lang('DL645.channel.20250207-2')" v-model:value="formData.configuration.serialPortId" />
   </a-form-item>
-  <a-form-item label="协议版本" :rules="rules.version" :name="['configuration', 'version']">
-    <a-select :disabled="formData.id" :options="protocolVersion" placeholder="请选择协议版本"
+  <a-form-item :label="$lang('DL645.channel.20250207-3')" :rules="[
+    {
+      required: true,
+      message: $lang('DL645.channel.20250207-4')
+    },
+  ]" :name="['configuration', 'version']">
+    <a-select :disabled="formData.id" :options="protocolVersion" :placeholder="$lang('DL645.channel.20250207-4')"
               v-model:value="formData.configuration.version"/>
   </a-form-item>
-  <a-form-item label="唤醒长度" :rules="rules.preambleLength" :name="['configuration', 'preambleLength']">
+  <a-form-item :label="$lang('DL645.channel.20250207-5')" :rules="[
+    {
+      required: true,
+      message: $lang('DL645.channel.20250207-6')
+    },
+  ]" :name="['configuration', 'preambleLength']">
     <j-card-select
       :showImage="false"
       v-model:value="formData.configuration.preambleLength"
@@ -18,7 +35,9 @@
 <script setup>
 import {inject, ref} from 'vue'
 import {request} from "@jetlinks-web/core";
+import {useLocales} from '@hooks'
 
+const {$lang} = useLocales('DL645')
 const formData = inject('plugin-form')
 const serialPort = ref([])
 const protocolVersion = [
@@ -58,27 +77,6 @@ if (!('properties' in formData.configuration)) {
     "baudRate": 115200,
     "dataBits": 8
   }
-}
-
-const rules = {
-  serialPortId: [
-    {
-      required: true,
-      message: '请输入串口',
-    },
-  ],
-  version: [
-    {
-      required: true,
-      message: '请选择协议版本',
-    },
-  ],
-  preambleLength: [
-    {
-      required: true,
-      message: '请选择唤醒长度',
-    },
-  ]
 }
 
 const getList = () => {

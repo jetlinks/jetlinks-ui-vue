@@ -1,48 +1,55 @@
 <template>
   <a-form-item
-      label="电表号"
+      :label="$lang('DL645.collector.20250207-1')"
       :name="['configuration', 'meterNumber']"
       :rules="[
-          { required: true, message: '请输入电表号' },
+          { required: true, message: $lang('DL645.collector.20250207-2') },
       ]"
   >
     <a-auto-complete
         v-model:value="formData.configuration.meterNumber"
         :options="meterNumberList"
-        placeholder="请输入电表号"
+        :placeholder="$lang('DL645.collector.20250207-2')"
     />
   </a-form-item>
   <a-form-item
-      label="密码权限"
+      :label="$lang('DL645.collector.20250207-3')"
       :name="['configuration', 'passwordPermission']"
-      :rules="[{ required: true, message: '请选择密码权限' }]"
+      :rules="[{ required: true, message: $lang('DL645.collector.20250207-4') }]"
   >
     <a-select
         v-model:value="formData.configuration.passwordPermission"
-        placeholder="请选择密码权限"
-        :options="permissionOptions"
+        :placeholder="$lang('DL645.collector.20250207-4')"
+        :options="[
+  { label: $lang('DL645.collector.20250207-11'), value: '02' },
+  { label: $lang('DL645.collector.20250207-12'), value: '04' },
+]"
     />
   </a-form-item>
   <a-form-item
-      label="密码"
+      :label="$lang('DL645.collector.20250207-5')"
       :name="['configuration', 'password']"
   >
-    <a-input v-model:value="formData.configuration.password" placeholder="请输入密码"/>
-    <div class="tip">提示信息：固定长度为6位，可咨询设备厂商获知</div>
+    <a-input v-model:value="formData.configuration.password"
+             :placeholder="$lang('DL645.collector.20250207-6')"/>
+    <div class="tip">{{ $lang('DL645.collector.20250207-7') }}</div>
   </a-form-item>
   <a-form-item
-      label="操作者id"
+      :label="$lang('DL645.collector.20250207-8')"
       :name="['configuration', 'operatorCode']"
   >
-    <a-input v-model:value="formData.configuration.operatorCode" placeholder="请输入操作者id"/>
-    <div class="tip">提示信息：固定长度为8位十六进制，可咨询设备厂商获知</div>
+    <a-input v-model:value="formData.configuration.operatorCode"
+             :placeholder="$lang('DL645.collector.20250207-9')"/>
+    <div class="tip">{{ $lang('DL645.collector.20250207-10') }}</div>
   </a-form-item>
 </template>
 
 <script setup>
 import {inject, ref} from 'vue'
 import {request} from '@jetlinks-web/core'
+import {useLocales} from '@hooks'
 
+const {$lang} = useLocales('DL645')
 const formData = inject('plugin-form', {
   configuration: {
     meterNumber: undefined,
@@ -53,11 +60,6 @@ const formData = inject('plugin-form', {
 })
 const channel = inject('plugin-form-channel', {})
 const meterNumberList = ref([])
-
-const permissionOptions = [
-  { label: '02（02+明文+编程键）', value: '02' },
-  { label: '04（04+明文+编程键）', value: '04' },
-];
 
 const getList = () => {
   request.post('/data-collect/DL645/command/GetMeterNumber', {

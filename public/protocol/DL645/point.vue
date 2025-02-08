@@ -1,19 +1,19 @@
 <template>
   <a-form-item
-      label="功能码"
+      :label="$lang('DL645.point.20250207-1')"
       :name="['configuration', 'function']">
     <a-select
         v-model:value="formData.configuration.function"
         :options="functionCode"
         show-search
-        placeholder="请选择功能码"
+        :placeholder="$lang('DL645.point.20250207-2')"
         @change="chooseFunctionCode"
     />
   </a-form-item>
   <template
       v-if="formData.configuration?.function && formData.configuration?.function?.indexOf('ReadWriteMeterData') !== -1">
     <a-form-item
-        label="功能标识"
+        :label="$lang('DL645.point.20250207-3')"
         :name="['configuration', 'parameter', 'identity']"
         :rules="[{
           required: true,
@@ -28,19 +28,19 @@
       >
         <a-input
             v-model:value="formData.configuration.parameter.identity"
-            placeholder="请输入功能标识"
+            :placeholder="$lang('DL645.point.20250207-4')"
             @change="inputIdentityChange"
             :maxlength="version === '2007' ? 8 : 4"
         />
       </a-cascader>
       <template #extra>
-        提示信息：固定长度{{
-          version === '2007' ? 8 : 4
-        }}位十六进制
+        {{
+          version === '2007' ? $lang('DL645.point.20250207-5') : $lang('DL645.point.20250207-5')
+        }}
       </template>
     </a-form-item>
     <a-form-item
-        label="字节数"
+        :label="$lang('DL645.point.20250207-7') "
         :name="['configuration', 'parameter', 'byteCount']"
         :rules="{
           required: true,
@@ -53,17 +53,17 @@
           :max="8"
           style="width: 100%"
           :precision="0"
-          placeholder="请输入字节数"
+          :placeholder="$lang('DL645.point.20250207-8') "
           :disabled="disabled"
       />
     </a-form-item>
     <a-form-item
-        label="缩放因子"
+        :label="$lang('DL645.point.20250207-9') "
         :name="['configuration', 'parameter', 'decimalCount']"
         :rules="{
           required: true,
           trigger: 'blur',
-          message: '请输入正确的缩放因子',
+          message: $lang('DL645.point.20250207-10') ,
           pattern: pattern,
         }"
     >
@@ -71,24 +71,29 @@
           v-model:value="formData.configuration.parameter.decimalCount"
           :options="decimalCountOptions"
           :disabled="disabled"
-          placeholder="请规定返回格式"
+          :placeholder="$lang('DL645.point.20250207-11') "
           :getPopupContainer="(triggerNode) => triggerNode.parentNode"
       >
       </a-select>
     </a-form-item>
   </template>
   <a-form-item
-      label="访问类型"
+      :label="$lang('DL645.point.20250207-12') "
       :name="['accessModes']"
-      :rules="rules.accessModes"
+      :rules="[
+    {
+      required: true,
+      validator: valValue
+    }
+  ]"
   >
     <j-check-button
         v-model:value="formData.accessModes"
         :multiple="true"
         :disabled="true"
         :options="[
-          { label: '读', value: 'read' },
-          { label: '写', value: 'write' },
+          { label: $lang('DL645.point.20250207-13') , value: 'read' },
+          { label: $lang('DL645.point.20250207-14') , value: 'write' },
         ]"
     />
   </a-form-item>
@@ -97,7 +102,9 @@
 import {inject, ref, computed, watch} from 'vue'
 import {request} from '@jetlinks-web/core'
 import {randomString} from "@jetlinks-web/utils";
+import {useLocales} from '@hooks'
 
+const {$lang} = useLocales('DL645')
 const formData = inject('plugin-form')
 const collector = inject('plugin-form-collector')
 
@@ -106,7 +113,7 @@ const pattern = /^(0\.0*1)$|^1$/;
 const identity = ref({});
 //是否是手动输入
 const isManualInput = ref(false);
-const lastViidateValue = ref();
+const lastValValue = ref();
 const channel = ref()
 /**
  * DLT645功能标识2007
@@ -114,205 +121,205 @@ const channel = ref()
 
 const DLT645Function07 = [
   {
-    label: '电能量',
+    label: $lang('DL645.point.20250207-25'),
     value: 1,
     children: [
       {
-        label: '当前',
+        label: $lang('DL645.point.20250207-26'),
         value: '1-1',
         children: [
           {
-            label: '组合有功',
+            label: $lang('DL645.point.20250207-27'),
             value: '1-1-1',
             children: [
               {
-                label: '总电量(00000000)',
+                label: $lang('DL645.point.20250207-28') + '(00000000)',
                 value: '00000000',
               },
               {
-                label: '尖电量(00000100)',
+                label: $lang('DL645.point.20250207-29') + '(00000100)',
                 value: '00000100',
               },
               {
-                label: '锋电量(00000200)',
+                label: $lang('DL645.point.20250207-30') + '(00000200)',
                 value: '00000200',
               },
               {
-                label: '平电量(00000300)',
+                label: $lang('DL645.point.20250207-31') + '(00000300)',
                 value: '00000300',
               },
               {
-                label: '谷电量(00000400)',
+                label: $lang('DL645.point.20250207-32') + '(00000400)',
                 value: '00000400',
               },
             ],
           },
           {
-            label: '组合无功1',
+            label: $lang('DL645.point.20250207-33') + '1',
             value: '1-1-2',
             children: [
               {
-                label: '总电量(00030000)',
+                label: $lang('DL645.point.20250207-28') + '(00030000)',
                 value: '00030000',
               },
               {
-                label: '尖电量(00030100)',
+                label: $lang('DL645.point.20250207-29') + '(00030100)',
                 value: '00030100',
               },
               {
-                label: '锋电量(00030200)',
+                label: $lang('DL645.point.20250207-30') + '(00030200)',
                 value: '00030200',
               },
               {
-                label: '平电量(00030300)',
+                label: $lang('DL645.point.20250207-31') + '(00030300)',
                 value: '00030300',
               },
               {
-                label: '谷电量(00030400)',
+                label: $lang('DL645.point.20250207-32') + '(00030400)',
                 value: '00030400',
               },
             ],
           },
           {
-            label: '组合无功2',
+            label: $lang('DL645.point.20250207-33') + '2',
             value: '1-1-3',
             children: [
               {
-                label: '总电量(00040000)',
+                label: $lang('DL645.point.20250207-28') + '(00040000)',
                 value: '00040000',
               },
               {
-                label: '尖电量(00040100)',
+                label: $lang('DL645.point.20250207-29') + '(00040100)',
                 value: '00040100',
               },
               {
-                label: '锋电量(00040200)',
+                label: $lang('DL645.point.20250207-30') + '(00040200)',
                 value: '00040200',
               },
               {
-                label: '平电量(00040300)',
+                label: $lang('DL645.point.20250207-31') + '(00040300)',
                 value: '00040300',
               },
               {
-                label: '谷电量(00040400)',
+                label: $lang('DL645.point.20250207-32') + '(00040400)',
                 value: '00040400',
               },
             ],
           },
           {
-            label: '正向有功',
+            label: $lang('DL645.point.20250207-34'),
             value: '1-1-4',
             children: [
               {
-                label: '总电量(00010000)',
+                label: $lang('DL645.point.20250207-28') + '(00010000)',
                 value: '00010000',
               },
               {
-                label: '尖电量(00010100)',
+                label: $lang('DL645.point.20250207-29') + '(00010100)',
                 value: '00010100',
               },
               {
-                label: '锋电量(00010200)',
+                label: $lang('DL645.point.20250207-30') + '(00010200)',
                 value: '00010200',
               },
               {
-                label: '平电量(00010300)',
+                label: $lang('DL645.point.20250207-31') + '(00010300)',
                 value: '00010300',
               },
               {
-                label: '谷电量(00010400)',
+                label: $lang('DL645.point.20250207-32') + '(00010400)',
                 value: '00010400',
               },
             ],
           },
           {
-            label: '反向有功',
+            label: $lang('DL645.point.20250207-35'),
             value: '1-1-5',
             children: [
               {
-                label: '总电量(00020000)',
+                label: $lang('DL645.point.20250207-28') + '(00020000)',
                 value: '00020000',
               },
               {
-                label: '尖电量(00020100)',
+                label: $lang('DL645.point.20250207-29') + '(00020100)',
                 value: '00020100',
               },
               {
-                label: '锋电量(00020200)',
+                label: $lang('DL645.point.20250207-20') + '(00020200)',
                 value: '00020200',
               },
               {
-                label: '平电量(00020300)',
+                label: $lang('DL645.point.20250207-31') + '(00020300)',
                 value: '00020300',
               },
               {
-                label: '谷电量(00020400)',
+                label: $lang('DL645.point.20250207-32') + '(00020400)',
                 value: '00020400',
               },
             ],
           },
           {
-            label: 'A相',
+            label: $lang('DL645.point.20250207-36'),
             value: '1-1-6',
             children: [
               {
-                label: '正向有功电能(00150000)',
+                label: $lang('DL645.point.20250207-37') + '(00150000)',
                 value: '00150000',
               },
               {
-                label: '反向有功电能(00160000)',
+                label: $lang('DL645.point.20250207-38') + '(00160000)',
                 value: '00160000',
               },
               {
-                label: '组合无功1电能(00170000)',
+                label: $lang('DL645.point.20250207-39') + '(00170000)',
                 value: '00170000',
               },
               {
-                label: '组合无功2电能(00180000)',
+                label: $lang('DL645.point.20250207-40') + '(00180000)',
                 value: '00180000',
               },
             ],
           },
           {
-            label: 'B相',
+            label: $lang('DL645.point.20250207-41'),
             value: '1-1-7',
             children: [
               {
-                label: '正向有功电能(00290000)',
+                label: $lang('DL645.point.20250207-37') + '(00290000)',
                 value: '00290000',
               },
               {
-                label: '反向有功电能(002A0000)',
+                label: $lang('DL645.point.20250207-38') + '(002A0000)',
                 value: '002A0000',
               },
               {
-                label: '组合无功1电能(002B0000)',
+                label: $lang('DL645.point.20250207-39') + '(002B0000)',
                 value: '002B0000',
               },
               {
-                label: '组合无功2电能(002C0000)',
+                label: $lang('DL645.point.20250207-40') + '(002C0000)',
                 value: '002C0000',
               },
             ],
           },
           {
-            label: 'C相',
+            label: $lang('DL645.point.20250207-42'),
             value: '1-1-8',
             children: [
               {
-                label: '正向有功电能(003D0000)',
+                label: $lang('DL645.point.20250207-37') + '(003D0000)',
                 value: '003D0000',
               },
               {
-                label: '反向有功电能(003E0000)',
+                label: $lang('DL645.point.20250207-38') + '(003E0000)',
                 value: '003E0000',
               },
               {
-                label: '组合无功1电能(003F0000)',
+                label: $lang('DL645.point.20250207-39') + '(003F0000)',
                 value: '003F0000',
               },
               {
-                label: '组合无功2电能(00400000)',
+                label: $lang('DL645.point.20250207-40') + '(00400000)',
                 value: '00400000',
               },
             ],
@@ -320,201 +327,201 @@ const DLT645Function07 = [
         ],
       },
       {
-        label: '上一结算日',
+        label: $lang('DL645.point.20250207-42-1'),
         value: '1-2',
         children: [
           {
-            label: '组合有功',
+            label: $lang('DL645.point.20250207-27'),
             value: '1-2-1',
             children: [
               {
-                label: '总电量(00000001)',
+                label: $lang('DL645.point.20250207-28') + '(00000001)',
                 value: '00000001',
               },
               {
-                label: '尖电量(00000101)',
+                label: $lang('DL645.point.20250207-29') + '(00000101)',
                 value: '00000101',
               },
               {
-                label: '锋电量(00000201)',
+                label: $lang('DL645.point.20250207-30') + '(00000201)',
                 value: '00000201',
               },
               {
-                label: '平电量(00000301)',
+                label: $lang('DL645.point.20250207-31') + '(00000301)',
                 value: '00000301',
               },
               {
-                label: '谷电量(00000401)',
+                label: $lang('DL645.point.20250207-32') + '(00000401)',
                 value: '00000401',
               },
             ],
           },
           {
-            label: '组合无功1',
+            label: $lang('DL645.point.20250207-33') + '1',
             value: '1-2-2',
             children: [
               {
-                label: '总电量(00030001)',
+                label: $lang('DL645.point.20250207-28') +'(00030001)',
                 value: '00030001',
               },
               {
-                label: '尖电量(00030101)',
+                label: $lang('DL645.point.20250207-29') +'(00030101)',
                 value: '00030101',
               },
               {
-                label: '锋电量(00030201)',
+                label: $lang('DL645.point.20250207-30') +'(00030201)',
                 value: '00030201',
               },
               {
-                label: '平电量(00030301)',
+                label: $lang('DL645.point.20250207-31') +'(00030301)',
                 value: '00030301',
               },
               {
-                label: '谷电量(00030401)',
+                label: $lang('DL645.point.20250207-32') +'(00030401)',
                 value: '00030401',
               },
             ],
           },
           {
-            label: '组合无功2',
+            label: $lang('DL645.point.20250207-33') + '2',
             value: '1-2-3',
             children: [
               {
-                label: '总电量(00040001)',
+                label: $lang('DL645.point.20250207-28') +'(00040001)',
                 value: '00040001',
               },
               {
-                label: '尖电量(00040101)',
+                label: $lang('DL645.point.20250207-29') +'(00040101)',
                 value: '00040101',
               },
               {
-                label: '锋电量(00040201)',
+                label: $lang('DL645.point.20250207-30') +'(00040201)',
                 value: '00040201',
               },
               {
-                label: '平电量(00040301)',
+                label: $lang('DL645.point.20250207-31') +'(00040301)',
                 value: '00040301',
               },
               {
-                label: '谷电量(00040401)',
+                label: $lang('DL645.point.20250207-32') +'(00040401)',
                 value: '00040401',
               },
             ],
           },
           {
-            label: '正向有功',
+            label: $lang('DL645.point.20250207-34'),
             value: '1-2-4',
             children: [
               {
-                label: '总电量(00010001)',
+                label: $lang('DL645.point.20250207-28') +'(00010001)',
                 value: '00010001',
               },
               {
-                label: '尖电量(00010101)',
+                label: $lang('DL645.point.20250207-29') +'(00010101)',
                 value: '00010101',
               },
               {
-                label: '锋电量(00010201)',
+                label: $lang('DL645.point.20250207-30') +'(00010201)',
                 value: '00010201',
               },
               {
-                label: '平电量(00010301)',
+                label: $lang('DL645.point.20250207-31') +'(00010301)',
                 value: '00010301',
               },
               {
-                label: '谷电量(00010401)',
+                label: $lang('DL645.point.20250207-32') +'(00010401)',
                 value: '00010401',
               },
             ],
           },
           {
-            label: '反向有功',
+            label: $lang('DL645.point.20250207-35'),
             value: '1-2-5',
             children: [
               {
-                label: '总电量(00020001)',
+                label: $lang('DL645.point.20250207-28') + '总电量(00020001)',
                 value: '00020001',
               },
               {
-                label: '尖电量(00020101)',
+                label: $lang('DL645.point.20250207-29') + '尖电量(00020101)',
                 value: '00020101',
               },
               {
-                label: '锋电量(00020201)',
+                label: $lang('DL645.point.20250207-30') + '锋电量(00020201)',
                 value: '00020201',
               },
               {
-                label: '平电量(00020301)',
+                label: $lang('DL645.point.20250207-31') + '平电量(00020301)',
                 value: '00020301',
               },
               {
-                label: '谷电量(00020401)',
+                label: $lang('DL645.point.20250207-32') + '谷电量(00020401)',
                 value: '00020401',
               },
             ],
           },
           {
-            label: 'A相',
+            label: $lang('DL645.point.20250207-36'),
             value: '1-2-6',
             children: [
               {
-                label: '正向有功电能(00150001)',
+                label: $lang('DL645.point.20250207-37') + '(00150001)',
                 value: '00150001',
               },
               {
-                label: '反向有功电能(00160001)',
+                label: $lang('DL645.point.20250207-38') + '(00160001)',
                 value: '00160001',
               },
               {
-                label: '组合无功1电能(00170001)',
+                label: $lang('DL645.point.20250207-39') + '(00170001)',
                 value: '00170001',
               },
               {
-                label: '组合无功2电能(00180001)',
+                label: $lang('DL645.point.20250207-40') + '(00180001)',
                 value: '00180001',
               },
             ],
           },
           {
-            label: 'B相',
+            label: $lang('DL645.point.20250207-41'),
             value: '1-2-7',
             children: [
               {
-                label: '正向有功电能(00150001)',
+                label: $lang('DL645.point.20250207-37') +'(00150001)',
                 value: '00150001',
               },
               {
-                label: '反向有功电能(00160001)',
+                label: $lang('DL645.point.20250207-38') +'(00160001)',
                 value: '00160001',
               },
               {
-                label: '组合无功1电能(00170001)',
+                label: $lang('DL645.point.20250207-39') +'(00170001)',
                 value: '00170001',
               },
               {
-                label: '组合无功2电能(00180001)',
+                label: $lang('DL645.point.20250207-40') + '(00180001)',
                 value: '00180001',
               },
             ],
           },
           {
-            label: 'C相',
+            label: $lang('DL645.point.20250207-42'),
             value: '1-2-8',
             children: [
               {
-                label: '正向有功电能(00150000)',
+                label: $lang('DL645.point.20250207-37') +'(00150000)',
                 value: '00150000',
               },
               {
-                label: '反向有功电能(00160000)',
+                label: $lang('DL645.point.20250207-38') +'(00160000)',
                 value: '00160000',
               },
               {
-                label: '组合无功1电能(00170000)',
+                label: $lang('DL645.point.20250207-39') +'(00170000)',
                 value: '00170000',
               },
               {
-                label: '组合无功2电能(00180000)',
+                label: $lang('DL645.point.20250207-40') + '(00180000)',
                 value: '00180000',
               },
             ],
@@ -524,249 +531,249 @@ const DLT645Function07 = [
     ],
   },
   {
-    label: '变量',
+    label: $lang('DL645.point.20250207-43'),
     value: 2,
     children: [
       {
-        label: '电压',
+        label: $lang('DL645.point.20250207-44'),
         value: '2-1',
         children: [
           {
-            label: 'A相电压(02010100)',
+            label: $lang('DL645.point.20250207-45') + '(02010100)',
             value: '02010100',
           },
           {
-            label: 'B相电压(02010200)',
+            label: $lang('DL645.point.20250207-46') + '(02010200)',
             value: '02010200',
           },
           {
-            label: 'C相电压(02010300)',
+            label: $lang('DL645.point.20250207-47') + '(02010300)',
             value: '02010300',
           },
         ],
       },
       {
-        label: '电流',
+        label: $lang('DL645.point.20250207-48'),
         value: '2-2',
         children: [
           {
-            label: 'A相电流(02020100)',
+            label: $lang('DL645.point.20250207-49') + '(02020100)',
             value: '02020100',
           },
           {
-            label: 'B相电流(02020200)',
+            label: $lang('DL645.point.20250207-50') + '(02020200)',
             value: '02020200',
           },
           {
-            label: 'C相电流(02020300)',
+            label: $lang('DL645.point.20250207-51') + '(02020300)',
             value: '02020300',
           },
         ],
       },
       {
-        label: '瞬时有功功率',
+        label: $lang('DL645.point.20250207-52'),
         value: '2-3',
         children: [
           {
-            label: '瞬时总有功功率(02030000)',
+            label: $lang('DL645.point.20250207-53') + '(02030000)',
             value: '02030000',
           },
           {
-            label: '瞬时A相有功功率(02030100)',
+            label: $lang('DL645.point.20250207-54') + '(02030100)',
             value: '02030100',
           },
           {
-            label: '瞬时B相有功功率(02030200)',
+            label: $lang('DL645.point.20250207-55') + '(02030200)',
             value: '02030200',
           },
           {
-            label: '瞬时C相有功功率(02030300)',
+            label: $lang('DL645.point.20250207-56') + '(02030300)',
             value: '02030300',
           },
         ],
       },
       {
-        label: '瞬时无功功率',
+        label: $lang('DL645.point.20250207-57'),
         value: '2-4',
         children: [
           {
-            label: '瞬时总无功功率(02040000)',
+            label: $lang('DL645.point.20250207-57-1') + '(02040000)',
             value: '02040000',
           },
           {
-            label: '瞬时A相无功功率(02040100)',
+            label: $lang('DL645.point.20250207-57-2') + '(02040100)',
             value: '02040100',
           },
           {
-            label: '瞬时B相无功功率(02040200)',
+            label: $lang('DL645.point.20250207-57-3') + '(02040200)',
             value: '02040200',
           },
           {
-            label: '瞬时C相无功功率(02040300)',
+            label: $lang('DL645.point.20250207-57-4') + '(02040300)',
             value: '02040300',
           },
         ],
       },
       {
-        label: '瞬时视在功率',
+        label: $lang('DL645.point.20250207-58'),
         value: '2-5',
         children: [
           {
-            label: '瞬时总视在功率(02050000)',
+            label: $lang('DL645.point.20250207-59-1') + '(02050000)',
             value: '02050000',
           },
           {
-            label: '瞬时A相视在功率(02050100)',
+            label: $lang('DL645.point.20250207-59') + '(02050100)',
             value: '02050100',
           },
           {
-            label: '瞬时B相视在功率(02050200)',
+            label: $lang('DL645.point.20250207-60') + '(02050200)',
             value: '02050200',
           },
           {
-            label: '瞬时C相视在功率(02050300)',
+            label: $lang('DL645.point.20250207-61') + '(02050300)',
             value: '02050300',
           },
         ],
       },
       {
-        label: '功率因数',
+        label: $lang('DL645.point.20250207-62'),
         value: '2-6',
         children: [
           {
-            label: '总功率因数(02060000)',
+            label: $lang('DL645.point.20250207-63') + '(02060000)',
             value: '02060000',
           },
           {
-            label: 'A相功率因数(02060100)',
+            label: $lang('DL645.point.20250207-64') + '(02060100)',
             value: '02060100',
           },
           {
-            label: 'B相功率因数(02060200)',
+            label: $lang('DL645.point.20250207-65') + '(02060200)',
             value: '02060200',
           },
           {
-            label: 'C相功率因数(02060300)',
+            label: $lang('DL645.point.20250207-66') + '(02060300)',
             value: '02060300',
           },
         ],
       },
       {
-        label: '零线电流(02800001)',
+        label: $lang('DL645.point.20250207-67') + '(02800001)',
         value: '02800001',
       },
       {
-        label: '电网频率(02800002)',
+        label: $lang('DL645.point.20250207-68') + '(02800002)',
         value: '02800002',
       },
       {
-        label: '当前有功需量(02800004)',
+        label: $lang('DL645.point.20250207-69') + '(02800004)',
         value: '02800004',
       },
       {
-        label: '当前无功需量(02800005)',
+        label: $lang('DL645.point.20250207-70') + '(02800005)',
         value: '02800005',
       },
       {
-        label: '当前视在需量(02800006)',
+        label: $lang('DL645.point.20250207-71') + '(02800006)',
         value: '02800006',
       },
       {
-        label: '表内温度(02800007)',
+        label: $lang('DL645.point.20250207-71-1') + '(02800007)',
         value: '02800007',
       },
       {
-        label: '时钟电池电压(02800008)',
+        label: $lang('DL645.point.20250207-72') + '(02800008)',
         value: '02800008',
       },
       {
-        label: '内部电池工作时间(0280000A)',
+        label: $lang('DL645.point.20250207-73') + '(0280000A)',
         value: '0280000A',
       },
     ],
   },
   {
-    label: '参变量',
+    label: $lang('DL645.point.20250207-74'),
     value: 3,
     children: [
       {
-        label: '通信地址(04000401)',
+        label: $lang('DL645.point.20250207-75') + '(04000401)',
         value: '04000401',
       },
       {
-        label: '厂家软件版本号(ASCII 码)(04800001)',
+        label: $lang('DL645.point.20250207-76') + '(04800001)',
         value: '04800001',
       },
       {
-        label: '自动循环显示屏数(04000301)',
+        label: $lang('DL645.point.20250207-77') + '(04000301)',
         value: '04000301',
       },
       {
-        label: '每屏显示时间(04000302)',
+        label: $lang('DL645.point.20250207-78') + '(04000302)',
         value: '04000302',
       },
       {
-        label: '显示电能小数位数(04000303)',
+        label: $lang('DL645.point.20250207-79') + '(04000303)',
         value: '04000303',
       },
       {
-        label: '显示功率(最大需量)小数位数(04000304)',
+        label: $lang('DL645.point.20250207-80') + '(04000304)',
         value: '04000304',
       },
       {
-        label: '电表运行状态字1(04000501)',
+        label: $lang('DL645.point.20250207-81') + '1(04000501)',
         value: '04000501',
       },
       {
-        label: '电表运行状态字2(04000502)',
+        label: $lang('DL645.point.20250207-81') + '2(04000502)',
         value: '04000502',
       },
       {
-        label: '电表运行状态字3(04000503)',
+        label: $lang('DL645.point.20250207-81') + '3(04000503)',
         value: '04000503',
       },
       {
-        label: '电表运行状态字4(04000504)',
+        label: $lang('DL645.point.20250207-81') + '4(04000504)',
         value: '04000504',
       },
       {
-        label: '电表运行状态字5(04000505)',
+        label: $lang('DL645.point.20250207-81') + '5(04000505)',
         value: '04000505',
       },
       {
-        label: '电表运行状态字6(04000506)',
+        label: $lang('DL645.point.20250207-81') + '6(04000506)',
         value: '04000506',
       },
       {
-        label: '电表运行状态字7(04000507)',
+        label: $lang('DL645.point.20250207-81') + '7(04000507)',
         value: '04000507',
       },
       {
-        label: '欠压事件电压触发上限(04090301)',
+        label: $lang('DL645.point.20250207-82') + '(04090301)',
         value: '04090301',
       },
       {
-        label: '欠压事件判定延时时间(04090302)',
+        label: $lang('DL645.point.20250207-83') + '(04090302)',
         value: '04090302',
       },
       {
-        label: '过载事件有功功率触发下限(04090B01)',
+        label: $lang('DL645.point.20250207-84') + '(04090B01)',
         value: '04090B01',
       },
       {
-        label: '过流事件电流触发下限(04090801)',
+        label: $lang('DL645.point.20250207-85') + '(04090801)',
         value: '04090801',
       },
       {
-        label: '有功需量超限事件需量触发下限(04090D01)',
+        label: $lang('DL645.point.20250207-86') + '(04090D01)',
         value: '04090D01',
       },
       {
-        label: '无功需量超限事件需量触发下限(04090D02)',
+        label: $lang('DL645.point.20250207-87') + '(04090D02)',
         value: '04090D02',
       },
       {
-        label: 'A相恶性功率因数超上限阀值(04090E01)',
+        label: $lang('DL645.point.20250207-88') + '(04090E01)',
         value: '04090E01',
       },
     ],
@@ -779,71 +786,71 @@ const DLT645Function07 = [
 
 const DLT645Function97 = [
   {
-    label: '电能量',
+    label: $lang('DL645.point.20250207-25'),
     value: '1',
     children: [
       {
-        label: '当前',
+        label: $lang('DL645.point.20250207-26'),
         value: '1-1',
         children: [
           {
-            label: '正向有功总电能(9010)',
+            label: $lang('DL645.point.20250207-89') + '(9010)',
             value: '9010',
           },
           {
-            label: '反向有功总电能(9020)',
+            label: $lang('DL645.point.20250207-90') + '(9020)',
             value: '9020',
           },
           {
-            label: '正向无功总电能(9110)',
+            label: $lang('DL645.point.20250207-91') + '(9110)',
             value: '9110',
           },
           {
-            label: '正向无功总电能(9120)',
+            label: $lang('DL645.point.20250207-91') + '(9120)',
             value: '9120',
           },
         ],
       },
       {
-        label: '上月',
+        label: $lang('DL645.point.20250207-92-1'),
         value: '1-2',
         children: [
           {
-            label: '正向有功总电能(9410)',
+            label: $lang('DL645.point.20250207-89') + '(9410)',
             value: '9410',
           },
           {
-            label: '反向有功总电能(9420)',
+            label: $lang('DL645.point.20250207-90') + '(9420)',
             value: '9420',
           },
           {
-            label: '正向无功总电能(9510)',
+            label: $lang('DL645.point.20250207-91') + '(9510)',
             value: '9510',
           },
           {
-            label: '正向无功总电能(9520)',
+            label: $lang('DL645.point.20250207-91') + '(9520)',
             value: '9520',
           },
         ],
       },
       {
-        label: '上上月',
+        label: $lang('DL645.point.20250207-92'),
         value: '1-3',
         children: [
           {
-            label: '正向有功总电能(9810)',
+            label: $lang('DL645.point.20250207-89') + '(9810)',
             value: '9810',
           },
           {
-            label: '反向有功总电能(9820)',
+            label: $lang('DL645.point.20250207-90') + '(9820)',
             value: '9820',
           },
           {
-            label: '正向无功总电能(9910)',
+            label: $lang('DL645.point.20250207-91') + '(9910)',
             value: '9910',
           },
           {
-            label: '正向无功总电能(9920)',
+            label: $lang('DL645.point.20250207-91') + '(9920)',
             value: '9920',
           },
         ],
@@ -851,115 +858,115 @@ const DLT645Function97 = [
     ],
   },
   {
-    label: '变量',
+    label: $lang('DL645.point.20250207-43'),
     value: '2',
     children: [
       {
-        label: '电压',
+        label: $lang('DL645.point.20250207-44'),
         value: '2-1',
         children: [
           {
-            label: 'A相电压(B611)',
+            label: $lang('DL645.point.20250207-45') + '(B611)',
             value: 'B611',
           },
           {
-            label: 'B相电压(B612)',
+            label: $lang('DL645.point.20250207-46') + '(B612)',
             value: 'B612',
           },
           {
-            label: 'C相电压(B613)',
+            label: $lang('DL645.point.20250207-47') + '(B613)',
             value: 'B613',
           },
         ],
       },
       {
-        label: '电流',
+        label: $lang('DL645.point.20250207-48'),
         value: '2-2',
         children: [
           {
-            label: 'A相电流(B621)',
+            label: $lang('DL645.point.20250207-45') + '(B621)',
             value: 'B621',
           },
           {
-            label: 'B相电流(B622)',
+            label: $lang('DL645.point.20250207-46') + '(B622)',
             value: 'B622',
           },
           {
-            label: 'C相电流(B623)',
+            label: $lang('DL645.point.20250207-47') + '(B623)',
             value: 'B623',
           },
         ],
       },
       {
-        label: '瞬时有功率',
+        label: $lang('DL645.point.20250207-93'),
         value: '1-3',
         children: [
           {
-            label: '总瞬时有功率(B630)',
+            label: $lang('DL645.point.20250207-104') + '(B630)',
             value: 'B630',
           },
           {
-            label: 'A相瞬时有功率(B631)',
+            label: $lang('DL645.point.20250207-94') + '(B631)',
             value: 'B631',
           },
           {
-            label: 'B相瞬时有功率(B632)',
+            label: $lang('DL645.point.20250207-95') + '(B632)',
             value: 'B632',
           },
           {
-            label: 'C相瞬时有功率(B633)',
+            label: $lang('DL645.point.20250207-96') + '(B633)',
             value: 'B633',
           },
           {
-            label: '正向有功功率上限值(B634)',
+            label: $lang('DL645.point.20250207-97') + '(B634)',
             value: 'B634',
           },
           {
-            label: '反向有功功率上限值(B635)',
+            label: $lang('DL645.point.20250207-98') + '(B635)',
             value: 'B635',
           },
         ],
       },
       {
-        label: '瞬时无功功率',
+        label: $lang('DL645.point.20250207-57'),
         value: '1-4',
         children: [
           {
-            label: '总瞬时无功功率(B640)',
+            label: $lang('DL645.point.20250207-99') + '(B640)',
             value: 'B640',
           },
           {
-            label: 'A相瞬时无功功率(B641)',
+            label: $lang('DL645.point.20250207-100') + '(B641)',
             value: 'B641',
           },
           {
-            label: 'B相瞬时无功功率(B642)',
+            label: $lang('DL645.point.20250207-101') + '(B642)',
             value: 'B642',
           },
           {
-            label: 'C相瞬时无功功率(B643)',
+            label: $lang('DL645.point.20250207-102') + '(B643)',
             value: 'B643',
           },
         ],
       },
       {
-        label: '瞬时视在功率',
+        label: $lang('DL645.point.20250207-58'),
         value: '1-5',
         children: [
           {
-            label: '总瞬时视在功率(B650)',
+            label: $lang('DL645.point.20250207-103') + '(B650)',
             value: 'B650',
           },
           {
-            label: '瞬时A相视在功率(B651)',
+            label: $lang('DL645.point.20250207-59') + '(B651)',
             value: 'B651',
           },
           {
-            label: '瞬时B相视在功率(B652)',
+            label: $lang('DL645.point.20250207-60') + '(B652)',
             value: 'B652',
           },
           {
-            label: '瞬时C相视在功率(B653)',
+            label: $lang('DL645.point.20250207-61') + '(B653)',
             value: 'B653',
           },
         ]
@@ -967,19 +974,19 @@ const DLT645Function97 = [
     ],
   },
   {
-    label: '参变量',
+    label: $lang('DL645.point.20250207-74'),
     value: '1-6',
     children: [
       {
-        label: '电表运行状态字1(C020)',
+        label: $lang('DL645.point.20250207-81') + '1(C020)',
         value: 'C020',
       },
       {
-        label: '电表运行状态字2(C021)',
+        label: $lang('DL645.point.20250207-81') + '2(C021)',
         value: 'C021',
       },
       {
-        label: '电表运行状态字3(C023)',
+        label: $lang('DL645.point.20250207-81') + '3(C023)',
         value: 'C023',
       },
     ]
@@ -990,16 +997,16 @@ const DLT645Function97 = [
 const functionCode = computed(() => {
   if (version.value === '2007') {
     return [
-      {label: '读写电表数据', value: 'ReadWriteMeterData'},
-      {label: '读写通讯地址', value: 'ReadWriteMeterNumber'},
-      {label: '更改通讯速率', value: 'ModifyTheCommunicationRate'},
-      {label: '跳闸控制', value: 'TripControl'},
+      {label: $lang('DL645.point.20250207-19'), value: 'ReadWriteMeterData'},
+      {label: $lang('DL645.point.20250207-20'), value: 'ReadWriteMeterNumber'},
+      {label: $lang('DL645.point.20250207-21'), value: 'ModifyTheCommunicationRate'},
+      {label: $lang('DL645.point.20250207-22'), value: 'TripControl'},
     ];
   } else {
     return [
-      {label: '读写电表数据', value: 'ReadWriteMeterData97'},
-      {label: '写通讯地址', value: 'ReadWriteMeterNumber97'},
-      {label: '更改通讯速率', value: 'ModifyTheCommunicationRate97'},
+      {label: $lang('DL645.point.20250207-23'), value: 'ReadWriteMeterData97'},
+      {label: $lang('DL645.point.20250207-24'), value: 'ReadWriteMeterNumber97'},
+      {label: $lang('DL645.point.20250207-21'), value: 'ModifyTheCommunicationRate97'},
     ];
   }
 });
@@ -1024,24 +1031,11 @@ const decimalCountOptions = [
   {label: '0.00000001', value: '0.00000001'},
 ];
 
-const rules = {
-  function: [
-    {
-      required: true,
-      message: '请选择数据类型',
-    },
-  ],
-  accessModes: [
-    {
-      required: true,
-      validator: (_, value) => {
-        if (!value?.length) {
-          return Promise.reject('请选择访问类型')
-        }
-        return Promise.resolve()
-      }
-    }
-  ]
+const valValue = (_, value) => {
+  if (!value?.length) {
+    return Promise.reject($lang('DL645.point.20250207-15'))
+  }
+  return Promise.resolve()
 }
 
 if (!('configuration' in formData)) {
@@ -1076,7 +1070,7 @@ const checkFunctionCode = async (code) => {
   formData.configuration.parameter.byteCount = res.result?.byteCount || undefined;
   formData.configuration.parameter.decimalCount = parseFloat(res.result?.decimalCount) || undefined;
   disabled.value = res.result.success;
-  lastViidateValue.value = code;
+  lastValValue.value = code;
 }
 
 const chooseFunctionCode = async (value) => {
@@ -1097,18 +1091,18 @@ const chooseFunctionCode = async (value) => {
 };
 
 const identityValidate = async (_rule, value) => {
-  if (lastViidateValue.value === value) {
+  if (lastValValue.value === value) {
     return Promise.resolve();
   }
   disabled.value = false;
   if (!value) {
-    return Promise.reject('请输入或选择功能标识');
+    return Promise.reject($lang('DL645.point.20250207-16'));
   } else {
     if (version.value === '2007' && value.length < 8) {
-      return Promise.reject('请输入8位的功能标识');
+      return Promise.reject($lang('DL645.point.20250207-17'));
     }
     if (version.value === '1997' && value.length < 4) {
-      return Promise.reject('请输入4位的功能标识');
+      return Promise.reject($lang('DL645.point.20250207-18'));
     }
     return Promise.resolve();
   }

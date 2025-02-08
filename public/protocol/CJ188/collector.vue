@@ -1,11 +1,11 @@
 <template>
-  <a-form-item label="表号" :name="['configuration', 'meterId']" :rules="{
+  <a-form-item :label="$lang('CJ188.collector.20250207-1')" :name="['configuration', 'meterId']" :rules="{
         required: true,
-        message: '请输入或选择表号',
+        message: $lang('CJ188.collector.20250207-2'),
         trigger: 'blur',
       }">
     <a-auto-complete
-        placeholder="请输入或选择表号"
+        :placeholder="$lang('CJ188.collector.20250207-2')"
         v-model:value="formData.configuration.meterId"
         :options="meterNumberOptions"
         :maxlength="14"
@@ -17,14 +17,14 @@
     </a-auto-complete>
   </a-form-item>
   <a-form-item
-      label="表类型"
+      :label="$lang('CJ188.collector.20250207-3')"
       :name="['configuration', 'meter']"
       v-model:value="formData.configuration.meter"
       :rules="[
-          { required: true, message: '请选择表类型', trigger: 'change' },
+          { required: true, message: $lang('CJ188.collector.20250207-4'), trigger: 'change' },
         ]"
   >
-    <a-select placeholder="请选择表类型" v-model:value="formData.configuration.meter">
+    <a-select :placeholder="$lang('CJ188.collector.20250207-4')" v-model:value="formData.configuration.meter">
       <a-select-option
           v-for="item in meterOptions"
           :key="item.ID"
@@ -36,7 +36,9 @@
 </template>
 <script setup>
 import { inject } from 'vue'
+import {useLocales} from '@hooks'
 
+const {$lang} = useLocales('CJ188')
 const formData = inject('plugin-form')
 
 if (!('configuration' in formData)) {

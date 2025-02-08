@@ -1,20 +1,20 @@
 <template>
   <a-form-item
-      label="串口"
+      :label="$lang('CJ188.channel.20250207-1')"
       :name="['configuration', 'serialPortId']"
-      :rules="[{ required: true, message: '请选择串口' }]"
+      :rules="[{ required: true, message: $lang('CJ188.channel.20250207-2') }]"
   >
     <a-select
         v-model:value="formData.configuration.serialPortId"
-        placeholder="请选择串口"
+        :placeholder="$lang('CJ188.channel.20250207-2')"
         :options="list || []"
         @change="handlePortChange"
     />
   </a-form-item>
   <a-form-item
       :name="['configuration', 'leadLength']"
-      :rules="[{ required: true, message: '请选择前导字节长度' }]"
-      label="前导字节长度"
+      :rules="[{ required: true, message: $lang('CJ188.channel.20250207-4') }]"
+      :label="$lang('CJ188.channel.20250207-3')"
   >
     <j-card-select
         :showImage="false"
@@ -27,6 +27,10 @@
 <script setup>
 import {inject, ref} from 'vue'
 import {request} from '@jetlinks-web/core'
+
+import {useLocales} from '@hooks'
+
+const {$lang} = useLocales('CJ188')
 
 const formData = inject('plugin-form')
 

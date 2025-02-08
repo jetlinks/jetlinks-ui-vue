@@ -1,6 +1,6 @@
 <template>
   <a-form-item
-      label="功能标识"
+      :label="$lang('CJ188.point.20250207-1')"
       :name="['configuration', 'dataId']"
       :rules="{
       required: true,
@@ -8,7 +8,7 @@
     }"
   >
     <a-select
-        placeholder="请选择功能标识"
+        :placeholder="$lang('CJ188.point.20250207-2')"
         v-model:value="formData.configuration.dataId"
         @change="functionChange"
     >
@@ -23,14 +23,13 @@
   </a-form-item>
   <a-form-item
       :name="['configuration', 'type']"
-      label="数据类型"
+      :label="$lang('CJ188.point.20250207-3')"
       :rules="{
         required: true,
         trigger: 'blur',
       }"
   >
     <a-input
-        placeholder="数据类型"
         disabled
         v-model:value="formData.configuration.type"
     />
@@ -40,7 +39,9 @@
 import {inject, ref} from 'vue'
 import {request} from '@jetlinks-web/core'
 import {randomString} from "@jetlinks-web/utils";
+import {useLocales} from '@hooks'
 
+const {$lang} = useLocales('CJ188')
 const formData = inject('plugin-form')
 
 const options = ref([]);
