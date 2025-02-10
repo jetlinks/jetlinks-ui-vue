@@ -33,6 +33,9 @@
               {{ slotProps.createTime }}
             </span>
           </template>
+          <template #name="slotProps">
+            {{ slotProps?.i18nName || slotProps?.name }}
+          </template>
           <template #action="slotProps">
             <a-space :size="16">
               <j-permission-button
@@ -81,6 +84,7 @@ import { useMenuStore } from '@/store/menu'
 import { onlyMessage } from '@jetlinks-web/utils'
 import {OWNER_KEY} from "@/utils/consts";
 import { useI18n } from 'vue-i18n';
+import {FullPage} from "@/layout";
 
 const { t: $t } = useI18n();
 const permission = 'system/Menu'
@@ -104,9 +108,9 @@ const columns = [
   },
   {
     title: $t('Menu.index.599742-7'),
-    dataIndex: 'i18nName',
+    dataIndex: 'name',
     key: 'name',
-    ellipsis: true,
+    scopedSlots: true,
     search: {
       type: 'string',
       componentProps: {
