@@ -96,6 +96,7 @@ import TemplateApi from '@/api/notice/template';
 import { MSG_TYPE, NOTICE_METHOD } from './const';
 import { noticeType, _variableMap } from '../../../data';
 import { useI18n } from 'vue-i18n';
+import { cloneDeep } from "lodash-es";
 
 const { t: $t } = useI18n();
 const props = defineProps({
@@ -191,16 +192,10 @@ const handleData = async (e: any) => {
         const arr = item?.variableDefinitions?.map((i: any) => i?.id) || [];
         return arr.includes(_variable);
     });
-    return {
-        code: resp.message,
-        result: {
-            data: result,
-            pageIndex: 0,
-            pageSize: resp.result.length,
-            total: resp.result.length,
-        },
-        status: resp.status,
-    };
+
+    const data = cloneDeep(resp)
+    data.result.data = result
+    return data
 };
 
 const onAdd = () => {
