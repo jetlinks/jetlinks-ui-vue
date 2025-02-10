@@ -10,6 +10,7 @@ import Player from './Player/index.vue'
 import BatchDropdown from './BatchDropdown/index.vue'
 import ConfirmModal from './ConfirmModal/index.vue'
 import CheckButton from './CheckButton/CheckButton.vue'
+import RenderComponents from './RenderComponents'
 
 import FormItemValue from './FormItem'
 
@@ -27,6 +28,8 @@ export default {
             .component('Player', Player)
             .component('BatchDropdown', BatchDropdown)
             .component('ConfirmModal',ConfirmModal)
+            .component('CheckButton',CheckButton)
+            .component(RenderComponents.name,RenderComponents)
             .component('CheckButton',CheckButton);
 
         Object.keys(FormItemValue).forEach(key => {

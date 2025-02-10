@@ -1,0 +1,18 @@
+{
+  "EtherNetIp.collector.20250207-1": "Host Address",
+  "EtherNetIp.collector.20250207-2": "Please enter the host address",
+  "EtherNetIp.collector.20250207-3": "Please enter a valid host address",
+  "EtherNetIp.collector.20250207-4": "Port",
+  "EtherNetIp.collector.20250207-5": "Please enter the port",
+  "EtherNetIp.collector.20250207-6": "Connection Pool Size",
+  "EtherNetIp.collector.20250207-7": "Please enter the connection pool size",
+  "EtherNetIp.point.20250207-1": "Address",
+  "EtherNetIp.point.20250207-2": "Please enter a valid address",
+  "EtherNetIp.point.20250207-3": "Please enter the address",
+  "EtherNetIp.point.20250207-4": "Please select the access type",
+  "EtherNetIp.point.20250207-5": "Read",
+  "EtherNetIp.point.20250207-6": "Write",
+  "EtherNetIp.point.20250207-7": "Data Type",
+  "EtherNetIp.point.20250207-8": "Please select the data type",
+  "EtherNetIp.point.20250207-9": "Access Type"
+}

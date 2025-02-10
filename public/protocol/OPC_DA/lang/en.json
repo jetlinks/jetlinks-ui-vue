@@ -1,0 +1,11 @@
+{
+  "OPC_DA.channel.20250207-1": "Host address",
+  "OPC_DA.channel.20250207-2": "Please enter the host address",
+  "OPC_DA.channel.20250207-3": "Please enter a valid host address",
+  "OPC_DA.channel.20250207-4": "Username",
+  "OPC_DA.channel.20250207-5": "Please enter the username",
+  "OPC_DA.channel.20250207-6": "Password",
+  "OPC_DA.channel.20250207-7": "Please enter the password",
+  "OPC_DA.collector.20250207-1": "Please enter the clsId",
+  "OPC_DA.collector.20250207-2": "Program ID used in Windows applications"
+}
