@@ -27,7 +27,6 @@ export default {
             .component('Player', Player)
             .component('BatchDropdown', BatchDropdown)
             .component('ConfirmModal',ConfirmModal)
-            .component('CheckButton',CheckButton)
             .component('CheckButton',CheckButton);
 
         Object.keys(FormItemValue).forEach(key => {
