@@ -5,7 +5,7 @@
                 :type="'primary'"
                 :ghost="true"
                 :hasPermission="_item.permission ? _item.permission : true"
-                v-bind="{ ..._item, ..._item.selected }"
+                v-bind="{ ...omit(_item, 'icon'), ..._item.selected }"
             >
                 <template #icon><AIcon :type="_item.icon" /></template>
                 {{ _item.text }}
