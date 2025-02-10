@@ -15,9 +15,10 @@ export const columns = [
     },
     {
       title: i18n.global.t('Permission.util.968438-2'),
-      dataIndex: 'i18nName',
-      key: 'i18nName',
+      dataIndex: 'name',
+      key: 'name',
       ellipsis: true,
+      scopedSlots: true,
       search: {
         type: 'string',
         first: true,
