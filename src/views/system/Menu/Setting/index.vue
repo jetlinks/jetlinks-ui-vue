@@ -27,7 +27,7 @@
                                         <div class="tree-content-title">
                                             <AIcon type="HolderOutlined" />
                                             <div style="margin-left: 8px">
-                                                {{ row.name }}
+                                                {{ row.i18nName || row.name }}
                                             </div>
                                         </div>
                                     </div>
