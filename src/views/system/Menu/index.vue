@@ -31,7 +31,7 @@
               v-if="admin"
               style="margin-left: 12px"
               @click="router.push('/system/Menu/Setting')"
-            >菜单配置</a-button
+            >{{ $t('Menu.index.599742-17') }}</a-button
             >
           </template>
           <template #createTime="slotProps">
