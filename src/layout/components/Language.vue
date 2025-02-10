@@ -25,10 +25,7 @@ const options = [
 
 const handleChangeLanguage = async () => {
   LocalStore.set(langKey, systemStore.language)
-  i18n.global.locale.value = systemStore.language
-  await userStore.getUserInfo()
-  await systemStore.queryInfo()
-  await menuStore.queryMenus()
+  window.location.reload();
 }
 </script>
 

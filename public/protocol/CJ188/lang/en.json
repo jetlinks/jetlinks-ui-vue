@@ -1,0 +1,13 @@
+{
+  "CJ188.channel.20250207-1": "Serial Port",
+  "CJ188.channel.20250207-2": "Please select the serial port",
+  "CJ188.channel.20250207-3": "Preamble Byte Length",
+  "CJ188.channel.20250207-4": "Please select the preamble byte length",
+  "CJ188.collector.20250207-1": "Meter Number",
+  "CJ188.collector.20250207-2": "Please enter or select the meter number",
+  "CJ188.collector.20250207-3": "Meter Type",
+  "CJ188.collector.20250207-4": "Please select the meter type",
+  "CJ188.point.20250207-1": "Function Identifier",
+  "CJ188.point.20250207-2": "Please select the function identifier",
+  "CJ188.point.20250207-3": "Data Type"
+}

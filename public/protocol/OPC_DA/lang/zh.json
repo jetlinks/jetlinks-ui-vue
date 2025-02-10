@@ -1,0 +1,11 @@
+{
+  "OPC_DA.channel.20250207-1": "主机地址",
+  "OPC_DA.channel.20250207-2": "请输入主机地址",
+  "OPC_DA.channel.20250207-3": "请输入正确的主机地址",
+  "OPC_DA.channel.20250207-4": "用户名",
+  "OPC_DA.channel.20250207-5": "请输入用户名",
+  "OPC_DA.channel.20250207-6": "密码",
+  "OPC_DA.channel.20250207-7": "请输入密码",
+  "OPC_DA.collector.20250207-1": "请输入clsId",
+  "OPC_DA.collector.20250207-2": "应用在windows上的程序id"
+}
