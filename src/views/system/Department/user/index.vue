@@ -1,13 +1,15 @@
 <template>
   <div style="overflow-y: auto;">
     <pro-search
-        :columns="columns"
+        v-if="show"
         noMargin
         target="category-user"
         style="margin: 0;"
+        :columns="columns"
         @search="handleParams"
     />
     <j-pro-table
+        v-if="show"
         ref="tableRef"
         :columns="columns"
         :request="handleSearch"
@@ -44,6 +46,11 @@
             {{ $t('user.index.252066-2') }}
           </j-permission-button>
         </a-space>
+      </template>
+      <template #positions="slotProps">
+        <j-ellipsis>
+          {{ slotProps.positions?.map(item => item.name).join(',') || ''}}
+        </j-ellipsis>
       </template>
       <template #status="slotProps">
         <j-badge-status
@@ -83,9 +90,10 @@
 <script setup lang="ts" name="user">
 import AddBindUserDialog from './components/AddBindUserDialog.vue'
 import {unBindUser_api} from '@/api/system/department'
-import {columns, requestFun} from '../util'
+import {useColumns, requestFun} from '../util'
 import {onlyMessage} from '@jetlinks-web/utils'
 import { useI18n } from 'vue-i18n';
+import { useRouteQuery } from '@vueuse/router'
 
 const { t: $t } = useI18n();
 const permission = 'system/Department'
@@ -95,11 +103,18 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  positionId: {
+    type: String,
+    default: ''
+  }
 })
 
 const isShow = computed(() => {
   return !props.parentId
 })
+const show = ref(false)
+const search = useRouteQuery('q')
+const searchTarget = useRouteQuery('target')
 
 // 搜索参数
 const queryParams = ref({})
@@ -107,6 +122,8 @@ const dialogVisible = ref(false)
 // 表格
 const tableRef = ref<any>() // 表格实例
 const _selectedRowKeys = ref<string[]>([])
+
+const columns = useColumns()
 
 // 刷新列表
 const refresh = () => {
@@ -160,6 +177,14 @@ const onSelectAll = (selected: boolean, _: any[], changeRows: any) => {
 
 // 搜索
 const handleParams = (e: any) => {
+  e?.terms.map(a => {
+    return a.terms.map(b => {
+      if (b.column === 'positions') {
+        b.column = 'id$in-dimension$position'
+      }
+      return b
+    })
+  })
   queryParams.value = e
 }
 
@@ -188,6 +213,36 @@ const unBind = (row?: any) => {
     }
   })
 }
+
+const handleRouteQuery = (v) => {
+  const terms = [
+    {
+      terms: [{
+        column: 'positions',
+        termType: 'eq',
+        value: v
+      }, null, null],
+    },
+    {
+      terms: [null, null, null],
+    }
+  ]
+
+  if (v) {
+    search.value = encodeURI(JSON.stringify({terms}))
+    searchTarget.value = 'category-user'
+    setTimeout(() => {
+      show.value = true
+    })
+  } else {
+    show.value = true
+  }
+
+}
+
+watch(() => props.positionId, (v) =>{
+  handleRouteQuery(v)
+}, { immediate: true })
 
 watch(
     () => props.parentId,

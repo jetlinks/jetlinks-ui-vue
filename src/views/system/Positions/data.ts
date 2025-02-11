@@ -57,6 +57,7 @@ export const useColumns = () => {
       dataIndex: 'parentId',
       key: 'parentId',
       ellipsis: true,
+      scopedSlots: true,
       search: {
         type: 'select',
         options: () => queryPageNoPage().then(resp => {

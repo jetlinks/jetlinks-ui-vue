@@ -88,6 +88,13 @@
                     </a-form-item>
                 </a-col>
             </a-row>
+          <a-row v-if="form.IsShow('add', 'edit')">
+            <a-col :span="12">
+              <a-form-item name="positions" :label="$t('components.EditUserDialog.939453-31')">
+                  <form-item-position v-model:value="form.data.positions" />
+              </a-form-item>
+            </a-col>
+          </a-row>
             <div class="formName" v-if="form.IsShow('add', 'edit')">{{ $t('components.EditUserDialog.939453-16') }}</div>
             <a-row :gutter="24" v-if="form.IsShow('add', 'edit')">
                 <a-col :span="24">
@@ -281,21 +288,23 @@ const form = reactive({
     submit: (): Promise<any> => {
         let api: axiosFunType;
         let params = {};
-
+        const { positions, ...extraFormData} = form.data
         if (props.type === 'add') {
             api = addUser_api;
             params = {
-                user: form.data,
+                user: extraFormData,
                 orgIdList: form.data.orgIdList,
                 roleIdList: form.data.roleIdList,
+                positions: positions,
             };
         } else if (props.type === 'edit') {
             api = updateUser_api;
             params = {
                 id: form.data.id,
-                user: form.data,
+                user: extraFormData,
                 orgIdList: form.data.orgIdList,
                 roleIdList: form.data.roleIdList,
+                positions: positions,
             };
         } else if (props.type === 'reset') {
             api = updatePassword_api;
@@ -360,6 +369,7 @@ type formType = {
     password: string;
     confirmPassword: string;
     roleIdList: string[];
+    positions: string[];
     orgIdList: string[];
     telephone: string;
     email: string;
