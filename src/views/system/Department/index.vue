@@ -15,8 +15,11 @@
                 v-model:bindBool="bindBool"
               />
             </a-tab-pane>
+            <a-tab-pane key="position" :tab="$t('Department.index.945805-3')">
+              <Position :parentId="departmentId" @changeTabs="onChangeTabs" />
+            </a-tab-pane>
             <a-tab-pane key="user" :tab="$t('Department.index.945805-2')">
-              <User :parentId="departmentId" />
+              <User :parentId="departmentId" :positionId="positionId"  />
             </a-tab-pane>
           </a-tabs>
           <User v-else :parentId="departmentId" />
@@ -29,11 +32,13 @@
 <script setup lang="ts" name="Department">
 import LeftTree from './components/LeftTree.vue'
 import User from './user/index.vue';
+import Position from './positions/index.vue';
 import {getModulesComponents, isNoCommunity} from "@/utils";
 
 const activeKey = ref<'product' | 'device' | 'user'>('product');
 
 const departmentId = ref<string>('');
+const positionId = ref<string>('');
 const extraComponents = ref([])
 
 const bindBool = ref<boolean>(false);
@@ -44,6 +49,14 @@ const openDeviceBind = () => {
 
 const onChange = (id: string) => {
   departmentId.value = id
+}
+
+const onChangeTabs = (id) => {
+  positionId.value = id
+  activeKey.value = 'user';
+  setTimeout(() => {
+    positionId.value = undefined
+  }, 100)
 }
 
 onMounted(() => {

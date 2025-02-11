@@ -1,9 +1,9 @@
 <script setup name="Positions">
-import { onlyMessage } from '@jetlinks-web/utils';
 import { useI18n } from 'vue-i18n';
 import { useColumns } from './data';
 import {useMenuStore} from "@/store";
 import { queryPage, del } from '@/api/system/positions';
+import {useRoute} from "vue-router";
 
 const { t: $t } = useI18n();
 const params = ref({});
@@ -11,6 +11,8 @@ const permission = 'system/Positions';
 const columns = useColumns(permission);
 const menuStore = useMenuStore()
 const tableRef = ref()
+
+const save = useRoute().query.save
 
 const onAdd = () => {
   menuStore.jumpPage('system/Positions/Detail', {
@@ -33,6 +35,12 @@ const onDelete = (id) => {
     tableRef.value.reload()
   })
 }
+
+onMounted(() => {
+  if (save) {
+    onAdd()
+  }
+})
 
 </script>
 

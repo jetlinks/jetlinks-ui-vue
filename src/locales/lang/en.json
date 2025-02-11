@@ -1050,6 +1050,7 @@
 	"product.index.083446-16": "Please check the data that needs to be unbound",
 	"product.index.083446-17": "Operation successful",
 	"Department.index.945805-2": "User",
+	"Department.index.945805-3": "Position",
 	"Status.index.565893-0": "Network components",
 	"Status.index.565893-1": "Diagnose whether the network component configuration is correct. Incorrect configuration will cause device connection failure",
 	"Status.index.565893-2": "normal",
