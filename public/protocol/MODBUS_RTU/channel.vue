@@ -62,7 +62,7 @@ const handleSerialPortChange = (_, option) => {
 }
 
 const getList = () => {
-  request.get('/edge/serial-port/info').then(resp => {
+  request.post('/data-collect/MODBUS_RTU/command/GetRtuPorts').then(resp => {
     if (resp.success){
       serialPort.value = (resp.result || []).map(i => {
         return {

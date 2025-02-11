@@ -55,7 +55,7 @@ const handlePortChange = (_, option) => {
 }
 
 const getList = () => {
-  request.get('/edge/serial-port/info').then(resp => {
+  request.get('/data-collect/CJ188/command/GetRtuPorts').then(resp => {
     if (resp.success){
       list.value = (resp.result || []).map(i => {
         return {

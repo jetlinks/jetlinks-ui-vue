@@ -80,7 +80,7 @@ if (!('properties' in formData.configuration)) {
 }
 
 const getList = () => {
-  request.get('/edge/serial-port/info').then(resp => {
+  request.get('/data-collect/DL645/command/GetRtuPorts').then(resp => {
     if (resp.success) {
       serialPort.value = (resp.result || []).map(i => {
         return {
