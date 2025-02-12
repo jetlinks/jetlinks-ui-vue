@@ -4,13 +4,10 @@
 
 <script setup lang="ts">
 import { LocalStore } from '@jetlinks-web/utils';
-import { useSystemStore, useUserStore, useMenuStore } from '@/store'
-import {langKey} from "@/utils/consts";
-import i18n from "@/locales";
+import { useSystemStore } from '@/store'
+import { langKey, ruleEditorKey } from "@/utils/consts";
 
 const systemStore = useSystemStore()
-const userStore = useUserStore()
-const menuStore = useMenuStore()
 
 const options = [
   {
@@ -25,6 +22,7 @@ const options = [
 
 const handleChangeLanguage = async () => {
   LocalStore.set(langKey, systemStore.language)
+  LocalStore.set(ruleEditorKey, systemStore.language)
   window.location.reload();
 }
 </script>
