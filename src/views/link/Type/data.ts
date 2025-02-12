@@ -24,6 +24,7 @@ export const Configuration = {
     certId: undefined,
     privateKeyAlias: '',
     clientId: '',
+    transport:'UDP',
     parserConfiguration: ParserConfiguration,
 };
 

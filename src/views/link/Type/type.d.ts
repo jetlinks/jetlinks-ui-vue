@@ -14,6 +14,7 @@ export interface ConfigurationType {
     certId: string | undefined;
     privateKeyAlias: string;
     clientId: string;
+    transport: string;
     parserConfiguration: {
         delimited: string;
         lang: string;

@@ -662,6 +662,35 @@
                                                     />
                                                 </j-form-item>
                                             </j-col>
+                                            <j-col span="12" v-if="formData.type ==='COAP_SERVER' ">
+                                                <j-form-item
+                                                    label="基于协议"
+                                                    :name="[
+                                                        'cluster',
+                                                        index,
+                                                        'configuration',
+                                                        'transport',
+                                                    ]"
+                                                >
+                                                    <j-select
+                                                        v-model:value="
+                                                            cluster
+                                                                .configuration
+                                                                .transport
+                                                        "
+                                                        :options="[{
+                                                            label: 'TCP',
+                                                            value: 'TCP',
+                                                        }, {
+                                                            label: 'UDP',
+                                                            value: 'UDP',
+                                                        }
+                                                        ]"
+                                                        placeholder="请选择类型"
+                                                      
+                                                    />
+                                                </j-form-item>
+                                            </j-col>
                                             <j-col :span="24">
                                                 <j-form-item
                                                     :label="
@@ -1534,7 +1563,6 @@ const getDetail = () => {
         getResourcesCurrent();
     });
     loading.value = false;
-  
 };
 
 watch(
