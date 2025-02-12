@@ -1,0 +1,22 @@
+{
+  "iec104.collector.20250207-1": "Slave Address",
+  "iec104.collector.20250207-2": "Please enter the slave address",
+  "iec104.collector.20250207-3": "Slave Port",
+  "iec104.collector.20250207-4": "Please enter the slave port",
+  "iec104.collector.20250207-5": "Group Address",
+  "iec104.collector.20250207-6": "Please enter the group address",
+  "iec104.collector.20250207-7": "Please enter the channel port",
+  "iec104.collector.20250207-8": "Please enter an integer between 1 and 65535",
+  "iec104.collector.20250207-9": "Please enter the channel IP",
+  "iec104.collector.20250207-10": "Please enter a valid domain name or IP address",
+  "iec104.collector.20250207-11": "Please enter the group address",
+  "iec104.point.20250207-1": "Type Identifier",
+  "iec104.point.20250207-2": "Please select the type identifier",
+  "iec104.point.20250207-3": "Address",
+  "iec104.point.20250207-4": "Please enter the address",
+  "iec104.point.20250207-5": "Read",
+  "iec104.point.20250207-6": "Write",
+  "iec104.point.20250207-7": "Subscribe",
+  "iec104.point.20250207-8": "Access Type",
+  "iec104.point.20250207-9": "Please select the access type"
+}

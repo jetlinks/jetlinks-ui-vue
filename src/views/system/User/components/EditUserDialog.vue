@@ -79,63 +79,22 @@
                             { required: form.data.username !== 'admin', message: $t('components.EditUserDialog.939453-13') },
                         ]"
                     >
-                        <a-tree-select
-                            v-model:value="form.data.roleIdList"
-                            multiple
-                            show-search
-                            style="width: calc(100% - 40px)"
-                            :placeholder="$t('components.EditUserDialog.939453-13')"
-                            :tree-data="form.roleOptions"
-                            :fieldNames="{ label: 'name', value: 'id', children:'children' }"
-                            :disabled="form.data.username === 'admin'"
-                            :filterTreeNode="
-                                (v: string, node: any) => filterSelectNode(v, node, 'name')
-                            "
-                        >
-                        <template #title="{ name }">
-                            <div style="width: calc(100% - 10px) ">
-                                <j-ellipsis>{{ name }}</j-ellipsis>
-                            </div>
-                        </template>
-                    </a-tree-select>
-                        <j-permission-button
-                            :hasPermission="`${rolePermission}:add`"
-                            @click="form.clickAddItem('roleIdList', 'Role')"
-                            v-if="form.data.username !== 'admin'"
-                        >
-                            <AIcon type="PlusOutlined" />
-                        </j-permission-button>
+                      <form-item-role v-model:value="form.data.roleIdList" :disabled="form.data.username === 'admin'" />
                     </a-form-item>
                 </a-col>
                 <a-col :span="12">
                     <a-form-item name="orgIdList" :label="$t('components.EditUserDialog.939453-14')" class="flex">
-                        <a-tree-select
-                            v-model:value="form.data.orgIdList"
-                            show-search
-                            style="width: calc(100% - 40px)"
-                            :placeholder="$t('components.EditUserDialog.939453-15')"
-                            :tree-data="form.departmentOptions"
-                            :fieldNames="{ label: 'name', value: 'id' }"
-                            multiple
-                            :filterTreeNode="
-                                (v: string, node: any) => filterSelectNode(v, node, 'name')
-                            "
-                        >
-                            <template #title="{ name }">
-                                {{ name }}
-                            </template>
-                        </a-tree-select>
-                        <j-permission-button
-                            :hasPermission="`${deptPermission}:add`"
-                            @click="
-                                form.clickAddItem('orgIdList', 'Department')
-                            "
-                        >
-                            <AIcon type="PlusOutlined" />
-                        </j-permission-button>
+                      <form-item-org v-model:value="form.data.orgIdList" />
                     </a-form-item>
                 </a-col>
             </a-row>
+          <a-row v-if="form.IsShow('add', 'edit')">
+            <a-col :span="12">
+              <a-form-item name="positions" :label="$t('components.EditUserDialog.939453-31')">
+                  <form-item-position v-model:value="form.data.positions" />
+              </a-form-item>
+            </a-col>
+          </a-row>
             <div class="formName" v-if="form.IsShow('add', 'edit')">{{ $t('components.EditUserDialog.939453-16') }}</div>
             <a-row :gutter="24" v-if="form.IsShow('add', 'edit')">
                 <a-col :span="24">
@@ -209,28 +168,23 @@
 </template>
 
 <script setup lang="ts">
-import {PermissionButton} from '@jetlinks-web/components';
 import { FormInstance } from 'ant-design-vue';
 import {
     validateField_api,
-    getDepartmentList_api,
     addUser_api,
     updateUser_api,
     updatePassword_api,
     getUser_api,
-    getRoleList
 } from '@/api/system/user';
 import { Rule } from 'ant-design-vue/es/form';
 import { DefaultOptionType } from 'ant-design-vue/es/vc-tree-select/TreeSelect';
 import { AxiosResponse } from 'axios';
 import { passwordRegEx } from '@/utils/validate';
-import { filterSelectNode, onlyMessage } from '@/utils/comm';
-import { cloneDeep, uniqBy } from 'lodash-es';
+import { onlyMessage } from '@/utils/comm';
+import { cloneDeep } from 'lodash-es';
 import { useI18n } from 'vue-i18n';
 
 const { t: $t } = useI18n();
-const deptPermission = 'system/Department';
-const rolePermission = 'system/Role';
 
 const emits = defineEmits(['confirm', 'update:visible']);
 const props = defineProps<{
@@ -299,13 +253,9 @@ const form = reactive({
     },
 
     roleOptions: [],
-    departmentOptions: [] as DefaultOptionType[],
-
     _departmentOptions: [] as DefaultOptionType[],
 
     init: () => {
-        form.getDepartmentList();
-        form.getRoleList();
         form.getUserInfo();
     },
     getUserInfo: () => {
@@ -338,21 +288,23 @@ const form = reactive({
     submit: (): Promise<any> => {
         let api: axiosFunType;
         let params = {};
-
+        const { positions, ...extraFormData} = form.data
         if (props.type === 'add') {
             api = addUser_api;
             params = {
-                user: form.data,
+                user: extraFormData,
                 orgIdList: form.data.orgIdList,
                 roleIdList: form.data.roleIdList,
+                positions: positions,
             };
         } else if (props.type === 'edit') {
             api = updateUser_api;
             params = {
                 id: form.data.id,
-                user: form.data,
+                user: extraFormData,
                 orgIdList: form.data.orgIdList,
                 roleIdList: form.data.roleIdList,
+                positions: positions,
             };
         } else if (props.type === 'reset') {
             api = updatePassword_api;
@@ -363,54 +315,13 @@ const form = reactive({
         } else return Promise.reject();
         return api(params);
     },
-    getRoleList: () => {
-        getRoleList({ sorts: [{ name: 'createTime', order: 'desc' }] }).then((resp: any) => {
-           if(resp.status === 200){
-            form.roleOptions = dealRoleList(resp.result)
-           }
-        });
-    },
-    getDepartmentList: () => {
-        getDepartmentList_api({
-        paging: false,
-        sorts: [{ name: 'sortIndex', order: 'asc' }],
-    }).then((resp: any) => {
-            form.departmentOptions = resp.result.sort((a: any, b: any) =>
-                a.sortIndex === b.sortIndex
-                    ? b.createTime - a.createTime
-                    : a.sortIndex - b.sortIndex,
-            ); // 报存源数据;
-        });
-    },
     IsShow: (...typeList: modalType[]) => typeList.includes(props.type),
-    clickAddItem: (prop: 'roleIdList' | 'orgIdList', target: string) => {
-        const tab: any = window.open(`${origin}/#/system/${target}?save=true`);
-        tab.onTabSaveSuccess = (value: string) => {
-            form.data[prop] = [...(form.data[prop] || []), value];
-            if (prop === 'roleIdList') form.getRoleList();
-            else form.getDepartmentList();
-        };
-    },
 });
 const checkCh = async(_rule:Rule,value:string) => {
                 if (/[\u4e00-\u9fa5]/.test(value)) return Promise.reject($t('components.EditUserDialog.939453-30'));
                 else return Promise.resolve('')
             }
-const  dealRoleList = (data:any) =>{
-    return data.map((item:any)=>{
-        return {
-            name: item.groupName,
-            id: item.groupId,
-            disabled: true,
-            children: item?.roles ?  item.roles.map((i:any)=>{
-            return {
-                name:i.name,
-                id:i.id
-            }
-        }) : []
-        }
-    })
-}
+
 // 组织已删除在仍显示在列表中
 // const _departmentOptions = computed(() => {
 //     return uniqBy([...form.departmentOptions, ...form._departmentOptions], 'id')
@@ -458,6 +369,7 @@ type formType = {
     password: string;
     confirmPassword: string;
     roleIdList: string[];
+    positions: string[];
     orgIdList: string[];
     telephone: string;
     email: string;
@@ -474,38 +386,6 @@ type optionType = {
 </script>
 
 <style lang="less" scoped>
-.edit-dialog-container {
-    .ant-form-item {
-        &.flex {
-            :deep(.ant-form-item-control-input-content) {
-                display: flex;
-                .ant-select {
-                    flex: 1;
-                }
-                .ant-tooltip-disabled-compatible-wrapper {
-                    .ant-btn {
-                        color: rgba(0, 0, 0, 0.25);
-                        border-color: #d9d9d9;
-                        background: #f5f5f5;
-                        text-shadow: none;
-                        box-shadow: none;
-                    }
-                }
-                .ant-btn {
-                    width: 32px;
-                    height: 32px;
-                    border: 1px solid @primary-color;
-                    color: @primary-color;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    margin-left: 8px;
-                    cursor: pointer;
-                }
-            }
-        }
-    }
-}
 .formName{
     margin-bottom: 10px;
     font-size: 16px;

@@ -39,6 +39,9 @@
               {{ slotProps.createTime }}
             </span>
           </template>
+          <template #name="slotProps">
+            {{ slotProps?.i18nName || slotProps?.name }}
+          </template>
           <template #action="slotProps">
             <a-space :size="16">
               <j-permission-button
@@ -120,9 +123,9 @@ const columns = [
   },
   {
     title: $t('Menu.index.599742-7'),
-    dataIndex: 'i18nName',
+    dataIndex: 'name',
     key: 'name',
-    ellipsis: true,
+    scopedSlots: true,
     search: {
       type: 'string',
       componentProps: {

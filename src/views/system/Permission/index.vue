@@ -1,53 +1,57 @@
 <template>
   <j-page-container>
     <pro-search
-      :columns="columns"
-      target="system-permission"
-      @search="handleSearch"
+        :columns="columns"
+        target="system-permission"
+        @search="handleSearch"
     />
     <FullPage>
       <j-pro-table
-        ref="tableRef"
-        :columns="columns"
-        :request="getPermission_api"
-        mode="TABLE"
-        :params="params"
-        :scroll="{ y: 'calc(100% - 60px)' }"
-        :defaultParams="{
+          ref="tableRef"
+          :columns="columns"
+          :request="getPermission_api"
+          mode="TABLE"
+          :params="params"
+          :scroll="{ y: 'calc(100% - 60px)' }"
+          :defaultParams="{
           sorts: [{ name: 'id', order: 'asc' }],
         }"
       >
         <template #headerLeftRender>
           <a-space>
             <j-permission-button
-              type="primary"
-              :hasPermission="`${permission}:add`"
-              @click="openDialog()"
+                type="primary"
+                :hasPermission="`${permission}:add`"
+                @click="openDialog()"
             >
-              <AIcon type="PlusOutlined" />{{ $t('Permission.index.473829-0') }}
+              <AIcon type="PlusOutlined"/>
+              {{ $t('Permission.index.473829-0') }}
             </j-permission-button>
-            <a-dropdown trigger="hover" visible>
+            <a-dropdown trigger="hover">
               <a-button>{{ $t('Permission.index.473829-1') }}</a-button>
               <template #overlay>
                 <a-menu>
                   <a-menu-item>
                     <a-upload
-                      name="file"
-                      action="#"
-                      accept=".json"
-                      :showUploadList="false"
-                      :before-upload="clickImport"
-                      :disabled="!hasPerm"
+                        v-show="false"
+                        name="file"
+                        action="#"
+                        accept=".json"
+                        :showUploadList="false"
+                        :before-upload="clickImport"
+                        :disabled="!hasPerm"
                     >
-                      <j-permission-button :hasPermission="`${permission}:import`" >
-                        {{ $t('Permission.index.473829-2') }}
-                      </j-permission-button>
+                      <button ref="uploadRef"></button>
                     </a-upload>
+                    <j-permission-button style="width: 100%" :hasPermission="`${permission}:import`" @click="triggerUpload">
+                      {{ $t('Permission.index.473829-2') }}
+                    </j-permission-button>
                   </a-menu-item>
                   <a-menu-item>
                     <j-permission-button
-                      :hasPermission="`${permission}:export`"
-                      :popConfirm="{
+                        style="width: 100%"
+                        :hasPermission="`${permission}:export`"
+                        :popConfirm="{
                         title: $t('Permission.index.473829-3'),
                         onConfirm: () => clickExport(),
                       }"
@@ -62,9 +66,9 @@
         </template>
         <template #status="slotProps">
           <j-badge-status
-            :status="slotProps.status"
-            :text="slotProps.status ? $t('Permission.index.473829-5') : $t('Permission.index.473829-6')"
-            :statusNames="{
+              :status="slotProps.status"
+              :text="slotProps.status ? $t('Permission.index.473829-5') : $t('Permission.index.473829-6')"
+              :statusNames="{
               1: 'success',
               0: 'error',
             }"
@@ -73,55 +77,55 @@
         <template #action="slotProps">
           <a-space :size="16">
             <j-permission-button
-              :hasPermission="`${permission}:update`"
-              type="link"
-              :tooltip="{
+                :hasPermission="`${permission}:update`"
+                type="link"
+                :tooltip="{
                 title: $t('Permission.index.473829-7'),
               }"
-              style="padding: 0"
-              @click="openDialog(slotProps)"
+                style="padding: 0"
+                @click="openDialog(slotProps)"
             >
-              <AIcon type="EditOutlined" />
+              <AIcon type="EditOutlined"/>
             </j-permission-button>
 
             <j-permission-button
-              :hasPermission="`${permission}:action`"
-              type="link"
-              :popConfirm="{
+                :hasPermission="`${permission}:action`"
+                type="link"
+                :popConfirm="{
                 title: `确定要${!!slotProps.status ? $t('Permission.index.473829-6') : $t('Permission.index.473829-5')}吗？`,
                 onConfirm: () => changeStatus(slotProps),
               }"
-              style="padding: 0"
-              :tooltip="{
+                style="padding: 0"
+                :tooltip="{
                 title: slotProps.status ? $t('Permission.index.473829-6') : $t('Permission.index.473829-5'),
               }"
             >
               <AIcon
-                :type="slotProps.status ? 'StopOutlined' : 'PlayCircleOutlined'"
+                  :type="slotProps.status ? 'StopOutlined' : 'PlayCircleOutlined'"
               />
             </j-permission-button>
             <j-permission-button
-              :hasPermission="`${permission}:delete`"
-              type="link"
-              :tooltip="{
+                :hasPermission="`${permission}:delete`"
+                type="link"
+                :tooltip="{
                 title: !!slotProps.status ? $t('Permission.index.473829-9') : $t('Permission.index.473829-10'),
               }"
-              danger
-              :popConfirm="{
+                danger
+                :popConfirm="{
                 title: $t('Permission.index.473829-11'),
                 onConfirm: () => clickDel(slotProps),
               }"
-              style="padding: 0"
-              :disabled="!!slotProps.status"
+                style="padding: 0"
+                :disabled="!!slotProps.status"
             >
-              <AIcon type="DeleteOutlined" />
+              <AIcon type="DeleteOutlined"/>
             </j-permission-button>
           </a-space>
         </template>
       </j-pro-table>
     </FullPage>
     <!-- 编辑和新增 -->
-    <EditDialog v-if="visible" :data="current" @close="visible = false" @save="onSave" />
+    <EditDialog v-if="visible" :data="current" @close="visible = false" @save="onSave"/>
   </j-page-container>
 </template>
 
@@ -133,23 +137,23 @@ import {
   delPermission_api,
   exportPermission_api,
 } from '@/api/system/permission'
-import { usePermission } from '@jetlinks-web/hooks'
-import { PermissionItem } from './typings'
-import { onlyMessage } from '@jetlinks-web/utils'
-import { downloadJson } from '@/utils/comm'
-import { columns } from './util'
-import { useI18n } from 'vue-i18n';
+import {usePermission} from '@jetlinks-web/hooks'
+import {PermissionItem} from './typings'
+import {onlyMessage} from '@jetlinks-web/utils'
+import {downloadJson} from '@/utils/comm'
+import {columns} from './util'
+import {useI18n} from 'vue-i18n';
 import {FullPage} from "@/layout";
 
-const { t: $t } = useI18n();
+const {t: $t} = useI18n();
 const permission = 'system/Permission'
-const { hasPerm } = usePermission(`${permission}:import`)
+const {hasPerm} = usePermission(`${permission}:import`)
 
 const params = ref<any>({})
 const visible = ref<boolean>(false)
 const current = ref<Partial<PermissionItem>>({})
 const tableRef = ref<any>({})  // 表格实例
-
+const uploadRef = ref<any>()
 // 搜索
 const handleSearch = (e: any) => {
   params.value = e
@@ -157,7 +161,7 @@ const handleSearch = (e: any) => {
 
 // 打开编辑弹窗
 const openDialog = (row?: PermissionItem) => {
-  current.value = { ...row }
+  current.value = {...row}
   visible.value = true
 }
 
@@ -213,7 +217,7 @@ const changeStatus = (row: PermissionItem) => {
 
 // 删除
 const clickDel = (row: PermissionItem) => {
-  if(!row.id) return;
+  if (!row.id) return;
   delPermission_api(row.id).then((resp: any) => {
     if (resp.status === 200) {
       tableRef.value?.reload()
@@ -226,5 +230,9 @@ const clickDel = (row: PermissionItem) => {
 const onSave = () => {
   visible.value = false
   tableRef.value?.reload()
+}
+
+const triggerUpload = () =>{
+  uploadRef.value.click()
 }
 </script>

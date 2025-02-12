@@ -44,6 +44,15 @@
                             }}
                         </j-ellipsis>
                     </template>
+                  <template #positions="slotProps">
+                    <j-ellipsis>
+                      {{
+                        slotProps?.positions
+                          ?.map((item) => item.name)
+                          .join(',')
+                      }}
+                    </j-ellipsis>
+                  </template>
                     <template #status="slotProps">
                         <j-badge-status
                             :status="slotProps.status"
@@ -142,6 +151,8 @@ import {
 } from '@/api/system/user';
 import { onlyMessage } from '@jetlinks-web/utils';
 import { useI18n } from 'vue-i18n';
+import i18n from "@/locales";
+import {queryPageNoPage} from "@/api/system/positions";
 
 const { t: $t } = useI18n();
 const permission = 'system/User';
@@ -212,6 +223,32 @@ const columns = [
                 }),
         },
         scopedSlots: true,
+    },
+    {
+      title: i18n.global.t('Department.util.780026-9'),
+      dataIndex: 'positions',
+      key: 'positions',
+      ellipsis: true,
+      search: {
+        type: 'select',
+        componentProps: {
+          placeholder: i18n.global.t('Department.util.780026-3'),
+        },
+        options() {
+          return queryPageNoPage().then(resp => {
+            if (resp.success) {
+              return resp.result.map(item => {
+                return {
+                  label: item.name,
+                  value: item.id
+                }
+              })
+            }
+            return []
+          })
+        }
+      },
+      scopedSlots: true,
     },
     {
         title: $t('User.index.673867-14'),
@@ -361,20 +398,12 @@ const handleParams = (params: any) => {
                     };
                 }
             }
-            if(termsItem.column === 'roleList'){
-                if(termsItem.termType === 'eq' || termsItem.termType === 'in'){
-                    return {
-                        column: 'id$in-dimension$role',
-                        type: termsItem.type,
-                        value: termsItem.value
-                    }
-                }else{
-                    return {
-                        column: 'id$in-dimension$role$not',
-                        type: termsItem.type,
-                        value: termsItem.value
-                    }
-                }
+            if(termsItem.column === 'positions'){
+              return {
+                column: 'id$in-dimension$position',
+                type: termsItem.type,
+                value: termsItem.value
+              }
             }
             return termsItem;
         });

@@ -1,0 +1,18 @@
+{
+  "EtherNetIp.collector.20250207-1": "主机地址",
+  "EtherNetIp.collector.20250207-2": "请输入主机地址",
+  "EtherNetIp.collector.20250207-3": "请输入正确的主机地址",
+  "EtherNetIp.collector.20250207-4": "端口",
+  "EtherNetIp.collector.20250207-5": "请输入端口",
+  "EtherNetIp.collector.20250207-6": "连接池大小",
+  "EtherNetIp.collector.20250207-7": "请输入连接池大小",
+  "EtherNetIp.point.20250207-1": "地址",
+  "EtherNetIp.point.20250207-2": "请输入正确的地址",
+  "EtherNetIp.point.20250207-3": "请输入地址",
+  "EtherNetIp.point.20250207-4": "请选择访问类型",
+  "EtherNetIp.point.20250207-5": "读",
+  "EtherNetIp.point.20250207-6": "写",
+  "EtherNetIp.point.20250207-7": "数据类型",
+  "EtherNetIp.point.20250207-8": "请选择数据类型",
+  "EtherNetIp.point.20250207-9": "访问类型"
+}

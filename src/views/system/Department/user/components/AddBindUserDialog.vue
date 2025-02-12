@@ -7,7 +7,7 @@
     @ok="confirm"
     @cancel="emits('close')"
   >
-    <pro-search :columns="bindUserColumns" target="category" @search="onSearch" />
+    <pro-search type="simple" :columns="bindUserColumns" target="category" @search="onSearch" />
     <div class="table">
       <j-pro-table
         ref="tableRef"
