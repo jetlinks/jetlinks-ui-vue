@@ -84,7 +84,7 @@ export default defineConfig(({ mode }) => {
             proxy: {
                 [env.VITE_APP_BASE_API]: {
                     // target: 'http://192.168.33.99:8844',
-                    target: 'http://192.168.32.70:8601', // 王
+                    target: 'http://192.168.32.233:8601', // 王
                     // target: 'http://192.168.35.114:8844',
                     ws: true,
                     changeOrigin: true,

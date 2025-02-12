@@ -64,7 +64,7 @@ const queryParams = ref({})
 const dialogVisible = ref(false)
 // 表格
 const tableRef = ref() // 表格实例
-const _selectedRowKeys = ref([])
+// const _selectedRowKeys = ref([])
 
 const positionId = ref()
 
@@ -78,37 +78,37 @@ const onSave = () => {
   refresh()
 }
 //取消选择
-const cancelSelect = () => {
-  _selectedRowKeys.value = []
-}
+// const cancelSelect = () => {
+//   _selectedRowKeys.value = []
+// }
 
 // 选择
-const onSelect = (record, selected) => {
-  const rowSet = new Set([..._selectedRowKeys.value])
-
-  if (selected) {
-    rowSet.add(record.id)
-  } else {
-    rowSet.delete(record.id)
-  }
-
-  _selectedRowKeys.value = [...rowSet.values()]
-}
+// const onSelect = (record, selected) => {
+//   const rowSet = new Set([..._selectedRowKeys.value])
+//
+//   if (selected) {
+//     rowSet.add(record.id)
+//   } else {
+//     rowSet.delete(record.id)
+//   }
+//
+//   _selectedRowKeys.value = [...rowSet.values()]
+// }
 
 // 全选
-const onSelectAll = (selected, _, changeRows) => {
-  const rowSet = new Set([..._selectedRowKeys.value])
-
-  changeRows.forEach((item) => {
-    if (selected) {
-      rowSet.add(item.id)
-    } else {
-      rowSet.delete(item.id)
-    }
-  })
-
-  _selectedRowKeys.value = [...rowSet.values()]
-}
+// const onSelectAll = (selected, _, changeRows) => {
+//   const rowSet = new Set([..._selectedRowKeys.value])
+//
+//   changeRows.forEach((item) => {
+//     if (selected) {
+//       rowSet.add(item.id)
+//     } else {
+//       rowSet.delete(item.id)
+//     }
+//   })
+//
+//   _selectedRowKeys.value = [...rowSet.values()]
+// }
 
 const handleQuery = (params) => {
   const _params = {
@@ -162,12 +162,6 @@ watch(
       :columns="columns"
       :request="handleQuery"
       :params="queryParams"
-      :rowSelection="{
-          selectedRowKeys: _selectedRowKeys,
-          onSelect: onSelect,
-          onSelectAll: onSelectAll,
-          onSelectNone: cancelSelect,
-        }"
       :defaultParams="{
         sorts: [{ name: 'createTime', order: 'desc' }],
       }"

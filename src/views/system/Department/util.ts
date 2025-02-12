@@ -1,7 +1,7 @@
-import { getBindUserList_api } from "@/api/system/department"
 import { TreeType } from "./typings"
 import i18n from "@/locales"
 import { queryPageNoPage } from '@/api/system/positions'
+import {getUserList_api} from "@/api/system/user";
 
 export const ArrayToTree = (list: any[]): any[] => {
     const treeList: any[] = []
@@ -96,6 +96,7 @@ export const useColumns = () => {
             dataIndex: 'positions',
             key: 'positions',
             ellipsis: true,
+            scopedSlots: true,
             search: {
                 type: 'select',
                 componentProps: {
@@ -189,7 +190,7 @@ export const requestFun = async (parentId: string, oParams: any, defaultParams: 
                 ...defaultParams
             ],
         }
-        return await getBindUserList_api(params)
+        return await getUserList_api(params)
     } else {
         return {
             code: 200,

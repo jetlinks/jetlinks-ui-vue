@@ -199,6 +199,15 @@ const handleSearch = (oParams: any) =>
           },
         ],
       },
+      {
+        type: 'or',
+        terms: [
+          {
+            "column":"id$position-in-org-user",
+            "value": props.parentId
+          }
+        ]
+      }
     ])
 
 // 取消绑定
