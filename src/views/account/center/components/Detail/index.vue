@@ -29,6 +29,11 @@
                         {{ org }}
                     </j-ellipsis>
                 </a-descriptions-item>
+                <a-descriptions-item :label="$t('Detail.index.153077-8')">
+                  <j-ellipsis :lineClamp="2">
+                    {{ pos }}
+                  </j-ellipsis>
+                </a-descriptions-item>
                 <a-descriptions-item :label="$t('Detail.index.153077-3')">
                     <j-ellipsis :lineClamp="2">
                         {{ userInfo?.telephone }}
@@ -63,6 +68,11 @@ const role = computed(() => {
 const org = computed(() => {
     const _role = userInfo?.orgList.map((item: any) => item?.name).join(';');
     return _role || $t('Detail.index.153077-7');
+});
+
+const pos = computed(() => {
+  const _role = userInfo?.positions.map((item: any) => item?.name).join(';');
+  return _role || $t('Detail.index.153077-9');
 });
 </script>
 

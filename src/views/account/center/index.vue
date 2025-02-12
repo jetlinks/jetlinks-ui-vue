@@ -18,6 +18,7 @@
             </div>
             <div class="person-header-item-info-right-info">
               <RoleShow :value="user.userInfo?.roleList || []" />
+              <RoleShow :value="user.userInfo?.positions || []" />
             </div>
           </div>
         </div>

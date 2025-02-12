@@ -19,7 +19,7 @@
     <template #rightContentRender>
       <div class="right-content">
         <Language />
-        <Notice style="margin: 0 24px" />
+        <Notice />
         <User />
       </div>
     </template>
@@ -136,5 +136,6 @@ watchEffect(() => {
   margin-right: 24px;
   display: flex;
   align-items: center;
+  gap: 24px;
 }
 </style>
