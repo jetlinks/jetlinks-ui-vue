@@ -1,6 +1,7 @@
 import { getBindUserList_api } from "@/api/system/department"
 import { TreeType } from "./typings"
 import i18n from "@/locales"
+import { queryPageNoPage } from '@/api/system/positions'
 
 export const ArrayToTree = (list: any[]): any[] => {
     const treeList: any[] = []
@@ -62,66 +63,92 @@ export const filterTree = (treeNode: TreeType[]) => {
 }
 
 // 用户
-export const columns = [
-    {
-        title: i18n.global.t('Department.util.780026-0'),
-        dataIndex: 'name',
-        key: 'name',
-        ellipsis: true,
-        fixed: 'left',
-        search: {
-            type: 'string',
-            componentProps: {
-                placeholder: i18n.global.t('Department.util.780026-1'),
-            },
-        },
-    },
-    {
-        title: i18n.global.t('Department.util.780026-2'),
-        dataIndex: 'username',
-        key: 'username',
-        ellipsis: true,
-        fixed: 'left',
-        search: {
-            type: 'string',
-            componentProps: {
-                placeholder: i18n.global.t('Department.util.780026-3'),
-            },
-        },
-    },
-
-    {
-        title: i18n.global.t('Department.util.780026-4'),
-        dataIndex: 'status',
-        key: 'status',
-        ellipsis: true,
-        fixed: 'left',
-        search: {
-            type: 'select',
-            componentProps: {
-                placeholder: i18n.global.t('Department.util.780026-5'),
-            },
-            options: [
-                {
-                    label: i18n.global.t('Department.util.780026-6'),
-                    value: 1,
+export const useColumns = () => {
+    return [
+        {
+            title: i18n.global.t('Department.util.780026-0'),
+            dataIndex: 'name',
+            key: 'name',
+            ellipsis: true,
+            fixed: 'left',
+            search: {
+                type: 'string',
+                componentProps: {
+                    placeholder: i18n.global.t('Department.util.780026-1'),
                 },
-                {
-                    label: i18n.global.t('Department.util.780026-7'),
-                    value: 0,
-                },
-            ],
+            },
         },
-        scopedSlots: true,
-    },
-    {
-        title: i18n.global.t('Department.util.780026-8'),
-        dataIndex: 'action',
-        key: 'action',
-        scopedSlots: true,
-        width: '200px',
-    },
-]
+        {
+            title: i18n.global.t('Department.util.780026-2'),
+            dataIndex: 'username',
+            key: 'username',
+            ellipsis: true,
+            fixed: 'left',
+            search: {
+                type: 'string',
+                componentProps: {
+                    placeholder: i18n.global.t('Department.util.780026-3'),
+                },
+            },
+        },
+        {
+            title: i18n.global.t('Department.util.780026-9'),
+            dataIndex: 'positions',
+            key: 'positions',
+            ellipsis: true,
+            search: {
+                type: 'select',
+                componentProps: {
+                    placeholder: i18n.global.t('Department.util.780026-3'),
+                },
+                options() {
+                    return queryPageNoPage().then(resp => {
+                        if (resp.success) {
+                            return resp.result.map(item => {
+                                return {
+                                    label: item.name,
+                                    value: item.id
+                                }
+                            })
+                        }
+                        return []
+                    })
+                }
+            },
+        },
+        {
+            title: i18n.global.t('Department.util.780026-4'),
+            dataIndex: 'status',
+            key: 'status',
+            ellipsis: true,
+            fixed: 'left',
+            search: {
+                type: 'select',
+                componentProps: {
+                    placeholder: i18n.global.t('Department.util.780026-5'),
+                },
+                options: [
+                    {
+                        label: i18n.global.t('Department.util.780026-6'),
+                        value: 1,
+                    },
+                    {
+                        label: i18n.global.t('Department.util.780026-7'),
+                        value: 0,
+                    },
+                ],
+            },
+            scopedSlots: true,
+        },
+        {
+            title: i18n.global.t('Department.util.780026-8'),
+            dataIndex: 'action',
+            key: 'action',
+            scopedSlots: true,
+            width: '200px',
+        },
+    ]
+}
 
 // 绑定用户
 export const bindUserColumns = [

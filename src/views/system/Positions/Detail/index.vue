@@ -15,7 +15,12 @@ const router = useRouter()
 const { loading, run } = useRequest(save, {
   onSuccess: (resp) => {
     onlyMessage($t('Detail.index.707691-33'))
-    router.replace({ name: 'system/Positions/Detail', params: { id: resp.result.id } })
+    if (window.onTabSaveSuccess) {
+      window.onTabSaveSuccess(resp);
+      setTimeout(() => window.close(), 300);
+    } else {
+      router.replace({ name: 'system/Positions/Detail', params: { id: resp.result.id } })
+    }
   },
   immediate: false
 })
@@ -28,7 +33,7 @@ const { loading: updateLoading, run: updateRun } = useRequest(update, {
 })
 
 const { data: positionsList } = usePositionList(route.params.id !== ':id' ? { terms: [{
-  column: 'id',
+    column: 'id',
     termType: 'not',
     value: route.params.id
   }]} : undefined)
