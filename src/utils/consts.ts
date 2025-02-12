@@ -18,3 +18,7 @@ export const protocolList = [
 ]
 
 export const langKey = 'Accept-Language'
+
+
+//规则编排国际化LocalStorage的key
+export const ruleEditorKey = 'editor-language'
