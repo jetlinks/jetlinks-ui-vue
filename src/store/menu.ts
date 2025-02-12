@@ -10,6 +10,9 @@ import {getExtraRouters} from '@/router/extraMenu'
 import {USER_CENTER_ROUTE, INIT_HOME, EDGE_TOKEN_ROUTE} from '@/router/basic'
 import {useAuthStore} from '@/store/auth'
 import {OWNER_KEY} from "@/utils/consts";
+import i18n from "@/locales";
+
+const $t = i18n.global.t
 
 const defaultOwnParams = [
     {
@@ -67,7 +70,7 @@ export const useMenuStore = defineStore('menu', () => {
             router.push({name, params, query})
             setParamsValue(name, params)
         } else {
-            onlyMessage('暂无权限，请联系管理员', 'error')
+            onlyMessage($t('Home.index.010851-10'), 'error')
             console.warn(`没有找到对应的页面: ${name}`)
         }
     }
