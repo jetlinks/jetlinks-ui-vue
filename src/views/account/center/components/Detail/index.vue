@@ -13,7 +13,8 @@
                 :column="1"
                 :labelStyle="{
                     color: 'rgba(0, 0, 0, 0.6)',
-                    width: '70px',
+                    maxWidth: '120px',
+                    whiteSpace: 'nowrap'
                 }"
                 :contentStyle="{
                     color: '#333333',
@@ -71,7 +72,7 @@ const org = computed(() => {
 });
 
 const pos = computed(() => {
-  const _role = userInfo?.positions.map((item: any) => item?.name).join(';');
+  const _role = (userInfo?.positions || [])?.map((item: any) => item?.name).join(';');
   return _role || $t('Detail.index.153077-9');
 });
 </script>

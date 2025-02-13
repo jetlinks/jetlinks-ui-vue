@@ -50,7 +50,8 @@
     </div>
     <div class="box-item-text">
       <j-ellipsis style="width: 50px">
-        {{ current?.name }}
+<!--        {{ current?.name }}-->
+        {{ current?.i18nName || current.name }}
       </j-ellipsis>
     </div>
     <EditInfo
