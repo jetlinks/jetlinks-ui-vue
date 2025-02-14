@@ -1,19 +1,20 @@
 <template>
-    <div>
-        <pro-search :columns="columns" target="search-system" @search="handleSearch" />
-        <j-pro-table
-            ref="tableRef"
-            model="TABLE"
-            :columns="columns"
-            :request="querySystem"
-            :defaultParams="{
+    <div style="height: 100%; display: flex;flex-direction: column">
+        <pro-search style="margin-bottom: 0" :columns="columns" target="search-system" @search="handleSearch" />
+        <div style="min-height: 0; flex: 1">
+          <j-pro-table
+              ref="tableRef"
+              mode="TABLE"
+              :columns="columns"
+              :request="querySystem"
+              :defaultParams="{
                 sorts: [{ name: 'createTime', order: 'desc' }],
             }"
-            :params="params"
-        >
+              :params="params"
+          >
             <template #level="slotProps">
-                <a-tag
-                    :color="
+              <a-tag
+                  :color="
                         slotProps.level === 'WARN'
                             ? 'orange'
                             : slotProps.level === 'ERROR'
@@ -22,39 +23,40 @@
                             ? 'blue'
                             : 'green'
                     "
-                >
-                    {{ slotProps.level }}
-                </a-tag>
+              >
+                {{ slotProps.level }}
+              </a-tag>
             </template>
             <template #createTime="slotProps">
-                {{ dayjs(slotProps.createTime).format('YYYY-MM-DD HH:mm:ss') }}
+              {{ dayjs(slotProps.createTime).format('YYYY-MM-DD HH:mm:ss') }}
             </template>
             <template #server="slotProps">
-                {{ slotProps.context.server }}
+              {{ slotProps.context.server }}
             </template>
 
             <template #action="slotProps">
-                <a-space :size="16">
-                    <template
-                            v-for="i in getActions(slotProps)"
-                            :key="i.key"
-                        >
-                            <j-permission-button
-                                :tooltip="{
+              <a-space :size="16">
+                <template
+                    v-for="i in getActions(slotProps)"
+                    :key="i.key"
+                >
+                  <j-permission-button
+                      :tooltip="{
                                     ...i.tooltip,
                                 }"
-                                @click="i.onClick"
-                                type="link"
-                                style="padding: 0 5px"
-                            >
-                                <template #icon
-                                    ><AIcon :type="i.icon"
-                                /></template>
-                            </j-permission-button>
-                        </template>
-                </a-space>
+                      @click="i.onClick"
+                      type="link"
+                      style="padding: 0 5px"
+                  >
+                    <template #icon
+                    ><AIcon :type="i.icon"
+                    /></template>
+                  </j-permission-button>
+                </template>
+              </a-space>
             </template>
-        </j-pro-table>
+          </j-pro-table>
+        </div>
     </div>
     <a-modal :width="1100" v-model:visible="visible" :title="$t('System.index.112006-0')">
         <div>

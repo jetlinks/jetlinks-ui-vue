@@ -1,61 +1,63 @@
 <template>
-    <div>
-        <pro-search :columns="columns" target="search-access" @search="handleSearch" />
-        <j-pro-table
-            ref="tableRef"
-            mode="TABLE"
-            :columns="columns"
-            :request="queryAccess"
-            :defaultParams="{
+    <div style="height: 100%; display: flex;flex-direction: column">
+        <pro-search style="margin-bottom: 0" :columns="columns" target="search-access" @search="handleSearch" />
+        <div style="min-height: 0; flex: 1">
+          <j-pro-table
+              ref="tableRef"
+              mode="TABLE"
+              :columns="columns"
+              :request="queryAccess"
+              :defaultParams="{
                 sorts: [{ name: 'responseTime', order: 'desc' }],
             }"
-            :params="params"
-        >
+              :params="params"
+          >
             <template #requestTime="slotProps">
-                {{
+              {{
                 dayjs(slotProps.requestTime).format('YYYY-MM-DD HH:mm:ss')
-                }}
+              }}
             </template>
             <template #description="slotProps">
-                {{ slotProps.action }}
+              {{ slotProps.action }}
             </template>
             <template #responseTime="slotProps">
-                <a-tag color="purple">
-                    {{ slotProps.responseTime - slotProps.requestTime }} ms
-                </a-tag>
+              <a-tag color="purple">
+                {{ slotProps.responseTime - slotProps.requestTime }} ms
+              </a-tag>
             </template>
             <template #username="slotProps">
 
-                    <!-- <j-tag color="geekblue"> -->
-                    <div class="userName">
-                        <j-ellipsis style="max-width: 100px;">
-                        {{ slotProps.context.userName }}
-                    </j-ellipsis>
-                     <!-- </j-tag> -->
-                </div>
+              <!-- <j-tag color="geekblue"> -->
+              <div class="userName">
+                <j-ellipsis style="max-width: 100px;">
+                  {{ slotProps.context.userName }}
+                </j-ellipsis>
+                <!-- </j-tag> -->
+              </div>
             </template>
             <template #action="slotProps">
-                <a-space :size="16">
-                    <template
-                            v-for="i in getActions(slotProps)"
-                            :key="i.key"
-                        >
-                            <j-permission-button
-                                :tooltip="{
+              <a-space :size="16">
+                <template
+                    v-for="i in getActions(slotProps)"
+                    :key="i.key"
+                >
+                  <j-permission-button
+                      :tooltip="{
                                     ...i.tooltip,
                                 }"
-                                @click="i.onClick"
-                                type="link"
-                                style="padding: 0 5px"
-                            >
-                                <template #icon
-                                    ><AIcon :type="i.icon"
-                                /></template>
-                            </j-permission-button>
-                        </template>
-                </a-space>
+                      @click="i.onClick"
+                      type="link"
+                      style="padding: 0 5px"
+                  >
+                    <template #icon
+                    ><AIcon :type="i.icon"
+                    /></template>
+                  </j-permission-button>
+                </template>
+              </a-space>
             </template>
-        </j-pro-table>
+          </j-pro-table>
+        </div>
     </div>
     <a-modal :width="1100" v-model:visible="visible" :title="$t('Access.index.480752-0')">
         <a-descriptions :labelStyle="{width: '200px'}" :data="descriptionsData" title="" bordered :column="2">
