@@ -49,7 +49,7 @@
       </template>
       <template #positions="slotProps">
         <j-ellipsis>
-          {{ slotProps.positions?.map(item => item.name).join(',') || ''}}
+          {{ slotProps.positions?.map(item => item.name).join(',') || '' }}
         </j-ellipsis>
       </template>
       <template #status="slotProps">
@@ -92,10 +92,10 @@ import AddBindUserDialog from './components/AddBindUserDialog.vue'
 import {unBindUser_api} from '@/api/system/department'
 import {useColumns, requestFun} from '../util'
 import {onlyMessage} from '@jetlinks-web/utils'
-import { useI18n } from 'vue-i18n';
-import { useRouteQuery } from '@vueuse/router'
+import {useI18n} from 'vue-i18n';
+import {useRouteQuery} from '@vueuse/router'
 
-const { t: $t } = useI18n();
+const {t: $t} = useI18n();
 const permission = 'system/Department'
 
 const props = defineProps({
@@ -194,8 +194,10 @@ const handleSearch = (oParams: any) =>
       {
         terms: [
           {
-            column: 'id$in-dimension$org',
-            value: props.parentId,
+            "column": "id$in-org-user$org",
+            "value": [
+              props.parentId
+            ]
           },
         ],
       },
@@ -203,8 +205,10 @@ const handleSearch = (oParams: any) =>
         type: 'or',
         terms: [
           {
-            "column":"id$position-in-org-user",
-            "value": props.parentId
+            "column": "id$in-org-user$position",
+            "value": [
+              props.parentId
+            ]
           }
         ]
       }
@@ -249,9 +253,9 @@ const handleRouteQuery = (v) => {
 
 }
 
-watch(() => props.positionId, (v) =>{
+watch(() => props.positionId, (v) => {
   handleRouteQuery(v)
-}, { immediate: true })
+}, {immediate: true})
 
 watch(
     () => props.parentId,
