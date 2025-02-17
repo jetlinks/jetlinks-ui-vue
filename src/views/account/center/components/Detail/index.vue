@@ -13,7 +13,8 @@
                 :column="1"
                 :labelStyle="{
                     color: 'rgba(0, 0, 0, 0.6)',
-                    width: '70px',
+                    maxWidth: '120px',
+                    whiteSpace: 'nowrap'
                 }"
                 :contentStyle="{
                     color: '#333333',
@@ -28,6 +29,11 @@
                     <j-ellipsis :lineClamp="2">
                         {{ org }}
                     </j-ellipsis>
+                </a-descriptions-item>
+                <a-descriptions-item :label="$t('Detail.index.153077-8')">
+                  <j-ellipsis :lineClamp="2">
+                    {{ pos }}
+                  </j-ellipsis>
                 </a-descriptions-item>
                 <a-descriptions-item :label="$t('Detail.index.153077-3')">
                     <j-ellipsis :lineClamp="2">
@@ -63,6 +69,11 @@ const role = computed(() => {
 const org = computed(() => {
     const _role = userInfo?.orgList.map((item: any) => item?.name).join(';');
     return _role || $t('Detail.index.153077-7');
+});
+
+const pos = computed(() => {
+  const _role = (userInfo?.positions || [])?.map((item: any) => item?.name).join(';');
+  return _role || $t('Detail.index.153077-9');
 });
 </script>
 

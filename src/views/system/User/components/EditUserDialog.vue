@@ -274,6 +274,7 @@ const form = reactive({
                     roleIdList: resp.result.roleList.map(
                         (item: dictType) => item.id,
                     ),
+                  positions: resp.result.positions?.map(item => item.id)
                 };
                 form.data.roleIdList = resp.result?.roleList?.map((i: any) => {
                     return i.id

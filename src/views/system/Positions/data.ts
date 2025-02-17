@@ -1,6 +1,6 @@
 import { useI18n } from 'vue-i18n';
 import {queryRole_api} from "@/api/system/user";
-import {queryOrgThree} from "@/modules/device-manager-ui/api/product";
+import {getTreeData_api} from "@/api/system/department";
 import {useRequest} from "@jetlinks-web/hooks";
 import {queryPageNoPage} from "@/api/system/positions";
 
@@ -79,7 +79,7 @@ export const useColumns = () => {
 
         options: () =>
           new Promise((resolve) => {
-            queryOrgThree({}).then((resp: any) => {
+            getTreeData_api({}).then((resp: any) => {
               const formatValue = (list: any[]) => {
                 const _list: any[] = [];
                 list.forEach((item) => {
