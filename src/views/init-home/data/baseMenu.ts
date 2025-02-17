@@ -971,6 +971,72 @@ export default [
         supportDataAccess: false
       },
       {
+        code: 'system/Platforms/Setting',
+        name: 'API配置',
+        owner: 'iot',
+        //parentId: '3',
+        id: '8750142230773cde42a4e28efa7f84d5',
+        sortIndex: 9,
+        url: '/system/Api',
+        icon: 'icon-chakanAPI',
+        showPage: ['open-api'],
+        i18nMessages: {
+          name: {
+            zh_CN: "API配置",
+            en_US: "API Configuration",
+            en: "API Configuration"
+          }
+        },
+        permissions: [
+          {
+            permission: 'open-api',
+            actions: ['query', 'save'],
+          },
+          {
+            permission: 'application',
+            actions: ['query'],
+          },
+        ],
+        buttons: [
+          {
+            id: 'update',
+            name: '编辑',
+            i18nMessages: {
+              zh_CN: "编辑",
+              en_US: "edit",
+              en: "edit"
+            },
+            permissions: [
+              {
+                permission: 'open-api',
+                actions: ['query', 'save'],
+              },
+              {
+                permission: 'application',
+                actions: ['save'],
+              },
+            ],
+          },
+          {
+            id: 'view',
+            name: '查看',
+            i18nMessages: {
+              zh_CN: "查看",
+              en_US: "see",
+              en: "see"
+            },
+            permissions: [
+              {
+                permission: 'open-api',
+                actions: ['query'],
+              },
+            ],
+          },
+        ],
+        accessSupport: { text: "不支持", value: "unsupported" },
+        supportDataAccess: false
+      },
+      {
         code: 'system/Apply',
         name: '应用管理',
         i18nMessages: {
