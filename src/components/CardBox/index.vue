@@ -263,8 +263,7 @@ const handleClick = () => {
         right: -12px;
         display: flex;
         justify-content: center;
-        width: 100px;
-        padding: 2px 0;
+        padding: 0 20px 0 20px;
         background-color: rgba(#5995f5, 0.15);
         transform: skewX(45deg);
 
