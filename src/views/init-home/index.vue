@@ -94,17 +94,17 @@ const jump = () => {
  */
 const submitData = async () => {
     loading.value = true;
-    // const basicRes = await basicRef.value.submitBasic().catch(() => {
-    //   loading.value = false;
-    // });
-    // if (!basicRes) {
-    //     return;
-    // }
-    // const menuRes = await menuRef.value.updataMenu();
-    // if (!menuRes) {
-    //     loading.value = false;
-    //     return;
-    // }
+    const basicRes = await basicRef.value.submitBasic().catch(() => {
+      loading.value = false;
+    });
+    if (!basicRes) {
+        return;
+    }
+    const menuRes = await menuRef.value.updataMenu();
+    if (!menuRes) {
+        loading.value = false;
+        return;
+    }
     if (initDataRef.value) {
       const initDataRes = await initDataRef.value.save();
       if (!initDataRes) {
@@ -114,14 +114,14 @@ const submitData = async () => {
     }
     loading.value = false;
     // 当前数据是否成功提交
-    // if (basicRes && menuRes) {
-    //     onlyMessage($t('init-home.index.011430-6'));
-    //     //     // 记录初始化数据，跳转首页
-    //     const res = await saveInit();
-    //     if (res.status === 200) {
-    //         jump();
-    //     }
-    // }
+    if (basicRes && menuRes) {
+        onlyMessage($t('init-home.index.011430-6'));
+        //     // 记录初始化数据，跳转首页
+        const res = await saveInit();
+        if (res.status === 200) {
+            jump();
+        }
+    }
 };
 /**
  * 判断是否已有配置
