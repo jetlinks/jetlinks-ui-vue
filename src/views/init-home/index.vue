@@ -36,6 +36,14 @@
                                 </template>
                                 <Role ref="roleRef"></Role>
                             </a-collapse-panel>
+
+                          <a-collapse-panel v-for="item in extraComponents" :key="item.name">
+                            <template #header>
+                              <span class="title">{{ $t(item.label) }}</span>
+                              <span class="sub-title">{{ $t(item.subLabel) }}</span>
+                            </template>
+                            <component :is="item.component" ref="initDataRef" />
+                          </a-collapse-panel>
                         </a-collapse>
                     </a-spin>
                     <a-button
@@ -57,12 +65,15 @@ import Role from './Role/index.vue';
 import { getInit, saveInit } from '@/api/initHome';
 import { onlyMessage } from '@jetlinks-web/utils';
 import { useI18n } from 'vue-i18n';
+import {getModulesComponents} from "@/utils";
 
 const { t: $t } = useI18n();
 const basicRef = ref();
 // const roleRef = ref();
+const initDataRef = ref();
 const menuRef = ref();
 const loading = ref(false);
+const extraComponents = ref([])
 /**
  * 默认打开第一个初始菜单
  */
@@ -86,15 +97,20 @@ const submitData = async () => {
     const basicRes = await basicRef.value.submitBasic().catch(() => {
       loading.value = false;
     });
-    console.log('basicRes',basicRes)
     if (!basicRes) {
         return;
     }
     const menuRes = await menuRef.value.updataMenu();
-    console.log('menuRes',menuRes)
     if (!menuRes) {
         loading.value = false;
         return;
+    }
+    if (initDataRef.value) {
+      const initDataRes = await initDataRef.value.save();
+      if (!initDataRes) {
+        loading.value = false;
+        return;
+      }
     }
     loading.value = false;
     // 当前数据是否成功提交
@@ -116,6 +132,11 @@ const judgeInitSet = async () => {
         // window.location.href = '/';
     }
 };
+
+onMounted(() => {
+  extraComponents.value = getModulesComponents('initHome')
+})
+
 onBeforeMount(() => {
     judgeInitSet();
 });

@@ -233,7 +233,7 @@ const columns = [
     title: i18n.global.t('Department.util.780026-9'),
     dataIndex: 'positions',
     key: 'positions',
-    ellipsis: true,
+    width: 150,
     search: {
       type: 'select',
       componentProps: {
