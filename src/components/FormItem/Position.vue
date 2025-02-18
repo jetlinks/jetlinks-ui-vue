@@ -62,7 +62,7 @@ watch(() => props.value, () => {
       @change="onChange"
     >
       <template #title="{ name }">
-        {{ name }}
+        <j-ellipsis>{{ name }}</j-ellipsis>
       </template>
     </a-tree-select>
     <j-permission-button

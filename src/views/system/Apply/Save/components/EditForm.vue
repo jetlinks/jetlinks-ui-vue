@@ -1811,7 +1811,7 @@ function clickSave() {
             .then((resp: any) => {
                 if (resp.status === 200) {
                     const isPage = params.integrationModes.includes('page');
-                    if (isPage) {
+                    if (routeQuery.id && isPage) {
                         dialog.current = {
                             ...params,
                             id: routeQuery.id || resp.result.id,
@@ -1819,7 +1819,7 @@ function clickSave() {
                         dialog.visible = true;
                     } else {
                         onlyMessage($t('components.EditForm.949962-91'));
-                        menuStory.jumpPage('system/Apply');
+                        menuStory.jumpPage('system/Apply', {});
                     }
                 }
             })

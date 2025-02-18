@@ -3,10 +3,10 @@
         <div class="des_head">
             <div>{{ $t('Right.index.572408-0') }}<span>{{ data.id }}</span></div>
             <div style="display: flex;">{{ $t('Right.index.572408-1') }}<j-ellipsis style="width: calc(100% - 200px);"><span>{{ data.describe }}</span></j-ellipsis></div>
-            <div>{{ $t('Right.index.572408-2') }}<span v-time-format="'YYYY-MM-DD HH:mm:ss'"> {{data?.createTime}}</span></div>
+            <div>{{ $t('Right.index.572408-2') }}{{data?.createTime ? dayjs(data.createTime).format('YYYY-MM-DD HH:mm:ss') : ''}}</div>
         </div>
         <div class="contain">
-            <pro-search style="padding: 18px 0 0 0" :columns="columns" noMargin @search="handleSearch" target="system_dictionary" />
+            <pro-search style="padding: 18px 0" :columns="columns" noMargin @search="handleSearch" target="system_dictionary" />
             <JProTable :bodyStyle="{
                 padding: 0,
             }" :scroll="{ y: 'calc(100vh - 500px)' }" :columns="columns" mode="TABLE" :request="queryItem" :params="params" ref="tableRef">
@@ -38,6 +38,7 @@
 </template>
 
 <script lang="ts" setup name="DictionaryItem">
+import dayjs from 'dayjs';
 import { queryDicItem, deleteDicItem, queryDicItemNoPage } from '@/api/system/dictionary'
 import Save from './Save/index.vue'
 import { onlyMessage } from '@jetlinks-web/utils';
