@@ -30,4 +30,12 @@ export const addRole = (data: any) => request.post(`/role`, data)
 export const getRoleMenu = (id: string) => request.get(`/menu/role/${id}/_grant/tree`)
 
 //添加角色分组
-export const addRoleGroup = (data:any) => server.patch('/role/group',data)
+export const addRoleGroup = (data:any) => request.patch('/role/group',data)
+
+/**
+ * 查询系统版本信息
+ * @returns
+ */
+export const systemVersion = () => request.get(`/system/version`)
+
+export const getProviders = () => request.get(`/data-collect/channel/providers`);
