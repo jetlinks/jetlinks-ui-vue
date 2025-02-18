@@ -14,15 +14,78 @@
 import { getImage } from '@jetlinks-web/utils'
 import { USER_CENTER_MENU_DATA } from '../data/baseMenu'
 import BaseMenu from '../data'
-import {  updateMenus } from '@/api/initHome';
+import {  updateMenus, systemVersion, getProviders, getSystemPermission } from '@/api/initHome';
+import { protocolList } from '@/utils/consts'
 
 /**
  * 获取菜单数据
  */
-const menuDates = reactive({
+const menuDatas = reactive({
     count: 0,
     current: BaseMenu,
 });
+
+/**
+ * 查询支持的协议
+ */
+const getProvidersFn = async () => {
+  let version = ''
+  const req:any = await systemVersion()
+  if(req.success && req.result){
+    version = req.result.edition
+  }
+  if (version ==='community') {
+    return undefined
+  } else {
+    try {
+      const res: any = await getProviders();
+      const ids = res.result?.map?.(item => item.id) || []
+      return protocolList.some(item => ids.includes(item.value))
+    } catch (error) {
+      return false
+    }
+
+  }
+}
+
+/**
+ * 获取当前系统权限信息
+ */
+const getSystemPermissionData = async () => {
+  const hasProtocol = await getProvidersFn();
+  const resp = await getSystemPermission();
+  if (resp.status === 200) {
+    const newTree = filterMenu(
+      resp.result.map((item: any) => JSON.parse(item).id),
+      BaseMenu,
+      hasProtocol
+    );
+    const _count = menuCount(newTree);
+    menuDatas.current = newTree;
+    menuDatas.count = _count;
+  }
+};
+
+/**
+ * 过滤菜单
+ */
+const filterMenu = (permissions: string[], menus: any[], hasProtocol: boolean) => {
+  return menus.filter((item) => {
+    let isShow = false;
+    if (item.showPage && item.showPage.length) {
+      isShow = item.showPage.some((pItem: any) => {
+        return permissions.includes(pItem);
+      });
+    }
+    if (item.children) {
+      item.children = filterMenu(permissions, item.children, hasProtocol);
+    }
+    if (!hasProtocol && item.code == 'link/DataCollect') {
+      return false;
+    }
+    return isShow || !!item.children?.length;
+  });
+};
 
 /**
  * 计算菜单数量
@@ -55,9 +118,9 @@ const dealMenu = (data:any) =>{
 const initMenu = async () => {
     return new Promise(async (resolve) => {
       //  用户中心
-        dealMenu(menuDates.current)
+        dealMenu(menuDatas.current)
         // console.log([...menuDates.current!, USER_CENTER_MENU_DATA]);
-        const res = await updateMenus([...menuDates.current!, USER_CENTER_MENU_DATA]);
+        const res = await updateMenus([...menuDatas.current!, USER_CENTER_MENU_DATA]);
         if (res.status === 200) {
             resolve(true);
         } else {
@@ -65,10 +128,11 @@ const initMenu = async () => {
         }
     });
 };
-const { count } = toRefs(menuDates);
+const { count } = toRefs(menuDatas);
 
+getSystemPermissionData();
 onMounted(()=>{
-    menuDates.count = menuCount(BaseMenu)
+  menuDatas.count = menuCount(BaseMenu)
 })
 defineExpose({
     updataMenu: initMenu,
