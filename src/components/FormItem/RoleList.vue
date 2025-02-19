@@ -68,23 +68,25 @@ watch(() => props.value, () => {
 
 <template>
   <div class="role-list-warp">
-    <a-tree-select
-      v-model:value="myValue"
-      multiple
-      show-search
-      :placeholder="$t('components.EditUserDialog.939453-13')"
-      :tree-data="treeData"
-      :fieldNames="{ label: 'name', value: 'id', children:'children' }"
-      :disabled="disabled"
-      :filterTreeNode="(v, node) => filterSelectNode(v, node, 'name')"
-      @change="onChange"
-    >
-      <template #title="{ name }">
-        <div style="width: calc(100% - 10px) ">
-          <j-ellipsis>{{ name }}</j-ellipsis>
-        </div>
-      </template>
-    </a-tree-select>
+    <div style="flex: 1; min-width: 0">
+      <a-tree-select
+          v-model:value="myValue"
+          multiple
+          show-search
+          :placeholder="$t('components.EditUserDialog.939453-13')"
+          :tree-data="treeData"
+          :fieldNames="{ label: 'name', value: 'id', children:'children' }"
+          :disabled="disabled"
+          :filterTreeNode="(v, node) => filterSelectNode(v, node, 'name')"
+          @change="onChange"
+      >
+        <template #title="{ name }">
+          <div style="width: calc(100% - 10px) ">
+            <j-ellipsis>{{ name }}</j-ellipsis>
+          </div>
+        </template>
+      </a-tree-select>
+    </div>
     <j-permission-button
       hasPermission="system/Role:add"
       @click="clickAddItem('roleIdList', 'Role')"
