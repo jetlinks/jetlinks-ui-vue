@@ -1583,6 +1583,7 @@ export default [
                     "text": "Unsupported",
                     "value": "unsupported"
                 },
+                showPage: ['user'],
                 i18nMessages: {
                     name: {
                         zh_CN: "职位管理",
