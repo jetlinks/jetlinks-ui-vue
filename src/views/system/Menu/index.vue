@@ -272,14 +272,15 @@ const table = reactive({
         };
     },
     addChildren: (row: any) => {
-        const sortIndex = row?.children.sort((a: any, b: any) => {
-            return b.sortIndex - a.sortIndex;
-        })[0].sortIndex;
-        router.push(
-            `/system/Menu/detail/:id?pid=${row.id}&basePath=${
-                row.url || ''
-            }&sortIndex=${sortIndex + 1}`,
-        );
+      let sortIndex = 0
+      if (row && row.children) {
+        sortIndex = row.children.filter(a => a.sortIndex !== 9999).sort((a, b) => a.sortIndex - b.sortIndex).pop().sortIndex
+      }
+      router.push(
+        `/system/Menu/detail/:id?pid=${row.id}&basePath=${
+          row.url || ''
+        }&sortIndex=${sortIndex + 1}`,
+      );
     },
     // 跳转至详情页
     toDetails: (row: any) => {
