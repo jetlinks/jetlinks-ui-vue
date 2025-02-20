@@ -28,7 +28,11 @@
               autocomplete="off"
             />
           </a-form-item>
-          <a-form-item v-if="showCode" :label="$t('login.right.419974-4')" name="verifyCode">
+          <a-form-item
+            v-if="showCode"
+            :label="$t('login.right.419974-4')"
+            name="verifyCode"
+          >
             <a-input
               v-model:value="formData.verifyCode"
               autocomplete="off"
@@ -54,23 +58,100 @@
               class="login-form-button"
               block
             >
-              {{ $t('login.right.419974-6') }}
+              {{ $t("login.right.419974-6") }}
             </a-button>
           </a-form-item>
         </a-form>
+        <div class="other" v-if="bindings.length">
+          <a-divider plain>
+            <div class="other-text">
+              {{ $t("login.right.419974-7") }}
+            </div>
+          </a-divider>
+          <div class="other-button">
+            <div
+              class="other-button-item"
+              v-for="(item, index) in bindings.slice(0, 4)"
+              :key="index"
+              @click="handleClickOther(item)"
+            >
+              <img
+                style="width: 32px; height: 32px"
+                :alt="item.name"
+                :src="item.logoUrl || iconMap.get(item.provider) || defaultImg"
+              />
+            </div>
+            <a-popover
+              trigger="click"
+              v-model:visible="moreVisible"
+              placement="bottomRight"
+            >
+              <template #content>
+                <j-scrollbar :max-height="120">
+                  <div class="more-button">
+                    <div
+                      class="more-button-item"
+                      v-for="(item, index) in bindings.slice(
+                        4,
+                        bindings.length - 1
+                      )"
+                      :key="index"
+                      @click="handleClickOther(item)"
+                    >
+                      <img
+                        style="width: 32px; height: 32px"
+                        :alt="item.name"
+                        :src="item.logoUrl || iconMap.get(item.provider) || defaultImg"
+                      />
+                      <j-ellipsis
+                        style="
+                          margin-top: 5px;
+                          width: calc(100%);
+                          margin: 0 auto;
+                        "
+                      >
+                        {{ item.name }}
+                      </j-ellipsis>
+                    </div>
+                  </div>
+                </j-scrollbar>
+              </template>
+              <div v-if="bindings.length > 4" class="more">
+                <AIcon
+                  class="moreIcon"
+                  type="MoreOutlined"
+                  style="font-size: 20px"
+                ></AIcon>
+              </div>
+            </a-popover>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 <script setup name="LoginRight">
 import Remember from "./remember.vue";
-import {encrypt, getImage, setToken} from "@jetlinks-web/utils";
+import { encrypt, getImage, setToken } from "@jetlinks-web/utils";
 import { useRequest } from "@jetlinks-web/hooks";
-import {captchaConfig, codeUrl, encryptionConfig, getInitSet, login} from "@/api/login";
+import {
+  captchaConfig,
+  codeUrl,
+  encryptionConfig,
+  getInitSet,
+  login,
+} from "@/api/login";
 import { rules } from "./util";
-import {useUserStore} from "@/store";
+import { useUserStore } from "@/store";
+import { useI18n } from "vue-i18n";
+import { LocalStore } from "@jetlinks-web/utils";
+const BASE_API_PATH = import.meta.env.VITE_APP_BASE_API
+import { iconMap } from "./util";
+
+import defaultImg from '@/assets/internal-standalone.png'
 
 const logoImage = getImage("/login/logo.png");
+const { t: $t } = useI18n();
 
 const props = defineProps({
   loading: {
@@ -85,11 +166,15 @@ const props = defineProps({
     type: String,
     default: "",
   },
+  bindings: {
+    type: Array,
+    default: () => [],
+  },
 });
 
-const emit = defineEmits(["submit", 'update:loading']);
-
-const userStore = useUserStore()
+const emit = defineEmits(["submit", "update:loading"]);
+const moreVisible = ref(false);
+const userStore = useUserStore();
 
 const formData = reactive({
   username: "",
@@ -98,30 +183,32 @@ const formData = reactive({
   remember: false,
   verifyCode: undefined,
   verifyKey: undefined,
-  encryptId: undefined
+  encryptId: undefined,
 });
 
-let timer = null
+let timer = null;
+const { data: encryption, run: reloadEncryption } = useRequest(
+  encryptionConfig,
+  {
+    onSuccess() {
+      if (timer) {
+        window.clearTimeout(timer);
+        timer = null;
+      }
 
-const { data: encryption, run: reloadEncryption } = useRequest(encryptionConfig, {
-  onSuccess() {
-    if (timer) {
-      window.clearTimeout(timer)
-      timer = null
-    }
-
-    timer = setTimeout(() => {
-      reloadEncryption()
-    }, 3 * 60 * 1000)
+      timer = setTimeout(() => {
+        reloadEncryption();
+      }, 3 * 60 * 1000);
+    },
   }
-})
+);
 
 const { data: config } = useRequest(captchaConfig, {
   onSuccess(resp) {
     if (resp.result?.enabled) {
       getCode();
     }
-    return resp.result?.enabled
+    return resp.result?.enabled;
   },
 });
 
@@ -129,7 +216,7 @@ const { data: url, run: getCode } = useRequest(codeUrl, {
   immediate: false,
   onSuccess(resp) {
     if (config.value && resp.result?.key) {
-      formData.verifyKey = resp.result?.key
+      formData.verifyKey = resp.result?.key;
     }
   },
 });
@@ -138,16 +225,16 @@ const { loading, run } = useRequest(login, {
   immediate: false,
   async onSuccess(res) {
     if (res.success) {
-      setToken(res.result.token)
-      await userStore.getUserInfo()
-      if(userStore.isAdmin){
-        const initResp = await getInitSet()
+      setToken(res.result.token);
+      await userStore.getUserInfo();
+      if (userStore.isAdmin) {
+        const initResp = await getInitSet();
         if (initResp.success && !initResp.result?.length) {
-          window.location.href = '/#/init-home';
+          window.location.href = "/#/init-home";
           return;
         }
       }
-      window.location.href = '/'
+      window.location.href = "/";
     }
   },
   onWarn: () => {
@@ -156,29 +243,41 @@ const { loading, run } = useRequest(login, {
       getCode();
     }
     if (encryption.value?.encrypt?.enabled) {
-      reloadEncryption()
+      reloadEncryption();
     }
-  }
-})
+  },
+});
 
 const showCode = computed(() => {
   return !!url?.value?.base64;
 });
 
 const submit = (data) => {
-  const _formData = {...toRaw(formData)}
+  const _formData = { ...toRaw(formData) };
   if (encryption.value?.encrypt?.enabled) {
-    const _encrypt = encryption.value?.encrypt
-    _formData.password = encrypt(data.password, _encrypt.publicKey)
-    _formData.encryptId = _encrypt.id
+    const _encrypt = encryption.value?.encrypt;
+    _formData.password = encrypt(data.password, _encrypt.publicKey);
+    _formData.encryptId = _encrypt.id;
   }
-  run(_formData)
-}
+  run(_formData);
+};
 
-watch(() => loading.value, () => {
-  emit('update:loading', loading.value)
-})
+const handleClickOther = (item) => {
+    LocalStore.set('onLogin', 'no');
+    window.open(`${BASE_API_PATH}/application/sso/${item.id}/login`);
+    window.onstorage = (e) => {
+        if (e.newValue) {
+            window.location.href = '/';
+        }
+    };
+};
 
+watch(
+  () => loading.value,
+  () => {
+    emit("update:loading", loading.value);
+  }
+);
 </script>
 <style lang="less" scoped>
 .content {
@@ -207,5 +306,55 @@ watch(() => loading.value, () => {
     margin: 0 auto;
     vertical-align: top;
   }
+}
+.other {
+  margin-top: 20px;
+
+  .other-text {
+    color: #807676d9;
+    font-size: 12px;
+  }
+
+  .other-button {
+    position: relative;
+    bottom: 10px;
+    text-align: center;
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    flex-wrap: wrap;
+
+    .other-button-item {
+      cursor: pointer;
+      padding: 4px;
+    }
+  }
+
+  .more {
+    cursor: pointer;
+
+    .moreIcon {
+      transform: translateY(50%);
+    }
+  }
+  .more {
+    text-align: center;
+    cursor: pointer;
+  }
+}
+
+.more-button {
+    display: flex;
+    flex-wrap: wrap;
+    cursor: pointer;
+    overflow: auto;
+    width: 300px;
+
+    .more-button-item {
+        width: 62px;
+        text-align: center;
+        margin-bottom: 10px;
+        margin-left: 12px;
+    }
 }
 </style>

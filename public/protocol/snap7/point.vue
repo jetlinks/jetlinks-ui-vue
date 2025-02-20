@@ -86,7 +86,7 @@
             }">
     <j-card-select :multiple="true" :showImage="false" v-model:value="formData.accessModes" :options="accessModesOptions" :column="2" />
   </a-form-item>
-  <a-form-item
+  <!-- <a-form-item
       :label="$lang('snap7.point.20250207-22')" :name="['configuration', 'interval']">
     <p>
       {{ $lang('snap7.point.20250207-23') }}<span style="margin-left: 5px; color: #9d9ea1; font-size: 12px">{{ $lang('snap7.point.20250207-24') }}</span>
@@ -104,7 +104,7 @@
     <a-checkbox-group v-model:value="formData.features">
       <a-checkbox value="changedOnly">{{ $lang('snap7.point.20250207-26') }}</a-checkbox>
     </a-checkbox-group>
-  </a-form-item>
+  </a-form-item> -->
 </template>
 <script setup>
 import { inject, ref, computed, toRaw } from 'vue'
@@ -141,10 +141,12 @@ const deviceType = ref(collectorData.configuration.type);
 const dataTypesList = ref([]);
 const daveAreaList = ref([]);
 
-const accessModesOptions = [
-  { label: $lang('snap7.point.20250207-30'), value: 'read' },
-  { label: $lang('snap7.point.20250207-31'), value: 'write' },
-]
+const accessModesOptions = computed(() => {
+  return [
+    { label: $lang('snap7.point.20250207-30'), value: 'read' },
+    { label: $lang('snap7.point.20250207-31'), value: 'write' },
+  ]
+})
 
 const dataAreaFilter = {
   S200: [

@@ -40,7 +40,7 @@
                         : ''
                     ">
                     <div class="role-item-title">
-                        <j-checkbox :value="ROLEKEYS.link"></j-checkbox>
+                        <a-checkbox :value="ROLEKEYS.link"></a-checkbox>
                         <div class="role-title">{{ $t('Role.index.263636-7') }}</div>
                     </div>
                     <div class="role-item-content"></div>
@@ -53,7 +53,7 @@
                         : ''
                     ">
                     <div class="role-item-title">
-                        <j-checkbox :value="ROLEKEYS.complex"></j-checkbox>
+                        <a-checkbox :value="ROLEKEYS.complex"></a-checkbox>
                         <div class="role-title">{{ $t('Role.index.263636-9') }}</div>
                     </div>
                     <div class="role-item-content"></div>

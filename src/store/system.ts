@@ -126,8 +126,8 @@ export const useSystemStore = defineStore('system', () => {
   const queryVersion = async () => {
     const resp = await systemVersion()
     if (resp.success && resp.result) {
-      const isCommunity = resp.result.edition === 'community'
-      LocalStore.set('version_code', isCommunity)
+      // const isCommunity = resp.result.edition === 'community'
+      LocalStore.set('version_code', resp.result.edition)
     }
   }
 

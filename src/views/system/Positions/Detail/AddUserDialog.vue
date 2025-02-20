@@ -1,20 +1,22 @@
 <template>
   <a-modal visible :title="$t('components.AddUserDialog.659587-0')" width="1000px" @ok="confirm" @cancel="emits('update:visible', false)">
-    <pro-search :columns="columns" target="simple" @search="(params) => queryParams = { ...params }" />
+    <pro-search style="margin: 0; padding: 0;" :columns="columns" type="simple" @search="(params) => queryParams = { ...params }" />
 
-    <j-pro-table
-      ref="tableRef"
-      :columns="columns"
-      :request="getUserList"
-      mode="TABLE"
-      :params="queryParams"
-      :rowSelection="{
-                selectedRowKeys: selectedRowKeys,
-                onSelect: changeSelect,
-                onSelectAll: selectAll,
-                onSelectNone: ()=>selectedRowKeys = []
-            }">
-    </j-pro-table>
+    <div style="max-height: 450px; overflow-y: auto;">
+      <j-pro-table
+        ref="tableRef"
+        :columns="columns"
+        :request="getUserList"
+        mode="TABLE"
+        :params="queryParams"
+        :rowSelection="{
+                  selectedRowKeys: selectedRowKeys,
+                  onSelect: changeSelect,
+                  onSelectAll: selectAll,
+                  onSelectNone: ()=>selectedRowKeys = []
+              }">
+      </j-pro-table>
+    </div>
   </a-modal>
 </template>
 
@@ -36,6 +38,7 @@ const columns = [
     title: $t('components.AddUserDialog.659587-1'),
     dataIndex: 'name',
     key: 'name',
+    ellipsis: true,
     search: {
       type: 'string',
     },
@@ -44,6 +47,7 @@ const columns = [
     title: $t('components.AddUserDialog.659587-2'),
     dataIndex: 'username',
     key: 'username',
+    ellipsis: true,
     search: {
       type: 'string',
     },

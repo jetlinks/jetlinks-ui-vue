@@ -70,6 +70,7 @@ watch(() => props.value, () => {
     <j-permission-button
         hasPermission="system/Department:add"
         @click="clickAddItem('orgIdList', 'Department')"
+        v-if="!props.extraProps?.disabled"
     >
       <template #icon>
         <AIcon type="PlusOutlined"/>

@@ -299,6 +299,7 @@
 	"login.right.419974-4": "Verification code",
 	"login.right.419974-5": "Please enter verification code",
 	"login.right.419974-6": "Login",
+	"login.right.419974-7": "Other login methods",
 	"Basis.Form.436809-0": "System Name",
 	"Basis.Form.436809-1": "Please enter system name",
 	"Basis.Form.436809-2": "Theme color",
@@ -1395,7 +1396,7 @@
 	"components.NoticeItem.265390-5": "Operation successful!",
 	"components.User.635192-0": "Personal Center",
 	"components.User.635192-1": "Log Out",
-	"positions.index.223804-1": "Superior Organization",
-	"positions.index.223804-2": "Please select a superior organization",
+	"positions.index.223804-1": "Superior positions",
+	"positions.index.223804-2": "Please select a superior position",
 	"positions.index.223804-3": "Please add position information first"
 }
