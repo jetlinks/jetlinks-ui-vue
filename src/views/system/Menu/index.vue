@@ -253,7 +253,10 @@ const getList = async (_params: any) => {
   }
 }
 const addChildren = (row: any) => {
-  const sortIndex = row?.children?.length || 0
+  let sortIndex = 0
+  if (row && row.children) {
+    sortIndex = row.children.filter(a => a.sortIndex !== 9999).sort((a, b) => a.sortIndex - b.sortIndex).pop().sortIndex
+  }
   menuStore.jumpPage('system/Menu/Detail', {
     params: {
       id: ':id',
