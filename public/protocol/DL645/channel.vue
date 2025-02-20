@@ -80,7 +80,7 @@ if (!('properties' in formData.configuration)) {
 }
 
 const getList = () => {
-  request.get('/data-collect/DL645/command/GetRtuPorts').then(resp => {
+  request.post('/data-collect/DL645/command/GetRtuPorts', {}).then(resp => {
     if (resp.success) {
       serialPort.value = (resp.result || []).map(i => {
         return {
