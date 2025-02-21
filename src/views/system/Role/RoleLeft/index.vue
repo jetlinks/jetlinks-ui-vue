@@ -6,9 +6,9 @@
 			</template>
 		</a-input>
 		<div v-if="isAdmin" class="controls">
-			<a-button style="width: 100%" type="primary" @click="addGroup">
+			<j-permission-button hasPermission="system/Role:groupAdd" block type="primary" @click="addGroup">
 				{{ $t('RoleLeft.index.507330-1') }}
-			</a-button>
+			</j-permission-button>
 		</div>
 		<div class="listBox">
 			<a-tree v-if="listData.length" :default-expanded-keys="['global_role']"

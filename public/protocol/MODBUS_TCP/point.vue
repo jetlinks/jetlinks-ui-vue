@@ -18,6 +18,10 @@
   </a-form-item>
   <a-form-item :label="$lang('MODBUS_TCP.point.20250207-3')" name="pointKey" :rules="[
     {
+            required: true,
+            message: '请输入地址',
+    },
+    {
       validator: checkPointKey,
       trigger: 'blur',
     },

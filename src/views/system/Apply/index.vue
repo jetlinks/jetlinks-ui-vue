@@ -447,8 +447,9 @@ const table = {
             onClick: () => {
               menuStory.jumpPage(
                   'system/Apply/Api',
-                  {},
-                  {code: data.id},
+                  {
+                    query: {code: data.id}
+                  },
               );
             },
           },
@@ -463,8 +464,9 @@ const table = {
             onClick: () => {
               menuStory.jumpPage(
                   'system/Apply/View',
-                  {},
-                  {code: data.id},
+                  {
+                    query: {code: data.id}
+                  },
               );
             },
           },

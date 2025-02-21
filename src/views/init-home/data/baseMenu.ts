@@ -608,6 +608,21 @@ export default [
                         ],
                     },
                     {
+                        id: 'groupAdd',
+                        name: '角色组新增',
+                        i18nMessages: {
+                            zh_CN: "角色组新增",
+                            en_US: "Role Group Add",
+                            en: "Role Group Add"
+                        },
+                        permissions: [
+                            {
+                                permission: 'role-group',
+                                actions: ['query', 'save']
+                            }
+                        ],
+                    },
+                    {
                         id: 'groupUpdate',
                         name: '角色组编辑',
                         i18nMessages: {
