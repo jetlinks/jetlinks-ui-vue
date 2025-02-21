@@ -46,3 +46,4 @@ iconMap.set('wechat-webapp', wechat);
 iconMap.set('internal-standalone', standalone);
 iconMap.set('third-party', thirdParty);
 iconMap.set('wechat-miniapp', wechatMiniapp);
+
