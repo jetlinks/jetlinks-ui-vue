@@ -1,6 +1,6 @@
 import standalone from '@/assets/internal-standalone.png'
 import dingtalk from '@/assets/dingtalk.png'
-import wechat from '@/assets/wechat.png'
+import wechat from '@/assets/wechat-webapp.png'
 import thirdParty from '@/assets/third-party.png'
 import wechatMiniapp from '@/assets/wechat-miniapp.png'
 
