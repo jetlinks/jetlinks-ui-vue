@@ -608,6 +608,21 @@ export default [
                         ],
                     },
                     {
+                        id: 'groupAdd',
+                        name: '角色组新增',
+                        i18nMessages: {
+                            zh_CN: "角色组新增",
+                            en_US: "Role Group Add",
+                            en: "Role Group Add"
+                        },
+                        permissions: [
+                            {
+                                permission: 'role-group',
+                                actions: ['query', 'save']
+                            }
+                        ],
+                    },
+                    {
                         id: 'groupUpdate',
                         name: '角色组编辑',
                         i18nMessages: {
@@ -1569,8 +1584,6 @@ export default [
             },
             {
                 "id": "c22370da99f05c1e44c5fe1cd4973633",
-                "parentId": "fd1670b860ae58cc58bcd01d027ccd35",
-                "path": "2otC-Rdxr",
                 "sortIndex": 15,
                 "level": 2,
                 "owner": "iot",
@@ -1578,7 +1591,15 @@ export default [
                 "code": "system/Positions",
                 "url": "/system/positions",
                 "icon": "icon-yonghuguanli",
-                "permissions": [],
+                "permissions": [
+                    {
+                        permission: "position",
+                        actions: [
+                            "query",
+                        ]
+                    }
+                ],
+                showPage: ["position"],
                 "accessSupport": {
                     "text": "Unsupported",
                     "value": "unsupported"
@@ -1597,9 +1618,9 @@ export default [
                         "name": "新增",
                         "permissions": [
                             {
-                                "permission": "user",
+                                "permission": "position",
                                 "actions": [
-                                    "query"
+                                    "save"
                                 ]
                             }
                         ],
@@ -1614,9 +1635,9 @@ export default [
                         "name": "删除",
                         "permissions": [
                             {
-                                "permission": "user",
+                                "permission": "position",
                                 "actions": [
-                                    "query"
+                                    "delete"
                                 ]
                             }
                         ],
@@ -1631,9 +1652,9 @@ export default [
                         "name": "编辑",
                         "permissions": [
                             {
-                                "permission": "user",
+                                "permission": "position",
                                 "actions": [
-                                    "query"
+                                    "save"
                                 ]
                             }
                         ],

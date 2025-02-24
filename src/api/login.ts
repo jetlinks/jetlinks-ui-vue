@@ -52,4 +52,10 @@ export const getInitSet = () => request.get(`/user/settings/init`)
  */
 export const queryModal = (serviceId:string) => request.get(`/command-supports/service/${serviceId}/exists`)
 
+/**
+ * 获取支持的SSO的应用
+ * @returns 
+ */
+export const bindInfo = () => request.get(`/application/sso/_all`)
+
 

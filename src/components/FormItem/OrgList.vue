@@ -1,10 +1,10 @@
 <script setup name="OrgList">
-import { filterSelectNode } from "@/utils";
-import { useI18n } from 'vue-i18n';
-import { useRequest } from '@jetlinks-web/hooks'
-import { getDepartmentList_api } from "@/api/system/user";
+import {filterSelectNode} from "@/utils";
+import {useI18n} from 'vue-i18n';
+import {useRequest} from '@jetlinks-web/hooks'
+import {getDepartmentList_api} from "@/api/system/user";
 
-const { t: $t } = useI18n();
+const {t: $t} = useI18n();
 const emit = defineEmits(['update:value', 'change'])
 
 const props = defineProps({
@@ -18,10 +18,10 @@ const props = defineProps({
   }
 })
 
-const { data: treeData, reload } = useRequest(getDepartmentList_api, {
+const {data: treeData, reload} = useRequest(getDepartmentList_api, {
   defaultParams: {
     paging: false,
-    sorts: [{ name: 'sortIndex', order: 'asc' }]
+    sorts: [{name: 'sortIndex', order: 'asc'}]
   },
   defaultValue: []
 })
@@ -37,42 +37,45 @@ const clickAddItem = () => {
   };
 }
 
-const onChange = (value, label,  extra) => {
+const onChange = (value, label, extra) => {
   emit('update:value', myValue.value)
-  emit('change', value, label,  extra)
+  emit('change', value, label, extra)
 }
 
 watch(() => props.value, () => {
   myValue.value = props.value
-}, { immediate: true })
+}, {immediate: true})
 
 </script>
 
 <template>
   <div class="org-list-warp">
-    <a-tree-select
-      v-model:value="myValue"
-      show-search
-      multiple
-      :placeholder="$t('components.EditUserDialog.939453-15')"
-      :tree-data="treeData"
-      :fieldNames="{ label: 'name', value: 'id' }"
-      :filterTreeNode="(v, node) => filterSelectNode(v, node, 'name')"
-      v-bind="props.extraProps"
-      @change="onChange"
-    >
-      <template #title="{ name }">
-        <j-ellipsis>
-          <span>{{ name }}</span>
-        </j-ellipsis>
-      </template>
-    </a-tree-select>
+    <div style="flex: 1; min-width: 0">
+      <a-tree-select
+          v-model:value="myValue"
+          show-search
+          multiple
+          :placeholder="$t('components.EditUserDialog.939453-15')"
+          :tree-data="treeData"
+          :fieldNames="{ label: 'name', value: 'id' }"
+          :filterTreeNode="(v, node) => filterSelectNode(v, node, 'name')"
+          v-bind="props.extraProps"
+          @change="onChange"
+      >
+        <template #title="{ name }">
+          <j-ellipsis>
+            <span>{{ name }}</span>
+          </j-ellipsis>
+        </template>
+      </a-tree-select>
+    </div>
     <j-permission-button
-      hasPermission="system/Department:add"
-      @click="clickAddItem('orgIdList', 'Department')"
+        hasPermission="system/Department:add"
+        @click="clickAddItem('orgIdList', 'Department')"
+        v-if="!props.extraProps?.disabled"
     >
       <template #icon>
-        <AIcon type="PlusOutlined" />
+        <AIcon type="PlusOutlined"/>
       </template>
     </j-permission-button>
   </div>

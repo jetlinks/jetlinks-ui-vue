@@ -59,7 +59,7 @@ const onSave = async () => {
   if (result) {
     const obj = {
       ...formModel,
-      roles: formModel.roles.map(item => ({ id: item }))
+      roles: formModel.roles.map(item => ({ id: item })),
     }
 
     if (formModel.id) {
@@ -119,7 +119,7 @@ watch(() => route.params.id, (v) => {
                 </a-col>
                 <a-col :span="12">
                   <a-form-item name="orgId" :label="$t('components.EditUserDialog.939453-14')" :rules="[{ required : true, message: '请选择组织'}]">
-                    <form-item-org v-model:value="formModel.orgId" :extraProps="{ multiple: false }" />
+                    <form-item-org v-model:value="formModel.orgId" :extraProps="{ multiple: false, disabled: formModel.id }" />
                   </a-form-item>
                 </a-col>
               </a-row>
@@ -135,7 +135,7 @@ watch(() => route.params.id, (v) => {
                 </a-col>
                 <a-col :span="12">
                   <a-form-item :label="$t('positions.index.223804-1')">
-                    <a-select v-model:value="formModel.parentId" :options="positionsList" :placeholder="$t('positions.index.223804-2')" />
+                    <a-select allowClear v-model:value="formModel.parentId" :options="positionsList" :placeholder="$t('positions.index.223804-2')" />
                   </a-form-item>
                 </a-col>
               </a-row>

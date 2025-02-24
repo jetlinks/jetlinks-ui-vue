@@ -53,10 +53,10 @@
                     <a-checkbox
                         v-model:checked="record.granted"
                         :indeterminate="record.indeterminate"
+                        :disabled='record.code === USER_CENTER_MENU_CODE'
                         @change="menuChange(record, true)"
                         >{{ record.i18nName || record.name }}</a-checkbox
                     >
-                    <!-- :disabled='record.code === USER_CENTER_MENU_CODE' -->
                 </div>
 
                 <div v-else-if="column.key === 'action'">
@@ -64,11 +64,11 @@
                         <a-checkbox
                             v-for="button in record.buttons"
                             v-model:checked="button.granted"
+                            :disabled='record.code === USER_CENTER_MENU_CODE && button.id === "view"'
                             @change="actionChange(record)"
                             :key="button.id"
                             >{{ button.i18nName || button.name }}</a-checkbox
                         >
-                        <!-- :disabled='[USER_CENTER_MENU_BUTTON_CODE].includes(button.id)' -->
                     </div>
                 </div>
 
@@ -186,7 +186,7 @@ const selectAllChange = () => {
 };
 // 表头-批量设置
 const bulkShow = ref<boolean>(false);
-const bulkOptions = ref([]);
+const bulkOptions = ref<any[]>([]);
 const bulkValue = ref<string>('');
 const bulkChange = () => {
     if (!bulkValue) return;
@@ -310,7 +310,6 @@ function menuChange(
     row: tableItemType,
     setButtonBool: boolean = true,
 ): undefined {
-  console.log('menuChange', row)
     // 判断是否需要对子菜单及操作权限进行选择
   // hasIndirectMenus(row)
     if (setButtonBool) {
@@ -437,7 +436,7 @@ function treeToSimple(_treeData: tableItemType[]) {
             assets = [...assets, ...item.assetAccesses];
         });
         bulkOptions.value = uniqBy(assets, 'supportId')?.map((m: any) => ({
-            label: m.i18nName | m.name,
+            label: m.i18nName || m.name,
             value: m.supportId,
         }));
     }

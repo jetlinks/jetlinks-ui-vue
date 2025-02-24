@@ -101,6 +101,7 @@ const columns = [
     title: $t('User.index.667995-7'),
     dataIndex: 'name',
     key: 'name',
+    ellipsis: true,
     search: {
       type: 'string',
     },

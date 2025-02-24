@@ -1,31 +1,57 @@
 <template>
-  <a-spin :spinning='loading' :delay='300'>
-    <div class='container'>
-      <div class='left'>
-        <img :src='systemInfo?.front?.background || bgImage' alt=''>
-        <a href="https://beian.miit.gov.cn/#/Integrated/index" target="_blank" rel="noopener noreferrer" class="records">
+  <a-spin :spinning="loading" :delay="300">
+    <div class="container">
+      <div class="left">
+        <img :src="systemInfo?.front?.background || bgImage" alt="" />
+        <a
+          href="https://beian.miit.gov.cn/#/Integrated/index"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="records"
+        >
           备案：渝ICP备19017719号-1
         </a>
       </div>
-      <div class='right'>
-        <Right :logo="systemInfo?.front?.logo" :title="layout?.title" v-model:loading="loading" />
+      <div class="right">
+        <Right
+          :logo="systemInfo?.front?.logo"
+          :title="layout?.title"
+          :bindings="bindings"
+          v-model:loading="loading"
+        />
       </div>
     </div>
   </a-spin>
 </template>
 <script setup name="Login" lang="ts">
-import { getImage } from '@jetlinks-web/utils'
-import { useSystemStore } from '@/store/system'
-import { storeToRefs } from 'pinia'
-import Right from './right.vue'
+import { getImage } from "@jetlinks-web/utils";
+import { useSystemStore } from "@/store/system";
+import { storeToRefs } from "pinia";
+import Right from "./right.vue";
+import { LocalStore } from "@jetlinks-web/utils";
+import { bindInfo } from "@/api/login";
 
-const systemStore = useSystemStore()
-const { systemInfo, layout } = storeToRefs(systemStore)
-const loading = ref(false)
+const systemStore = useSystemStore();
+const { systemInfo, layout } = storeToRefs(systemStore);
+const loading = ref(false);
 
-const bgImage = getImage('/login/login.png')
+const bgImage = getImage("/login/login.png");
+const bindings = ref([]);
 
-systemStore.querySingleInfo('front')
+const getOpen = async () => {
+  await systemStore.queryVersion();
+  const version = LocalStore.get("version_code");
+  if (version !== "community") {
+    bindInfo().then((res: any) => {
+      if (res.success) {
+        bindings.value = res.result
+      }
+    });
+  }
+  await systemStore.querySingleInfo("front");
+};
+
+getOpen();
 </script>
 
 <style scoped lang="less">
@@ -33,7 +59,7 @@ systemStore.querySingleInfo('front')
   display: flex;
   height: 100vh;
   background-color: #fff;
-  >div {
+  > div {
     height: 100%;
   }
 

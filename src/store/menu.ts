@@ -127,6 +127,10 @@ export const useMenuStore = defineStore('menu', () => {
         }
     }
 
+    const getMenu = (name: string) => {
+        return menusMap.value.get(name)
+    }
+
     return {
         menu,
         siderMenus,
@@ -136,5 +140,6 @@ export const useMenuStore = defineStore('menu', () => {
         jumpPage,
         routerPush,
         queryMenus,
+        getMenu,
     }
 })

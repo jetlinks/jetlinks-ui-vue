@@ -1,10 +1,10 @@
 <script setup name="PositionList">
-import { filterSelectNode } from "@/utils";
-import { useI18n } from 'vue-i18n';
-import { useRequest } from '@jetlinks-web/hooks'
-import { queryPageNoPage } from "@/api/system/positions";
+import {filterSelectNode} from "@/utils";
+import {useI18n} from 'vue-i18n';
+import {useRequest} from '@jetlinks-web/hooks'
+import {queryPageNoPage} from "@/api/system/positions";
 
-const { t: $t } = useI18n();
+const {t: $t} = useI18n();
 const emit = defineEmits(['update:value', 'change'])
 
 const props = defineProps({
@@ -18,10 +18,10 @@ const props = defineProps({
   }
 })
 
-const { data: treeData, reload } = useRequest(queryPageNoPage, {
+const {data: treeData, reload} = useRequest(queryPageNoPage, {
   defaultParams: {
     paging: false,
-    sorts: [{ name: 'sortIndex', order: 'asc' }]
+    sorts: [{name: 'sortIndex', order: 'asc'}]
   },
   defaultValue: []
 })
@@ -37,40 +37,43 @@ const clickAddItem = () => {
   };
 }
 
-const onChange = (value, label,  extra) => {
+const onChange = (value, label, extra) => {
   emit('update:value', myValue.value)
-  emit('change', value, label,  extra)
+  emit('change', value, label, extra)
 }
 
 watch(() => props.value, () => {
   myValue.value = props.value
-}, { immediate: true })
+}, {immediate: true})
 
 </script>
 
 <template>
   <div class="org-list-warp">
-    <a-tree-select
-      v-model:value="myValue"
-      show-search
-      multiple
-      :placeholder="$t('components.EditUserDialog.939453-32')"
-      :tree-data="treeData"
-      :fieldNames="{ label: 'name', value: 'id' }"
-      :filterTreeNode="(v, node) => filterSelectNode(v, node, 'name')"
-      v-bind="props.extraProps"
-      @change="onChange"
-    >
-      <template #title="{ name }">
-        <j-ellipsis>{{ name }}</j-ellipsis>
-      </template>
-    </a-tree-select>
+    <div style="flex: 1; min-width: 0">
+      <a-tree-select
+          v-model:value="myValue"
+          show-search
+          multiple
+          :placeholder="$t('components.EditUserDialog.939453-32')"
+          :tree-data="treeData"
+          :fieldNames="{ label: 'name', value: 'id' }"
+          :filterTreeNode="(v, node) => filterSelectNode(v, node, 'name')"
+          v-bind="props.extraProps"
+          @change="onChange"
+      >
+        <template #title="{ name }">
+          <j-ellipsis>{{ name }}</j-ellipsis>
+        </template>
+      </a-tree-select>
+    </div>
     <j-permission-button
-      hasPermission="system/Positions:add"
-      @click="clickAddItem"
+        hasPermission="system/Positions:add"
+        @click="clickAddItem"
+        v-if="!props.extraProps?.disabled"
     >
       <template #icon>
-        <AIcon type="PlusOutlined" />
+        <AIcon type="PlusOutlined"/>
       </template>
     </j-permission-button>
   </div>

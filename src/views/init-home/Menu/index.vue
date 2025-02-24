@@ -16,6 +16,7 @@ import { USER_CENTER_MENU_DATA } from '../data/baseMenu'
 import BaseMenu from '../data'
 import {  updateMenus, systemVersion, getProviders, getSystemPermission } from '@/api/initHome';
 import { protocolList } from '@/utils/consts'
+import { cloneDeep } from 'lodash-es';
 
 /**
  * 获取菜单数据
@@ -93,6 +94,7 @@ const filterMenu = (permissions: string[], menus: any[], hasProtocol: boolean) =
 const menuCount = (menus: any[]) => {
     return menus.reduce((pre, next) => {
         let _count = 1;
+      
         if (next.children) {
             _count = menuCount(next.children);
         }
@@ -119,7 +121,6 @@ const initMenu = async () => {
     return new Promise(async (resolve) => {
       //  用户中心
         dealMenu(menuDatas.current)
-        // console.log([...menuDates.current!, USER_CENTER_MENU_DATA]);
         const res = await updateMenus([...menuDatas.current!, USER_CENTER_MENU_DATA]);
         if (res.status === 200) {
             resolve(true);
@@ -131,9 +132,8 @@ const initMenu = async () => {
 const { count } = toRefs(menuDatas);
 
 getSystemPermissionData();
-onMounted(()=>{
-  menuDatas.count = menuCount(BaseMenu)
-})
+
+
 defineExpose({
     updataMenu: initMenu,
 });
