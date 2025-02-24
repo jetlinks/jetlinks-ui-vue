@@ -63,6 +63,10 @@ const props = defineProps({
         type: String,
         default: 'today',
     },
+    isTimer: {
+        type: Boolean,
+        default: undefined,
+    },
 });
 
 const radioValue = ref(props.type || 'week' || undefined);
@@ -111,6 +115,15 @@ const handleBtnChange = (val?: string) => {
         type: val,
     });
 };
+
+watch(
+  () => props.isTimer,
+  () => {
+    nextTick(() => {
+      handleBtnChange(radioValue.value);
+    });
+  },
+);
 
 nextTick(() => {
   handleBtnChange(radioValue.value)
