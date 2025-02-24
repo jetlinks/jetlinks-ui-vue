@@ -142,7 +142,7 @@
               <div class="card">
                 <Guide title="流量统计">
                   <template #extra>
-                    <TimeSelect :type="'week'" :quickBtnList="quickBtnList" @change="getEcharts" />
+                    <TimeSelect :type="'week'" :quickBtnList="quickBtnList" @change="getEcharts" :is-timer="isTimer" />
                   </template>
                 </Guide>
                 <LineChart :showX="true" :showY="true" style="min-height: 490px" :chartData="flowData" />
@@ -334,7 +334,7 @@
               <div class="card">
                 <Guide title="流量统计">
                   <template #extra>
-                    <TimeSelect :type="'week'" :quickBtnList="quickBtnList" @change="getEcharts" />
+                    <TimeSelect :type="'week'" :quickBtnList="quickBtnList" @change="getEcharts" :is-timer="isTimer"/>
                   </template>
                 </Guide>
                 <LineChart :showX="true" :showY="true" style="min-height: 490px" :chartData="flowData" />
@@ -420,7 +420,7 @@ import {
 import Save from '../Save.vue';
 import Guide from '@/views/iot-card/components/Guide.vue';
 import LineChart from '@/views/iot-card/components/LineChart.vue';
-import { queryFlow } from '@/api/iot-card/home';
+import { queryFlow, getIsTimer } from '@/api/iot-card/home';
 import TimeSelect from '@/views/iot-card/components/TimeSelect.vue';
 import { OperatorList, platformTypeList } from '@/views/iot-card/data';
 
@@ -433,7 +433,7 @@ const props = defineProps({
 
 const route = useRoute();
 const cardId = ref();
-
+const isTimer = ref(false);
 const visible = ref<boolean>(false);
 const current = ref<Partial<CardManagement>>({});
 const saveType = ref<string>('');
@@ -489,23 +489,23 @@ const saveChange = (val: any) => {
   }
 };
 
-const getData = (start: number, end: number): Promise<{ sortArray: any[] }> => {
+const getData = (
+  start: number,
+  end: number,
+  params: any
+): Promise<{ sortArray: any[] }> => {
   return new Promise((resolve) => {
-    queryFlow(start, end, {
-      orderBy: 'date',
-      terms: [
-        {
-          column: 'cardId',
-          termType: 'eq',
-          value: cardId.value,
-        },
-      ],
-    }).then((resp: any) => {
+    queryFlow(start, end, params).then((resp: any) => {
       if (resp.status === 200) {
-        const sortArray = resp.result.sort(
-          (a: any, b: any) =>
-            new Date(a.date).getTime() - new Date(b.date).getTime(),
-        );
+        let sortArray = [];
+        if (isTimer.value) {
+          sortArray = resp.result.reverse();
+        } else {
+          sortArray = resp.result.sort(
+            (a: any, b: any) =>
+              new Date(a.date).getTime() - new Date(b.date).getTime()
+          );
+        }
         resolve({
           sortArray,
         });
@@ -519,30 +519,93 @@ const getData = (start: number, end: number): Promise<{ sortArray: any[] }> => {
  */
 const getDataTotal = () => {
   const dTime = [
-    dayjs(new Date()).subtract(1, 'day').startOf('day').valueOf(),
-    dayjs(new Date()).subtract(1, 'day').endOf('day').valueOf(),
+    dayjs(new Date()).subtract(1, "day").startOf("day").valueOf(),
+    dayjs(new Date()).subtract(1, "day").endOf("day").valueOf(),
   ];
+  const dParams = isTimer.value
+    ? {
+      context: {
+        format: "M月dd日 HH:mm:ss",
+        time: "1h",
+        from: dTime?.[0],
+        to: dTime?.[1],
+        cardId: cardId.value,
+        limit: 24,
+      },
+    }
+    : {
+      orderBy: "date",
+      terms: [
+        {
+          column: "cardId",
+          termType: "eq",
+          value: cardId.value,
+        },
+      ],
+    };
   const mTime = [
-    dayjs().startOf('month').valueOf(),
-    dayjs().endOf('month').valueOf(),
+    dayjs().startOf("month").valueOf(),
+    dayjs().endOf("month").valueOf(),
   ];
+  const mParams = isTimer.value
+    ? {
+      context: {
+        format: "Y年M月d日",
+        time: "1d",
+        from: mTime?.[0],
+        to: mTime?.[1],
+        cardId: cardId.value,
+        limit: 31,
+      },
+    }
+    : {
+      orderBy: "date",
+      terms: [
+        {
+          column: "cardId",
+          termType: "eq",
+          value: cardId.value,
+        },
+      ],
+    };
   const yTime = [
-    dayjs().startOf('year').valueOf(),
-    dayjs().endOf('year').valueOf(),
+    dayjs().startOf("year").valueOf(),
+    dayjs().endOf("year").valueOf(),
   ];
-  getData(dTime[0], dTime[1]).then((resp) => {
+  const yParams = isTimer.value
+    ? {
+      context: {
+        format: "Y年M月",
+        time: "1M",
+        from: yTime?.[0],
+        to: yTime?.[1],
+        cardId: cardId.value,
+        limit: 12,
+      },
+    }
+    : {
+      orderBy: "date",
+      terms: [
+        {
+          column: "cardId",
+          termType: "eq",
+          value: cardId.value,
+        },
+      ],
+    };
+  getData(dTime[0], dTime[1], dParams).then((resp) => {
     dayTotal.value = resp.sortArray
       .reduce((r, n) => r + Number(n.value), 0)
       .toFixed(2);
     dayOptions.value = resp.sortArray;
   });
-  getData(mTime[0], mTime[1]).then((resp) => {
+  getData(mTime[0], mTime[1], mParams).then((resp) => {
     monthTotal.value = resp.sortArray
       .reduce((r, n) => r + Number(n.value), 0)
       .toFixed(2);
     monthOptions.value = resp.sortArray;
   });
-  getData(yTime[0], yTime[1]).then((resp) => {
+  getData(yTime[0], yTime[1], yParams).then((resp) => {
     yearTotal.value = resp.sortArray
       .reduce((r, n) => r + Number(n.value), 0)
       .toFixed(2);
@@ -557,11 +620,56 @@ const getDataTotal = () => {
 const getEcharts = (data: any) => {
   let startTime = data.start;
   let endTime = data.end;
-  if (data.type === 'week' || data.type === 'month') {
-    startTime = dayjs(data.start).startOf('days').valueOf();
-    endTime = dayjs(data.end).startOf('days').valueOf();
+  if (data.type !== "day") {
+    startTime = dayjs(data.start).startOf("days").valueOf();
+    endTime = dayjs(data.end).startOf("days").valueOf();
   }
-  getData(startTime, endTime).then((resp) => {
+  let _time = "1m";
+  let format = "M月dd日 HH:mm";
+  let limit = 12;
+  const dt = endTime - startTime;
+  const hour = 60 * 60 * 1000;
+  const days = hour * 24;
+  const months = days * 30;
+  const year = 365 * days;
+  if (dt <= hour + 10) {
+    _time = "1h";
+    limit = 24;
+    format = "HH:mm";
+  } else if (dt > hour && dt <= days) {
+    _time = "1h";
+    limit = 24;
+  } else if (dt > days && dt < year) {
+    limit = Math.abs(Math.ceil(dt / days)) + 1;
+    _time = "1d";
+    format = "M月dd日";
+  } else if (dt >= year) {
+    limit = Math.abs(Math.floor(dt / months));
+    _time = "1M";
+    format = "yyyy年-M月";
+  }
+  const params = isTimer.value
+    ? {
+      context: {
+        time: _time,
+        format: format,
+        limit: limit,
+        cardId: cardId.value,
+        from: data.start,
+        to: data.end,
+      },
+    }
+    : {
+      orderBy: "date",
+      terms: [
+        {
+          column: "cardId",
+          termType: "eq",
+          value: cardId.value,
+        },
+      ],
+    };
+  getData(startTime, endTime, params).then((resp) => {
     flowData.value = resp.sortArray;
   });
 };
@@ -592,7 +700,12 @@ onMounted(async () => {
   }
   if (cardId.value) {
     getDetail();
-    getDataTotal();
+    getIsTimer().then((resp) => {
+      if (resp.success) {
+        isTimer.value = resp.result;
+        getDataTotal();
+      }
+    });
   }
 });
 </script>
