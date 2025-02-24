@@ -20,14 +20,14 @@ importers:
         specifier: ^6.1.15
         version: 6.1.15(@fullcalendar/core@6.1.15)(vue@3.3.4)
       '@jetlinks-web/components':
-        specifier: 2.4.17
-        version: 2.4.17(@types/markdown-it@14.1.2)(typescript@5.1.3)(vue-router@4.2.2)(vue@3.3.4)
+        specifier: 2.4.20
+        version: 2.4.20(@types/markdown-it@14.1.2)(typescript@5.1.3)(vue-router@4.2.2)(vue@3.3.4)
       '@jetlinks-web/constants':
         specifier: ^1.0.7
         version: 1.0.7
       '@jetlinks-web/core':
-        specifier: ^2.0.6
-        version: 2.0.6(@types/lodash-es@4.17.11)(lodash@4.17.21)
+        specifier: ^2.0.8
+        version: 2.0.8(@types/lodash-es@4.17.11)(lodash@4.17.21)
       '@jetlinks-web/hooks':
         specifier: ^1.0.21
         version: 1.0.21(@types/lodash-es@4.17.11)(lodash@4.17.21)
@@ -88,9 +88,6 @@ importers:
       vue3-json-viewer:
         specifier: ^2.2.2
         version: 2.2.2(vue@3.3.4)
-      vue3-sfc-loader:
-        specifier: ^0.9.5
-        version: 0.9.5(lodash@4.17.21)(vue@3.3.4)
       xgplayer:
         specifier: ^3.0.20
         version: 3.0.20(core-js@3.40.0)
@@ -911,8 +908,8 @@ packages:
       - vue-router
     dev: false
 
-  /@jetlinks-web/components@2.4.17(@types/markdown-it@14.1.2)(typescript@5.1.3)(vue-router@4.2.2)(vue@3.3.4):
-    resolution: {integrity: sha512-lyX/N431ZHTnsjEJi1dcUDAHS4x7pVcjBMhiL1h+7heo1uu9Uvy5zeyEu1OXI/vNHgiFdsHm/HdXZA96/DwYaQ==}
+  /@jetlinks-web/components@2.4.20(@types/markdown-it@14.1.2)(typescript@5.1.3)(vue-router@4.2.2)(vue@3.3.4):
+    resolution: {integrity: sha512-K4+9/gKB7xZz9mqTfdFPApy1l7RrB4VDDmFJtoGb6mlGSBXM/VTTCXMPtGmAllbdFulvOU5JThRz+7mEIpZ9fw==}
     dependencies:
       '@ant-design/icons-vue': 7.0.1(vue@3.3.4)
       '@vuemap/vue-amap': 2.1.9(vue@3.3.4)
@@ -948,8 +945,8 @@ packages:
     resolution: {integrity: sha512-anwJEPP/insnPkHT+5GNTks8IITGgC4lA0bcJCigCFxfvV2eGU/s/o6Vp3JAgc8+N3tSckLp+tgdLGQjQ5B6Ug==}
     dev: false
 
-  /@jetlinks-web/core@2.0.6(@types/lodash-es@4.17.11)(lodash@4.17.21):
-    resolution: {integrity: sha512-Vc0vUiSRIOLnOKy6c4bFNWujdLW0PbdsbFC6bVlL6t62K86oluGJS8d/fES5MvKOr/UbJtiSU35lv7Uqd6Z6uQ==}
+  /@jetlinks-web/core@2.0.8(@types/lodash-es@4.17.11)(lodash@4.17.21):
+    resolution: {integrity: sha512-8Fm4fcYYiQ1RWOR75XnR9XVga9wFo5OIxm72e+i3KcG2Ay+LSsWSm+vJaH4SmoPpTbb/sCyzPghont8EtwdYnw==}
     dependencies:
       '@jetlinks-web/constants': 1.0.7
       '@jetlinks-web/types': 1.0.2
@@ -1937,7 +1934,7 @@ packages:
     dependencies:
       '@vueuse/shared': 12.4.0(typescript@5.1.3)
       vue: 3.5.13(typescript@5.1.3)
-      vue-router: 4.2.2(vue@3.3.4)
+      vue-router: 4.2.2(vue@3.5.13)
     transitivePeerDependencies:
       - typescript
     dev: false
@@ -4077,6 +4074,15 @@ packages:
     dependencies:
       '@vue/devtools-api': 6.6.4
       vue: 3.3.4
+    dev: false
+
+  /vue-router@4.2.2(vue@3.5.13):
+    resolution: {integrity: sha512-cChBPPmAflgBGmy3tBsjeoe3f3VOSG6naKyY5pjtrqLGbNEXdzCigFUHgBvp9e3ysAtFtEx7OLqcSDh/1Cq2TQ==}
+    peerDependencies:
+      vue: ^3.2.0
+    dependencies:
+      '@vue/devtools-api': 6.6.4
+      vue: 3.5.13(typescript@5.1.3)
     dev: false
 
   /vue-template-compiler@2.7.16:
