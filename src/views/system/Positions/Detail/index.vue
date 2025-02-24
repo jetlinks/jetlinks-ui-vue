@@ -118,7 +118,7 @@ watch(() => route.params.id, (v) => {
                   </a-form-item>
                 </a-col>
                 <a-col :span="12">
-                  <a-form-item name="orgId" :label="$t('components.EditUserDialog.939453-14')" :rules="[{ required : true, message: '请选择组织'}]">
+                  <a-form-item name="orgId" :label="$t('components.EditUserDialog.939453-14-1')" :rules="[{ required : true, message: '请选择组织'}]">
                     <form-item-org v-model:value="formModel.orgId" :extraProps="{ multiple: false, disabled: formModel.id }" />
                   </a-form-item>
                 </a-col>
