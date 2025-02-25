@@ -107,7 +107,6 @@ import { cloneDeep, uniqBy } from 'lodash-es';
 import { getPermissionTree_api } from '@/api/system/role';
 import { getCurrentInstance } from 'vue';
 import {
-//   USER_CENTER_MENU_BUTTON_CODE,
   USER_CENTER_MENU_CODE
 } from '@/utils/consts'
 import {permissionsGranted, useIndirectMenusMap} from "@/views/system/Role/Detail/components/util";
@@ -156,10 +155,20 @@ const selectedAll = ref<boolean>(false);
 const indeterminate = ref<boolean>(false);
 const selectAllChange = () => {
     flatTableData.forEach((item) => {
-        item.granted = selectedAll.value;
-        item.indeterminate = false;
+        const flag = item.code === USER_CENTER_MENU_CODE
+        // 改变菜单
+        if(flag){
+            item.granted = selectedAll.value;
+            item.indeterminate = !selectedAll.value;
+        } else {
+            item.granted = selectedAll.value;
+            item.indeterminate = false;
+        }
+        // 改变按钮
         item.buttons?.forEach((button) => {
-            button.granted = selectedAll.value;
+            if(!(flag && button?.id === 'view')){
+                button.granted = selectedAll.value;
+            }
         });
         if (selectedAll.value) {
             // 全选
@@ -266,7 +275,15 @@ function getAllPermiss() {
         const _result = resp.result
         // 默认选中个人中心相关设置
         tableData.value = _result.filter((item: { code: string , buttons: any[], granted: boolean}) => {
-          return (item.code !== NotificationSubscriptionCode)
+            if (item.code === USER_CENTER_MENU_CODE) {
+                item.buttons = item.buttons.map(buttonItem => {
+                if (buttonItem.id === 'view') {
+                    buttonItem.granted = true
+                }
+                return buttonItem
+                })
+            }
+            return (item.code !== NotificationSubscriptionCode)
         });
 
         treeToSimple(tableData.value); // 表格数据扁平化
