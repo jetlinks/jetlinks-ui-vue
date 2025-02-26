@@ -14,8 +14,11 @@
         <a-descriptions-item v-if="data.targetType === 'AiModel'" label="文件">
             {{data.properties?.fileName}}
         </a-descriptions-item>
-        <a-descriptions-item v-else-if="data.targetType === 'PluginDriver'" label="文件">
+        <a-descriptions-item v-else-if="['PluginDriver', 'ProtocolDriver'].includes(data.targetType)" label="文件">
             {{JSON.parse(data.metadata || '{}')?.filename}}
+        </a-descriptions-item>
+        <a-descriptions-item label="资源类型">
+          {{TargetTypeOptions.find(i => i.value === data.targetType)?.label}}
         </a-descriptions-item>
         <a-descriptions-item label="创建时间">
             {{dayjs(data.createTime).format('YYYY-MM-DD HH:mm:ss') || '--'}}
@@ -23,6 +26,9 @@
         <a-descriptions-item label="创建者">
             {{data.creatorName || '--'}}
         </a-descriptions-item>
+      <a-descriptions-item label="资源ID">
+        {{ data.targetId }}
+      </a-descriptions-item>
         <template v-if="data.targetType === 'entityTemplate:Collector'">
             <a-descriptions-item label="通讯协议">
                 {{metadata.category}}
@@ -46,6 +52,7 @@ import dayjs from "dayjs";
 import {PropType} from "vue";
 import Save from '../../Save/index.vue';
 import Points from "./Points.vue";
+import {TargetTypeOptions} from "@/views/edge/NewResource/utils";
 
 
 const emit = defineEmits(['refresh'])

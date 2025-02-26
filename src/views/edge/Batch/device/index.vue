@@ -10,7 +10,9 @@
           }"
           @click="() => typeSelect(item.value)"
         >
-            <div class="icon"></div>
+            <div class="icon">
+              <img :src="item.icon" style="width: 100%; height: 100%" />
+            </div>
             <div class="content">
               <div class="title">{{ item.label }}</div>
               <div class="tip">{{ item.tip }}</div>
@@ -31,12 +33,13 @@
 
 <script setup name="BatchDevice">
 import DeviceSelect from './device.vue'
+import {getImage} from "@/utils/comm";
 
 const options = [
   {
     label: '按设备选择',
     tip: '按设备列表选择对应网关设备',
-    icon: '',
+    icon: getImage('/edge/batch-device.png'),
     value: 'device'
   }
 ]
@@ -51,7 +54,6 @@ const typeSelect = (e) => {
 
 <style scoped lang="less">
 .type-select-warp {
-  flex: 1 1 0;
   display: flex;
   flex-direction: column;
 
@@ -62,14 +64,15 @@ const typeSelect = (e) => {
   .card-warp {
     display: grid;
     padding: 12px 0;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: 16px;
+    width: 90%;
 
     .card-item {
       border: 1px solid @border-base-color;
       display: flex;
       cursor: pointer;
-      padding: 36px 24px;
+      padding: 24px;
       gap: 16px;
       align-items: center;
       border-radius: 6px;

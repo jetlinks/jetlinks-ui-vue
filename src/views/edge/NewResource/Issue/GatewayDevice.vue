@@ -4,6 +4,7 @@
         target="edge-device"
         type="simple"
         @search="handleSearch"
+        style="padding: 0"
     />
     <JProTable
         ref="edgeDeviceRef"
@@ -13,6 +14,7 @@
         :params="params"
         :gridColumn="2"
         model="CARD"
+        style="padding: 0"
         :pagination="{
             pageSizeOptions: ['4', '12', '24', '48'],
             showSizeChanger: true,

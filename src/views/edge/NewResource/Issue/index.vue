@@ -24,7 +24,7 @@
                     </j-col>
                 </j-row>
                 <j-form-item label="网关设备选择方式">
-                    <j-card-select v-model:value="chooseType" :options="options"></j-card-select>
+                    <j-card-select :column="2" v-model:value="chooseType" :options="options" :showImage="false"></j-card-select>
                 </j-form-item>
                 <j-form-item label="说明">
                     <j-textarea v-model:value="formData.description" placeholder="请输入说明" :maxlength="200" showCount></j-textarea>
@@ -40,7 +40,7 @@
                 <j-space>
                     <j-button @click="emit('close')">取消</j-button>
                     <j-button v-if="current === 1" type="primary" @click="handleSubmit">下一步</j-button>
-                    <j-button v-else type="primary" @click="handleSubmit">确定</j-button>
+                    <j-button v-else :loading="loading" type="primary" @click="handleSubmit">确定</j-button>
                 </j-space>
             </div>
         </template>
@@ -52,7 +52,7 @@ import GatewayDevice from './GatewayDevice.vue';
 import { onlyMessage } from "@/utils/comm";
 import { createTask } from '@/api/edge-resource/index'
 
-const emit = defineEmits(['close']);
+const emit = defineEmits(['close', 'save']);
 const props = defineProps({
     data: {
         type: Object,
@@ -71,6 +71,7 @@ const current = ref(1);
 const chooseType = ref('device');
 const formRef = ref();
 const deviceList = ref<Record<string, any>[]>([]);
+const loading = ref(false)
 const formData = ref<Record<string, any>>({
     name: undefined,
     timeoutSeconds: null,
@@ -136,10 +137,13 @@ const handleSubmit = () => {
                     })
                 }
             }
-            const res = await createTask(data);
+          loading.value = true
+            const res = await createTask(data).finally(() => {
+              loading.value = false
+            });
             if(res.success) {
                 onlyMessage('操作成功');
-                emit('close');
+                emit('save');
             }
         }
     });

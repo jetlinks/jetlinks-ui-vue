@@ -1,5 +1,5 @@
 <template>
-  <AIcon :type="type" scriptUrl="//at.alicdn.com/t/c/font_4697576_5ul8wppcxbo.js" />
+  <AIcon :type="type" scriptUrl="//at.alicdn.com/t/c/font_4697576_rt4hxxozpo.js" />
 </template>
 
 <script setup name="BatchIcon">

@@ -3,19 +3,23 @@
     <FullPage>
       <div class="batch-warp">
         <div class="top">
-          <Device />
-          <Operate ref="operateRef" :deviceList="deviceList" @selected="operateSelect" />
+          <div class="top-item" style=" flex: 1 1 0;">
+            <Device />
+          </div>
+          <div class="top-item" style="width: 340px;">
+            <Operate ref="operateRef" :deviceList="deviceList" @selected="operateSelect" />
+          </div>
         </div>
       </div>
-      <Task
-        v-if="visible"
-        :value="taskData"
-        :list="deviceList"
-        @cancel="onCancel"
-        @ok="onOk"
-      />
     </FullPage>
   </page-container>
+  <Task
+      v-if="visible"
+      :value="taskData"
+      :list="deviceList"
+      @cancel="onCancel"
+      @ok="onOk"
+  />
 </template>
 
 <script setup name="Batch">
@@ -62,11 +66,16 @@ provide(ContextName, {
 .batch-warp {
   padding: 24px;
   height: 100%;
+  overflow: hidden;
 
   .top {
     display: flex;
     gap: 24px;
     height: 100%;
+
+    .top-item {
+      height: 100%;
+    }
   }
 }
 </style>

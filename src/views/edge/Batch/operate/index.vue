@@ -1,27 +1,29 @@
 <template>
-  <div class="operate-warp">
-    <div :class="{'operate-item': true }" v-for="item in batchOperateOptions">
-      <div class="img"></div>
-      <div class="content">
-        <div class="content-title">
-          <div class="title-render">
-            <Icon :type="item.icon" />
-            <label>
-              {{ item.label }}
-            </label>
+  <div style="height: 100%; overflow-y: auto;">
+    <div class="operate-warp">
+      <div :class="{'operate-item': true }" v-for="item in batchOperateOptions">
+        <div class="img"></div>
+        <div class="content">
+          <div class="content-title">
+            <div class="title-render">
+              <Icon :type="item.icon" />
+              <label>
+                {{ item.label }}
+              </label>
+            </div>
+            <a-button v-if="item.value !== 'device'" type="text" class="history-icon" @click.stop="() => showHistoryTask(item)">
+              <AIcon type="ExceptionOutlined" />
+            </a-button>
           </div>
-          <a-button v-if="item.value !== 'device'" type="text" class="history-icon" @click.stop="() => showHistoryTask(item)">
-            <AIcon type="ExceptionOutlined" />
-          </a-button>
-        </div>
-        <div class="content-tip">
-          {{item.tip}}
-        </div>
-        <div :class="{ 'operate-action': true, 'disabled': disabled}" @click="showTask(item)">
-          <a-space>
-            <span>开始</span>
-            <AIcon type="ArrowRightOutlined" :style=" disabled &&{cursor: 'not-allowed'}"/>
-          </a-space>
+          <div class="content-tip">
+            {{item.tip}}
+          </div>
+          <div :class="{ 'operate-action': true, 'disabled': disabled}" @click="showTask(item)">
+            <a-space>
+              <span>开始</span>
+              <AIcon type="ArrowRightOutlined" :style=" disabled &&{cursor: 'not-allowed'}"/>
+            </a-space>
+          </div>
         </div>
       </div>
     </div>
@@ -110,12 +112,9 @@ defineExpose({
 
 <style scoped lang="less">
 .operate-warp {
-  width: 340px;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  overflow-y: auto;
-  height: 100%;
   border: 1px solid @font-gray-200;
   border-radius: 6px;
   padding: 16px;

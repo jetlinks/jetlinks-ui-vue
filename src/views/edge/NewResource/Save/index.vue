@@ -9,13 +9,14 @@
         @ok="handleSave"
     >
         <a-form ref="formRef" layout="vertical" :model="formData" :rules="rules">
-            <a-form-item name="targetType">
+            <a-form-item name="targetType" label="资源类型">
                 <j-card-select
                     :disabled="!!data.id"
                     v-model:value="formData.targetType"
                     :options="TargetTypeOptions"
-                    :column="3"
+                    :column="4"
                     @change="handleChangeTargetType"
+                    :showImage="false"
                 ></j-card-select>
             </a-form-item>
             <a-form-item name="targetId">
@@ -70,6 +71,23 @@
                     v-model:fileName="formData.metadata.filename"
                     @change="handlePluginFileChange"
                 />
+            </a-form-item>
+            <a-form-item
+                v-else-if="formData.targetType == 'ProtocolDriver'"
+                label="文件"
+                name="metadata"
+                :rules="{
+                      required: true,
+                      validator: validatePluginFile
+                  }"
+            >
+              <UploadFile
+                  :accept="['.jar']"
+                  :fileInfo="{url: formData.metadata.configuration.location, name: formData.metadata.filename}"
+                  v-model:model-value="formData.metadata.configuration.location"
+                  v-model:fileName="formData.metadata.filename"
+                  @change="handlePluginFileChange"
+              />
             </a-form-item>
             <a-form-item
                 v-else-if="formData.targetType == 'entityTemplate:Collector'"
@@ -132,6 +150,16 @@ const initPluginDriverMetadata = {
     }
 }
 
+const initProtocolDriverMetadata = {
+  name: '',
+  filename: '',
+  provider: 'jar',
+  description: '',
+  configuration: {
+    location: '',
+  }
+}
+
 const initCollectorTemplateMetadata = {
     id: "",
     name: '',
@@ -179,6 +207,12 @@ const rules = {
         {
             max: 64,
             message: '最多输入64个字符',
+        },
+    ],
+    targetType: [
+        {
+            required: true,
+            message: '请选择资源类型',
         },
     ],
 }
@@ -252,6 +286,12 @@ const handleChangeTargetType = (e: any) => {
             formData.value.metadata = cloneDeep(initPluginDriverMetadata);
             formData.value.properties = {
                 fileName: ""
+            }
+            break;
+        case 'ProtocolDriver':
+            formData.value.metadata = cloneDeep(initProtocolDriverMetadata);
+            formData.value.properties = {
+              fileName: ""
             }
             break;
         case 'entityTemplate:Collector':
