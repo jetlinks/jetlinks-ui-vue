@@ -84,6 +84,9 @@ onMounted(() => {
             {{ record.parentName }}
           </j-ellipsis>
         </template>
+        <template #orgId="record">
+          <j-ellipsis>{{ record.orgName || record.orgId }}</j-ellipsis>
+        </template>
         <template #action="slotProps">
           <a-space :size="16">
             <j-permission-button
