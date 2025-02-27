@@ -267,15 +267,15 @@ const gatewayColumns = [
         ellipsis: true,
         width: 200,
     },
+    // {
+    //     title: '资源库ID',
+    //     dataIndex: 'id',
+    //     key: 'id',
+    //     ellipsis: true,
+    //     width: 200,
+    // },
     {
-        title: '资源库ID',
-        dataIndex: 'id',
-        key: 'id',
-        ellipsis: true,
-        width: 200,
-    },
-    {
-        title: '网关设备名称',
+        title: '边端网关',
         dataIndex: 'thingName',
         ellipsis: true,
     },

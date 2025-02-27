@@ -15,7 +15,6 @@
       :rules="rules"
     >
     <div class="task-body">
-
       <div class="task-form">
           <a-form-item label="名称" name="name" v-if="!showBindChildren">
             <a-input v-model:value="formModel.name" placeholder="请输入任务名称" />
@@ -82,6 +81,8 @@
         <ContentAiModel v-else-if="formModel.jobType === 'AiModel'" ref="contentRef" :options="formModel.thingList" />
         <ContentAiResource v-else-if="formModel.jobType === 'AiResource'" ref="contentRef" :options="formModel.thingList" />
         <ContentCollectorTemplate v-else-if="formModel.jobType === 'CollectorTemplate'" ref="contentRef"  :options="formModel.thingList" />
+        <ContentProduct v-else-if="formModel.jobType === 'Product'" ref="contentRef"  :options="formModel.thingList" />
+        <ContentProtocol v-else-if="formModel.jobType === 'Protocol'" ref="contentRef"  :options="formModel.thingList" />
       </div>
 
       <GatewayModal
@@ -111,6 +112,8 @@ import ContentChildren from './Children/index.vue'
 import ContentAiModel from './AiModel/index.vue'
 import ContentAiResource from './AiResource/index.vue'
 import ContentCollectorTemplate from './CollectorTemplate/index.vue'
+import ContentProduct from './Product/index.vue'
+import ContentProtocol from './Protocol/index.vue'
 import { detail } from '@/api/device/instance';
 import { createTask } from '@/api/edge/batch'
 import { useRequest } from '@/hook'
@@ -246,6 +249,14 @@ const onCancel = () => {
   }
 }
 
+const serviceIdObj = {
+  'plugin': 'pluginService:driver',
+  'Product': 'deviceService:product',
+  'CollectorTemplate': 'commonService:entityTemplate',
+  'AiModel': 'aiService:modelManager',
+  'Protocol': 'deviceService:protocol'
+}
+
 const onOk = async () => {
   const formResp = await formRef.value.validate()
 
@@ -272,8 +283,8 @@ const onOk = async () => {
     thingList: newThingList,
     commandArgs,
     resourceTotal: newThingList.length,
-    serviceId: formModel.jobType === 'plugin' ? 'pluginService:driver' : formModel.jobType === 'CollectorTemplate' ? 'commonService:entityTemplate' : 'aiService:modelManager',
-    commandId: 'SaveByTemplate',
+    serviceId: serviceIdObj?.[formModel.jobType] || 'aiService:modelManager',
+    commandId: formModel.jobType === 'Product' ? 'Save' : 'SaveByTemplate',
     others: {
       thingList: newThingList,
       commandTotal: commandArgs.length || 0

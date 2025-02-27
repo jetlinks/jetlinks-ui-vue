@@ -54,6 +54,13 @@ export const useBatchOperateOptions = () => {
             key: 'resourceIssue',
         },
         {
+            icon: 'icon-anzhuangxieyi',
+            label: '安装协议',
+            tip: '批量安装协议至边缘网关',
+            value: 'Protocol',
+            key: 'resourceIssue',
+        },
+        {
             icon: 'icon-bangdingzishebei',
             label: '绑定子设备',
             tip: '批量绑定云端子设备',
@@ -75,6 +82,13 @@ export const useBatchOperateOptions = () => {
                 label: '下发采集器模版',
                 tip: '批量下发AI采集器模版至边缘网关',
                 value: 'CollectorTemplate',
+                key: 'resourceIssue',
+            },
+            {
+                icon: 'icon-xiafachanpin',
+                label: '下发产品',
+                tip: '批量安装产品至边缘网关',
+                value: 'Product',
                 key: 'resourceIssue',
             }
         ])
