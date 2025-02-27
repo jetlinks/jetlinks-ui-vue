@@ -115,6 +115,9 @@
                         }"
                     />
                 </template>
+                <template #targetType="slotProps">
+                  {{ TargetTypeOptions.find(item => slotProps.targetType === item.value)?.label }}
+                </template>
                 <template #action="slotProps">
                     <j-space :size="16">
                         <template
@@ -181,6 +184,7 @@ const columns = [
         title: '类型',
         dataIndex: 'targetType',
         key: 'targetType',
+        scopedSlots: true,
         width: 200,
         search: {
             type: 'select',

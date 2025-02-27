@@ -25,7 +25,7 @@
         terms: [
           {
             column: 'targetType',
-            value: 'Protocol'
+            value: 'ProtocolDriver'
           }
           ,{column: 'state', value: 'enabled'}
         ]
@@ -91,6 +91,7 @@ const columns = [
   },
 ]
 const queryFn = async (_params) => {
+  console.log('11111')
 
   const resp = await query(_params)
   return {
