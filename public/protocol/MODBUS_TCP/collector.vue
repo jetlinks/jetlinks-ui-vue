@@ -15,25 +15,25 @@
         :max="255" :maxlength="64"
     />
   </a-form-item>
-<!--  <a-form-item :name="['configuration', 'endian']"-->
-<!--               :rules="[-->
-<!--    {required: true, message: $lang('MODBUS_TCP.collector.20250207-5'), trigger: 'blur'},-->
-<!--  ]"-->
-<!--               :label="$lang('MODBUS_TCP.collector.20250207-4')">-->
-<!--    <j-card-select :showImage="false" v-model:value="formData.configuration.endian" :options="options" :column="2"/>-->
-<!--  </a-form-item>-->
-<!--  <a-form-item :name="['configuration', 'endianIn']" :rules="[-->
-<!--    {required: true, message: $lang('MODBUS_TCP.collector.20250207-5'), trigger: 'blur'},-->
-<!--  ]" :label="$lang('MODBUS_TCP.collector.20250207-6')">-->
-<!--    <j-card-select :showImage="false" v-model:value="formData.configuration.endianIn" :options="options" :column="2"/>-->
-<!--  </a-form-item>-->
-<!--  <div style="color: #616161">-->
-<!--    <p>{{ $lang('MODBUS_TCP.collector.20250207-8') }}: {{ endianData }}</p>-->
-<!--    <p>-->
-<!--      {{ $lang('MODBUS_TCP.collector.20250207-9') }}-->
-<!--      {{ $lang('MODBUS_TCP.collector.20250207-10') }}-->
-<!--    </p>-->
-<!--  </div>-->
+  <a-form-item :name="['configuration', 'endian']"
+               :rules="[
+    {required: true, message: $lang('MODBUS_TCP.collector.20250207-5'), trigger: 'blur'},
+  ]"
+               :label="$lang('MODBUS_TCP.collector.20250207-4')">
+    <j-card-select :showImage="false" v-model:value="formData.configuration.endian" :options="options" :column="2"/>
+  </a-form-item>
+  <a-form-item :name="['configuration', 'endianIn']" :rules="[
+    {required: true, message: $lang('MODBUS_TCP.collector.20250207-5'), trigger: 'blur'},
+  ]" :label="$lang('MODBUS_TCP.collector.20250207-6')">
+    <j-card-select :showImage="false" v-model:value="formData.configuration.endianIn" :options="options" :column="2"/>
+  </a-form-item>
+  <div style="color: #616161">
+    <p>{{ $lang('MODBUS_TCP.collector.20250207-8') }}: {{ endianData }}</p>
+    <p>
+      {{ $lang('MODBUS_TCP.collector.20250207-9') }}
+      {{ $lang('MODBUS_TCP.collector.20250207-10') }}
+    </p>
+  </div>
 </template>
 <script setup>
 import {inject, computed} from 'vue'
