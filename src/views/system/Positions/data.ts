@@ -72,7 +72,8 @@ export const useColumns = () => {
     {
       dataIndex: 'orgId',
       title: $t('Instance.index.133466-16'),
-      hideInTable: true,
+      // hideInTable: true,
+      scopedSlots: true,
       search: {
         type: 'treeSelect',
         termOptions: ['eq'],
