@@ -50,15 +50,15 @@
             <template #bodyCell="{ column, record }">
                 <div :id="record.id"></div>
                 <div v-if="column.key === 'menu'">
-                    <a-checkbox
-                        v-model:checked="record.granted"
-                        :indeterminate="record.indeterminate"
-                        :disabled='record.code === USER_CENTER_MENU_CODE'
-                        @change="menuChange(record, true)"
-                        >{{ record.i18nName || record.name }}</a-checkbox
-                    >
+<!--                    <a-checkbox-->
+<!--                        v-model:checked="record.granted"-->
+<!--                        :indeterminate="record.indeterminate"-->
+<!--                        :disabled='record.code === USER_CENTER_MENU_CODE'-->
+<!--                        @change="menuChange(record, true)"-->
+<!--                        >{{ record.i18nName || record.name }}</a-checkbox-->
+<!--                    >-->
+                  <MenuCheckbox :data="record" v-model:value="record.granted" @change="menuChange(record, true)" />
                 </div>
-
                 <div v-else-if="column.key === 'action'">
                     <div v-if="record.buttons && record.buttons.length > 0">
                         <a-checkbox
@@ -112,6 +112,7 @@ import {
 import {permissionsGranted, useIndirectMenusMap} from "@/views/system/Role/Detail/components/util";
 import {NotificationSubscriptionCode} from "@/router/menu";
 import { useI18n } from 'vue-i18n';
+import MenuCheckbox from './MenuCheckbox.vue'
 
 import { isNoCommunity } from '@/utils/utils'
 
@@ -233,7 +234,7 @@ const init = () => {
             const selected = cloneDeep(flatTableData).filter(
                 (item: any) =>
                     // (item.granted && item.parentId) ||
-                    (item.indeterminate && item.buttons) 
+                    (item.indeterminate && item.buttons)
                     || (item.granted), // 放开个人中心
             );
 
@@ -327,6 +328,7 @@ function menuChange(
     row: tableItemType,
     setButtonBool: boolean = true,
 ): undefined {
+  console.log(row.granted, row, setButtonBool)
     // 判断是否需要对子菜单及操作权限进行选择
   // hasIndirectMenus(row)
     if (setButtonBool) {
