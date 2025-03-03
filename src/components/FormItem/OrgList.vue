@@ -63,7 +63,9 @@ watch(() => props.value, () => {
           @change="onChange"
       >
         <template #title="{ name }">
-          {{ name }}
+          <j-ellipsis>
+            <span>{{ name }}</span>
+          </j-ellipsis>
         </template>
       </a-tree-select>
     </div>
