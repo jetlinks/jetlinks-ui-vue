@@ -242,6 +242,7 @@ const onChange = (value: string[]) => {
   const arr = (value || []).map(i => {
     return positionsMap.get(i)
   })
+
   const roles = map(flatten(map(arr, 'roles')), 'id')
   const orgIds = map(arr, 'orgId')
 
