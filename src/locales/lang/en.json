@@ -1399,5 +1399,6 @@
 	"components.User.635192-1": "Log Out",
 	"positions.index.223804-1": "Superior positions",
 	"positions.index.223804-2": "Please select a superior position",
-	"positions.index.223804-3": "Please add position information first"
+	"positions.index.223804-3": "Please add position information first",
+	"positions.index.223804-4": "Please enter the position name"
 }

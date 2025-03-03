@@ -107,14 +107,14 @@ watch(() => route.params.id, (v) => {
                     :label="$t('components.EditUserDialog.939453-3')"
                     name="name"
                     :rules="[
-                            { required: true, message: $t('components.EditUserDialog.939453-4') },
+                            { required: true, message: $t('positions.index.223804-4') },
                             {
                                 max: 64,
                                 message: $t('components.EditUserDialog.939453-5'),
                             },
                         ]"
                   >
-                    <a-input v-model:value="formModel.name" :placeholder="$t('components.EditUserDialog.939453-4')" />
+                    <a-input v-model:value="formModel.name" :placeholder="$t('positions.index.223804-4')" />
                   </a-form-item>
                 </a-col>
                 <a-col :span="12">
