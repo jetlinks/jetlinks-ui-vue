@@ -15,6 +15,10 @@ const props = defineProps({
   extraProps: {
     type: Object,
     default: () => ({})
+  },
+  disabledData: {
+    type: Array,
+    default: []
   }
 })
 
@@ -63,9 +67,15 @@ watch(() => props.value, () => {
           @change="onChange"
       >
         <template #title="{ name }">
-          <j-ellipsis>
-            <span>{{ name }}</span>
-          </j-ellipsis>
+          <div style="width: calc(100% - 10px) ">
+            <j-ellipsis>{{ name }}</j-ellipsis>
+          </div>
+        </template>
+        <template #tagRender="{value, label, closable }">
+          <a-tag v-if="disabledData.includes(value)" :closable="false" color="blue" style="margin-right: 3px">
+            {{ label }}&nbsp;&nbsp;
+          </a-tag>
+          <a-tag v-else :closable="closable" style="margin-right: 3px">{{ label }}&nbsp;&nbsp;</a-tag>
         </template>
       </a-tree-select>
     </div>

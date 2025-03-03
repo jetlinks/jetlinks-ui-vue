@@ -79,19 +79,19 @@
                             { required: form.data.username !== 'admin', message: $t('components.EditUserDialog.939453-13') },
                         ]"
                     >
-                      <form-item-role v-model:value="form.data.roleIdList" :disabled="form.data.username === 'admin'" />
+                      <form-item-role :disabledData="disabledData.roles" v-model:value="form.data.roleIdList" :disabled="form.data.username === 'admin'" />
                     </a-form-item>
                 </a-col>
                 <a-col :span="12">
                     <a-form-item name="orgIdList" :label="$t('components.EditUserDialog.939453-14')" class="flex">
-                      <form-item-org v-model:value="form.data.orgIdList" />
+                      <form-item-org :disabledData="disabledData.orgIds" v-model:value="form.data.orgIdList" />
                     </a-form-item>
                 </a-col>
             </a-row>
           <a-row v-if="form.IsShow('add', 'edit')">
             <a-col :span="12">
               <a-form-item name="positions" :label="$t('components.EditUserDialog.939453-31')">
-                  <form-item-position v-model:value="form.data.positions" />
+                  <form-item-position v-model:value="form.data.positions" @change="onChange" />
               </a-form-item>
             </a-col>
           </a-row>
@@ -181,8 +181,9 @@ import { DefaultOptionType } from 'ant-design-vue/es/vc-tree-select/TreeSelect';
 import { AxiosResponse } from 'axios';
 import { passwordRegEx } from '@/utils/validate';
 import { onlyMessage } from '@/utils/comm';
-import { cloneDeep } from 'lodash-es';
+import {cloneDeep, flatten, map} from 'lodash-es';
 import { useI18n } from 'vue-i18n';
+import {queryPageNoPage} from "@/api/system/positions";
 
 const { t: $t } = useI18n();
 
@@ -194,6 +195,16 @@ const props = defineProps<{
 }>();
 // 弹窗相关
 const loading = ref(false);
+const positionsMap = new Map()
+
+const disabledData = reactive<{
+  roles: any[],
+  orgIds: any[]
+}>({
+  roles: [],
+  orgIds: []
+})
+
 const dialogTitle = computed(() => {
     if (props.type === 'add') return $t('components.EditUserDialog.939453-23');
     else if (props.type === 'edit') return $t('components.EditUserDialog.939453-24');
@@ -214,6 +225,30 @@ const confirm = () => {
         })
         .finally(() => (loading.value = false));
 };
+
+const handleData = (data: string[], newData: string[], key: string) => {
+  // 删除原本的数据，然后加入新的数据
+  const _dataSet = new Set(data || []);
+  (disabledData[key] || []).map((i: string) => {
+    if(_dataSet.has(i)){
+      _dataSet.delete(i)
+    }
+  })
+  disabledData[key] = [...new Set(newData)]
+  return [...new Set([...newData, ..._dataSet])]
+}
+
+const onChange = (value: string[]) => {
+  const arr = (value || []).map(i => {
+    return positionsMap.get(i)
+  })
+
+  const roles = map(flatten(map(arr, 'roles')), 'id')
+  const orgIds = map(arr, 'orgId')
+
+  form.data.roleIdList = handleData(form.data.roleIdList, roles, 'roles')
+  form.data.orgIdList = handleData(form.data.orgIdList, orgIds, 'orgIds')
+}
 
 const formRef = ref<FormInstance>();
 const _roleDetail = ref([] as any[]);
@@ -276,6 +311,8 @@ const form = reactive({
                     ),
                   positions: resp.result.positions?.map(item => item.id)
                 };
+                onChange(form.data.positions)
+
                 form.data.roleIdList = resp.result?.roleList?.map((i: any) => {
                     return i.id
                 });
@@ -328,8 +365,6 @@ const checkCh = async(_rule:Rule,value:string) => {
 //     return uniqBy([...form.departmentOptions, ...form._departmentOptions], 'id')
 // })
 
-form.init();
-
 const hasNodeWithId = (arr: any, id: any)=>{
     for (let item of arr) {
         if (item.id === id) {
@@ -341,6 +376,20 @@ const hasNodeWithId = (arr: any, id: any)=>{
     }
     return false;
 }
+
+onMounted(() => {
+  queryPageNoPage({
+    paging: false,
+    sorts: [{name: 'sortIndex', order: 'asc'}]
+  }).then(resp => {
+    if(resp.success){
+      resp.result.map(i => {
+        positionsMap.set(i.id, i)
+      })
+    }
+    form.init();
+  })
+})
 
 watch(
     () => _roleDetail.value,
