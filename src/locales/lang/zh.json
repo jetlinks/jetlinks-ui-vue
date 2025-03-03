@@ -854,7 +854,7 @@
 	"components.EditUserDialog.939453-1": "确定",
 	"components.EditUserDialog.939453-2": "基础信息",
 	"components.EditUserDialog.939453-3": "名称",
-	"components.EditUserDialog.939453-4": "请输入职务名称",
+	"components.EditUserDialog.939453-4": "请输入名称",
 	"components.EditUserDialog.939453-5": "最多可输入64个字符",
 	"components.EditUserDialog.939453-6": "手机号",
 	"components.EditUserDialog.939453-7": "请输入正确的手机号",
@@ -1399,5 +1399,6 @@
 	"components.User.635192-1": "退出登录",
 	"positions.index.223804-1": "上级职位",
 	"positions.index.223804-2": "请选择上级职位",
-	"positions.index.223804-3": "请先新增职位信息"
+	"positions.index.223804-3": "请先新增职位信息",
+	"positions.index.223804-4": "请输入职位名称"
 }
