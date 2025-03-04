@@ -3,7 +3,7 @@
     :locale="language[systemStore.language]"
     :componentsLocale="componentsLocale[systemStore.language]"
     :IconConfig="{
-      scriptUrl: '//at.alicdn.com/t/c/font_4035907_lhjh192368p.js'
+      scriptUrl: '//at.alicdn.com/t/c/font_4035907_bv9mgeuefia.js'
     }"
   >
     <router-view/>
