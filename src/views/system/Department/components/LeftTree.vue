@@ -104,6 +104,7 @@ import { useI18n } from 'vue-i18n';
 
 const { t: $t } = useI18n();
 const permission = 'system/Department'
+const route = useRoute();
 
 const save = useRoute().query.save
 
@@ -113,7 +114,7 @@ const loading = ref<boolean>(false) // 数据加载状态
 const sourceTree = ref<any[]>([]) // 源数据
 const treeMap = new Map() // 数据的map版本
 const treeData = ref<any[]>([]) // 展示的数据
-const selectedKeys = ref<string[]>([]) // 当前选中的项
+const selectedKeys = ref<string[]>([<string>route.query.id]) // 当前选中的项
 const expandedKeys = ref<string[] | number[]>([])
 
 // 弹窗
@@ -133,7 +134,7 @@ const getTree = (cb?: Function) => {
 
   getTreeData_api(params)
     .then((resp: any) => {
-      selectedKeys.value = resp.result[0] ? [resp.result[0].id] : []
+      selectedKeys.value = selectedKeys.value.length ? selectedKeys.value : resp.result[0] ? [resp.result[0].id] : []
       sourceTree.value = resp.result.sort((a: any, b: any) =>
         a.sortIndex === b.sortIndex
           ? b.createTime - a.createTime
