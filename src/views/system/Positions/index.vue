@@ -38,7 +38,9 @@ const onDelete = (id) => {
 
 onMounted(() => {
   if (save) {
-    onAdd()
+    setTimeout(() => {
+      onAdd()
+    })
   }
 })
 
@@ -88,7 +90,7 @@ onMounted(() => {
           <j-ellipsis>{{ record.orgName || record.orgId }}</j-ellipsis>
         </template>
         <template #action="slotProps">
-          <a-space :size="16">
+          <a-space>
             <j-permission-button
               type="link"
               :hasPermission="`${permission}:update`"

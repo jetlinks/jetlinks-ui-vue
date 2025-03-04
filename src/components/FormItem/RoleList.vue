@@ -60,7 +60,6 @@ const clickAddItem = () => {
 }
 
 const onChange = (value, label,  extra) => {
-  console.log(value)
   emit('update:value', myValue.value)
   emit('change', value, label,  extra)
 }

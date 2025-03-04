@@ -28,14 +28,14 @@
         {{ dayjs(slotProps.notifyTime).format('YYYY-MM-DD HH:mm:ss') }}
       </template>
       <template #state="slotProps">
-        <a-badge-status
+        <j-badge-status
           :status="slotProps.state.value"
           :text="slotProps.state.text"
           :statusNames="{
             read: 'success',
             unread: 'error',
           }"
-        ></a-badge-status>
+        ></j-badge-status>
       </template>
       <template #action="slotProps">
         <a-space :size="16">

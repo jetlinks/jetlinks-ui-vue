@@ -44,7 +44,7 @@ const handleData = (dt) => {
   const flag = !arr.length ? 0 : arr.length === _data.length ? 1 : -1
   const btns = dt.buttons || []
   const _btns = btns.filter(i => i.granted)
-  const _flag = !btns.length ? 0 : btns.length === _btns.length ? 1 : -1
+  const _flag = !btns.length ? 0 : btns.length === _btns.length ? 1 : -1;
   if(flag === 0 && _flag === 0) {
     myValue.value = dt.granted
     indeterminate.value = false
@@ -53,7 +53,7 @@ const handleData = (dt) => {
     indeterminate.value = false
   } else {
     myValue.value = false
-    indeterminate.value = true
+    indeterminate.value = _data.length || _btns.length
   }
 }
 
