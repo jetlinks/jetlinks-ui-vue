@@ -14,19 +14,15 @@ export const initPackages = () => {
     /**
      * 初始化websocket
      */
-    const _initWs = () => {
-        const token = getToken();
+    const token = getToken();
 
-        if (!token) return
+    if (!token) return
 
-        const protocol = window.location.protocol === "https" ? "wss://" : "ws://";
-        const host = document.location.host;
-        const url = `${protocol}${host}${BASE_API}/messaging/${token}?:${TOKEN_KEY}=${token}`;
+    const protocol = window.location.protocol === "https:" ? "wss://" : "ws://";
+    const host = document.location.host;
+    const url = `${protocol}${host}${BASE_API}/messaging/${token}?:${TOKEN_KEY}=${token}`;
 
-        initWebSocket(url);
-    };
-
-    _initWs();
+    initWebSocket(url);
 };
 
 export const initAxios = () => {
