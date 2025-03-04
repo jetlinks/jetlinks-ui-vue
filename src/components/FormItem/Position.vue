@@ -49,7 +49,7 @@ watch(() => props.value, () => {
 </script>
 
 <template>
-  <div class="org-list-warp">
+  <div class="position-list-warp">
     <div style="flex: 1; min-width: 0">
       <a-tree-select
           v-model:value="myValue"
@@ -80,7 +80,7 @@ watch(() => props.value, () => {
 </template>
 
 <style scoped lang="less">
-.org-list-warp {
+.position-list-warp {
   width: 100%;
   display: flex;
   gap: 8px;
