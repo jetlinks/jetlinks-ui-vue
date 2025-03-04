@@ -32,7 +32,7 @@
             </j-permission-button>
           </template>
           <template #type="slotProps">
-            {{ slotProps.type?.name }}
+            {{ typeOptions.find(i => i.value === slotProps?.typeId)?.label || slotProps.typeId }}
           </template>
           <template #roleList="slotProps">
             <j-ellipsis>
@@ -46,7 +46,9 @@
             </j-ellipsis>
           </template>
           <template #username="slotProps">
-            <a-tag color="blue">{{ slotProps.username}}</a-tag>
+            <span class="user-tag">
+              <j-ellipsis>{{ slotProps.username}}</j-ellipsis>
+            </span>
           </template>
           <template #positions="slotProps">
             <j-ellipsis>
@@ -161,6 +163,8 @@ import {queryPageNoPage} from "@/api/system/positions";
 const {t: $t} = useI18n();
 const permission = 'system/User';
 
+const typeOptions = ref([])
+
 const columns = [
   {
     title: $t('User.index.673867-10'),
@@ -175,7 +179,7 @@ const columns = [
     title: $t('User.index.673867-11'),
     dataIndex: 'username',
     key: 'username',
-    ellipsis: true,
+    width: 150,
     scopedSlots: true,
     search: {
       type: 'string',
@@ -190,14 +194,7 @@ const columns = [
       type: 'select',
       options: () =>
           new Promise((resolve) => {
-            getUserType_api().then((resp: any) => {
-              resolve(
-                  resp.result.map((item: dictType) => ({
-                    label: item.name,
-                    value: item.id,
-                  })),
-              );
-            });
+            resolve(typeOptions.value);
           }),
     },
     scopedSlots: true,
@@ -236,9 +233,9 @@ const columns = [
     width: 150,
     search: {
       type: 'select',
-      componentProps: {
-        placeholder: i18n.global.t('Department.util.780026-3'),
-      },
+      // componentProps: {
+      //   placeholder: i18n.global.t('Department.util.780026-3'),
+      // },
       options() {
         return queryPageNoPage().then(resp => {
           if (resp.success) {
@@ -421,6 +418,17 @@ const handleParams = (params: any) => {
   });
   queryParams.value = {terms: newParams || []};
 };
+
+onMounted(() => {
+  getUserType_api().then(resp => {
+    if(resp.success){
+      typeOptions.value = (resp.result || []).map((item: dictType) => ({
+        label: item.name,
+        value: item.id,
+      }))
+    }
+  })
+})
 </script>
 
 <style lang="less" scoped>
@@ -434,5 +442,15 @@ const handleParams = (params: any) => {
       }
     }
   }
+}
+
+.user-tag {
+  border: 1px solid var(--ant-info-color-deprecated-border);
+  color: var(--ant-info-color);
+  background-color: var(--ant-info-color-deprecated-bg);
+  border-radius: 2px;
+  padding: 0 7px;
+  font-size: 12px;
+  display: inline-block;
 }
 </style>

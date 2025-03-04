@@ -16,7 +16,7 @@ const { loading, run } = useRequest(save, {
   onSuccess: (resp) => {
     onlyMessage($t('Detail.index.707691-33'))
     if (window.onTabSaveSuccess) {
-      window.onTabSaveSuccess(resp);
+      window.onTabSaveSuccess(resp.result.id);
       setTimeout(() => window.close(), 300);
     } else {
       router.replace({ name: 'system/Positions/Detail', params: { id: resp.result.id } })
@@ -87,7 +87,7 @@ const getDetail = (id) => {
 }
 
 watch(() => route.params.id, (v) => {
-  if (v !== ':id') {
+  if (v && v !== ':id') {
     getDetail(v)
   }
 }, { immediate: true })

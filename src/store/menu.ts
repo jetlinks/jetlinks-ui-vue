@@ -11,6 +11,7 @@ import {USER_CENTER_ROUTE, INIT_HOME, EDGE_TOKEN_ROUTE} from '@/router/basic'
 import {useAuthStore} from '@/store/auth'
 import {OWNER_KEY} from "@/utils/consts";
 import i18n from "@/locales";
+import {useUserStore} from "@/store/user";
 
 const $t = i18n.global.t
 
@@ -42,6 +43,7 @@ export const useMenuStore = defineStore('menu', () => {
     const siderMenus = ref([])
 
     const authStore = useAuthStore()
+    const userInfoStore = useUserStore();
 
     const hasRouteMenu = () => {
         return !!Object.keys(menu).length
@@ -107,18 +109,19 @@ export const useMenuStore = defineStore('menu', () => {
 
         if (resp.success) {
             const extraMenu = getExtraRouters()
-            console.log(extraMenu)
-            const routes = handleMenus(cloneDeep(resp.result), extraMenu, asyncRoutes) // 处理路由
-            if (routes.length) {
-                routes.push({
-                    path: '/',
-                    redirect: routes[0].path,
-                })
+            const _routes = handleMenus(cloneDeep(resp.result), extraMenu, asyncRoutes) // 处理路由
+            const routes = [..._routes, USER_CENTER_ROUTE, EDGE_TOKEN_ROUTE];
+            // routes.push(USER_CENTER_ROUTE) // 添加个人中心
+            // routes.push(EDGE_TOKEN_ROUTE) //添加边缘网关token失效页面
+            // if (_routes.length) {
+            routes.push({
+                path: '/',
+                redirect: routes[0].path,
+            })
+            // }
+            if(userInfoStore.userInfo?.username === 'admin'){
+                routes.push(INIT_HOME) // 添加初始化页面
             }
-
-            routes.push(USER_CENTER_ROUTE) // 添加个人中心
-            routes.push(INIT_HOME) // 添加初始化页面
-            routes.push(EDGE_TOKEN_ROUTE) //添加边缘网关token失效页面
             authStore.handlePermission(resp.result) // 处理按钮权限
             menu.value = routes
             console.log('routes', routes)
