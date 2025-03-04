@@ -19,6 +19,10 @@ const props = defineProps({
   disabled: {
     type: Boolean,
     default: false
+  },
+  disabledData: {
+    type: Array,
+    default: []
   }
 })
 
@@ -56,6 +60,7 @@ const clickAddItem = () => {
 }
 
 const onChange = (value, label,  extra) => {
+  console.log(value)
   emit('update:value', myValue.value)
   emit('change', value, label,  extra)
 }
@@ -84,6 +89,12 @@ watch(() => props.value, () => {
           <div style="width: calc(100% - 10px) ">
             <j-ellipsis>{{ name }}</j-ellipsis>
           </div>
+        </template>
+        <template #tagRender="{value, label, closable, onClose }">
+          <a-tag v-if="disabledData.includes(value)" :closable="false" color="blue" style="margin-right: 3px">
+            {{ label }}&nbsp;&nbsp;
+          </a-tag>
+          <a-tag v-else :closable="closable" @close="onClose" style="margin-right: 3px">{{ label }}&nbsp;&nbsp;</a-tag>
         </template>
       </a-tree-select>
     </div>

@@ -29,7 +29,7 @@ const {data: treeData, reload} = useRequest(queryPageNoPage, {
 const myValue = ref()
 
 const clickAddItem = () => {
-  const tab = window.open(`${origin}/#/system/position?save=true`);
+  const tab = window.open(`${origin}/#/system/positions?save=true`);
   tab.onTabSaveSuccess = (value) => {
     myValue.value = props.extraProps?.multiple ? [...myValue.value, value] : value;
     emit('update:value', myValue.value);
