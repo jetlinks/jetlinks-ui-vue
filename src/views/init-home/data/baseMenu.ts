@@ -1599,12 +1599,7 @@ export default [
                         ]
                     }
                 ],
-                showPage: ["position"],
-                "accessSupport": {
-                    "text": "Unsupported",
-                    "value": "unsupported"
-                },
-                showPage: ['user'],
+                showPage: ["position", 'user'],
                 i18nMessages: {
                     name: {
                         zh_CN: "职位管理",
@@ -1665,7 +1660,9 @@ export default [
                         },
                     }
                 ],
-                "supportDataAccess": false
+                accessSupport: {text: "支持", value: "support"},
+                supportDataAccess: true,
+                assetType: 'position'
             }
         ],
     },
