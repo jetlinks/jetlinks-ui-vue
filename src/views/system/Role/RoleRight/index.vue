@@ -19,7 +19,6 @@
             { name: 'id', order: 'desc' }
           ]
         }"
-        :scroll="{ y: 'calc(100% - 60px)' }"
       >
         <template #headerLeftRender>
           <j-permission-button
@@ -77,7 +76,7 @@ const { t: $t } = useI18n();
 const props = defineProps({
   groupId: {
     type: String,
-    default: '',
+    default: undefined
   },
 })
 const permission = 'system/Role'
@@ -105,7 +104,6 @@ const columns = [
     dataIndex: 'name',
     key: 'name',
     ellipsis: true,
-    width: 160,
     search: {
       type: 'string',
     },
@@ -123,7 +121,7 @@ const columns = [
     title: $t('RoleRight.index.470525-4'),
     dataIndex: 'action',
     key: 'action',
-    width: 120,
+    width: 150,
     fixed: 'right',
     scopedSlots: true,
   },
@@ -232,6 +230,7 @@ watch(
   .role-table {
     flex: 1 1 0;
     min-height: 0;
+    background-color: #e50012;
   }
   :deep(.ant-table-cell) {
     .ant-btn-link {

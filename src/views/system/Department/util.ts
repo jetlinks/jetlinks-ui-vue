@@ -83,7 +83,6 @@ export const useColumns = () => {
             dataIndex: 'username',
             key: 'username',
             ellipsis: true,
-            fixed: 'left',
             search: {
                 type: 'string',
                 componentProps: {
@@ -121,8 +120,6 @@ export const useColumns = () => {
             title: i18n.global.t('Department.util.780026-4'),
             dataIndex: 'status',
             key: 'status',
-            ellipsis: true,
-            fixed: 'left',
             search: {
                 type: 'select',
                 componentProps: {
@@ -140,13 +137,14 @@ export const useColumns = () => {
                 ],
             },
             scopedSlots: true,
+            width: 100
         },
         {
             title: i18n.global.t('Department.util.780026-8'),
             dataIndex: 'action',
             key: 'action',
             scopedSlots: true,
-            width: '200px',
+            width: 100
         },
     ]
 }
