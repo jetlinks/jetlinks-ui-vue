@@ -15,7 +15,7 @@ const props = defineProps({
   extraProps: {
     type: Object,
     default: () => ({})
-  }
+  },
 })
 
 const {data: treeData, reload} = useRequest(queryPageNoPage, {

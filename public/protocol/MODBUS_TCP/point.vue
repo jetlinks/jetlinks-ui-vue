@@ -16,7 +16,7 @@
               :placeholder="$lang('MODBUS_TCP.point.20250207-2')"
               allowClear show-search :filter-option="filterOption" @change="functionChange"/>
   </a-form-item>
-  <a-form-item :label="$lang('MODBUS_TCP.point.20250207-3')" name="pointKey" :rules="[
+  <a-form-item :label="$lang('MODBUS_TCP.point.20250207-3')" name="pointKey" validate-first :rules="[
     {
             required: true,
             message: '请输入地址',

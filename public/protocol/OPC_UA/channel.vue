@@ -26,8 +26,29 @@
       message: $lang('OPC_UA.channel.20250207-6'),
     },
   ]">
-    <a-select style="width: 100%" v-model:value="formData.configuration.securityMode" :options="securityOptions"
+    <a-select @change="onChange" style="width: 100%" v-model:value="formData.configuration.securityMode" :options="securityOptions"
               :placeholder="$lang('OPC_UA.channel.20250207-6')" allowClear show-search :filter-option="filterOption"/>
+  </a-form-item>
+  <a-form-item
+      v-if="isSecurityMode"
+      :label="$lang('OPC_UA.channel.20250207-16')"
+      :name="['configuration', 'certId']"
+      :rules="[
+          {
+            required: true,
+            message: $lang('OPC_UA.channel.20250207-17')
+          }
+      ]"
+  >
+    <a-select
+        style="width: 100%"
+        v-model:value="formData.configuration.certId"
+        :options="certificateList"
+        :placeholder="$lang('OPC_UA.channel.20250207-17')"
+        allowClear
+        show-search
+        :filter-option="filterOption"
+    />
   </a-form-item>
   <a-form-item :label="$lang('OPC_UA.channel.20250207-7')" :name="['configuration', 'authType']" :rules="[
     {
@@ -74,7 +95,7 @@
   </a-form-item>
 </template>
 <script setup>
-import {inject, ref} from 'vue'
+import {inject, ref, computed} from 'vue'
 import {request} from '@jetlinks-web/core'
 import {useLocales} from '@hooks'
 
@@ -82,6 +103,7 @@ const formData = inject('plugin-form')
 
 const options = ref([])
 const securityOptions = ref([])
+const certificateList = ref([])
 
 if (!('configuration' in formData)) {
   formData.configuration = {
@@ -94,6 +116,11 @@ if (!('configuration' in formData)) {
 }
 
 const {$lang} = useLocales('OPC_UA')
+
+const isSecurityMode = computed(() => {
+  const { securityMode } = formData.configuration;
+  return !!(securityMode === 'SignAndEncrypt' || securityMode === 'Sign')
+});
 
 const checkEndpoint = (_rule, value) =>
     new Promise(async (resolve, reject) => {
@@ -117,6 +144,18 @@ const getSecurityOptions = () => {
   request.post('/data-collect/OPC_UA/command/QuerySecurityModes', {}).then(resp => {
     securityOptions.value = resp.result.map(i => ({label: i, value: i}))
   })
+}
+
+const getCertificateList = () => {
+  request.get('/network/certificate/_query/no-paging?paging=false', {}).then(resp => {
+    certificateList.value = resp.result.map(i => ({label: i, value: i}))
+  })
+}
+
+const onChange = (e) => {
+  if((e === 'SignAndEncrypt' || e === 'Sign') && !certificateList.value.length){
+    getCertificateList()
+  }
 }
 
 getOptions()
