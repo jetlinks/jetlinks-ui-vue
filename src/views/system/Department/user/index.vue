@@ -48,9 +48,7 @@
         </a-space>
       </template>
       <template #positions="slotProps">
-        <j-ellipsis>
           {{ slotProps.positions?.map(item => item.name).join(',') || '' }}
-        </j-ellipsis>
       </template>
       <template #status="slotProps">
         <j-badge-status
@@ -63,18 +61,16 @@
         ></j-badge-status>
       </template>
       <template #action="slotProps">
-        <a-space :size="16">
-          <j-permission-button
-              type="link"
-              :hasPermission="`${permission}:bind`"
-              :popConfirm="{
+        <j-permission-button
+            type="link"
+            :hasPermission="`${permission}:bind`"
+            :popConfirm="{
                 title: $t('user.index.252066-1'),
                 onConfirm: () => unBind(slotProps),
               }"
-          >
-            <AIcon type="DisconnectOutlined"/>
-          </j-permission-button>
-        </a-space>
+        >
+          <AIcon type="DisconnectOutlined"/>
+        </j-permission-button>
       </template>
     </j-pro-table>
 

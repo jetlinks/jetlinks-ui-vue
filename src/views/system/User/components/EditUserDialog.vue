@@ -91,7 +91,7 @@
           <a-row :gutter="24" v-if="form.IsShow('add', 'edit')">
             <a-col :span="12">
               <a-form-item name="positions" :label="$t('components.EditUserDialog.939453-31')">
-                  <form-item-position v-model:value="form.data.positions" @change="onChange" />
+                  <form-item-position :extraProps="{disabled: form.data.username === 'admin'}" v-model:value="form.data.positions" @change="onChange" />
               </a-form-item>
             </a-col>
           </a-row>

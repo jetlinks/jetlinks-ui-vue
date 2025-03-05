@@ -69,7 +69,7 @@ import {getModulesComponents} from "@/utils";
 
 const { t: $t } = useI18n();
 const basicRef = ref();
-// const roleRef = ref();
+const roleRef = ref();
 const initDataRef = ref();
 const menuRef = ref();
 const loading = ref(false);
@@ -105,16 +105,24 @@ const submitData = async () => {
         loading.value = false;
         return;
     }
-    if (initDataRef.value) {
-      const initDataRes = await initDataRef.value.save();
-      if (!initDataRes) {
-        loading.value = false;
-        return;
-      }
+    const roleRes = await roleRef.value.submitRole();
+    if (!roleRes) {
+      loading.value = false;
+      return;
+    }
+    const roleGroupRes = await roleRef.value.submitRoleGroup();
+    if (!roleGroupRes) {
+      loading.value = false;
+      return;
+    }
+    const initDataRes = await initDataRef.value?.save();
+    if (!initDataRes) {
+      loading.value = false;
+      return;
     }
     loading.value = false;
     // 当前数据是否成功提交
-    if (basicRes && menuRes) {
+    if (basicRes && menuRes && roleRes && roleGroupRes && initDataRes) {
         onlyMessage($t('init-home.index.011430-6'));
         //     // 记录初始化数据，跳转首页
         const res = await saveInit();

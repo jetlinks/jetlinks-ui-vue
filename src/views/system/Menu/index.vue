@@ -57,9 +57,10 @@
               <j-permission-button
                 type="link"
                 :hasPermission="`${permission}:add`"
-                :tooltip="{ title: $t('Menu.index.599742-2') }"
+                :tooltip="{ title: slotProps.level >= 3 ? $t('Setting.index.113436-9') : $t('Menu.index.599742-2') }"
                 style="padding: 0"
                 @click="addChildren(slotProps)"
+                :disabled="slotProps.level >= 3"
               >
                 <AIcon type="PlusCircleOutlined" />
               </j-permission-button>

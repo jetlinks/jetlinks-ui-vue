@@ -66,7 +66,7 @@ const props = defineProps({
     },
     groupId:{
         type:String,
-        default:""
+        default: undefined
     },
     modalType:{
         type:String,
@@ -81,7 +81,7 @@ const props = defineProps({
 const loading = ref(false);
 const form = ref<any>({
     name:'',
-    groupId:'',
+    groupId:undefined,
     description:''
 });
 const formRef = ref<any>();
@@ -124,7 +124,7 @@ const  getGroupOptions = ()=>{
                 return {
                     label:item.name,
                     value:item.id
-                } 
+                }
             })
         }
     })

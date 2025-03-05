@@ -83,7 +83,7 @@ onMounted(() => {
         </template>
         <template #parentId="record">
           <j-ellipsis>
-            {{ record.parentName }}
+            {{ record.parentName || '--' }}
           </j-ellipsis>
         </template>
         <template #orgId="record">

@@ -11,29 +11,49 @@
 			</j-permission-button>
 		</div>
 		<div class="listBox">
-			<a-tree v-if="listData.length" :default-expanded-keys="['global_role']"
-							:fieldNames="{ title: 'name', key: 'id', children: 'children' }"
-							:selectedKeys="selectedKeys" :showLine="{ showLeafIcon: false }" :tree-data="listData"
-							blockNode>
+			<a-tree
+          v-if="listData.length"
+          :default-expanded-keys="['global_role']"
+          :fieldNames="{ title: 'name', key: 'id',
+          children: 'children' }"
+          :selectedKeys="selectedKeys"
+          :showLine="{ showLeafIcon: false }"
+          :tree-data="listData"
+          blockNode
+      >
 				<template #title="item">
 					<div v-if="selectId === item.data.id">
-						<a-input ref="inputRef" v-model:value="addName" :maxlength="64"
-										 @blur="() => saveGroup(item.data)"></a-input>
+						<a-input
+                ref="inputRef"
+                v-model:value="addName"
+                :maxlength="64"
+                @blur="() => saveGroup(item.data)"
+            />
 					</div>
-					<div v-else class="treeItem" @click="() => selectGroup(item.data.id)">
+          <div v-else class="treeItem" @click="() => selectGroup(item.data.id)">
 						<template v-if="!item?.children">
 							<div class="itemText">
 								<j-ellipsis style="width: calc(100%-100px)">{{ item.i18nName || item.name }}</j-ellipsis>
 							</div>
 							<div v-if="item.id !== 'default_group' && isAdmin" @click="(e) => e.stopPropagation()">
-								<j-permission-button :disabled="item.id === 'default_group'" :popConfirm="{
-                                    title: $t('RoleLeft.index.507330-2'),
-                                    onConfirm: () => deleteGroup(item.id),
-                                }" hasPermission="system/Role:groupDelete" type="text">
+								<j-permission-button
+                    :danger="true"
+                    :disabled="item.id === 'default_group'"
+                    :popConfirm="{
+                        title: $t('RoleLeft.index.507330-2'),
+                        onConfirm: () => deleteGroup(item.id),
+                    }"
+                    hasPermission="system/Role:groupDelete"
+                    type="link"
+                >
 									{{ $t('RoleLeft.index.507330-3') }}
 								</j-permission-button>
-								<j-permission-button :disabled="item.id === 'default_group'" hasPermission="system/Role:groupUpdate"
-																		 type="text" @click="editGroup(item.data)">
+								<j-permission-button
+                    :disabled="item.id === 'default_group'"
+                    hasPermission="system/Role:groupUpdate"
+                    type="link"
+                    @click="editGroup(item.data)"
+                >
 									{{ $t('RoleLeft.index.507330-4') }}
 								</j-permission-button>
 							</div>
@@ -75,11 +95,16 @@ const queryGroup = async (select?: Boolean, searchName?: string) => {
 	} : { sorts: [{ name: 'createTime', order: 'desc' }] }
 	const req: any = await queryRoleGroup(params)
 	if (req.status === 200) {
-		listData.value[0].children = req.result
-		if (req.result[req.result.length - 1].id === 'default_group') {
-			req.result.unshift(req.result[req.result.length - 1])
-			req.result.pop()
-		}
+    // 排序，把default_group放在最前面
+		listData.value[0].children = req.result.sort((a: any, b: any) => {
+      if (a.id === 'default_group') return -1;
+      if (b.id === 'default_group') return 1;
+      return 0;
+    });
+		// if (req.result[req.result.length - 1].id === 'default_group') {
+		// 	req.result.unshift(req.result[req.result.length - 1])
+		// 	req.result.pop()
+		// }
 		// if(req.result.length && select){
 		//     selectGroup(req.result[0].id)
 		// }
