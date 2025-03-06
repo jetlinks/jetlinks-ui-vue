@@ -223,7 +223,7 @@
             v-if="dialogVisible"
             v-model:visible="dialogVisible"
             :icon="formData.icon"
-            @confirm="(typeStr: string) => choseIcon(typeStr)"
+            @save="(typeStr: string) => choseIcon(typeStr)"
         />
     </a-modal>
 </template>
@@ -364,6 +364,7 @@ const initFormData = () => {
     };
 };
 const choseIcon = (typeStr: string) => {
+    dialogVisible.value = false;
     formData.value.icon = typeStr;
     uploadIcon.value?.clearValidate();
 };
