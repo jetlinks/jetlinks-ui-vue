@@ -30,9 +30,11 @@
                 ]"
             >
                 <a-select
+                    show-search
                     v-model:value="form.groupId"
                     :placeholder="$t('components.AddDialog.956922-7')"
                     :options="groupOptions"
+                    optionFilterProp="label"
                 />
             </a-form-item>
             <a-form-item name="name" :label="$t('components.AddDialog.956922-8')">

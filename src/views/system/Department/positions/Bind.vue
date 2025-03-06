@@ -24,6 +24,7 @@ const _selectedRowKeys = ref([])
 const { loading, run } = useRequest(bindUser, {
   immediate: false,
   onSuccess() {
+    onlyMessage($t('components.NoticeItem.265390-5'))
     emits('save')
   }
 })
