@@ -1670,9 +1670,14 @@ export default [
                         },
                     }
                 ],
-                accessSupport: {text: "支持", value: "support"},
-                supportDataAccess: true,
-                assetType: 'position'
+                "accessSupport": {
+                    "text": "间接支持",
+                    "value": "indirect"
+                },
+                "supportDataAccess": false,
+                "indirectMenus": [
+                    "3962ec0835f3b4a68c1f63b955625046"
+                ]
             }
         ],
     },
