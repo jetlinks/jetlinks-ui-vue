@@ -7,7 +7,7 @@
       v-model:activeKey="user.other.tabKey"
     >
       <a-tab-pane v-for="item in tabs" :key="item.provider" :tab="item.name">
-        <NotificationRecord :type="item.provider" />
+        <NotificationRecord :type="item.provider" :children="item.children" />
       </a-tab-pane>
     </a-tabs>
     <j-empty v-else style="margin: 200px 0" />

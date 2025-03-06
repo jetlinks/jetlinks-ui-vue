@@ -46,7 +46,9 @@ import { TOKEN_KEY } from '@jetlinks-web/constants'
 import { getBase64ByImg, LocalStore, onlyMessage } from '@jetlinks-web/utils'
 import { CSSProperties } from 'vue'
 import ImageCropper from '@/components/Upload/Cropper.vue'
+import { useI18n } from 'vue-i18n'
 
+const { t: $t } = useI18n();
 type Emits = {
   (e: 'update:modelValue', data: string): void
   (e: 'change', data: string): void
