@@ -35,7 +35,12 @@ const myValue = ref()
 const clickAddItem = () => {
   const tab = window.open(`${origin}/#/system/Department?save=true`);
   tab.onTabSaveSuccess = (value) => {
-    myValue.value = props.extraProps?.multiple ? [...myValue.value, value] : value;
+    if (props.extraProps?.multiple) {
+      let oldValue = myValue.value || []
+      myValue.value = [...oldValue, value]
+    } else {
+      myValue.value = value
+    }
     emit('update:value', myValue.value);
     reload()
   };
