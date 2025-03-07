@@ -18,6 +18,7 @@
             </div>
             <div class="person-header-item-info-right-info">
               <RoleShow :value="user.userInfo?.roleList || []" />
+              <RoleShow :value="user.userInfo?.orgList || []" />
               <RoleShow :value="user.userInfo?.positions || []" />
             </div>
           </div>
@@ -152,7 +153,7 @@ onUnmounted(() => {
 .person {
   .person-header {
     width: 100%;
-    height: 156px;
+    min-height: 156px;
     padding: 0 @padding;
     background-color: #fff;
 
@@ -166,7 +167,8 @@ onUnmounted(() => {
       .person-header-item-info {
         display: flex;
         width: calc(100% - 380px);
-
+        padding: 16px 0;
+        
         .person-header-item-info-left {
           margin-right: 30px;
         }

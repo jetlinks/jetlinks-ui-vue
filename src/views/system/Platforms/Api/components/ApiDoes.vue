@@ -36,6 +36,7 @@
                 <j-pro-table
                     :columns="requestCard.columns"
                     :dataSource="requestCard.tableData"
+                    :scroll="{ x: 'max-content' }"
                     noPagination
                     mode="TABLE"
                     size="small"
@@ -52,6 +53,7 @@
                 <j-pro-table
                     :columns="responseStatusCard.columns"
                     :dataSource="responseStatusCard.tableData"
+                    :scroll="{ x: 'max-content' }"
                     noPagination
                     mode="TABLE"
                     size="small"
@@ -74,6 +76,7 @@
                 <j-pro-table
                     :columns="respParamsCard.columns"
                     :dataSource="respParamsCard.tableData"
+                    :scroll="{ x: 'max-content' }"
                     noPagination
                     mode="TABLE"
                     size="small"

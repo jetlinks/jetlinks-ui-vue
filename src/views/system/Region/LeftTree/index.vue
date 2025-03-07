@@ -217,8 +217,8 @@ const onAdd = (_data?: any) => {
               sortIndex: sortIndex,
           }
         : {
-              parentId: '',
-              parentFullName: '',
+              parentId: undefined,
+              parentFullName: undefined,
               sortIndex: sortIndex,
           };
 
