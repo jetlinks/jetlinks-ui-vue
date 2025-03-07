@@ -26,7 +26,7 @@
       message: $lang('OPC_UA.channel.20250207-6'),
     },
   ]">
-    <a-select @change="onChange" style="width: 100%" v-model:value="formData.configuration.securityMode" :options="securityOptions"
+    <a-select style="width: 100%" v-model:value="formData.configuration.securityMode" :options="securityOptions"
               :placeholder="$lang('OPC_UA.channel.20250207-6')" allowClear show-search :filter-option="filterOption"/>
   </a-form-item>
   <a-form-item
@@ -95,7 +95,7 @@
   </a-form-item>
 </template>
 <script setup>
-import {inject, ref, computed} from 'vue'
+import {inject, ref, computed, watch} from 'vue'
 import {request} from '@jetlinks-web/core'
 import {useLocales} from '@hooks'
 
@@ -148,16 +148,21 @@ const getSecurityOptions = () => {
 
 const getCertificateList = () => {
   request.get('/network/certificate/_query/no-paging?paging=false', {}).then(resp => {
-    certificateList.value = resp.result.map(i => ({label: i, value: i}))
+    certificateList.value = resp.result.map(i => ({label: i.name, value: i.id}))
   })
 }
 
 const onChange = (e) => {
-  if((e === 'SignAndEncrypt' || e === 'Sign') && !certificateList.value.length){
+  if(e && (e === 'SignAndEncrypt' || e === 'Sign') && !certificateList.value.length){
     getCertificateList()
   }
 }
 
+watch(() => formData.configuration.securityMode, (val) => {
+  onChange(val)
+}, {
+  immediate: true
+})
 getOptions()
 getSecurityOptions()
 </script>
