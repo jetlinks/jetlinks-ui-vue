@@ -1,7 +1,6 @@
-import {initWebSocket, createWebSocket} from "@/utils/websocket";
 import {getToken, LocalStore, setToken} from "@jetlinks-web/utils";
 import {BASE_API, TOKEN_KEY_URL} from "@jetlinks-web/constants";
-import {crateAxios} from '@jetlinks-web/core'
+import {crateAxios, wsClient} from '@jetlinks-web/core'
 import {jumpLogin} from '@/router'
 import { notification } from 'ant-design-vue'
 import {langKey} from "@/utils/consts";
@@ -22,8 +21,8 @@ export const initPackages = () => {
     const host = document.location.host;
     const url = `${protocol}${host}${BASE_API}/messaging/${token}?${TOKEN_KEY_URL}=${token}`;
 
-    initWebSocket(url);
-    createWebSocket()
+    wsClient.initWebSocket(url);
+    wsClient.connect()
 };
 
 export const initAxios = () => {
