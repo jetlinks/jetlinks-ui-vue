@@ -12,7 +12,7 @@ import {
 } from 'vite-plugin-style-import'
 import * as path from 'path'
 import monacoEditorPlugin from 'vite-plugin-monaco-editor'
-import { optimizeDeps, registerModulesAlias } from './configs/plugin'
+import { optimizeDeps, registerModulesAlias, copyImagesPlugin } from './configs/plugin'
 import progress from 'vite-plugin-progress'
 
 // https://vitejs.dev/config/
@@ -33,12 +33,13 @@ export default defineConfig(({ mode }) => {
             cssCodeSplit: false,
             manifest: true,
             chunkSizeWarningLimit: 2000,
-            assetsInlineLimit: 1000,
+            assetsInlineLimit: 2000,
             rollupOptions: {
                 output: {
                     entryFileNames: `assets/[name].${ new Date().getTime() }.js`,
                     chunkFileNames: `assets/[name].${ new Date().getTime() }.js`,
                     assetFileNames: (pre) => {
+                        console.log(pre.name)
                         const fileType = pre.name.split('.')?.pop()
                         if (['png', 'svg', 'ico', 'jpg'].includes(fileType)) {
                             return `assets/[name].[ext]`
@@ -77,6 +78,7 @@ export default defineConfig(({ mode }) => {
                 resolves: [AndDesignVueResolve()],
             }),
             progress(),
+            copyImagesPlugin()
         ],
         server: {
             host: '0.0.0.0',
@@ -86,6 +88,7 @@ export default defineConfig(({ mode }) => {
                     target: 'http://192.168.33.99:8844',
                     // target: 'http://192.168.32.233:8601', // 王
                     // target: 'http://192.168.35.114:8844',
+                    // target: 'http://192.168.33.210:8800',
                     ws: true,
                     changeOrigin: true,
                     rewrite: (path) => path.replace(new RegExp(`^${env.VITE_APP_BASE_API}`), ''),

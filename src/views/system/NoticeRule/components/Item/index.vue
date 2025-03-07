@@ -338,9 +338,9 @@ const onSwitchChange = (e: boolean) => {
     if (_checked) {
         onAction(e);
     } else {
-        if (e) {
-            onAction(e);
-        } else {
+        // if (e) {
+        //     onAction(e);
+        // } else {
             Modal.confirm({
                 title: e
                     ? $t('Item.index.538002-9')
@@ -384,7 +384,7 @@ const onSwitchChange = (e: boolean) => {
                 },
                 onCancel() {},
             });
-        }
+        // }
     }
 };
 

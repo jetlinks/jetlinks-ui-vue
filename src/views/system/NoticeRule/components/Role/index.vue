@@ -79,7 +79,7 @@
                 :params="params"
                 :bodyStyle="{ padding: 0 }"
                 :gridColumn="gridColumn"
-                :alertRender="false"
+                :alertShow="false"
                 :defaultParams="{
                     sorts: [{ name: 'createTime', order: 'desc' }],
                 }"
@@ -130,7 +130,7 @@ const _selectedRowKeys = ref<string[]>([]);
 const tableRef = ref();
 
 const dataSource = computed(() => {
-    return tableRef.value?._dataSource || [];
+    return tableRef.value?.dataSource || [];
 });
 
 const indeterminate = computed(() => {

@@ -29,7 +29,7 @@
                 padding: 0,
             }"
             ref="tableRef"
-            :alertRender="false"
+            :alertShow="false"
             :params="params"
             :gridColumn="3"
             :rowSelection="{

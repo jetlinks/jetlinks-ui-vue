@@ -61,6 +61,7 @@
       :groupId="groupId"
       :modalType="modalType"
       :current="current"
+      @save="onSave"
     />
   </div>
 </template>
@@ -188,6 +189,10 @@ const getActions = (
 const addRole = () => {
   dialogVisible.value = true
   modalType.value = 'add'
+}
+
+const onSave = () => {
+  tableRef.value?.reload()
 }
 const handelSearch = (search: any) => {
   queryParams.value.terms = props.groupId

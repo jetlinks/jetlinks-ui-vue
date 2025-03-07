@@ -30,9 +30,11 @@
                 ]"
             >
                 <a-select
+                    show-search
                     v-model:value="form.groupId"
                     :placeholder="$t('components.AddDialog.956922-7')"
                     :options="groupOptions"
+                    optionFilterProp="label"
                 />
             </a-form-item>
             <a-form-item name="name" :label="$t('components.AddDialog.956922-8')">
@@ -58,7 +60,7 @@ const { t: $t } = useI18n();
 const route = useRoute();
 const { jumpPage } = useMenuStore();
 
-const emits = defineEmits(['update:visible']);
+const emits = defineEmits(['update:visible', 'save']);
 const props = defineProps({
     visible: {
         type:Boolean,
@@ -110,6 +112,7 @@ const confirm = async() => {
                     if (resp.status === 200) {
                     onlyMessage($t('components.AddDialog.956922-10'));
                     emits('update:visible', false);
+                    emits('save');
                     }
                 }).catch(() => (loading.value = false));
             }
