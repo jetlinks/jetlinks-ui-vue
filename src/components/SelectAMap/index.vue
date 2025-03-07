@@ -24,7 +24,7 @@
                   :zoom="zoom"
                   @init="initMap"
               >
-<!--                <el-amap-search-box visible @select="selectPoi" />-->
+                <el-amap-search-box visible @select="selectPoi" />
                 <el-amap-marker :position="position" />
               </AMapComponent>
             </div>
@@ -102,13 +102,13 @@ const showMap = () => {
  * 选择搜索结果
  * @param e
  */
-// const selectPoi = (e: any) => {
-//   console.log(e, 'e')
-//     const selectPoint = [e.poi.location.lng, e.poi.location.lat];
-//     mapPoint.value = selectPoint.join(',');
-//     map.setCenter(selectPoint);
-// };
-//
+const selectPoi = (e: any) => {
+  console.log(e, 'e')
+    const selectPoint = [e.poi.location.lng, e.poi.location.lat];
+    mapPoint.value = selectPoint.join(',');
+    map.setCenter(selectPoint);
+};
+
 </script>
 
 <style lang="less" scoped></style>
