@@ -115,6 +115,9 @@
                         }"
                     />
                 </template>
+                <template #targetType="slotProps">
+                  {{ TargetTypeOptions.find(item => slotProps.targetType === item.value)?.label }}
+                </template>
                 <template #action="slotProps">
                     <j-space :size="16">
                         <template
@@ -146,7 +149,7 @@
         </full-page>
     </page-container>
     <Save v-if="saveVisible" :data="currentData" @close="saveVisible = false" @save="handleSave"/>
-    <Issue v-if="issueVisible" :jobType="JobTypeEnum[currentData?.targetType]" :service-id="ServiceIdEnum[currentData?.targetType]" :data="currentData" @close="issueVisible = false"/>
+    <Issue v-if="issueVisible" :jobType="JobTypeEnum[currentData?.targetType]" :service-id="ServiceIdEnum[currentData?.targetType]" :data="currentData" @close="issueVisible = false" @save="onSave"/>
 </template>
 
 <script setup lang="ts">
@@ -181,6 +184,7 @@ const columns = [
         title: '类型',
         dataIndex: 'targetType',
         key: 'targetType',
+        scopedSlots: true,
         width: 200,
         search: {
             type: 'select',
@@ -325,6 +329,11 @@ const handleSave = () => {
 
 const handleView = (id: string) => {
     menuStore.jumpPage('edge/NewResource/Detail', {id});
+}
+
+const onSave = () => {
+  issueVisible.value = false
+  tableRef.value?.reload();
 }
 </script>
 
