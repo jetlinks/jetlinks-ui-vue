@@ -103,7 +103,7 @@ const showMap = () => {
  * @param e
  */
 const selectPoi = (e: any) => {
-  console.log(e, 'e')
+  // console.log(e, 'e')
     const selectPoint = [e.poi.location.lng, e.poi.location.lat];
     mapPoint.value = selectPoint.join(',');
     map.setCenter(selectPoint);
