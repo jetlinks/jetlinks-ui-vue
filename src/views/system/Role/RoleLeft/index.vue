@@ -36,25 +36,17 @@
 								<j-ellipsis style="width: calc(100%-100px)">{{ item.i18nName || item.name }}</j-ellipsis>
 							</div>
 							<div v-if="item.id !== 'default_group' && isAdmin" @click="(e) => e.stopPropagation()">
-								<j-permission-button
-                    :danger="true"
-                    :disabled="item.id === 'default_group'"
-                    :popConfirm="{
-                        title: $t('RoleLeft.index.507330-2'),
-                        onConfirm: () => deleteGroup(item.id),
-                    }"
-                    hasPermission="system/Role:groupDelete"
-                    type="link"
-                >
+								<j-permission-button :disabled="item.id === 'default_group'" :popConfirm="{
+                                    title: $t('RoleLeft.index.507330-2'),
+                                    onConfirm: () => deleteGroup(item.id),
+                                }" type="text">
 									{{ $t('RoleLeft.index.507330-3') }}
 								</j-permission-button>
-								<j-permission-button
-                    :disabled="item.id === 'default_group'"
-                    hasPermission="system/Role:groupUpdate"
-                    type="link"
-                    @click="editGroup(item.data)"
-                >
+<!--                hasPermission="system/Role:groupDelete"-->
+								<j-permission-button :disabled="item.id === 'default_group'"
+																		 type="text" @click="editGroup(item.data)">
 									{{ $t('RoleLeft.index.507330-4') }}
+<!--                   hasPermission="system/Role:groupUpdate"-->
 								</j-permission-button>
 							</div>
 						</template>
