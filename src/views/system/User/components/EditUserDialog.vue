@@ -79,19 +79,19 @@
                             { required: form.data.username !== 'admin', message: $t('components.EditUserDialog.939453-13') },
                         ]"
                     >
-                      <form-item-role :disabledData="disabledData.roles" v-model:value="form.data.roleIdList" :disabled="form.data.username === 'admin'" />
+                      <form-item-role :extraProps="{multiple: true}" :disabledData="disabledData.roles" v-model:value="form.data.roleIdList" :disabled="form.data.username === 'admin'" />
                     </a-form-item>
                 </a-col>
                 <a-col :span="12">
                     <a-form-item name="orgIdList" :label="$t('components.EditUserDialog.939453-14')" class="flex">
-                      <form-item-org :disabledData="disabledData.orgIds" v-model:value="form.data.orgIdList" />
+                      <form-item-org :extraProps="{multiple: true}" :disabledData="disabledData.orgIds" v-model:value="form.data.orgIdList" />
                     </a-form-item>
                 </a-col>
             </a-row>
           <a-row :gutter="24" v-if="form.IsShow('add', 'edit')">
             <a-col :span="12">
               <a-form-item name="positions" :label="$t('components.EditUserDialog.939453-31')">
-                  <form-item-position v-model:value="form.data.positions" @change="onChange" />
+                  <form-item-position :extraProps="{disabled: form.data.username === 'admin', multiple: true}" v-model:value="form.data.positions" @change="onChange" />
               </a-form-item>
             </a-col>
           </a-row>

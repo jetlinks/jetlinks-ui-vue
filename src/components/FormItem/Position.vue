@@ -15,7 +15,7 @@ const props = defineProps({
   extraProps: {
     type: Object,
     default: () => ({})
-  }
+  },
 })
 
 const {data: treeData, reload} = useRequest(queryPageNoPage, {
@@ -31,7 +31,12 @@ const myValue = ref()
 const clickAddItem = () => {
   const tab = window.open(`${origin}/#/system/positions?save=true`);
   tab.onTabSaveSuccess = (value) => {
-    myValue.value = props.extraProps?.multiple ? [...myValue.value, value] : value;
+    if (props.extraProps?.multiple) {
+      let oldValue = myValue.value || []
+      myValue.value = [...oldValue, value]
+    } else {
+      myValue.value = value
+    }
     emit('update:value', myValue.value);
     reload()
   };

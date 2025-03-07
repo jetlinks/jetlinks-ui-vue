@@ -25,7 +25,7 @@ const systemNotice = [
                     i18n.global.t('components.data.091431-6'),
             },
             {
-                provider: 'alarm-scene',
+                provider: 'alarm-other',
                 name: i18n.global.t('components.data.091431-7'),
                 description:
                     i18n.global.t('components.data.091431-8'),

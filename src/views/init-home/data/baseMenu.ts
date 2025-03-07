@@ -248,6 +248,10 @@ export default [
                                 actions: ['query'],
                             },
                             {
+                                permission: 'role-group',
+                                actions: ['query'],
+                            },
+                            {
                                 permission: 'file',
                                 actions: ['upload-static'],
                             },
@@ -255,6 +259,12 @@ export default [
                                 permission: 'organization',
                                 actions: ['query'],
                             },
+                            {
+                                permission: "position",
+                                actions: [
+                                    "query",
+                                ]
+                            }
                         ],
                     },
                 ],
@@ -622,36 +632,36 @@ export default [
                             }
                         ],
                     },
-                    {
-                        id: 'groupUpdate',
-                        name: '角色组编辑',
-                        i18nMessages: {
-                            zh_CN: "角色组编辑",
-                            en_US: "Role Group Edit",
-                            en: "Role Group Edit"
-                        },
-                        permissions: [
-                            {
-                                permission: 'role-group',
-                                actions: ['query', 'save']
-                            }
-                        ],
-                    },
-                    {
-                        id: 'groupDelete',
-                        name: '角色组删除',
-                        i18nMessages: {
-                            zh_CN: "角色组删除",
-                            en_US: "Delete Role Group",
-                            en: "Delete Role Group"
-                        },
-                        permissions: [
-                            {
-                                permission: 'role-group',
-                                actions: ['query', 'delete']
-                            }
-                        ],
-                    },
+                    // {
+                    //     id: 'groupUpdate',
+                    //     name: '角色组编辑',
+                    //     i18nMessages: {
+                    //         zh_CN: "角色组编辑",
+                    //         en_US: "Role Group Edit",
+                    //         en: "Role Group Edit"
+                    //     },
+                    //     permissions: [
+                    //         {
+                    //             permission: 'role-group',
+                    //             actions: ['query', 'save']
+                    //         }
+                    //     ],
+                    // },
+                    // {
+                    //     id: 'groupDelete',
+                    //     name: '角色组删除',
+                    //     i18nMessages: {
+                    //         zh_CN: "角色组删除",
+                    //         en_US: "Delete Role Group",
+                    //         en: "Delete Role Group"
+                    //     },
+                    //     permissions: [
+                    //         {
+                    //             permission: 'role-group',
+                    //             actions: ['query', 'delete']
+                    //         }
+                    //     ],
+                    // },
                 ],
                 accessSupport: {text: "支持", value: "support"},
                 supportDataAccess: true,
@@ -1660,9 +1670,14 @@ export default [
                         },
                     }
                 ],
-                accessSupport: {text: "支持", value: "support"},
-                supportDataAccess: true,
-                assetType: 'position'
+                "accessSupport": {
+                    "text": "间接支持",
+                    "value": "indirect"
+                },
+                "supportDataAccess": false,
+                "indirectMenus": [
+                    "3962ec0835f3b4a68c1f63b955625046"
+                ]
             }
         ],
     },

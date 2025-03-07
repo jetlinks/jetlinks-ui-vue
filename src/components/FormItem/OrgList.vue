@@ -35,7 +35,12 @@ const myValue = ref()
 const clickAddItem = () => {
   const tab = window.open(`${origin}/#/system/Department?save=true`);
   tab.onTabSaveSuccess = (value) => {
-    myValue.value = props.extraProps?.multiple ? [...myValue.value, value] : value;
+    if (props.extraProps?.multiple) {
+      let oldValue = myValue.value || []
+      myValue.value = [...oldValue, value]
+    } else {
+      myValue.value = value
+    }
     emit('update:value', myValue.value);
     reload()
   };
@@ -72,10 +77,14 @@ watch(() => props.value, () => {
           </div>
         </template>
         <template #tagRender="{value, label, closable, onClose }">
-          <a-tag v-if="disabledData.includes(value)" :closable="false" color="blue" style="margin-right: 3px">
-            {{ label }}&nbsp;&nbsp;
-          </a-tag>
-          <a-tag v-else :closable="closable" @close="onClose" style="margin-right: 3px">{{ label }}&nbsp;&nbsp;</a-tag>
+          <div :class="{ 'ant-select-selection-item': true, 'tag-blue': disabledData.includes(value) }">
+            <div  class="ant-select-selection-item-content" >
+              {{ label }}
+            </div>
+            <div v-if="!disabledData.includes(value)" @click.stop="onClose" class="ant-select-selection-item-remove">
+              <AIcon type="CloseOutlined" />
+            </div>
+          </div>
         </template>
       </a-tree-select>
     </div>
@@ -96,5 +105,11 @@ watch(() => props.value, () => {
   width: 100%;
   display: flex;
   gap: 8px;
+
+  .tag-blue {
+    background: #e6f7ff;
+    border-color: #91d5ff;
+    color: #096dd9;
+  }
 }
 </style>
