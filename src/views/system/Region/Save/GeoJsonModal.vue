@@ -20,6 +20,8 @@
 
 <script setup name="GeoJsonModal">
 
+import {onlyMessage} from "@jetlinks-web/utils";
+
 const props = defineProps({
   value: {
     type: String,
@@ -32,7 +34,11 @@ const emit = defineEmits(['ok', 'cancel'])
 const myValue = ref(props.value ? JSON.stringify(props.value) : undefined)
 
 const handleSave = () => {
-  emit('ok', myValue.value ? JSON.parse(myValue.value) : undefined)
+  try {
+    emit('ok', myValue.value ? JSON.parse(myValue.value) : undefined)
+  } catch (e) {
+    onlyMessage('请输入Json格式的数据', 'error')
+  }
 }
 
 const handleCancel = () => {
