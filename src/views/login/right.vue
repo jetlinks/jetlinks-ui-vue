@@ -148,7 +148,7 @@ import { LocalStore } from "@jetlinks-web/utils";
 const BASE_API_PATH = import.meta.env.VITE_APP_BASE_API
 import { iconMap } from "./util";
 
-import defaultImg from '@/assets/internal-standalone.png'
+import defaultImg from '@/assets/apply/internal-standalone.png'
 
 const logoImage = getImage("/login/logo.png");
 const { t: $t } = useI18n();

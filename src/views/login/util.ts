@@ -1,8 +1,8 @@
-import standalone from '@/assets/internal-standalone.png'
-import dingtalk from '@/assets/dingtalk.png'
-import wechat from '@/assets/wechat-webapp.png'
-import thirdParty from '@/assets/third-party.png'
-import wechatMiniapp from '@/assets/wechat-miniapp.png'
+import standalone from '@/assets/apply/internal-standalone.png'
+import dingtalk from '@/assets/bindPage/dingtalk.png'
+import wechat from '@/assets/bindPage/wechat-webapp.png'
+import thirdParty from '@/assets/apply/third-party.png'
+import wechatMiniapp from '@/assets/apply/wechat-miniapp.png'
 
 export const rules = {
   username: [
