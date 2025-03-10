@@ -59,7 +59,7 @@ const onSave = async () => {
   if (result) {
     const obj = {
       ...formModel,
-      roles: formModel.roles.map(item => ({ id: item })),
+      roles: formModel.roles?.map(item => ({ id: item })),
     }
 
     if (formModel.id) {
@@ -130,7 +130,7 @@ watch(() => route.params.id, (v) => {
                     :label="$t('components.EditUserDialog.939453-12')"
                     :rules="[{ required: true, message: $t('components.EditUserDialog.939453-13') }]"
                   >
-                    <form-item-role v-model:value="formModel.roles" />
+                    <form-item-role v-model:value="formModel.roles" :extraProps="{multiple: true}" />
                   </a-form-item>
                 </a-col>
                 <a-col :span="12">

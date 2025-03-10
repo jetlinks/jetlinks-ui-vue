@@ -193,20 +193,16 @@ const handleSearch = (oParams: any) =>
             "column": "id$in-org-user$org",
             "value": [
               props.parentId
-            ]
+            ],
           },
-        ],
-      },
-      {
-        type: 'or',
-        terms: [
           {
             "column": "id$in-org-user$position",
+            type: 'or',
             "value": [
               props.parentId
             ]
           }
-        ]
+        ],
       }
     ])
 
@@ -227,9 +223,10 @@ const handleRouteQuery = (v) => {
   const terms = [
     {
       terms: [{
-        column: 'positions',
         termType: 'eq',
-        value: v
+        column: 'positions',
+        value: v,
+        type: 'and'
       }, null, null],
     },
     {
@@ -246,7 +243,6 @@ const handleRouteQuery = (v) => {
   } else {
     show.value = true
   }
-
 }
 
 watch(() => props.positionId, (v) => {
