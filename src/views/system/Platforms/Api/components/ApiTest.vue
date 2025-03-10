@@ -84,7 +84,7 @@
         <template
           v-if="showRequestBody"
         >
-          <j-monaco-editor
+          <monaco-editor
             v-if="bodyType === 'json'"
             ref="editorRef"
             language="json"
@@ -92,7 +92,7 @@
             theme="vs"
             v-model:modelValue="requestBody.code"
           />
-          <j-monaco-editor
+          <monaco-editor
             v-else
             ref="editorRef"
             language="text"

@@ -1,6 +1,6 @@
 <template>
   <div class="api-example">
-    <j-monaco-editor
+    <monaco-editor
       v-if="loading"
       language="json"
       :model-value="codeText"

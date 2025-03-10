@@ -15,7 +15,7 @@ import * as monaco from 'monaco-editor';
 import { omit } from 'lodash-es';
 
 defineOptions({
-  name: 'JMonacoEditor'
+  name: 'MonacoEditor'
 })
 
 const props = defineProps({
