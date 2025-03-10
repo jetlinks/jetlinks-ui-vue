@@ -1,6 +1,6 @@
 import { onBeforeUnmount, ref } from 'vue'
 import type { Ref } from 'vue'
-import { getWebSocket } from '@/utils/websocket'
+import { wsClient } from '@jetlinks-web/core'
 import { debounce, isNumber, throttle } from 'lodash-es'
 
 interface WebSocketOptions<T> {
@@ -37,7 +37,7 @@ export const useWebSocket = <T = any>(
      * @param parameter {Object}
      */
     const send = (id: string, topic: string, parameter?: Record<string, any>) => {
-        ws = getWebSocket(id, topic, parameter)
+        ws = wsClient.getWebSocket(id, topic, parameter)
 
         if (options?.throttle) {
             ws.subscribe(throttleMsg)
