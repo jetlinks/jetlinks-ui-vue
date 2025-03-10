@@ -10,7 +10,7 @@
     <div>
       {{ $t('Save.GeoJsonModal.692990-1') }}
     </div>
-    <j-monaco-editor
+    <monaco-editor
       language="json"
       style="height: 400px"
       v-model:modelValue="myValue"

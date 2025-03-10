@@ -64,7 +64,7 @@ const handleModalSubmit = () => {
 // 地图拾取的坐标点(经纬度字符串)
 const mapPoint = ref('');
 
-const zoom = ref(12);
+const zoom = ref(14);
 const center = ref([106.55, 29.56]);
 let map: any = null;
 
@@ -78,7 +78,9 @@ const position = ref<number[] | string[]>([]);
 const initMap = (e: any) => {
     map = e;
     const pointStr = mapPoint.value as string;
-    position.value = pointStr ? pointStr.split(',') : center.value;
+    const markerPoint = pointStr ? pointStr.split(',') : center.value
+    position.value = markerPoint;
+    map.setCenter(markerPoint);
     map.on('click', (_event: any) => {
       clickMap(_event)
     })
@@ -103,12 +105,18 @@ const showMap = () => {
  * @param e
  */
 const selectPoi = (e: any) => {
-  // console.log(e, 'e')
+  if (e.poi.location) {
     const selectPoint = [e.poi.location.lng, e.poi.location.lat];
     mapPoint.value = selectPoint.join(',');
+    position.value = selectPoint
     map.setCenter(selectPoint);
+  }
 };
 
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less">
+.amap-sug-result {
+  z-index: 1050;
+}
+</style>
