@@ -48,7 +48,7 @@
         </a-space>
       </template>
       <template #positions="slotProps">
-          {{ slotProps.positions?.map(item => item.name).join(',') || '' }}
+          {{ slotProps.positions?.filter(item => item.orgId === props.parentId)?.map(item => item.name).join(',') || '--' }}
       </template>
       <template #status="slotProps">
         <j-badge-status
