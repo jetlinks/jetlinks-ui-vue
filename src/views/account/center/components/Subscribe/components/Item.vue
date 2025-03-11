@@ -47,7 +47,9 @@ import {
 } from '@/api/account/notificationSubscription'
 import { useUserStore } from '@/store/user'
 import { useI18n } from 'vue-i18n';
+import {useSystemStore} from "@/store";
 
+const systemStore = useSystemStore()
 const { t: $t } = useI18n();
 const current = ref<any>({})
 const visible = ref<boolean>(false)
@@ -78,6 +80,7 @@ const onSubscribe = async (obj: any) => {
     topicProvider: props.data?.provider,
     providerId: obj.providerId,
     ...props.subscribe,
+    locale: systemStore.language,
     notifyChannels: [...(props.subscribe?.notifyChannels || []), obj?.id],
   }
   const resp = await save_api(_obj)
