@@ -11,7 +11,7 @@ import BatchDropdown from './BatchDropdown/index.vue'
 import ConfirmModal from './ConfirmModal/index.vue'
 import CheckButton from './CheckButton/CheckButton.vue'
 import SelectAMap from './SelectAMap/index.vue'
-
+import MonacoEditor from './MonacoEditor/monacoEditor.vue'
 import FormItemValue from './FormItem'
 
 export default {
@@ -30,6 +30,7 @@ export default {
             .component('ConfirmModal',ConfirmModal)
             .component('CheckButton',CheckButton)
             .component('SelectAMap', SelectAMap)
+          .component('monaco-editor', MonacoEditor)
 
         Object.keys(FormItemValue).forEach(key => {
             app.component(key, FormItemValue[key])

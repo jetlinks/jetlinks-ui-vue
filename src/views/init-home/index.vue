@@ -37,7 +37,7 @@
                                 <Role ref="roleRef"></Role>
                             </a-collapse-panel>
 
-                          <a-collapse-panel v-for="item in extraComponents" :key="item.name">
+                          <a-collapse-panel v-for="item in extraComponents" :key="item.name" force-render>
                             <template #header>
                               <span class="title">{{ $t(item.label) }}</span>
                               <span class="sub-title">{{ $t(item.subLabel) }}</span>
@@ -115,20 +115,17 @@ const submitData = async () => {
       loading.value = false;
       return;
     }
-    const initDataRes = await initDataRef.value?.save();
-    if (!initDataRes) {
+    const initDataRes = await Promise.all(initDataRef.value.map((item: any) => item?.save?.()))
+    if (!initDataRes?.every(i => i)) {
       loading.value = false;
       return;
     }
     loading.value = false;
-    // 当前数据是否成功提交
-    if (basicRes && menuRes && roleRes && roleGroupRes && initDataRes) {
-        onlyMessage($t('init-home.index.011430-6'));
-        //     // 记录初始化数据，跳转首页
-        const res = await saveInit();
-        if (res.status === 200) {
-            jump();
-        }
+    onlyMessage($t('init-home.index.011430-6'));
+    // 记录初始化数据，跳转首页
+    const res = await saveInit();
+    if (res.status === 200) {
+      jump();
     }
 };
 /**

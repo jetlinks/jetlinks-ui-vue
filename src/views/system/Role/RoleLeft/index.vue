@@ -51,7 +51,7 @@
 							</div>
 						</template>
 						<template v-else>
-							<j-ellipsis style="width: calc(100%-100px)">{{ item.name }}</j-ellipsis>
+							<j-ellipsis style="width: calc(100% - 100px)">{{ item.name }}</j-ellipsis>
 						</template>
 					</div>
 				</template>
