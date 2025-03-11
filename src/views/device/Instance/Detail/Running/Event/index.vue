@@ -86,45 +86,61 @@ const _getEventList = (_params: any) =>
     getEventList(instanceStore.current.id || '', events.data.id || '', _params);
 
 watchEffect(() => {
-    columns.value = [...defaultColumns];
-    if (events.data?.valueType?.type === 'object') {
-        const eventProperties = cloneDeep(events.data.valueType?.properties || [])
-        eventProperties.reverse().map((i: any) => {
-            if (i.valueType?.type === 'object') {
-                objectKey.value.push({
-                    key:i.id,
-                    dataIndex: `${i.id}_format`
-                });
-                columns.value.splice(0, 0, {
-                    key: i.id,
-                    title: i.name,
-                    dataIndex: `${i.id}_format`,
-                    search: {
-                        type: i?.valueType?.type || 'string',
-                        rename: i.id,
-                    },
-                    scopedSlots: true,
-                });
-            } else {
-                columns.value.splice(0, 0, {
-                    key: i.id,
-                    title: i.name,
-                    dataIndex: `${i.id}_format`,
-                    search: {
-                        type: i?.valueType?.type || 'string',
-                        rename: i.id,
-                    },
-                    ellipsis: true,
-                    scopedSlots: true,
-                });
-            }
+  columns.value = [...defaultColumns];
+  if (events.data?.valueType?.type === 'object') {
+    const eventProperties = cloneDeep(events.data.valueType?.properties || [])
+    eventProperties.reverse().map((i: any) => {
+      if (['object', 'array'].includes(i.valueType?.type)) {
+        objectKey.value.push({
+          key: i.id,
+          dataIndex: `${i.id}_format`
         });
-    } else {
         columns.value.splice(0, 0, {
-            title: '数据',
-            dataIndex: 'value',
+          key: i.id,
+          title: i.name,
+          dataIndex: `${i.id}_format`,
+          search: {
+            type: 'string',
+            rename: i.id,
+          },
+          scopedSlots: true,
         });
-    }
+      } else {
+        const arr = i?.valueType?.type === 'boolean' ? [
+          {
+            label: i?.valueType.falseText,
+            value: i?.valueType.falseValue
+          },
+          {
+            label: i?.valueType.trueText,
+            value: i?.valueType.trueValue
+          },
+        ] : (i?.valueType?.elements || []).map(item => {
+          return {
+            label: item.text,
+            value: item.value
+          }
+        })
+        columns.value.splice(0, 0, {
+          key: i.id,
+          title: i.name,
+          dataIndex: `${i.id}_format`,
+          search: {
+            type: componentsType?.[i?.valueType?.type] || 'string',
+            rename: i.id,
+            options: arr
+          },
+          ellipsis: true,
+          scopedSlots: true,
+        });
+      }
+    });
+  } else {
+    columns.value.splice(0, 0, {
+      title: '数据',
+      dataIndex: 'value',
+    });
+  }
 });
 
 const handleSearch = (_params: any) => {
