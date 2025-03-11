@@ -1455,7 +1455,12 @@ export default [
                 url: '/system/region',
                 icon: 'EnvironmentOutlined',
                 showPage: ['area'],
-                permissions: [],
+                permissions: [
+                    {
+                        permission: "area",
+                        actions: ["query"]
+                    }
+                ],
                 buttons: [
                     {
                         id: "add",

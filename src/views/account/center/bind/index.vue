@@ -11,7 +11,7 @@
               :size="86"
               :src="
                     user?.avatar ||
-                    getImage('/bind/jetlinksLogo.png')
+                    jetlinksLogoImg
                 "
               style="margin-bottom: 16px;"
             />
@@ -22,7 +22,7 @@
               <j-ellipsis :lineClamp="2">{{ user?.name || "-" }}</j-ellipsis>
             </div>
           </div>
-          <img :src="getImage('/bind/Vector.png')"/>
+          <img :src="vectorImg"/>
           <div class='info-body'>
             <a-avatar
               :size="86"
@@ -30,7 +30,7 @@
                 bindUser.result?.avatar ||
                     iconMap.get(
                         bindUser?.applicationProvider,
-                    ) || getImage('/apply/internal-standalone.png')
+                    ) || internalStandaloneImg
                 "
               shape="square"
               style="margin-bottom: 16px;"
@@ -54,9 +54,9 @@
       <template v-else>
         <div class='not-login'>
           <div class='logo'>
-            <img :src="getImage('/bind/jetlinksLogo.png')"/>
+            <img :src="jetlinksLogoImg"/>
             <img
-              :src="getImage('/bind/Vector.png')"
+              :src="vectorImg"
               class='arrow'
             />
             <img
@@ -140,6 +140,12 @@ import { applicationInfo, bindAccount } from '@/api/system/bind'
 import { codeUrl, authLogin, userDetail, encryptionConfig } from '@/api/login'
 import { useSystemStore } from '@/store/system'
 import { useI18n } from 'vue-i18n';
+import jetlinksLogoImg from '@/assets/bindPage/jetlinksLogo.png';
+import vectorImg from '@/assets/bindPage/Vector.png';
+import internalStandaloneImg from '@/assets/apply/internal-standalone.png';
+import wechatImg from '@/assets/bindPage/wechat-webapp.png';
+import dingtalkImg from '@/assets/bindPage/dingtalk.png';
+import thirdPartyImg from '@/assets/apply/third-party.png';
 
 const { t: $t } = useI18n();
 
@@ -153,10 +159,10 @@ interface formData {
 }
 
 const iconMap = new Map()
-iconMap.set('dingtalk-ent-app', getImage('/notice/dingtalk.png'))
-iconMap.set('wechat-webapp', getImage('/notice/wechat.png'))
-iconMap.set('internal-standalone', getImage('/apply/internal-standalone.png'))
-iconMap.set('third-party', getImage('/apply/third-party.png'))
+iconMap.set('dingtalk-ent-app', dingtalkImg)
+iconMap.set('wechat-webapp', wechatImg)
+iconMap.set('internal-standalone', internalStandaloneImg)
+iconMap.set('third-party', thirdPartyImg)
 
 const token = computed(() => LocalStore.get(TOKEN_KEY))
 
@@ -338,7 +344,7 @@ onMounted(() => {
   getAppInfo()
   getCode()
   getDetail()
-  systemStore.getFront()
+  // systemStore.getFront()
 })
 
 </script>
@@ -360,7 +366,7 @@ onMounted(() => {
 .page-container {
   width: 100%;
   height: 100vh;
-  background: url(/images/bind/bindPage.png) 0% 0% / 100% 100% no-repeat;
+  background: url(/src/assets/bindPage/bindPage.png) 0% 0% / 100% 100% no-repeat;
   display: flex;
   align-items: center;
   justify-content: center;

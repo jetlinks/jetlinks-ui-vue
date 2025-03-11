@@ -22,6 +22,11 @@ export const USER_CENTER_ROUTE: RouteRecordItem = {
       },
       component: () => import("@/views/account/center/index.vue"),
     },
+    {
+      path: "/account/center/bind",
+      name: "account/center/bind",
+      component: () => import("@/views/account/center/bind/index.vue"),
+    },
   ],
 };
 

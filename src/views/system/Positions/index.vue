@@ -4,6 +4,7 @@ import { useColumns } from './data';
 import {useMenuStore} from "@/store";
 import { queryPage, del } from '@/api/system/positions';
 import {useRoute} from "vue-router";
+import {onlyMessage} from "@jetlinks-web/utils";
 
 const { t: $t } = useI18n();
 const params = ref({});
@@ -32,6 +33,7 @@ const onEdit = (record) => {
 
 const onDelete = (id) => {
   del(id).then(() => {
+    onlyMessage($t('components.Item.641816-0'))
     tableRef.value.reload()
   })
 }

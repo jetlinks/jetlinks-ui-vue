@@ -63,7 +63,7 @@ export const filterTree = (treeNode: TreeType[]) => {
 }
 
 // 用户
-export const useColumns = () => {
+export const useColumns = (departmentId: string) => {
     return [
         {
             title: i18n.global.t('Department.util.780026-0'),
@@ -98,11 +98,12 @@ export const useColumns = () => {
             scopedSlots: true,
             search: {
                 type: 'select',
-                // componentProps: {
-                //     placeholder: i18n.global.t('Department.util.780026-3'),
-                // },
+                componentProps: {
+                    placeholder: i18n.global.t('Department.util.780026-3'),
+                },
                 options() {
-                    return queryPageNoPage().then(resp => {
+                    const params = departmentId ? {terms: [{column: 'orgId', value: departmentId}]} : {}
+                    return queryPageNoPage(params).then(resp => {
                         if (resp.success) {
                             return resp.result.map(item => {
                                 return {
@@ -122,9 +123,9 @@ export const useColumns = () => {
             key: 'status',
             search: {
                 type: 'select',
-                // componentProps: {
-                //     placeholder: i18n.global.t('Department.util.780026-5'),
-                // },
+                componentProps: {
+                    placeholder: i18n.global.t('Department.util.780026-5'),
+                },
                 options: [
                     {
                         label: i18n.global.t('Department.util.780026-6'),
@@ -179,7 +180,6 @@ export const bindUserColumns = [
 
 // 请求数据
 export const requestFun = async (parentId: string, oParams: any, defaultParams: any) => {
-    console.log(parentId, oParams)
     if (parentId) {
         const params = {
             ...oParams,

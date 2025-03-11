@@ -48,7 +48,7 @@
         </a-space>
       </template>
       <template #positions="slotProps">
-          {{ slotProps.positions?.map(item => item.name).join(',') || '' }}
+          {{ slotProps.positions?.filter(item => item.orgId === props.parentId)?.map(item => item.name).join(',') || '--' }}
       </template>
       <template #status="slotProps">
         <j-badge-status
@@ -119,7 +119,7 @@ const dialogVisible = ref(false)
 const tableRef = ref<any>() // 表格实例
 const _selectedRowKeys = ref<string[]>([])
 
-const columns = useColumns()
+const columns = ref(useColumns(props.parentId))
 
 // 刷新列表
 const refresh = () => {
@@ -187,23 +187,31 @@ const handleParams = (e: any) => {
 // 请求数据
 const handleSearch = (oParams: any) =>
     requestFun(props.parentId, oParams, [
-      {
-        terms: [
-          {
-            "column": "id$in-org-user$org",
-            "value": [
-              props.parentId
-            ],
-          },
-          {
-            "column": "id$in-org-user$position",
-            type: 'or',
-            "value": [
-              props.parentId
+        {
+            terms: [
+                {
+                    terms: [
+                        {
+                            "column": "id$in-org-user$org",
+                            "value": [
+                                props.parentId
+                            ]
+                        },
+                    ],
+                },
+                {
+                    type: 'or',
+                    terms: [
+                        {
+                            "column": "id$in-org-user$position",
+                            "value": [
+                                props.parentId
+                            ]
+                        }
+                    ]
+                }
             ]
-          }
-        ],
-      }
+        }
     ])
 
 // 取消绑定
@@ -223,10 +231,9 @@ const handleRouteQuery = (v) => {
   const terms = [
     {
       terms: [{
-        termType: 'eq',
         column: 'positions',
-        value: v,
-        type: 'and'
+        termType: 'eq',
+        value: v
       }, null, null],
     },
     {
@@ -243,6 +250,7 @@ const handleRouteQuery = (v) => {
   } else {
     show.value = true
   }
+
 }
 
 watch(() => props.positionId, (v) => {
@@ -253,6 +261,7 @@ watch(
     () => props.parentId,
     () => {
       refresh()
+      columns.value = useColumns(props.parentId)
     },
 )
 </script>
