@@ -7,10 +7,11 @@
                     @mouseleave="() => hiddenButton(item)">
                     <div class="group_name" :class="{ group_selected: item.selected }"
                         :type="item.selected ? 'primary' : 'default'">
-                        <j-ellipsis style="max-width: 100%;"><span>{{ item.name }}</span>
-                            <AIcon type="CloseOutlined" class="closeIcon" v-if="item.closeIcon"
-                                @click="group.splice(index, 1)"></AIcon>
+                        <j-ellipsis style="max-width: 90%;">
+                          <span>{{ item.name }}</span>
                         </j-ellipsis>
+                      <AIcon type="CloseOutlined" class="closeIcon" v-if="item.closeIcon"
+                             @click="group.splice(index, 1)"></AIcon>
                     </div>
                     <div v-if="item.show">
                         <a-button block @click="() => selectGroup(item)">{{ item.selected ? $t('Role.index.263636-1') : $t('Role.index.263636-2') }}</a-button>
@@ -64,7 +65,7 @@
             </div>
         </a-checkbox-group>
     </div>
-    <a-modal :visible="showAdd" :title="$t('Role.index.263636-11')" @cancel="showAdd = false" @ok="addGroup">
+    <a-modal destroy-on-close :visible="showAdd" :title="$t('Role.index.263636-11')" @cancel="showAdd = false" @ok="addGroup">
         <a-form layout="vertical" ref="formRef" :model="formData">
             <a-form-item name="name" :label="$t('Role.index.263636-12')" :rules="[
                 {
@@ -76,7 +77,7 @@
                     message: $t('Role.index.263636-14'),
                 },
             ]">
-                <a-input v-model:value="formData.name"></a-input>
+                <a-input v-model:value="formData.name" :placeholder="$t('Role.index.263636-13')"></a-input>
             </a-form-item>
         </a-form>
     </a-modal>
@@ -123,7 +124,7 @@ const showAdd = ref(false)
 const groupStatue = ref('add')
 const selectedGroup = ref()
 const formData = ref({
-    name: ''
+    name: undefined
 })
 
 const formRef = ref()
@@ -228,7 +229,7 @@ const selectGroup = (item: any) => {
  * 新增分组
  */
 const showAddGroup = () => {
-    formData.value.name = ''
+    formData.value.name = undefined
     showAdd.value = true
     groupStatue.value = 'add'
 }
@@ -309,7 +310,7 @@ defineExpose({
                     .closeIcon {
                         font-size: 12px;
                         position: absolute;
-                        top: 4px;
+                        top: 10px;
                         right: 4px;
                     }
                 }
