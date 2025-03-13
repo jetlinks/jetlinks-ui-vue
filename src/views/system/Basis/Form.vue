@@ -196,7 +196,7 @@ const getDetails = async () => {
 
   Object.assign(formData, {
     title: configInfo.front?.title,
-    headerTheme: configInfo.front?.headerTheme,
+    headerTheme: configInfo.front?.headerTheme || 'light',
     logo: configInfo.front?.logo || '/logo.png',
     ico: configInfo.front?.ico || '/favicon.ico',
     showRecordNumber: configInfo.front?.showRecordNumber || false,

@@ -206,10 +206,12 @@ const delDepartment = (id: string) => {
 const onSave = (id: string) => {
   visible.value = false
   current.value = {}
-  // @ts-ignore
-  window?.onTabSaveSuccess && window.onTabSaveSuccess(id)
-  setTimeout(() => window.close(), 300)
-  getTree()
+  if ((window as any).onTabSaveSuccess) {
+    (window as any).onTabSaveSuccess(id);
+    setTimeout(() => window.close(), 300);
+  } else {
+    getTree()
+  }
 }
 
 const openDialog = (row: any = {}) => {

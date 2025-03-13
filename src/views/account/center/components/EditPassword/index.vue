@@ -15,8 +15,8 @@
                     :current="current"
                     size="small"
                     progress-dot
-                    @change="onChange"
                 >
+<!--                  @change="onChange"-->
                     <a-step
                         :title="item"
                         v-for="(item, index) in list"
@@ -125,20 +125,22 @@ const form = ref<formType>({
 });
 const current = ref<number>(0);
 
-const onPrev = () => {
-    current.value -= 1;
-};
-
 const jumpStep = (val: number) => {
     if (val === 1) {
         formRef.value?.validate('oldPassword').then(() => {
-            current.value += 1;
+            current.value = val
         });
     } else if (val === 2) {
         formRef.value?.validate('newPassword').then(() => {
-            current.value += 1;
+            current.value = val
         });
+    } else {
+      current.value = val
     }
+};
+
+const onPrev = () => {
+  current.value -= 1;
 };
 
 const onNext = () => {

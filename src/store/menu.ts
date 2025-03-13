@@ -72,7 +72,7 @@ export const useMenuStore = defineStore('menu', () => {
             router.push({name, params, query})
             setParamsValue(name, params)
         } else {
-            onlyMessage($t('Home.index.010851-10'), 'error')
+            onlyMessage($t('Home.index.010851-10'), 'warning')
             console.warn(`没有找到对应的页面: ${name}`)
         }
     }

@@ -98,9 +98,9 @@ export const useColumns = (departmentId: string) => {
             scopedSlots: true,
             search: {
                 type: 'select',
-                componentProps: {
-                    placeholder: i18n.global.t('Department.util.780026-3'),
-                },
+                // componentProps: {
+                //     placeholder: i18n.global.t('Department.util.780026-3'),
+                // },
                 options() {
                     const params = departmentId ? {terms: [{column: 'orgId', value: departmentId}]} : {}
                     return queryPageNoPage(params).then(resp => {
@@ -123,9 +123,9 @@ export const useColumns = (departmentId: string) => {
             key: 'status',
             search: {
                 type: 'select',
-                componentProps: {
-                    placeholder: i18n.global.t('Department.util.780026-5'),
-                },
+                // componentProps: {
+                //     placeholder: i18n.global.t('Department.util.780026-5'),
+                // },
                 options: [
                     {
                         label: i18n.global.t('Department.util.780026-6'),
@@ -180,6 +180,7 @@ export const bindUserColumns = [
 
 // 请求数据
 export const requestFun = async (parentId: string, oParams: any, defaultParams: any) => {
+    console.log(parentId, oParams)
     if (parentId) {
         const params = {
             ...oParams,
