@@ -33,7 +33,7 @@ export default defineConfig(({ mode }) => {
             cssCodeSplit: false,
             manifest: true,
             chunkSizeWarningLimit: 2000,
-            assetsInlineLimit: 2000,
+            assetsInlineLimit: 1000,
             rollupOptions: {
                 output: {
                     entryFileNames: `assets/[name].${ new Date().getTime() }.js`,
