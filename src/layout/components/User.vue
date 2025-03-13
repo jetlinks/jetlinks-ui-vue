@@ -1,7 +1,12 @@
 <template>
   <a-dropdown placement="bottomRight">
     <div class="user-info">
-      <a-avatar :size="28" :src="userStore.userInfo?.avatar" />
+      <a-avatar :size="28">
+        <template #icon>
+          <img v-if="userStore.userInfo?.avatar" :src="userStore.userInfo?.avatar" alt="">
+          <AIcon v-else type="UserOutlined"></AIcon>
+        </template>  
+      </a-avatar> 
       <span class="name">{{ userName }}</span>
     </div>
     <template #overlay>

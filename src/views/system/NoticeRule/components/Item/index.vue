@@ -298,7 +298,7 @@ const onAction = (e: boolean) => {
                                 idList: [],
                             },
                         },
-                        i18nMessage: {
+                        i18nMessages: {
                           name:
                             {
                               'zh_CN': '站内信',
