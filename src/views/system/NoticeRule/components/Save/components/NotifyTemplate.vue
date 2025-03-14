@@ -5,7 +5,7 @@
             target="action-notice-template"
             type="simple"
             @search="handleSearch"
-            style="padding-bottom: 0"
+            style="padding: 0"
         />
         <j-permission-button
             @click="onAdd"
@@ -242,6 +242,7 @@ watch(
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 16px;
 }
 .alert {
     height: 40px;

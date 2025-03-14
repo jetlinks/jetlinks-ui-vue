@@ -5,7 +5,7 @@
             target="action-notice-config"
             type="simple"
             class="action-search"
-            style="margin-bottom: 0"
+            style="padding: 0"
             @search="handleSearch"
         />
         <j-permission-button
@@ -232,6 +232,7 @@ watch(
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 16px;
 }
 .alert {
     height: 40px;

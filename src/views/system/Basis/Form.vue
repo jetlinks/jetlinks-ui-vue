@@ -81,6 +81,29 @@
           </template>
           <a-input v-model:value="formData['base-path']" :placeholder="$t('Basis.Form.436809-14')"></a-input>
         </a-form-item>
+        <a-form-item
+            name="showRecordNumber"
+            :label="$t('Basis.Form.436809-24')"
+            :required="true"
+        >
+          <a-switch
+              v-model:checked="formData.showRecordNumber"
+          ></a-switch>
+        </a-form-item>
+        <a-form-item
+            v-if="formData.showRecordNumber"
+            name="recordNumber"
+            :label="$t('Basis.Form.436809-25')"
+            :rules="[
+                        {
+                            required: true,
+                            message: $t('Basis.Form.436809-26'),
+                            trigger: 'blur',
+                        },
+                    ]"
+        >
+          <a-input v-model:value="formData.recordNumber" :placeholder="$t('Basis.Form.436809-26')"></a-input>
+        </a-form-item>
         <!-- {{ $t('Basis.Form.436809-15') }} 和 浏览器标签 -->
         <a-row :gutter="24">
           <!-- {{ $t('Basis.Form.436809-15') }} -->

@@ -77,4 +77,10 @@ const handleBeforeUpload = (file: any) => {
 const onChange = (e: any) => {
     emit('update:value', e.target.value);
 };
+
+watch(() => props.value, () => {
+  url.value = props.value
+}, {
+  immediate: true
+})
 </script>
