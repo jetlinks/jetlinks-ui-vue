@@ -16,11 +16,11 @@
       :defaultParams="defaultParams"
       :scroll="{ y: 420 }"
     >
-      <template #headerRightRender>
-        <a-popconfirm title="确认全部已读？" @confirm="on">
-          <a-button type="link">全部已读</a-button>
-        </a-popconfirm>
-      </template>
+<!--      <template #headerRightRender>-->
+<!--        <a-popconfirm title="确认全部已读？" @confirm="on">-->
+<!--          <a-button type="link">全部已读</a-button>-->
+<!--        </a-popconfirm>-->
+<!--      </template>-->
       <template #topicProvider="slotProps">
         {{ slotProps.topicName }}
       </template>
@@ -236,10 +236,12 @@ const changeStatus = (row: any) => {
   })
 }
 
-watchEffect(() => {
-  if (user.messageInfo?.id) {
+watch(() => user.messageInfo?.id, (val) => {
+  if(val){
     view(user.messageInfo)
   }
+}, {
+  immediate: true
 })
 
 // const onAllRead = async () => {
@@ -256,9 +258,11 @@ onMounted(() => {
     view(routerParams.params?.value.row)
   }
 })
+
 onUnmounted(() => {
   user.messageInfo = {}
   viewVisible.value = false
+  routerParams?.clear?.()
 })
 </script>
 

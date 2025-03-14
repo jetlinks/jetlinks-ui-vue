@@ -4,12 +4,13 @@
       <div class="left">
         <img :src="systemInfo?.front?.background || bgImage" alt="" />
         <a
+          v-if="basis?.showRecordNumber"
           href="https://beian.miit.gov.cn/#/Integrated/index"
           target="_blank"
           rel="noopener noreferrer"
           class="records"
         >
-          备案：渝ICP备19017719号-1
+          {{ $t('login.index.102238-0') }}{{ basis?.recordNumber }}
         </a>
       </div>
       <div class="right">
@@ -30,13 +31,19 @@ import { storeToRefs } from "pinia";
 import Right from "./right.vue";
 import { LocalStore } from "@jetlinks-web/utils";
 import { bindInfo } from "@/api/login";
+import {useI18n} from "vue-i18n";
 
+const { t: $t } = useI18n();
 const systemStore = useSystemStore();
 const { systemInfo, layout } = storeToRefs(systemStore);
 const loading = ref(false);
 
 const bgImage = getImage("/login/login.png");
 const bindings = ref([]);
+
+const basis: any = computed(() => {
+  return systemInfo.value.front || {};
+});
 
 const getOpen = async () => {
   await systemStore.queryVersion();
