@@ -14,8 +14,7 @@
                 :rules="[
                     {
                         required: getType(item) !== 'file' ? true : false,
-                        validator: (_rule, value) =>
-                            checkValue(_rule, value, item),
+                        validator: (_rule, value) => checkValue(_rule, value, item),
                         trigger: ['change'],
                     },
                 ]"
@@ -88,7 +87,7 @@ const checkValue = (_rule: any, value: any, item: any) => {
     const type = item.expands?.businessType || item?.type;
     if (type === 'file') {
         return Promise.resolve();
-    } else if (type === 'string' && !value) {
+    } else if ((type === 'string' || type === 'double') && !value) {
         return Promise.reject(new Error($t('components.VariableDefinitions.420465-1') + item.name));
     } else if (type === 'link') {
         if (!value) {
