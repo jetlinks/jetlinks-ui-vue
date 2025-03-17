@@ -64,6 +64,7 @@
           { label: $lang('OPC_UA.channel.20250207-10'), value: 'username' },
         ]"
         :column="2"
+        @change="onAuthTypeChange"
     />
   </a-form-item>
   <a-form-item
@@ -150,6 +151,11 @@ const getCertificateList = () => {
   request.get('/network/certificate/_query/no-paging?paging=false', {}).then(resp => {
     certificateList.value = resp.result.map(i => ({label: i.name, value: i.id}))
   })
+}
+
+const onAuthTypeChange = () => {
+  formData.configuration.username = undefined
+  formData.configuration.password = undefined
 }
 
 const onChange = (e) => {
