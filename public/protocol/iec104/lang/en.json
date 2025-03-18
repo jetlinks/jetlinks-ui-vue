@@ -10,6 +10,8 @@
   "iec104.collector.20250207-9": "Please enter the channel IP",
   "iec104.collector.20250207-10": "Please enter a valid domain name or IP address",
   "iec104.collector.20250207-11": "Please enter the group address",
+  "iec104.collector.20250207-12": "Number of acknowledgement frames",
+  "iec104.collector.20250207-13": "Please enter the number of confirmation frames",
   "iec104.point.20250207-1": "Type Identifier",
   "iec104.point.20250207-2": "Please select the type identifier",
   "iec104.point.20250207-3": "Address",
