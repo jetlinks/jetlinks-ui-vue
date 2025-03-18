@@ -20,17 +20,17 @@ export const initPackages = () => {
     const protocol = window.location.protocol === "https:" ? "wss://" : "ws://";
     const host = document.location.host;
     const url = `${protocol}${host}${BASE_API}/messaging/${token}?${TOKEN_KEY_URL}=${token}`;
-    wsClient.setOptions({
-        onError(message) {
-            notification.error({
-                key: 'ws-error',
-                message: message.message,
-                style: {
-                    zIndex: 1040
-                },
-            });
-        }
-    })
+    // wsClient.setOptions({
+    //     onError(message) {
+    //         notification.error({
+    //             key: 'ws-error',
+    //             message: message.message,
+    //             style: {
+    //                 zIndex: 1090
+    //             },
+    //         });
+    //     }
+    // })
     wsClient.initWebSocket(url);
     wsClient.connect()
 };

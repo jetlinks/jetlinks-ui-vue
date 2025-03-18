@@ -19,7 +19,7 @@
   <a-form-item :label="$lang('MODBUS_TCP.point.20250207-3')" name="pointKey" validate-first :rules="[
     {
             required: true,
-            message: '请输入地址',
+            message: $lang('MODBUS_TCP.point.20250207-4'),
     },
     {
       validator: checkPointKey,
@@ -50,7 +50,6 @@
               :placeholder="$lang('MODBUS_TCP.point.20250207-7')"
               show-search @change="providerChange"/>
   </a-form-item>
-
   <a-form-item :name="['configuration', 'parameter', 'quantity']" :rules="[
     {
       required: true,
@@ -72,6 +71,12 @@
     'configuration',
     'scaleFactor',
   ]" :label="$lang('MODBUS_TCP.point.20250207-11')"
+               :rules="[
+    {
+      required: true,
+      message: $lang('MODBUS_TCP.point.20250207-12')
+    }
+    ]"
   >
     <a-input-number v-model:value="formData.configuration.codec.configuration.scaleFactor" :controls="false"
                     :max="65535"

@@ -41,6 +41,21 @@
       :placeholder="$lang('iec104.collector.20250207-6')"
     ></a-input-number>
   </a-form-item>
+  <a-form-item
+      :label="$lang('iec104.collector.20250207-12')"
+      :name="['configuration', 'frameAmountMax']"
+      :rules="rules.frameAmountMax"
+  >
+    <a-input-number
+        style="width: 100%"
+        :min="1"
+        :maxLength="16"
+        :precision="0"
+        v-model:value="formData.configuration.frameAmountMax"
+        autocomplete="off"
+        :placeholder="$lang('iec104.collector.20250207-13')"
+    ></a-input-number>
+  </a-form-item>
 </template>
 
 <script setup>
@@ -54,6 +69,7 @@ if (!("configuration" in formData)) {
     host: undefined,
     port: undefined,
     terminnalAddress: undefined,
+    frameAmountMax: undefined
   };
 }
 const regular = {
@@ -97,6 +113,9 @@ const rules = {
   port: [{ required: true, trigger: "blur", validator: validator1 }],
   terminnalAddress: [
     { required: true, trigger: "blur", message: $lang('iec104.collector.20250207-11') },
+  ],
+  frameAmountMax: [
+    { required: true, trigger: "blur", message: $lang('iec104.collector.20250207-13') },
   ],
 };
 </script>

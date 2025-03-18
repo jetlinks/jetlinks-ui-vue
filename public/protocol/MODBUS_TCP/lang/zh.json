@@ -39,7 +39,7 @@
   "MODBUS_TCP.point.20250207-21": "自定义数据区长度（byte）",
   "MODBUS_TCP.point.20250207-22": "访问类型",
   "MODBUS_TCP.point.20250207-23": "请选择访问类型",
-  "MODBUS_TCP.point.20250207-24": "1线圈寄存器",
+  "MODBUS_TCP.point.20250207-24": "01线圈寄存器",
   "MODBUS_TCP.point.20250207-25": "02离散输入寄存器",
   "MODBUS_TCP.point.20250207-26": "03保存寄存器",
   "MODBUS_TCP.point.20250207-27": "04输入寄存器",
