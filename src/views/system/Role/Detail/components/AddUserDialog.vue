@@ -1,15 +1,17 @@
 <template>
     <a-modal visible :title="$t('components.AddUserDialog.659587-0')" width="1000px" @ok="confirm" @cancel="emits('update:visible', false)">
-        <pro-search :columns="columns" target="simple" @search="(params) => queryParams = { ...params }" />
+        <pro-search style="padding: 0" :columns="columns" type="simple" @search="(params) => queryParams = { ...params }" />
 
-        <j-pro-table ref="tableRef" :columns="columns" :request="getUserList" mode="TABLE" :params="queryParams"
-            :rowSelection="{
+        <div style="height: 480px;">
+          <j-pro-table style="padding: 0" ref="tableRef" :columns="columns" :request="getUserList" mode="TABLE" :params="queryParams"
+                       :rowSelection="{
                 selectedRowKeys: selectedRowKeys,
                 onSelect: changeSelect,
                 onSelectAll: selectAll,
                 onSelectNone: ()=>selectedRowKeys = []
             }">
-        </j-pro-table>
+          </j-pro-table>
+        </div>
     </a-modal>
 </template>
 
@@ -30,6 +32,7 @@ const columns = [
         title: $t('components.AddUserDialog.659587-1'),
         dataIndex: 'name',
         key: 'name',
+        ellipsis: true,
         search: {
             type: 'string',
         },
@@ -38,6 +41,7 @@ const columns = [
         title: $t('components.AddUserDialog.659587-2'),
         dataIndex: 'username',
         key: 'username',
+        ellipsis: true,
         search: {
             type: 'string',
         },
@@ -89,7 +93,6 @@ const confirm = () => {
 };
 const changeSelect = (item: any, state: boolean) => {
     const arr = new Set(selectedRowKeys.value);
-    console.log(item, state);
     if (state) {
         arr.add(item.id);
     } else {

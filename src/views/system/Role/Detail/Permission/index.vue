@@ -1,23 +1,24 @@
 <template>
   <div class="role-permiss-container">
-    <section class="card">
-      <h5>{{ $t('Permission.index.071527-0') }}</h5>
+    <div class="card">
+      <div>
+        <TitleComponent :data="$t('Permission.index.071527-0')" />
+      </div>
       <PermissionTree v-model:select-items="menus" />
-
-      <a-button
-        type="primary"
-        :confirm-loading="loading"
-        @click="clickSave"
-        style="margin-top: 24px"
-        >{{ $t('Permission.index.071527-1') }}</a-button
-      >
-    </section>
+      <div class="bottom">
+        <a-button
+            type="primary"
+            :confirm-loading="loading"
+            @click="clickSave"
+            style="margin-top: 24px"
+        >{{ $t('Permission.index.071527-1') }}</a-button>
+      </div>
+    </div>
   </div>
 </template>
 
-<script setup lang="ts" name="RolePermiss">
+<script setup lang="ts" name="RolePermission">
 import PermissionTree from '../components/PermissionTree.vue'
-// import { USER_CENTER_MENU_DATA } from '@/views/init-home/data/baseMenu'
 import { updatePermissionTree_api } from '@/api/system/role'
 import { onlyMessage } from '@jetlinks-web/utils'
 import { useI18n } from 'vue-i18n';
@@ -43,8 +44,6 @@ const clickSave = () => {
 .role-permiss-container {
   .card {
     margin-bottom: 24px;
-    background-color: #fff;
-    padding: 24px;
 
     h5 {
       position: relative;
@@ -57,11 +56,11 @@ const clickSave = () => {
 
       &::before {
         position: absolute;
-        top: 5px px;
+        top: 7px;
         left: 0;
         width: 4px;
-        height: calc(100% - 10px);
-        background-color: #1d39c4;
+        height: calc(100% - 14px);
+        background-color: @primary-color;
         border-radius: 2px;
         content: ' ';
       }
