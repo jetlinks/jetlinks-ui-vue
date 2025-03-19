@@ -49,6 +49,7 @@
         :min="0"
         :max="65535"
         :maxlength="64"
+        :precision="0"
         :placeholder="$lang('BACNetIp.channel.20250207-6')"
     />
   </a-form-item>
