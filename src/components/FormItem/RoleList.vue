@@ -80,6 +80,7 @@ watch(() => props.value, () => {
   <div class="role-list-warp">
     <div style="flex: 1; min-width: 0">
       <a-tree-select
+          :treeDefaultExpandedKeys="props?.value || []"
           v-model:value="myValue"
           multiple
           show-search

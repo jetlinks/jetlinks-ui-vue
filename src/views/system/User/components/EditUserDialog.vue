@@ -243,8 +243,8 @@ const onChange = (value: string[]) => {
     return positionsMap.get(i)
   })
 
-  const roles = map(flatten(map(arr, 'roles')), 'id')
-  const orgIds = map(arr, 'orgId')
+  const roles = map(flatten(map(arr, 'roles')), 'id').filter(i => i);
+  const orgIds = map(arr, 'orgId').filter(i => i);
 
   form.data.roleIdList = handleData(form.data.roleIdList, roles, 'roles')
   form.data.orgIdList = handleData(form.data.orgIdList, orgIds, 'orgIds')

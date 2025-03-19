@@ -61,6 +61,7 @@ watch(() => props.value, () => {
   <div class="org-list-warp">
     <div style="flex: 1; min-width: 0">
       <a-tree-select
+          :treeDefaultExpandedKeys="props?.value || []"
           v-model:value="myValue"
           show-search
           multiple

@@ -289,6 +289,8 @@
 	"data.RoleData.950813-31": "Not Supported",
 	"data.RoleData.950813-32": "This menu does not support data permission control",
 	"data.RoleData.950813-33": "Plugin Management",
+	"data.RoleData.950813-34": "Resource Library",
+	"data.RoleData.950813-35": "Remote Access",
 	"Menu.index.459633-0": "System initialized with {0} menus",
 	"Menu.index.459633-2": "The initialized menus can be maintained and managed on the 'Menu Management' page.",
 	"login.remember.102238-0": "Remember me",
