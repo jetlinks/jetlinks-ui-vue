@@ -17,6 +17,9 @@
                 onChange: (keys:string[])=>selectedRowKeys = keys,
             }"
       size="small"
+      :defaultParams="{
+                        sorts: [{ name: 'createTime', order: 'desc' }],
+                    }"
     >
       <template #headerLeftRender>
         <a-space>
@@ -45,9 +48,7 @@
         ></j-badge-status>
       </template>
       <template #createTime="slotProps">
-        <span V-time-format="'YYYY-MM-DD HH:mm:ss'">
-          {{ slotProps.createTime }}
-        </span>
+        {{ slotProps.createTime ? dayjs(slotProps.createTime).format("YYYY-MM-DD HH:mm:ss") : '--' }}
       </template>
 
       <template #action="slotProps">
@@ -80,6 +81,7 @@ import AddUserDialog from '../components/AddUserDialog.vue'
 import { getUserByRole_api, unbindUser_api } from '@/api/system/role'
 import { onlyMessage } from '@jetlinks-web/utils'
 import { useI18n } from 'vue-i18n';
+import dayjs from "dayjs";
 
 const { t: $t } = useI18n();
 const roleId = useRoute().params.id as string

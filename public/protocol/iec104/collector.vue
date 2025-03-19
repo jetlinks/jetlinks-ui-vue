@@ -29,7 +29,9 @@
   <a-form-item
     :label="$lang('iec104.collector.20250207-5')"
     :name="['configuration', 'terminnalAddress']"
-    :rules="rules.terminnalAddress"
+    :rules="[
+    { required: true, message: $lang('iec104.collector.20250207-11') },
+  ]"
   >
     <a-input-number
       style="width: 100%"
@@ -44,7 +46,9 @@
   <a-form-item
       :label="$lang('iec104.collector.20250207-12')"
       :name="['configuration', 'frameAmountMax']"
-      :rules="rules.frameAmountMax"
+      :rules="[
+    { required: true, message: $lang('iec104.collector.20250207-13') },
+  ]"
   >
     <a-input-number
         style="width: 100%"
@@ -111,12 +115,6 @@ const validatorUrl = (rule, value, callback) => {
 const rules = {
   host: [{ required: true, trigger: "blur", validator: validatorUrl }],
   port: [{ required: true, trigger: "blur", validator: validator1 }],
-  terminnalAddress: [
-    { required: true, trigger: "blur", message: $lang('iec104.collector.20250207-11') },
-  ],
-  frameAmountMax: [
-    { required: true, trigger: "blur", message: $lang('iec104.collector.20250207-13') },
-  ],
 };
 </script>
 <style lang="less" scoped></style>
