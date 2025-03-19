@@ -6,7 +6,7 @@
 			</template>
 		</a-input>
 		<div v-if="isAdmin" class="controls">
-			<j-permission-button hasPermission="system/Role:groupAdd" block type="primary" @click="addGroup">
+			<j-permission-button block type="primary" @click="addGroup">
 				{{ $t('RoleLeft.index.507330-1') }}
 			</j-permission-button>
 		</div>
@@ -115,9 +115,7 @@ const addGroup = () => {
 	})
 }
 const saveGroup = async (data: any) => {
-	if (addName.value === '') {
-		listData.value[0].children.splice(1, 1)
-	} else {
+	if (addName.value) {
 		const saveData = {
 			name: addName.value,
 			id: data.id
