@@ -52,7 +52,7 @@ onMounted(() => {
   <j-page-container>
     <pro-search
       :columns="columns"
-      target="system-user"
+      target="system-position"
       @search="p => params = p"
     />
     <full-page>
