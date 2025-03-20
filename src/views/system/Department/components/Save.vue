@@ -14,6 +14,7 @@
         <a-tree-select
           v-model:value="formModel.data.parentId"
           style="width: 100%"
+          :allow-clear="true"
           :placeholder="$t('components.Save.069696-1')"
           :tree-data="treeData"
           :field-names="{ value: 'id' }"
@@ -96,9 +97,9 @@ const { loading, run } = useRequest(
 const confirm = () => {
   formRef.value
     ?.validate()
-    .then((_data: any) =>
-      run(props.data.id ? { ...props.data, ..._data } : _data),
-    )
+    .then((_data: any) => {
+      run(props.data.id ? { ...props.data, ..._data } : _data)
+    })
 }
 
 // 顺序选择

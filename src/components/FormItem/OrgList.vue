@@ -22,12 +22,27 @@ const props = defineProps({
   }
 })
 
+const handleData = (arr) => {
+  return arr.map(i => {
+    if(i.children?.length){
+      i.children = handleData(i.children)
+    }
+    if(props.disabledData?.includes(i.id)){
+      i.disabled = true
+    }
+    return i
+  })
+}
+
 const {data: treeData, reload} = useRequest(getDepartmentList_api, {
   defaultParams: {
     paging: false,
     sorts: [{name: 'sortIndex', order: 'asc'}]
   },
-  defaultValue: []
+  defaultValue: [],
+  onSuccess: (resp) => {
+    return handleData(resp.result)
+  }
 })
 
 const myValue = ref()
@@ -79,7 +94,7 @@ watch(() => props.value, () => {
         </template>
         <template #tagRender="{value, label, closable, onClose }">
           <div :class="{ 'ant-select-selection-item': true, 'tag-blue': disabledData.includes(value) }">
-            <div  class="ant-select-selection-item-content" >
+            <div class="ant-select-selection-item-content">
               {{ label }}
             </div>
             <div v-if="!disabledData.includes(value)" @click.stop="onClose" class="ant-select-selection-item-remove">
