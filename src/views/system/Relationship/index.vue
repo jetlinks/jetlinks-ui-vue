@@ -76,6 +76,9 @@ import {
 import EditDialog from './components/EditDialog.vue';
 import { onlyMessage } from '@/utils/comm';
 import { useI18n } from 'vue-i18n';
+import { useRelationTypes } from './hooks/useRelationTypes';
+
+const { relationTypes, beRelationTypes } = useRelationTypes();
 
 const { t: $t } = useI18n();
 const permission = 'system/Relationship';
@@ -110,13 +113,12 @@ const columns = [
         search: {
             rename:'objectType',
             type: 'select',
-            options: async () =>{
-               const res:any = await getObjectList_api()
-               return res.result?.map((i:any)=>{
-                return {
-                    label:i.name,
-                    value:i.id
-                }
+            options: () => {
+                return relationTypes.value.map(item => {
+                   return {
+                       label: item.name,
+                       value: item.id
+                   }
                })
             }
         }
@@ -131,12 +133,11 @@ const columns = [
             rename: 'targetType',
             type: 'select',
             options: async () =>{
-               const res:any = await getObjectList_api()
-               return res.result?.map((i:any)=>{
-                return {
-                    label:i.name,
-                    value:i.id
-                }
+               return beRelationTypes.value.map(item => {
+                   return {
+                       label: item.name,
+                       value: item.id
+                   }
                })
             } 
         },
