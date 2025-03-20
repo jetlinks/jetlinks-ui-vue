@@ -223,6 +223,7 @@ const unBind = (row?: any) => {
     if (resp.success) {
       onlyMessage($t('user.index.252066-6'))
       refresh()
+      _selectedRowKeys.value = []
     }
   })
 }
