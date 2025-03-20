@@ -41,7 +41,8 @@ const { data: treeData, reload } = useRequest(getRoleList, {
         children: item.roles?.map((i)=>{
           return {
             name:i.name,
-            id:i.id
+            id:i.id,
+            disabled: props.disabledData.includes(i.id)
           }
         }) || []
       }
