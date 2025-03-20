@@ -40,7 +40,7 @@
                             :placeholder="$t('components.EditDialog.375810-4')"
                         >
                             <a-select-option
-                                v-for="item in form.objectList"
+                                v-for="item in relationTypes"
                                 :value="item.id"
                             >
                                 {{ item.i18nName || item.name }}
@@ -61,7 +61,7 @@
                             :placeholder="$t('components.EditDialog.375810-6')"
                         >
                             <a-select-option
-                                v-for="item in targetList"
+                                v-for="item in beRelationTypes"
                                 :value="item.id"
                             >
                                 {{ item.i18nName || item.name }}
@@ -126,6 +126,7 @@ import {
 import { dictItemType } from '../typing';
 import { onlyMessage } from '@/utils/comm';
 import { useI18n } from 'vue-i18n';
+import { useRelationTypes } from '../hooks/useRelationTypes';
 
 const { t: $t } = useI18n();
 const emits = defineEmits(['refresh', 'update:visible']);
@@ -133,9 +134,10 @@ const props = defineProps<{
     visible: boolean;
     data: formType;
 }>();
+
+const { relationTypes, beRelationTypes } = useRelationTypes();
 // 弹窗相关
 const loading = ref(false);
-const targetList = ref([])
 const dialogTitle = computed(() => (props.data.id ? $t('components.EditDialog.375810-14') : $t('components.EditDialog.375810-15')));
 const confirm = () => {
     loading.value = true;
@@ -196,14 +198,6 @@ const form = reactive({
         form.data.targetType = undefined;
         form.rules.checkUnique();
     },
-    objectList: [] as any[],
-
-    getObjectList: () => {
-        getObjectList_api().then((resp: any) => {
-            form.objectList = resp.result.filter(item=>item.id === 'device');
-            targetList.value = resp.result.filter(item=>item.id === 'user');
-        });
-    },
     submit: () => {
         const params = {
             ...form.data,
@@ -224,7 +218,6 @@ const validateName = async(_:any,value:any)=>{
    }
    return form.data.reverseName === form.data.name ? Promise.reject($t('components.EditDialog.375810-18')) : Promise.resolve()
 }
-form.getObjectList();
 
 type formType = {
     name: string;

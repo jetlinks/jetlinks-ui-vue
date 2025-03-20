@@ -116,6 +116,7 @@
               <j-permission-button
                   type="link"
                   :hasPermission="`${permission}:delete`"
+                  danger
                   :tooltip="{
                                     title: slotProps.status
                                         ? $t('User.index.673867-7')
@@ -383,29 +384,20 @@ const handleParams = (params: any) => {
         ];
       }
       if (termsItem.column === 'roleList') {
-        if (
-            termsItem.termType === 'eq' ||
-            termsItem.termType === 'in'
-        ) {
-          return {
-            column: 'id$in-dimension$role',
-            type: termsItem.type,
-            value: termsItem.value,
-          };
-        } else {
-          return {
-            column: 'id$in-dimension$role$not',
-            type: termsItem.type,
-            value: termsItem.value,
-          };
-        }
+        const isIncludeTermType = ['eq', 'in'].includes(termsItem.termType);
+        return {
+          column: `id$in-dimension$role${!isIncludeTermType ? '$not' : ''}`,
+          type: termsItem.type,
+          value: termsItem.value,
+        };
       }
       if (termsItem.column === 'positions') {
+        const isIncludeTermType = ['eq', 'in'].includes(termsItem.termType);
         return {
-          column: 'id$in-dimension$position',
+          column: `id$in-dimension$position${!isIncludeTermType ? '$not' : ''}`,
           type: termsItem.type,
-          value: termsItem.value
-        }
+          value: termsItem.value,
+        };
       }
       return termsItem;
     });
