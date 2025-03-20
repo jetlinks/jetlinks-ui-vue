@@ -92,8 +92,7 @@
                     required: true,
                     message: $t('BasicInfo.Info.607342-10'),
                   },
-                  { max: 128, message: $t('BasicInfo.Info.607342-11') },
-                  { pattern: /^\//, message: '请正确填写地址，以/开头' },
+                  { validator: checkUrl, trigger: 'blur' }
                 ]"
               >
                 <a-input
@@ -205,6 +204,20 @@ const checkCode = async (_rule: any, value: string): Promise<any> => {
     })
     if (resp.result.passed) return Promise.resolve()
     else return Promise.reject($t('BasicInfo.Info.607342-17'))
+  }
+}
+
+const checkUrl = async (_rule: any, value: string): Promise<any> => {
+  const reg = /^\//
+  if (!value) {
+    return Promise.reject($t('BasicInfo.Info.607342-10')) 
+  }
+  if(value && !reg.test(value)) {
+    return Promise.reject($t('BasicInfo.Info.607342-18')) 
+  } else if(value.length > 128) {
+    return Promise.reject($t('BasicInfo.Info.607342-11'))
+  } else {
+    return Promise.resolve()
   }
 }
 
