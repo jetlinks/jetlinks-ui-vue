@@ -98,6 +98,7 @@ export const useColumns = (departmentId: string) => {
             scopedSlots: true,
             search: {
                 type: 'select',
+                termFilter: ['not', 'in', 'nin'],
                 // componentProps: {
                 //     placeholder: i18n.global.t('Department.util.780026-3'),
                 // },
