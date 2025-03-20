@@ -211,6 +211,7 @@ const beforeUpload = (file: any) => {
     } else {
         onlyMessage($t('Left.index.036608-13'), 'error')
     }
+    return false
 };
 
 const closeDown = () => {

@@ -177,6 +177,7 @@ const handleParams = (e: any) => {
     return a.terms.map(b => {
       if (b.column === 'positions') {
         b.column = 'id$in-dimension$position'
+        b.termType = undefined
       }
       return b
     })
