@@ -37,6 +37,11 @@ const handleMeta = (item: MenuItem, isApp: boolean) => {
 
 const findComponents = (code: string, level: number, isApp: boolean, components: any, mate: any, hasChildren: false) => {
     const myComponents = components[code]
+
+    if (isApp && !hasChildren) {
+      return () => Iframe
+    }
+
     if (level === 1) { // BasicLayoutPage
         if (myComponents && !hasChildren) {
             return mate?.hasLayout === false ? () => myComponents() : h(BasicLayoutPage, {}, h(defineAsyncComponent(() => myComponents()), {}))
@@ -89,7 +94,7 @@ export const handleMenus = (menuData: any, extraMenus: any, components: any, lev
             route.component = item.component ?? findComponents(item.code, level, isApp, components, item.meta, route.children.length)
             const extraRoute = hasExtraChildren(item, extraMenus)
             if (extraRoute && !isApp) { // 包含额外的子路由
-              
+
                 route.children = [...route.children, ...extraRoute]
             }
 
