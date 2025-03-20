@@ -27,8 +27,12 @@
                 <el-amap-search-box visible @select="selectPoi" />
                 <el-amap-marker :position="position" />
               </AMapComponent>
+              <div>
+                {{ mapPoint }}
+              </div>
             </div>
         </a-modal>
+
     </div>
 </template>
 
