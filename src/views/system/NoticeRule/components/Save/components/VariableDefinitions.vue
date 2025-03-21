@@ -27,6 +27,7 @@
                 <InputFile
                     v-else-if="getType(item) === 'file'"
                     v-model:value="modelRef[item.id]"
+                    @change="(dt) => onChange(dt, item)"
                 />
                 <a-input
                     v-else-if="getType(item) === 'link'"
@@ -74,6 +75,7 @@ const props = defineProps({
 const formRef = ref();
 
 const modelRef = reactive({});
+const fileNames = reactive({});
 
 watchEffect(() => {
     Object.assign(modelRef, props?.value);
@@ -82,6 +84,15 @@ watchEffect(() => {
 const getType = (item: any) => {
     return item.expands?.businessType || item.type;
 };
+
+const onChange = (dt: any, item: any) => {
+  if(item.type === 'file'){
+    const __key = item.id.replace('location', 'name')
+    if(__key){
+      fileNames[__key] = dt?.name
+    }
+  }
+}
 
 const checkValue = (_rule: any, value: any, item: any) => {
     const type = item.expands?.businessType || item?.type;
@@ -134,7 +145,7 @@ const onSave = () =>
         formRef.value
             ?.validate()
             .then((_data: any) => {
-                resolve(_data);
+                resolve({..._data, ...fileNames});
             })
             .catch(() => {
                 reject(false);

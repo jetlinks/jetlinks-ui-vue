@@ -4,6 +4,7 @@ import ImageUpload from "./Upload/Image/ImageUpload.vue";
 import CardBox from './CardBox/index.vue';
 import Search from './Search'
 import AMapComponent from './AMapComponent/AMap.vue'
+import PathSimplifier from './AMapComponent/PathSimplifier.vue'
 import { BasicLayoutPage, BlankLayoutPage, FullPage } from '@/layout'
 import ProUpload from './Upload/index.vue'
 import Player from './Player/index.vue'
@@ -24,6 +25,7 @@ export default {
             .component('BlankLayoutPage', BlankLayoutPage)
             .component('FullPage', FullPage)
             .component('AMapComponent', AMapComponent)
+            .component('PathSimplifier', PathSimplifier)
             .component('ProUpload', ProUpload)
             .component('Player', Player)
             .component('BatchDropdown', BatchDropdown)

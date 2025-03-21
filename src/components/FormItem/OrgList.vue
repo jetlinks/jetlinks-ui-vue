@@ -34,6 +34,8 @@ const handleData = (arr) => {
     }
     if(props.disabledData?.includes(i.id)){
       i.disabled = true
+    } else {
+      i.disabled = false
     }
     return i
   })

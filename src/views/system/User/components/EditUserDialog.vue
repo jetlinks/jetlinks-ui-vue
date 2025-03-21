@@ -243,7 +243,7 @@ const handleData = (data: string[], newData: string[], key: string) => {
 
 const onChange = (value: string[]) => {
   const arr = (value || []).map(i => {
-    return positionsMap.get(i)
+    return positionsMap.get(i) || i
   })
 
   const roles = map(flatten(map(arr, 'roles')), 'id').filter(i => i);

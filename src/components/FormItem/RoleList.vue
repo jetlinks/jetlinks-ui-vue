@@ -32,6 +32,21 @@ const props = defineProps({
 const dataMap = new Map()
 
 const _treeData = computed(() => {
+  const arr = (treeData?.value || []).map((item)=>{
+    return {
+      name: item.groupName,
+      id: item.groupId,
+      disabled: true,
+      children: item.roles?.map((i)=>{
+        dataMap.set(i.id, i);
+        return {
+          name:i.name,
+          id:i.id,
+          disabled: props.disabledData.includes(i.id)
+        }
+      }) || []
+    }
+  })
   const _arr = props.extraData.filter(i => {
     return !dataMap.get(i.id)
   }).map(item => {
@@ -40,7 +55,7 @@ const _treeData = computed(() => {
       disabled: true
     }
   })
-  return [...treeData?.value || [], ..._arr]
+  return [...arr, ..._arr]
 })
 
 const { data: treeData, run } = useRequest(getRoleList, {
@@ -48,24 +63,7 @@ const { data: treeData, run } = useRequest(getRoleList, {
     paging: false,
     sorts: [{ name: 'createTime', order: 'desc' }]
   },
-  defaultValue: [],
-  onSuccess(resp) {
-    return resp.result.map((item)=>{
-      return {
-        name: item.groupName,
-        id: item.groupId,
-        disabled: true,
-        children: item.roles?.map((i)=>{
-          dataMap.set(i.id, i);
-          return {
-            name:i.name,
-            id:i.id,
-            disabled: props.disabledData.includes(i.id)
-          }
-        }) || []
-      }
-    })
-  }
+  defaultValue: []
 })
 const myValue = ref()
 const _extraData = computed(() => {
