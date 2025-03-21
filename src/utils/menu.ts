@@ -39,7 +39,7 @@ const findComponents = (code: string, level: number, isApp: boolean, components:
     const myComponents = components[code]
 
     if (isApp && !hasChildren) {
-      return () => Iframe
+      return Iframe
     }
 
     if (level === 1) { // BasicLayoutPage
