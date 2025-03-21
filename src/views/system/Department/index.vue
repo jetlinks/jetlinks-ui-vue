@@ -50,6 +50,9 @@ const openDeviceBind = () => {
 
 const onChange = (id: string) => {
   departmentId.value = id
+  if(!id){
+
+  }
 }
 
 const onChangeTabs = (id) => {
