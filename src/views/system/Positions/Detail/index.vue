@@ -104,7 +104,7 @@ watch(() => route.params.id, (v) => {
               <a-row :gutter="24">
                 <a-col :span="12">
                   <a-form-item
-                    :label="$t('components.EditUserDialog.939453-3')"
+                    :label="$t('components.EditUserDialog.939453-3-1')"
                     name="name"
                     :rules="[
                             { required: true, message: $t('positions.index.223804-4') },

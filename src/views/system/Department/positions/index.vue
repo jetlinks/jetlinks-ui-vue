@@ -26,7 +26,7 @@ const columns = [
     },
   },
   {
-    title: $t('components.EditUserDialog.939453-3'),
+    title: $t('components.EditUserDialog.939453-3-1'),
     dataIndex: 'name',
     key: 'name',
     ellipsis: true,
