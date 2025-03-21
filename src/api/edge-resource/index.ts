@@ -39,6 +39,11 @@ export const createTask = (data: any) => server.post('/edge/agent-job/_create', 
 export const queryTaskDetailPage = (data: any) => server.post('/edge/agent-job/detail/_query', data)
 
 /**
+ * 下发任务详情列表
+ */
+export const queryTaskCount = (data: any) => server.post('/edge/agent-job/_count', data)
+
+/**
  * 下发任务详情记录
  */
 export const queryIssueDetail = (data: any) => server.post('/edge/agent-job/tasks/detail/_query', data)
