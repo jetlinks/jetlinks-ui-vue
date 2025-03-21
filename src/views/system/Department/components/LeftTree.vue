@@ -23,9 +23,10 @@
         <a-tree
           v-if="treeData.length > 0"
           :tree-data="treeData"
-          v-model:selected-keys="selectedKeys"
+          :selected-keys="selectedKeys"
           v-model:expandedKeys="expandedKeys"
           :fieldNames="{ key: 'id' }"
+          @select="onSelect"
         >
           <template #title="{ name, data }">
             <div class="department-tree-item-content">
@@ -229,6 +230,12 @@ const openDialog = (row: any = {}) => {
 
   current.value = { ...row, sortIndex }
   visible.value = true
+}
+
+const onSelect = (val: string[]) => {
+  if(val.length){
+    selectedKeys.value = val
+  }
 }
 
 watch(
