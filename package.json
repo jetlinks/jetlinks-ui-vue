@@ -18,7 +18,7 @@
     "@fullcalendar/daygrid": "^6.1.15",
     "@fullcalendar/interaction": "^6.1.15",
     "@fullcalendar/vue3": "^6.1.15",
-    "@jetlinks-web/components": "2.5.3",
+    "@jetlinks-web/components": "2.5.4",
     "@jetlinks-web/constants": "^1.0.7",
     "@jetlinks-web/core": "^2.2.1",
     "@jetlinks-web/hooks": "^1.0.21",
