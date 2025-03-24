@@ -46,6 +46,19 @@ onMounted(() => {
   }
 })
 
+const onSearch = (e) => {
+  e?.terms.map(a => {
+    return a.terms.map(b => {
+      if (b.column === 'roles') {
+        b.column = 'id$position-role$position'
+        b.termType = undefined
+      }
+      return b
+    })
+  })
+  params.value = e
+}
+
 </script>
 
 <template>
@@ -53,7 +66,7 @@ onMounted(() => {
     <pro-search
       :columns="columns"
       target="system-position"
-      @search="p => params = p"
+      @search="onSearch"
     />
     <full-page>
       <j-pro-table

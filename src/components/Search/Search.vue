@@ -10,6 +10,7 @@
       :class='props.class'
       :style='myStyles'
       @search='searchSubmit'
+      ref="searchRef"
     />
   </div>
 </template>
@@ -57,6 +58,7 @@ const props = defineProps({
 
 const emit = defineEmits<Emit>()
 
+const searchRef = ref()
 const classNames = computed(() => {
   return {
     'j-advanced-search-warp': true,
@@ -82,6 +84,11 @@ const searchSubmit = (data: any) => {
   emit('search', data)
 }
 
+const reset = () => {
+  searchRef.value?.reset?.()
+}
+
+defineExpose({ reset })
 </script>
 
 <style scoped lang='less'>

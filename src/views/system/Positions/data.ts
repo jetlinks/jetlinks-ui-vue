@@ -31,7 +31,7 @@ export const useColumns = () => {
       key: 'roles',
       search: {
         type: 'select',
-        // rename:'id$in-dimension$role',
+        termFilter: ['not', 'in', 'nin'],
         options: () =>
           new Promise((resolve) => {
             queryRole_api({
@@ -77,7 +77,6 @@ export const useColumns = () => {
       search: {
         type: 'treeSelect',
         termOptions: ['eq'],
-
         options: () =>
           new Promise((resolve) => {
             getTreeData_api({}).then((resp: any) => {
