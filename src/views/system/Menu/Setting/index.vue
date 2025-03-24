@@ -229,6 +229,12 @@ const handleCancel = () => {
 
 const onSelect = (selecteds: Array<string>, e: any) => {
     selectedKeys.value = select(selecteds, e, cloneDeep(treeData.value));
+    const requiredKeys = ['system', 'system/Menu'];
+    requiredKeys.forEach(key => {
+        if (!selectedKeys.value.includes(key)) {
+            selectedKeys.value.push(key);
+        }
+    });
 };
 
 const onDrop = (info: AntTreeNodeDropEvent) => {
@@ -257,9 +263,9 @@ const onDragend = (info: AntTreeNodeDropEvent) => {
         Keys.has(i) && Keys.delete(i);
     });
     //拖拽成功时更新selectedKeys
-    if (treeDataDropChange.value) {
-        selectedKeys.value = [...Keys];
-    }
+    // if (treeDataDropChange.value) {
+    //     selectedKeys.value = [...Keys];
+    // }
 };
 
 const synchronization = async () => {
