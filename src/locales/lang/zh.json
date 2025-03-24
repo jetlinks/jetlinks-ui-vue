@@ -861,6 +861,7 @@
 	"components.EditUserDialog.939453-1": "确定",
 	"components.EditUserDialog.939453-2": "基础信息",
 	"components.EditUserDialog.939453-3": "姓名",
+	"components.EditUserDialog.939453-3-1": "名称",
 	"components.EditUserDialog.939453-4": "请输入姓名",
 	"components.EditUserDialog.939453-5": "最多可输入64个字符",
 	"components.EditUserDialog.939453-6": "手机号",

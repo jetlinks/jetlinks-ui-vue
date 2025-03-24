@@ -2,7 +2,7 @@
   <div class="role-user-container">
     <pro-search
       :columns="columns"
-      target="system-role-user"
+      target="system-position-user"
       :style="{
         padding: 0,
       }"

@@ -861,6 +861,7 @@
 	"components.EditUserDialog.939453-1": "Confirm",
 	"components.EditUserDialog.939453-2": "Basic Information",
 	"components.EditUserDialog.939453-3": "Name",
+	"components.EditUserDialog.939453-3-1": "Name",
 	"components.EditUserDialog.939453-4": "Please enter name",
 	"components.EditUserDialog.939453-5": "Up to 64 characters",
 	"components.EditUserDialog.939453-6": "Phone Number",
