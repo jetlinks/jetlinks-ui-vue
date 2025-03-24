@@ -63,7 +63,7 @@ const props = defineProps({
     }
 });
 
-const num = ref<-100 | 0>(0);
+const num = ref<-120 | 0>(0);
 
 const state = ref(props.data.state?.value)
 
@@ -72,7 +72,7 @@ watchEffect(() => {
 })
 
 const onMove = () => {
-    num.value = num.value === 0 ? -100 : 0;
+    num.value = num.value === 0 ? -120 : 0;
 };
 
 const detail = () => {
@@ -128,7 +128,7 @@ const read = (type: '_read' | '_unread') => {
     list-style: none;
     cursor: pointer;
     display: flex;
-    width: 412px;
+    width: 432px;
     transition: all 0.3s;
     gap: 24px;
 
@@ -144,7 +144,7 @@ const read = (type: '_read' | '_unread') => {
                 display: flex;
                 align-items: center;
                 width: calc(100% - 120px);
-                
+
                 div {
                     color: rgba(0, 0, 0, 0.85);
                     font-size: 14px;
@@ -170,7 +170,7 @@ const read = (type: '_read' | '_unread') => {
     }
 
     .list-item-right {
-        width: 100px;
+        width: 120px;
         padding: 5px 12px 5px 0;
         display: flex;
         flex-direction: column;
@@ -180,6 +180,7 @@ const read = (type: '_read' | '_unread') => {
             border: none;
             background-color: #F1F4FF;
             color: @primary-color;
+            padding: 0;
         }
     }
 }
