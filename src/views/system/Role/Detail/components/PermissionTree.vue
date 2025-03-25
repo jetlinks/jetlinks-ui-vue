@@ -273,7 +273,6 @@ const { PermissionsMap } = useIndirectMenusMap(tableData)
 
 function getAllPermiss() {
     const id = route.params.id as string;
-    console.log(encodeQuery({ terms: { options: '%show\":false%' } }))
     getPermissionTree_api(id, paramsEncodeQuery({
         terms: [
             {
