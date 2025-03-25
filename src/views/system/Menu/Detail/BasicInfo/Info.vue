@@ -88,10 +88,6 @@
                 :label="$t('BasicInfo.Info.607342-9')"
                 name="url"
                 :rules="[
-                  {
-                    required: true,
-                    message: $t('BasicInfo.Info.607342-10'),
-                  },
                   { validator: checkUrl, trigger: 'blur' }
                 ]"
               >
