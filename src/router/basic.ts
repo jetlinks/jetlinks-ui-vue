@@ -65,3 +65,19 @@ export const EDGE_TOKEN_ROUTE: RouteRecordItem = {
   },
   component: () => import('@/views/TokenJump/index.vue')
 };
+
+export const OAuth2 = {
+  path: '/oauth',
+    meta: {
+    title: '授权页'
+  },
+  component: () => import('@/views/oauth/index.vue')
+}
+
+export const OAuthWechat = {
+  path: '/oauth/wechat',
+    meta: {
+    title: '微信授权页'
+  },
+  component: () => import('@/views/oauth/WeChat.vue')
+}

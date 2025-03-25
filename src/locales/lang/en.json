@@ -1411,5 +1411,13 @@
 	"positions.index.223804-1": "Superior positions",
 	"positions.index.223804-2": "Please select a superior position",
 	"positions.index.223804-3": "Please add position information first",
-	"positions.index.223804-4": "Please enter the position name"
+	"positions.index.223804-4": "Please enter the position name",
+	"auth.index.559799-0": "Authorized login",
+	"auth.index.559799-1": "You are authorizing login, {0} will be granted the following permissions:",
+	"auth.index.559799-2": "Associate {0} account",
+	"auth.index.559799-3": "Obtain your personal information",
+	"auth.index.559799-4": "Agree to authorize",
+	"auth.index.559799-5": "Switch accounts",
+	"auth.index.559799-6": "OAuth Authorization - {0}",
+	"auth.index.559799-7": "OAuth Authorization"
 }
