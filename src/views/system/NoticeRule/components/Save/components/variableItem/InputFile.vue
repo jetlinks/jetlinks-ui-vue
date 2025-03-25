@@ -43,10 +43,10 @@ const props = defineProps({
     value: {
         type: String,
         default: '',
-    },
+    }
 });
 
-const emit = defineEmits(['update:value']);
+const emit = defineEmits(['update:value', 'change']);
 const url = ref(props.value || undefined);
 const loading = ref<boolean>(false);
 
@@ -59,6 +59,7 @@ const handleChange = (info: any) => {
         loading.value = false;
         const result = info.file.response?.result.accessUrl;
         emit('update:value', result);
+        emit('change', {name: info.file.response?.result?.name, url: result});
     }
 };
 
@@ -76,6 +77,7 @@ const handleBeforeUpload = (file: any) => {
 
 const onChange = (e: any) => {
     emit('update:value', e.target.value);
+    emit('change', {name: '', url: e.target.value});
 };
 
 watch(() => props.value, () => {

@@ -34,6 +34,7 @@ import LeftTree from './components/LeftTree.vue'
 import User from './user/index.vue';
 import Position from './positions/index.vue';
 import {getModulesComponents, isNoCommunity} from "@/utils";
+import {useRouteQuery} from "@vueuse/router";
 
 const activeKey = ref<'product' | 'device' | 'user'>('product');
 
@@ -49,6 +50,9 @@ const openDeviceBind = () => {
 
 const onChange = (id: string) => {
   departmentId.value = id
+  if(!id){
+
+  }
 }
 
 const onChangeTabs = (id) => {

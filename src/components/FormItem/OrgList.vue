@@ -19,30 +19,54 @@ const props = defineProps({
   disabledData: {
     type: Array,
     default: []
+  },
+  extraData: { // 为了修改没有权限，但是要展示名称的数据
+    type: Array,
+    default: []
   }
 })
-
+const dataMap = new Map()
 const handleData = (arr) => {
   return arr.map(i => {
+    dataMap.set(i.id, i)
     if(i.children?.length){
       i.children = handleData(i.children)
     }
     if(props.disabledData?.includes(i.id)){
       i.disabled = true
+    } else {
+      i.disabled = false
     }
     return i
   })
 }
 
-const {data: treeData, reload} = useRequest(getDepartmentList_api, {
+const _treeData = computed(() => {
+  const arr = handleData(treeData.value || [])
+  const _arr = props.extraData.filter(i => {
+    return !dataMap.get(i.id)
+  }).map(item => {
+    return {
+      ...item,
+      disabled: true
+    }
+  })
+  return [...arr, ..._arr]
+})
+
+const _extraData = computed(() => {
+  return props.extraData.filter(i => {
+    return !dataMap.get(i.id)
+  }).map(i => i.id)
+})
+
+const {data: treeData, run} = useRequest(getDepartmentList_api, {
   defaultParams: {
     paging: false,
     sorts: [{name: 'sortIndex', order: 'asc'}]
   },
-  defaultValue: [],
-  onSuccess: (resp) => {
-    return handleData(resp.result)
-  }
+  immediate: false,
+  defaultValue: []
 })
 
 const myValue = ref()
@@ -57,7 +81,7 @@ const clickAddItem = () => {
       myValue.value = value
     }
     emit('update:value', myValue.value);
-    reload()
+    run()
   };
 }
 
@@ -70,6 +94,10 @@ watch(() => props.value, () => {
   myValue.value = props.value
 }, {immediate: true})
 
+
+onMounted(() => {
+  run()
+})
 </script>
 
 <template>
@@ -81,15 +109,21 @@ watch(() => props.value, () => {
           show-search
           multiple
           :placeholder="$t('components.EditUserDialog.939453-15')"
-          :tree-data="treeData"
+          :tree-data="_treeData"
           :fieldNames="{ label: 'name', value: 'id' }"
           :filterTreeNode="(v, node) => filterSelectNode(v, node, 'name')"
           v-bind="props.extraProps"
           @change="onChange"
       >
-        <template #title="{ name }">
-          <div style="width: calc(100% - 10px) ">
-            <j-ellipsis>{{ name }}</j-ellipsis>
+        <template #title="record">
+          <a-tooltip :title="$t('components.EditUserDialog.939453-34')" v-if="_extraData.includes(record.id)">
+            <span class="j-ellipsis j-ellipsis-line-clamp" style="-webkit-line-clamp: 1;">{{ record.name }}</span>
+          </a-tooltip>
+          <a-tooltip :title="$t('components.EditUserDialog.939453-35')"  v-else-if="disabledData.includes(record.id)">
+            <span class="j-ellipsis j-ellipsis-line-clamp" style="-webkit-line-clamp: 1;">{{ record.name }}</span>
+          </a-tooltip>
+          <div style="width: calc(100% - 10px) " v-else>
+            <j-ellipsis>{{ record.name }}</j-ellipsis>
           </div>
         </template>
         <template #tagRender="{value, label, closable, onClose }">
@@ -97,7 +131,7 @@ watch(() => props.value, () => {
             <div class="ant-select-selection-item-content">
               {{ label }}
             </div>
-            <div v-if="!disabledData.includes(value)" @click.stop="onClose" class="ant-select-selection-item-remove">
+            <div v-if="!disabledData.includes(value) && !_extraData.includes(value)" @click.stop="onClose" class="ant-select-selection-item-remove">
               <AIcon type="CloseOutlined" />
             </div>
           </div>

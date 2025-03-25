@@ -7,6 +7,7 @@
         style="margin: 0;"
         :columns="columns"
         @search="handleParams"
+        ref="searchRef"
     />
     <j-pro-table
         v-if="show"
@@ -117,6 +118,7 @@ const queryParams = ref({})
 const dialogVisible = ref(false)
 // 表格
 const tableRef = ref<any>() // 表格实例
+const searchRef = ref<any>() // 表格实例
 const _selectedRowKeys = ref<string[]>([])
 
 const columns = ref(useColumns(props.parentId))
@@ -177,6 +179,7 @@ const handleParams = (e: any) => {
     return a.terms.map(b => {
       if (b.column === 'positions') {
         b.column = 'id$in-dimension$position'
+        b.termType = undefined
       }
       return b
     })
@@ -223,6 +226,7 @@ const unBind = (row?: any) => {
     if (resp.success) {
       onlyMessage($t('user.index.252066-6'))
       refresh()
+      _selectedRowKeys.value = []
     }
   })
 }
@@ -262,6 +266,7 @@ watch(
     () => {
       refresh()
       columns.value = useColumns(props.parentId)
+      searchRef.value?.reset?.()
     },
 )
 </script>

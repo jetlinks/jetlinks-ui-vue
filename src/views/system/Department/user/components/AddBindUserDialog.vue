@@ -7,8 +7,8 @@
     @ok="confirm"
     @cancel="emits('close')"
   >
-    <pro-search type="simple" :columns="bindUserColumns" target="category" @search="onSearch" />
-    <div class="table">
+    <pro-search style="padding: 0" type="simple" :columns="bindUserColumns" target="category" @search="onSearch" />
+    <div class="table" style="height: 450px">
       <j-pro-table
         ref="tableRef"
         mode="TABLE"
@@ -25,7 +25,7 @@
         :defaultParams="{
           sorts: [{ name: 'createTime', order: 'desc' }],
         }"
-        :scroll="{ y: 500 }"
+        style="padding: 0"
       />
     </div>
   </a-modal>

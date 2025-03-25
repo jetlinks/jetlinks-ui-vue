@@ -65,6 +65,7 @@ const dialogVisible = ref(false)
 // 表格
 const tableRef = ref() // 表格实例
 // const _selectedRowKeys = ref([])
+const searchRef = ref()
 
 const positionId = ref()
 
@@ -144,6 +145,7 @@ watch(
   () => props.parentId,
   () => {
     refresh()
+    searchRef.value?.reset?.()
   },
 )
 </script>
@@ -156,6 +158,7 @@ watch(
       target="category-position"
       style="margin: 0;"
       @search="handleParams"
+      ref="searchRef"
     />
     <j-pro-table
       ref="tableRef"

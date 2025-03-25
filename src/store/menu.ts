@@ -33,6 +33,16 @@ const defaultOwnParams = [
                     },
                 ],
             },
+            {
+                terms: [
+                    {
+                        value: "%show\":false%",
+                        termType: "nlike",
+                        column: "options"
+                    }
+                ],
+                type:'and'
+            }
         ],
     },
 ]

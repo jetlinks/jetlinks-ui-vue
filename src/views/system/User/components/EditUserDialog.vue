@@ -79,19 +79,21 @@
                             { required: form.data.username !== 'admin', message: $t('components.EditUserDialog.939453-13') },
                         ]"
                     >
-                      <form-item-role :extraProps="{multiple: true}" :disabledData="disabledData.roles" v-model:value="form.data.roleIdList" :disabled="form.data.username === 'admin'" />
+                      <form-item-role :extraData="detail.roleList" :extraProps="{multiple: true}" :disabledData="disabledData.roles" v-model:value="form.data.roleIdList" :disabled="form.data.username === 'admin'" />
+                      <div class="tip"><AIcon style="margin-right: 4px" type="ExclamationCircleOutlined" />{{$t('components.EditUserDialog.939453-33')}}</div>
                     </a-form-item>
                 </a-col>
                 <a-col :span="12">
                     <a-form-item name="orgIdList" :label="$t('components.EditUserDialog.939453-14')" class="flex">
-                      <form-item-org :extraProps="{multiple: true}" :disabledData="disabledData.orgIds" v-model:value="form.data.orgIdList" />
+                      <form-item-org :extraData="detail.orgList" :extraProps="{multiple: true}" :disabledData="disabledData.orgIds" v-model:value="form.data.orgIdList" />
+                      <div class="tip"><AIcon style="margin-right: 4px" type="ExclamationCircleOutlined" />{{$t('components.EditUserDialog.939453-33')}}</div>
                     </a-form-item>
                 </a-col>
             </a-row>
           <a-row :gutter="24" v-if="form.IsShow('add', 'edit')">
             <a-col :span="12">
               <a-form-item name="positions" :label="$t('components.EditUserDialog.939453-31')">
-                  <form-item-position :extraProps="{disabled: form.data.username === 'admin', multiple: true}" v-model:value="form.data.positions" @change="onChange" />
+                  <form-item-position :extraData="detail.positions" :extraProps="{disabled: form.data.username === 'admin', multiple: true}" v-model:value="form.data.positions" @change="onChange" />
               </a-form-item>
             </a-col>
           </a-row>
@@ -204,6 +206,7 @@ const disabledData = reactive<{
   roles: [],
   orgIds: []
 })
+const detail = ref({})
 
 const dialogTitle = computed(() => {
     if (props.type === 'add') return $t('components.EditUserDialog.939453-23');
@@ -240,7 +243,7 @@ const handleData = (data: string[], newData: string[], key: string) => {
 
 const onChange = (value: string[]) => {
   const arr = (value || []).map(i => {
-    return positionsMap.get(i)
+    return positionsMap.get(i) || i
   })
 
   const roles = map(flatten(map(arr, 'roles')), 'id').filter(i => i);
@@ -300,6 +303,7 @@ const form = reactive({
         else if (props.type === 'reset') form.data = { id } as formType;
         else if (props.type === 'edit') {
             getUser_api(id).then((resp: any) => {
+                detail.value = resp.result;
                 _roleDetail.value = resp.result.roleList;
                 form.data = {
                     ...(resp.result as formType),
@@ -447,5 +451,10 @@ type optionType = {
         margin-right: 3px;
         content:''
     }
+}
+
+.tip {
+  color: rgba(0,0,0,.65);
+  margin-top: 4px;
 }
 </style>

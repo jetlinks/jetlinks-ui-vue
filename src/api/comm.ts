@@ -33,3 +33,5 @@ export const deleteSearchHistory = (target:string, id:string) => request.remove(
  * @returns
  */
 export const queryDashboard = (data: Record<string, any>) => request.post(`/dashboard/_multi`, data)
+
+export const lowCodeUrl = () => request.get('/system/config/low-code')

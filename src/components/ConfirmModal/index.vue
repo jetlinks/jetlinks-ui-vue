@@ -19,7 +19,7 @@ const props = defineProps({
         default: '',
     },
     onConfirm: {
-        type: Object,
+        type: [Object,Function],
         default: {},
     },
     className: {
