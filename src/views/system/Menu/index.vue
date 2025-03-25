@@ -13,6 +13,7 @@
           :columns="columns"
           :request="getList"
           :params="queryParams"
+          :defaultParams="defaultParams"
           type="TREE"
           mode="TABLE"
           noPagination
@@ -185,6 +186,16 @@ const columns = [
   },
 ]
 const queryParams = ref({ terms: [] })
+const defaultParams = {
+  terms: [
+    {
+      value: "%show\":false%",
+      termType: "nlike",
+      column: "options"
+    }
+  ],
+  type:'and'
+}
 const expandedRowKeys = ref<string[]>([])
 const tableRef = ref<Record<string, any>>({}) // 表格实例
 const total = ref<number>(0)
