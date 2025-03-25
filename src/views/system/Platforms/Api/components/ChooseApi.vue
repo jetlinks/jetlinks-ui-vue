@@ -4,7 +4,10 @@
             <j-pro-table
                 :columns="columns"
                 :dataSource="_tableData"
-                :rowSelection="props.mode !== 'home' ? rowSelection : undefined"
+                :rowSelection="props.mode !== 'home' ? {
+                    selectedRowKeys: _selectedRowKeys,
+                    onChange: onChange,
+                } : undefined"
                 noPagination
                 mode="TABLE"
             >
@@ -77,60 +80,42 @@ const _tableData = computed(() => {
     return uniqBy(props.tableData, 'id') || []
 })
 
-const rowSelection = {
-    // onSelect: (record: any) => {
-    //     const targetId = record.id;
-    //     let newKeys = [...props.selectedRowKeys];
+const _selectedRowKeys = ref(props.selectedRowKeys);
+const onChange = (keys: string[], _data: any[]) => {
+    console.log(keys,'keys')
+    const _keys = _data.map(i => i.id)
+    // 当前节点表格数据id
+    const currenTableKeys = _tableData.value.map((m: any) => m.id);
+    // 当前表格, 原有选中的id
+    const oldSelectedKeys = currenTableKeys.filter((key) =>
+        props.sourceKeys.includes(key),
+    );
+    // 除当前表格之外, 勾选上的数据
+    const otherSelectedKeys = department.crossPageKeys.filter(
+        (key) => !currenTableKeys.includes(key),
+    );
 
-    //     if (props.selectedRowKeys.includes(targetId)) {
-    //         newKeys = newKeys.filter((id) => id !== targetId);
-    //     } else newKeys.push(targetId);
+    // 取消选择的数据项
+    const removeKeys = oldSelectedKeys.filter((key) => !_keys.includes(key));
+    // 新增选择的项
+    const addKeys = _keys.filter((key) => !oldSelectedKeys.includes(key));
+    // 缓存当前表格和其他表格改变的数据
+    emits('update:selectedRowKeys', [...otherSelectedKeys, ..._keys]);
 
-    //     emits('update:selectedRowKeys', newKeys);
-    //     if (props.mode === 'appManger') {
-    //         emits('update:changedApis', {
-    //             ...props.changedApis,
-    //             [record.id]: record,
-    //         });
-    //     }
-    // },
-    onChange: (keys: string[], _data: any[]) => {
-        console.log(keys,'keys')
-        const _keys = _data.map(i => i.id)
-        // 当前节点表格数据id
-        const currenTableKeys = _tableData.value.map((m: any) => m.id);
-        // 当前表格, 原有选中的id
-        const oldSelectedKeys = currenTableKeys.filter((key) =>
-            props.sourceKeys.includes(key),
-        );
-        // 除当前表格之外, 勾选上的数据
-        const otherSelectedKeys = department.crossPageKeys.filter(
-            (key) => !currenTableKeys.includes(key),
-        );
-
-        // 取消选择的数据项
-        const removeKeys = oldSelectedKeys.filter((key) => !_keys.includes(key));
-        // 新增选择的项
-        const addKeys = _keys.filter((key) => !oldSelectedKeys.includes(key));
-        // 缓存当前表格和其他表格改变的数据
-        emits('update:selectedRowKeys', [...otherSelectedKeys, ..._keys]);
-
-        // 新增选中/取消选中的数据
-        // const changed = {};
-        // [...addKeys, ...removeKeys].forEach((key: string) => {
-        //     changed[key] = _tableData.value.find((f: any) => f.id === key);
-        // });
-        // console.log(department.changedApis,'123')
-        // if (props.mode === 'appManger') {
-        //     // 缓存当前表格和其他表格改变的数据
-        //     emits('update:changedApis', {
-        //         ...department.changedApis,
-        //         ...changed,
-        //     });
-        // }
-    },
-    selectedRowKeys: ref<string[]>([]),
-};
+    // 新增选中/取消选中的数据
+    // const changed = {};
+    // [...addKeys, ...removeKeys].forEach((key: string) => {
+    //     changed[key] = _tableData.value.find((f: any) => f.id === key);
+    // });
+    // console.log(department.changedApis,'123')
+    // if (props.mode === 'appManger') {
+    //     // 缓存当前表格和其他表格改变的数据
+    //     emits('update:changedApis', {
+    //         ...department.changedApis,
+    //         ...changed,
+    //     });
+    // }
+}
 const save = async () => {
     const keys = props.selectedRowKeys;
     // 移除的key
@@ -193,7 +178,7 @@ watch(
     () => props.selectedRowKeys,
     (n) => {
         // console.log('props.selectedRowKeys: ', n);
-        rowSelection.selectedRowKeys.value = n
+        _selectedRowKeys.value = n
     },
 );
 </script>
