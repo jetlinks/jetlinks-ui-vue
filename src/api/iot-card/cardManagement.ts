@@ -41,13 +41,13 @@ export const del = (id: string) => server.remove(`/network/card/${id}`);
  * 激活待激活物联卡(批量)
  * @param data
  */
-export const changeDeployBatch = (data: any) => server.get(`/network/card/_activation/_batch`, data);
+export const changeDeployBatch = (data: any) => server.post(`/network/card/_activation/_batch`, data);
 
 /**
  * 停用已激活物联卡(批量)
  * @param data
  */
-export const unDeployBatch = (data: any) => server.get(`/network/card/_deactivate/_batch`, data);
+export const unDeployBatch = (data: any) => server.post(`/network/card/_deactivate/_batch`, data);
 
 /**
  * 复机已停机物联卡(批量)
