@@ -17,10 +17,10 @@
                   <h2>{{ $t("auth.index.559799-0") }}</h2>
                   <div class='oauth-content-content'>
                     <div class='oauth-content-content-text'>
-                      {{ $t("auth.index.559799-1", appName) }}
+                      {{ $t("auth.index.559799-1", [appName]) }}
                     </div>
                     <ul>
-                      <li>{{ $t("auth.index.559799-2", userName) }}</li>
+                      <li>{{ $t("auth.index.559799-2", [userName]) }}</li>
                       <li>{{ $t("auth.index.559799-3") }}</li>
                     </ul>
                     <div class='oauth-content-button'>
@@ -268,7 +268,7 @@ const getSettingDetail = () => {
       ico.href = res.result.ico;
       headerImg.value = res.result.logo
       if (res.result.title) {
-        document.title = $t('auth.index.559799-6', res.result.title);
+        document.title = $t('auth.index.559799-6', [res.result.title]);
       } else {
         document.title = $t('auth.index.559799-7');
       }
