@@ -3,12 +3,12 @@ import {
   createWebHashHistory,
 } from 'vue-router'
 import { getToken, removeToken } from '@jetlinks-web/utils'
-import {NOT_FIND_ROUTE, LOGIN_ROUTE, OAuth2, OAuthWechat} from './basic'
+import {NOT_FIND_ROUTE, LOGIN_ROUTE, OAuth2, OAuthWechat, AccountCenterBind} from './basic'
 import {useUserStore} from "@/store/user";
 import {useSystemStore} from "@/store/system";
 import {useMenuStore} from "@/store/menu";
 
-let TokenFilterRoute: string[] = [OAuth2.path]
+let TokenFilterRoute: string[] = [OAuth2.path, AccountCenterBind.path]
 
 let FilterPath: string[] = [OAuth2.path]
 
@@ -17,7 +17,8 @@ const router = createRouter({
   routes: [
     LOGIN_ROUTE,
     OAuth2,
-    OAuthWechat
+    OAuthWechat,
+    AccountCenterBind
   ],
   scrollBehavior(to, form, savedPosition) {
     return savedPosition || {top: 0}
