@@ -1,6 +1,6 @@
 <template>
   <div class='oauth-warp'>
-    <j-spin :spinning='spinning'>
+    <a-spin :spinning='spinning'>
             <div class='oauth' v-if='!spinning'>
               <div class='oauth-header'>
                 <div class='oauth-header-left'>
@@ -24,8 +24,8 @@
                       <li>{{ $t("auth.index.559799-3") }}</li>
                     </ul>
                     <div class='oauth-content-button'>
-                      <j-button type='primary' @click='() => goOAuth2Fn()'> {{ $t("auth.index.559799-4") }} </j-button>
-                      <j-button type='primary' @click='changeAccount'> {{ $t("auth.index.559799-5") }} </j-button>
+                      <a-button type='primary' @click='() => goOAuth2Fn()'> {{ $t("auth.index.559799-4") }} </a-button>
+                      <a-button type='primary' @click='changeAccount'> {{ $t("auth.index.559799-5") }} </a-button>
                     </div>
                   </div>
                 </template>
@@ -35,15 +35,15 @@
                   </div>
                   <h2>{{ $t("auth.index.559799-0") }}</h2>
                   <div class='oauth-content-login'>
-                    <j-form layout='vertical' :model='formModel' ref='formRef' >
-                      <j-form-item :label='$t("EditInfo.index.557023-5")' name='username' required :rules='[{ required: true, message: $t("EditInfo.index.557023-6")}]'>
-                        <j-input :placeholder='$t("EditInfo.index.557023-5")' v-model:value='formModel.username' />
-                      </j-form-item>
-                      <j-form-item :label='$t("login.right.419974-2")' name='password' required :rules='[{ required: true, message: $t("login.right.419974-3")}]'>
-                        <j-input-password :placeholder='$t("login.right.419974-2")' v-model:value='formModel.password' />
-                      </j-form-item>
-                      <j-form-item name='verifyCode' v-if='captcha.base64' required :rules='[{ required: true, message: $t("login.right.419974-5")}]'>
-                        <j-input :placeholder='$t("login.right.419974-4")' v-model:value='formModel.verifyCode' >
+                    <a-form layout='vertical' :model='formModel' ref='formRef' >
+                      <a-form-item :label='$t("EditInfo.index.557023-5")' name='username' required :rules='[{ required: true, message: $t("EditInfo.index.557023-6")}]'>
+                        <a-input :placeholder='$t("EditInfo.index.557023-5")' v-model:value='formModel.username' />
+                      </a-form-item>
+                      <a-form-item :label='$t("login.right.419974-2")' name='password' required :rules='[{ required: true, message: $t("login.right.419974-3")}]'>
+                        <a-input-password :placeholder='$t("login.right.419974-2")' v-model:value='formModel.password' />
+                      </a-form-item>
+                      <a-form-item name='verifyCode' v-if='captcha.base64' required :rules='[{ required: true, message: $t("login.right.419974-5")}]'>
+                        <a-input :placeholder='$t("login.right.419974-4")' v-model:value='formModel.verifyCode' >
                           <template #addonAfter>
                             <img
                               :src='captcha.base64'
@@ -51,24 +51,23 @@
                               style='cursor: pointer'
                             />
                           </template>
-                        </j-input>
-                      </j-form-item>
-                      <j-form-item>
-                        <j-button
+                        </a-input>
+                      </a-form-item>
+                      <a-form-item>
+                        <a-button
                           type='primary'
                           @click='doLogin'
                           style='width: 100%'
                         >
                           {{ $t('login.right.419974-6') }}
-                        </j-button>
-                      </j-form-item>
-                    </j-form>
+                        </a-button>
+                      </a-form-item>
+                    </a-form>
                   </div>
                 </template>
               </div>
             </div>
-    </j-spin>
-
+    </a-spin>
   </div>
 </template>
 

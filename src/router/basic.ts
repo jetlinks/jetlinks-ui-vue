@@ -22,11 +22,11 @@ export const USER_CENTER_ROUTE: RouteRecordItem = {
       },
       component: () => import("@/views/account/center/index.vue"),
     },
-    {
-      path: "/account/center/bind",
-      name: "account/center/bind",
-      component: () => import("@/views/account/center/bind/index.vue"),
-    },
+    // {
+    //   path: AccountCenterBindPath,
+    //   name: "account/center/bind",
+    //   component: () => import("@/views/account/center/bind/index.vue"),
+    // },
   ],
 };
 
@@ -66,9 +66,17 @@ export const EDGE_TOKEN_ROUTE: RouteRecordItem = {
   component: () => import('@/views/TokenJump/index.vue')
 };
 
+export const AccountCenterBind = {
+  path: '/account/center/bind',
+  meta: {
+    title: '第三方'
+  },
+  component: () => import("@/views/account/center/bind/index.vue"),
+}
+
 export const OAuth2 = {
   path: '/oauth',
-    meta: {
+  meta: {
     title: '授权页'
   },
   component: () => import('@/views/oauth/index.vue')
