@@ -32,7 +32,7 @@ export const captchaConfig = () => request.get(`/authorize/captcha/config`)
 
 /**
  * 登录
- * @returns 
+ * @returns
  */
 export const authLogin = (data: any) => request.post(`/authorize/login`, data)
 
@@ -43,7 +43,7 @@ export const userDetail = () => request.get<any>('/user/detail')
 
 /**
  * 查询初始化配置信息
- * @returns 
+ * @returns
  */
 export const getInitSet = () => request.get(`/user/settings/init`)
 
@@ -54,8 +54,11 @@ export const queryModal = (serviceId:string) => request.get(`/command-supports/s
 
 /**
  * 获取支持的SSO的应用
- * @returns 
+ * @returns
  */
 export const bindInfo = () => request.get(`/application/sso/_all`)
 
+export const getOAuth2 = (params: any) => request.get('/oauth2/authorize', params)
+
+export const initApplication = (clientId: string | number) => request.get<{name: string}>(`/application/${clientId}/info`)
 

@@ -115,6 +115,7 @@ import { useI18n } from 'vue-i18n';
 import MenuCheckbox from './MenuCheckbox.vue'
 
 import { isNoCommunity } from '@/utils/utils'
+import { paramsEncodeQuery } from "@/utils";
 
 const { t: $t } = useI18n();
 const emits = defineEmits(['update:selectItems']);
@@ -272,7 +273,15 @@ const { PermissionsMap } = useIndirectMenusMap(tableData)
 
 function getAllPermiss() {
     const id = route.params.id as string;
-    getPermissionTree_api(id).then((resp) => {
+    getPermissionTree_api(id, paramsEncodeQuery({
+        terms: [
+            {
+                value: "%show\":false%",
+                termType: "nlike",
+                column: "options"
+            }
+        ]
+    })).then((resp) => {
         const _result = resp.result
         // 默认选中个人中心相关设置
         tableData.value = _result.filter((item: { code: string , buttons: any[], granted: boolean}) => {
