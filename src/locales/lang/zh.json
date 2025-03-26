@@ -1411,5 +1411,13 @@
 	"positions.index.223804-1": "上级职位",
 	"positions.index.223804-2": "请选择上级职位",
 	"positions.index.223804-3": "请先新增职位信息",
-	"positions.index.223804-4": "请输入职位名称"
+	"positions.index.223804-4": "请输入职位名称",
+	"auth.index.559799-0": "授权登录",
+	"auth.index.559799-1": "您正在授权登录, {0} 将获得以下权限:",
+	"auth.index.559799-2": "关联{0}账号",
+	"auth.index.559799-3": "获取您的个人信息",
+	"auth.index.559799-4": "同意授权",
+	"auth.index.559799-5": "切换账号",
+	"auth.index.559799-6": "OAuth授权-{0}",
+	"auth.index.559799-7": "OAuth授权"
 }
