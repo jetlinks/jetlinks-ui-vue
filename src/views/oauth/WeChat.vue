@@ -1,5 +1,5 @@
 <template>
-    <j-spin style="margin: 50%;"></j-spin>
+    <a-spin style="margin: 50%;"></a-spin>
 </template>
 
 <script lang="ts" setup>
