@@ -92,7 +92,7 @@ const onChange = (v: any, obj: any, option: any, record: any) => {
 
   columnMap.value[record.id] = v.source === 'fixed' ? undefined : obj.column
 
-    const arr = [...dataSource.value].map((item) => {
+    const arr = [...dataSource.value].filter(item => item.value).map((item) => {
         return {
             name: item.id,
             value: {
