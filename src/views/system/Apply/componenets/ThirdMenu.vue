@@ -376,6 +376,7 @@ const saveMenu = () => {
         const params = {
             ...formData.value,
             owner: 'iot',
+            appId: props.data.id,
             options: { show: true, owner: props.data?.id },
         };
         api(params)
