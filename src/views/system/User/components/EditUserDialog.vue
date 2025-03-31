@@ -90,7 +90,7 @@
                     </a-form-item>
                 </a-col>
             </a-row>
-          <a-row :gutter="24" v-if="form.IsShow('add', 'edit')">
+          <a-row :gutter="24" v-if="form.IsShow('add', 'edit') && isNoCommunity">
             <a-col :span="12">
               <a-form-item name="positions" :label="$t('components.EditUserDialog.939453-31')">
                   <form-item-position :extraData="detail.positions" :extraProps="{disabled: form.data.username === 'admin', multiple: true}" v-model:value="form.data.positions" @change="onChange" />
@@ -186,6 +186,7 @@ import { onlyMessage } from '@/utils/comm';
 import {cloneDeep, flatten, map} from 'lodash-es';
 import { useI18n } from 'vue-i18n';
 import {queryPageNoPage} from "@/api/system/positions";
+import {isNoCommunity} from '@/utils/utils';
 
 const { t: $t } = useI18n();
 
@@ -382,17 +383,19 @@ const hasNodeWithId = (arr: any, id: any)=>{
 }
 
 onMounted(() => {
-  queryPageNoPage({
-    paging: false,
-    sorts: [{name: 'sortIndex', order: 'asc'}]
-  }).then(resp => {
-    if(resp.success){
-      resp.result.map(i => {
-        positionsMap.set(i.id, i)
-      })
-    }
-    form.init();
-  })
+  if(isNoCommunity) {
+    queryPageNoPage({
+      paging: false,
+      sorts: [{name: 'sortIndex', order: 'asc'}]
+    }).then(resp => {
+      if(resp.success){
+        resp.result.map(i => {
+          positionsMap.set(i.id, i)
+        })
+      }
+      form.init();
+    })
+  }
 })
 
 watch(

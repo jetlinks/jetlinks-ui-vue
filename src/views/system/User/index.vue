@@ -41,7 +41,7 @@
                     ?.map((item) => {
                       return item.name;
                     })
-                    .join(',')
+                    .join(',') || '--'
               }}
             </j-ellipsis>
           </template>
@@ -55,7 +55,7 @@
               {{
                 slotProps?.positions
                     ?.map((item) => item.name)
-                    .join(',')
+                    .join(',') || '--'
               }}
             </j-ellipsis>
           </template>
@@ -160,6 +160,7 @@ import {onlyMessage} from '@jetlinks-web/utils';
 import {useI18n} from 'vue-i18n';
 import i18n from "@/locales";
 import {queryPageNoPage} from "@/api/system/positions";
+import {isNoCommunity} from '@/utils/utils';
 
 const {t: $t} = useI18n();
 const permission = 'system/User';
@@ -228,32 +229,6 @@ const columns = [
     scopedSlots: true,
   },
   {
-    title: i18n.global.t('Department.util.780026-9'),
-    dataIndex: 'positions',
-    key: 'positions',
-    width: 150,
-    search: {
-      type: 'select',
-      // componentProps: {
-      //   placeholder: i18n.global.t('Department.util.780026-3'),
-      // },
-      options() {
-        return queryPageNoPage().then(resp => {
-          if (resp.success) {
-            return resp.result.map(item => {
-              return {
-                label: item.name,
-                value: item.id
-              }
-            })
-          }
-          return []
-        })
-      }
-    },
-    scopedSlots: true,
-  },
-  {
     title: $t('User.index.673867-14'),
     dataIndex: 'status',
     key: 'status',
@@ -301,6 +276,35 @@ const columns = [
     scopedSlots: true,
   },
 ];
+
+if(isNoCommunity) {
+  columns.splice(4, 1, {
+    title: i18n.global.t('Department.util.780026-9'),
+    dataIndex: 'positions',
+    key: 'positions',
+    width: 150,
+    search: {
+      type: 'select',
+      // componentProps: {
+      //   placeholder: i18n.global.t('Department.util.780026-3'),
+      // },
+      options() {
+        return queryPageNoPage().then(resp => {
+          if (resp.success) {
+            return resp.result.map(item => {
+              return {
+                label: item.name,
+                value: item.id
+              }
+            })
+          }
+          return []
+        })
+      }
+    },
+    scopedSlots: true,
+  } as any)
+}
 const queryParams = ref({});
 
 const tableRef = ref<Record<string, any>>({}); // 表格实例
