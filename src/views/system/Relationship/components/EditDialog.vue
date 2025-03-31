@@ -42,6 +42,7 @@
                             <a-select-option
                                 v-for="item in relationTypes"
                                 :value="item.id"
+                                :key="item.id"
                             >
                                 {{ item.i18nName || item.name }}
                             </a-select-option>
@@ -63,6 +64,7 @@
                             <a-select-option
                                 v-for="item in beRelationTypes"
                                 :value="item.id"
+                                :key="item.id"
                             >
                                 {{ item.i18nName || item.name }}
                             </a-select-option>
@@ -201,10 +203,10 @@ const form = reactive({
     submit: () => {
         const params = {
             ...form.data,
-            objectTypeName: form.objectList.find(
+            objectTypeName: relationTypes.value.find(
                 (item) => item.id === form.data.objectType,
             )?.name,
-            targetTypeName: targetList.value.find(
+            targetTypeName: beRelationTypes.value.find(
                 (item: dictItemType) => item.id === form.data.targetType,
             )?.name,
         };
