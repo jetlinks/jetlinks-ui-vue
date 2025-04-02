@@ -213,7 +213,7 @@ const handleOk = async () => {
     const _dataSorts = handleSorts(_dataArr);
     loading.value = true;
     _dataSorts.push(USER_CENTER_MENU_DATA);
-    const res = await updateMenus(_dataSorts).catch(() => {});
+    const res = await updateMenus(_dataSorts).catch(() => {}).finally(() => loading.value = false);
     if (res?.status === 200) {
         loading.value = false;
         visible.value = false;

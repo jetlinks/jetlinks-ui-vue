@@ -91,6 +91,7 @@ import {useColumns, requestFun} from '../util'
 import {onlyMessage} from '@jetlinks-web/utils'
 import {useI18n} from 'vue-i18n';
 import {useRouteQuery} from '@vueuse/router'
+import {isNoCommunity} from '@/utils/utils';
 
 const {t: $t} = useI18n();
 const permission = 'system/Department'
@@ -191,29 +192,40 @@ const handleParams = (e: any) => {
 const handleSearch = (oParams: any) =>
     requestFun(props.parentId, oParams, [
         {
-            terms: [
-                {
-                    terms: [
-                        {
-                            "column": "id$in-org-user$org",
-                            "value": [
-                                props.parentId
-                            ]
-                        },
-                    ],
-                },
-                {
-                    type: 'or',
-                    terms: [
-                        {
-                            "column": "id$in-org-user$position",
-                            "value": [
-                                props.parentId
-                            ]
-                        }
-                    ]
-                }
-            ]
+          terms: isNoCommunity ? [
+              {
+                  terms: [
+                      {
+                          "column": "id$in-org-user$org",
+                          "value": [
+                              props.parentId
+                          ]
+                      },
+                  ],
+              },
+              {
+                  type: 'or',
+                  terms: [
+                      {
+                          "column": "id$in-org-user$position",
+                          "value": [
+                              props.parentId
+                          ]
+                      }
+                  ]
+              }
+          ] : [
+            {
+              terms: [
+                  {
+                      "column": "id$in-org-user$org",
+                      "value": [
+                          props.parentId
+                      ]
+                  },
+              ],
+            }
+          ]
         }
     ])
 

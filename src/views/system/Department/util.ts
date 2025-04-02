@@ -2,6 +2,7 @@ import { TreeType } from "./typings"
 import i18n from "@/locales"
 import { queryPageNoPage } from '@/api/system/positions'
 import {getUserList_api} from "@/api/system/user";
+import { isNoCommunity } from "@/utils/utils";
 
 export const ArrayToTree = (list: any[]): any[] => {
     const treeList: any[] = []
@@ -64,91 +65,94 @@ export const filterTree = (treeNode: TreeType[]) => {
 
 // 用户
 export const useColumns = (departmentId: string) => {
-    return [
-        {
-            title: i18n.global.t('Department.util.780026-0'),
-            dataIndex: 'name',
-            key: 'name',
-            ellipsis: true,
-            fixed: 'left',
-            search: {
-                type: 'string',
-                componentProps: {
-                    placeholder: i18n.global.t('Department.util.780026-1'),
-                },
+    const arr = [
+      {
+        title: i18n.global.t('Department.util.780026-0'),
+        dataIndex: 'name',
+        key: 'name',
+        ellipsis: true,
+        fixed: 'left',
+        search: {
+            type: 'string',
+            componentProps: {
+                placeholder: i18n.global.t('Department.util.780026-1'),
             },
         },
-        {
-            title: i18n.global.t('Department.util.780026-2'),
-            dataIndex: 'username',
-            key: 'username',
-            ellipsis: true,
-            search: {
-                type: 'string',
-                componentProps: {
-                    placeholder: i18n.global.t('Department.util.780026-3'),
-                },
-            },
-        },
-        {
-            title: i18n.global.t('Department.util.780026-9'),
-            dataIndex: 'positions',
-            key: 'positions',
-            ellipsis: true,
-            scopedSlots: true,
-            search: {
-                type: 'select',
-                termFilter: ['not', 'in', 'nin'],
-                // componentProps: {
-                //     placeholder: i18n.global.t('Department.util.780026-3'),
-                // },
-                options() {
-                    const params = departmentId ? {terms: [{column: 'orgId', value: departmentId}]} : {}
-                    return queryPageNoPage(params).then(resp => {
-                        if (resp.success) {
-                            return resp.result.map(item => {
-                                return {
-                                    label: item.name,
-                                    value: item.id
-                                }
-                            })
-                        }
-                        return []
-                    })
-                }
-            },
-        },
-        {
-            title: i18n.global.t('Department.util.780026-4'),
-            dataIndex: 'status',
-            key: 'status',
-            search: {
-                type: 'select',
-                // componentProps: {
-                //     placeholder: i18n.global.t('Department.util.780026-5'),
-                // },
-                options: [
-                    {
-                        label: i18n.global.t('Department.util.780026-6'),
-                        value: 1,
-                    },
-                    {
-                        label: i18n.global.t('Department.util.780026-7'),
-                        value: 0,
-                    },
-                ],
-            },
-            scopedSlots: true,
-            width: 100
-        },
-        {
-            title: i18n.global.t('Department.util.780026-8'),
-            dataIndex: 'action',
-            key: 'action',
-            scopedSlots: true,
-            width: 100
-        },
+      },
+      {
+          title: i18n.global.t('Department.util.780026-2'),
+          dataIndex: 'username',
+          key: 'username',
+          ellipsis: true,
+          search: {
+              type: 'string',
+              componentProps: {
+                  placeholder: i18n.global.t('Department.util.780026-3'),
+              },
+          },
+      },
+      {
+          title: i18n.global.t('Department.util.780026-4'),
+          dataIndex: 'status',
+          key: 'status',
+          search: {
+              type: 'select',
+              // componentProps: {
+              //     placeholder: i18n.global.t('Department.util.780026-5'),
+              // },
+              options: [
+                  {
+                      label: i18n.global.t('Department.util.780026-6'),
+                      value: 1,
+                  },
+                  {
+                      label: i18n.global.t('Department.util.780026-7'),
+                      value: 0,
+                  },
+              ],
+          },
+          scopedSlots: true,
+          width: 100
+      },
+      {
+          title: i18n.global.t('Department.util.780026-8'),
+          dataIndex: 'action',
+          key: 'action',
+          scopedSlots: true,
+          width: 100
+      },
     ]
+    if(isNoCommunity) {
+      arr.splice(2,1,{
+        title: i18n.global.t('Department.util.780026-9'),
+        dataIndex: 'positions',
+        key: 'positions',
+        ellipsis: true,
+        scopedSlots: true,
+        search: {
+            type: 'select',
+            termFilter: ['not', 'in', 'nin'],
+            // componentProps: {
+            //     placeholder: i18n.global.t('Department.util.780026-3'),
+            // },
+            options() {
+                const params = departmentId ? {terms: [{column: 'orgId', value: departmentId}]} : {}
+                return queryPageNoPage(params).then(resp => {
+                    if (resp.success) {
+                        return resp.result.map(item => {
+                            return {
+                                label: item.name,
+                                value: item.id
+                            }
+                        })
+                    }
+                    return []
+                })
+            }
+        },
+      })
+    }
+    return arr
 }
 
 // 绑定用户
