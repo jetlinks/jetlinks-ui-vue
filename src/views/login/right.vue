@@ -93,7 +93,7 @@
                       class="more-button-item"
                       v-for="(item, index) in bindings.slice(
                         4,
-                        bindings.length - 1
+                        bindings.length - 1,
                       )"
                       :key="index"
                       @click="handleClickOther(item)"
@@ -101,15 +101,13 @@
                       <img
                         style="width: 32px; height: 32px"
                         :alt="item.name"
-                        :src="item.logoUrl || iconMap.get(item.provider) || defaultImg"
-                      />
-                      <j-ellipsis
-                        style="
-                          margin-top: 5px;
-                          width: calc(100%);
-                          margin: 0 auto;
+                        :src="
+                          item.logoUrl ||
+                          iconMap.get(item.provider) ||
+                          defaultImg
                         "
-                      >
+                      />
+                      <j-ellipsis style="width: calc(100%); margin: 5px auto">
                         {{ item.name }}
                       </j-ellipsis>
                     </div>
@@ -145,10 +143,10 @@ import { rules } from "./util";
 import { useUserStore } from "@/store";
 import { useI18n } from "vue-i18n";
 import { LocalStore } from "@jetlinks-web/utils";
-const BASE_API_PATH = import.meta.env.VITE_APP_BASE_API
+const BASE_API_PATH = import.meta.env.VITE_APP_BASE_API;
 import { iconMap } from "./util";
 
-import defaultImg from '@/assets/apply/internal-standalone.png'
+import defaultImg from "@/assets/apply/internal-standalone.png";
 
 const logoImage = getImage("/login/logo.png");
 const { t: $t } = useI18n();
@@ -196,11 +194,14 @@ const { data: encryption, run: reloadEncryption } = useRequest(
         timer = null;
       }
 
-      timer = setTimeout(() => {
-        reloadEncryption();
-      }, 3 * 60 * 1000);
+      timer = setTimeout(
+        () => {
+          reloadEncryption();
+        },
+        3 * 60 * 1000,
+      );
     },
-  }
+  },
 );
 
 const { data: config } = useRequest(captchaConfig, {
@@ -263,20 +264,20 @@ const submit = (data) => {
 };
 
 const handleClickOther = (item) => {
-    LocalStore.set('onLogin', 'no');
-    window.open(`${BASE_API_PATH}/application/sso/${item.id}/login`);
-    window.onstorage = (e) => {
-        if (e.newValue) {
-            window.location.href = '/';
-        }
-    };
+  LocalStore.set("onLogin", "no");
+  window.open(`${BASE_API_PATH}/application/sso/${item.id}/login`);
+  window.onstorage = (e) => {
+    if (e.newValue) {
+      window.location.href = "/";
+    }
+  };
 };
 
 watch(
   () => loading.value,
   () => {
     emit("update:loading", loading.value);
-  }
+  },
 );
 </script>
 <style lang="less" scoped>
@@ -344,17 +345,17 @@ watch(
 }
 
 .more-button {
-    display: flex;
-    flex-wrap: wrap;
-    cursor: pointer;
-    overflow: auto;
-    width: 300px;
+  display: flex;
+  flex-wrap: wrap;
+  cursor: pointer;
+  overflow: auto;
+  width: 300px;
 
-    .more-button-item {
-        width: 62px;
-        text-align: center;
-        margin-bottom: 10px;
-        margin-left: 12px;
-    }
+  .more-button-item {
+    width: 62px;
+    text-align: center;
+    margin-bottom: 10px;
+    margin-left: 12px;
+  }
 }
 </style>
