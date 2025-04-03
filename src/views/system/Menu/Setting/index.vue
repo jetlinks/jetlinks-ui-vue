@@ -73,12 +73,10 @@ import {
 } from "@/api/initHome";
 import {
   filterMenu,
-  initData,
   inItSelected,
   drop,
   select,
   getMaxDepth,
-  mergeArr,
   findAllParentsAndChildren,
   handleSorts,
   handleSortsArr,

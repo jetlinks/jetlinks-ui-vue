@@ -16,7 +16,6 @@
 
 <script lang="ts" setup>
 import NotificationRecord from "./components/NotificationRecord/index.vue";
-import { getInitData } from "../data";
 import { getAllNotice } from "@/api/account/center";
 import { useRouterParams } from "@jetlinks-web/hooks";
 import { useUserStore } from "@/store/user";
@@ -62,7 +61,7 @@ watchEffect(() => {
   if (router.params?.value.row) {
     if (
       ["device-transparent-codec"].includes(
-        router.params?.value.row.topicProvider
+        router.params?.value.row.topicProvider,
       )
     ) {
       user.other.tabKey = "system-business";

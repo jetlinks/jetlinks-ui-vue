@@ -90,7 +90,7 @@
 </template>
 
 <script setup lang="ts" name='CardBox'>
-import color, { getHexColor } from '@jetlinks-web/components/es/BadgeStatus/color';
+import { getHexColor } from '@jetlinks-web/components/es/BadgeStatus/color';
 import { PropType } from 'vue';
 import i18n from '@/locales';
 
