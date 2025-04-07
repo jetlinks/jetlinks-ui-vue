@@ -7,7 +7,7 @@
       {
         trigger: 'blur',
         validator: validateUrl,
-        message: $lang('OPC_DA.channel.20250207-3')
+        message: $lang('OPC_DA.channel.20250207-3'),
       },
     ]"
   >
@@ -45,22 +45,21 @@
 </template>
 
 <script setup>
-import { inject, ref } from "vue";
-import {testIpv4_6} from 'local-utils'
-import {useLocales} from '@hooks'
+import { inject } from "vue";
+import { testIpv4_6 } from "local-utils";
+import { useLocales } from "@hooks";
 
-const {$lang} = useLocales('OPC_DA')
+const { $lang } = useLocales("OPC_DA");
 const formData = inject("plugin-form", {
   configuration: {},
 });
-
 
 const validateUrl = async (_rule, value) => {
   if (!value) {
     return Promise.resolve();
   } else {
     if (!testIpv4_6(value)) {
-      return Promise.reject($lang('OPC_DA.channel.20250207-3'));
+      return Promise.reject($lang("OPC_DA.channel.20250207-3"));
     }
     return Promise.resolve();
   }

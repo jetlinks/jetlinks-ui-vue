@@ -1,30 +1,30 @@
 <template>
-    <a-modal
-        visible
-        :title="dialogTitle"
-        :maskClosable="false"
-        width="675px"
-        @ok="confirm"
-        @cancel="emits('update:visible', false)"
-        :confirmLoading="loading"
-        class="edit-dialog-container"
-    >
-        <a-form ref="formRef" :model="form.data" layout="vertical">
-            <a-form-item
-                name="relation"
-                :label="$t('components.EditDialog.375810-0')"
-                :rules="[
-                    { required: true, message: $t('components.EditDialog.375810-1') },
-                    { max: 64, message: $t('components.EditDialog.375810-2') },
-                    { validator: form.rules.checkRelation, trigger: 'change' },
-                ]"
-            >
-                <a-input
-                    v-model:value="form.data.relation"
-                    :placeholder="$t('components.EditDialog.375810-1')"
-                    :disabled="!!form.data.id"
-                />
-            </a-form-item>
+  <a-modal
+    visible
+    :title="dialogTitle"
+    :maskClosable="false"
+    width="675px"
+    @ok="confirm"
+    @cancel="emits('update:visible', false)"
+    :confirmLoading="loading"
+    class="edit-dialog-container"
+  >
+    <a-form ref="formRef" :model="form.data" layout="vertical">
+      <a-form-item
+        name="relation"
+        :label="$t('components.EditDialog.375810-0')"
+        :rules="[
+          { required: true, message: $t('components.EditDialog.375810-1') },
+          { max: 64, message: $t('components.EditDialog.375810-2') },
+          { validator: form.rules.checkRelation, trigger: 'change' },
+        ]"
+      >
+        <a-input
+          v-model:value="form.data.relation"
+          :placeholder="$t('components.EditDialog.375810-1')"
+          :disabled="!!form.data.id"
+        />
+      </a-form-item>
 
             <a-row :gutter="24">
                 <a-col :span="12">
@@ -116,44 +116,46 @@
 </template>
 
 <script setup lang="ts">
-import { FormInstance } from 'ant-design-vue';
-import { Rule } from 'ant-design-vue/es/form';
-
+import { FormInstance } from "ant-design-vue";
+import { Rule } from "ant-design-vue/es/form";
 import {
-    getObjectList_api,
-    addRelation_api,
-    editRelation_api,
-    validateField,
-} from '@/api/system/relationship';
-import { dictItemType } from '../typing';
-import { onlyMessage } from '@/utils/comm';
-import { useI18n } from 'vue-i18n';
-import { useRelationTypes } from '../hooks/useRelationTypes';
+  addRelation_api,
+  editRelation_api,
+  validateField,
+} from "@/api/system/relationship";
+import { dictItemType } from "../typing";
+import { onlyMessage } from "@/utils/comm";
+import { useI18n } from "vue-i18n";
+import { useRelationTypes } from "../hooks/useRelationTypes";
 
 const { t: $t } = useI18n();
-const emits = defineEmits(['refresh', 'update:visible']);
+const emits = defineEmits(["refresh", "update:visible"]);
 const props = defineProps<{
-    visible: boolean;
-    data: formType;
+  visible: boolean;
+  data: formType;
 }>();
 
 const { relationTypes, beRelationTypes } = useRelationTypes();
 // 弹窗相关
 const loading = ref(false);
-const dialogTitle = computed(() => (props.data.id ? $t('components.EditDialog.375810-14') : $t('components.EditDialog.375810-15')));
+const dialogTitle = computed(() =>
+  props.data.id
+    ? $t("components.EditDialog.375810-14")
+    : $t("components.EditDialog.375810-15"),
+);
 const confirm = () => {
-    loading.value = true;
-    formRef.value
-        ?.validate()
-        .then(() => form.submit())
-        .then((resp: any) => {
-            if (resp.status === 200) {
-                onlyMessage($t('components.EditDialog.375810-16'));
-                emits('refresh');
-                emits('update:visible', false);
-            }
-        })
-        .finally(() => (loading.value = false));
+  loading.value = true;
+  formRef.value
+    ?.validate()
+    .then(() => form.submit())
+    .then((resp: any) => {
+      if (resp.status === 200) {
+        onlyMessage($t("components.EditDialog.375810-16"));
+        emits("refresh");
+        emits("update:visible", false);
+      }
+    })
+    .finally(() => (loading.value = false));
 };
 
 const formRef = ref<FormInstance>();
@@ -214,26 +216,28 @@ const form = reactive({
         return api(params);
     },
 });
-const validateName = async(_:any,value:any)=>{
-   if(!value){
-    return Promise.resolve()
-   }
-   return form.data.reverseName === form.data.name ? Promise.reject($t('components.EditDialog.375810-18')) : Promise.resolve()
-}
+const validateName = async (_: any, value: any) => {
+  if (!value) {
+    return Promise.resolve();
+  }
+  return form.data.reverseName === form.data.name
+    ? Promise.reject($t("components.EditDialog.375810-18"))
+    : Promise.resolve();
+};
 
 type formType = {
-    name: string;
-    reverseName: string;
-    relation: string;
-    objectType: string | undefined;
-    targetType: string | undefined;
-    description: string;
-    id?: string;
+  name: string;
+  reverseName: string;
+  relation: string;
+  objectType: string | undefined;
+  targetType: string | undefined;
+  description: string;
+  id?: string;
 };
 </script>
 <style scoped lang="less">
 .example {
-    color: rgb(192, 192, 192);
-    font-size: 12px;
+  color: rgb(192, 192, 192);
+  font-size: 12px;
 }
 </style>

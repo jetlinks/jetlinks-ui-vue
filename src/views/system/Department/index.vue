@@ -6,8 +6,16 @@
           <LeftTree @change="onChange" />
         </div>
         <div class="right">
-          <a-tabs v-if='isNoCommunity && extraComponents?.length' v-model:activeKey="activeKey" destroyInactiveTabPane>
-            <a-tab-pane v-for="item in extraComponents" :key="item.name" :tab="$t(item.label)">
+          <a-tabs
+            v-if="isNoCommunity && extraComponents?.length"
+            v-model:activeKey="activeKey"
+            destroyInactiveTabPane
+          >
+            <a-tab-pane
+              v-for="item in extraComponents"
+              :key="item.name"
+              :tab="$t(item.label)"
+            >
               <component
                 :is="item.component"
                 :parentId="departmentId"
@@ -19,7 +27,7 @@
               <Position :parentId="departmentId" @changeTabs="onChangeTabs" />
             </a-tab-pane>
             <a-tab-pane key="user" :tab="$t('Department.index.945805-2')">
-              <User :parentId="departmentId" :positionId="positionId"  />
+              <User :parentId="departmentId" :positionId="positionId" />
             </a-tab-pane>
           </a-tabs>
           <User v-else :parentId="departmentId" />
@@ -30,42 +38,40 @@
 </template>
 
 <script setup lang="ts" name="Department">
-import LeftTree from './components/LeftTree.vue'
-import User from './user/index.vue';
-import Position from './positions/index.vue';
-import {getModulesComponents, isNoCommunity} from "@/utils";
-import {useRouteQuery} from "@vueuse/router";
+import LeftTree from "./components/LeftTree.vue";
+import User from "./user/index.vue";
+import Position from "./positions/index.vue";
+import { getModulesComponents, isNoCommunity } from "@/utils";
 
-const activeKey = ref<'product' | 'device' | 'user'>('product');
+const activeKey = ref<"product" | "device" | "user">("product");
 
-const departmentId = ref<string>('');
-const positionId = ref<string>('');
-const extraComponents = ref([])
+const departmentId = ref<string>("");
+const positionId = ref<string>("");
+const extraComponents = ref([]);
 
 const bindBool = ref<boolean>(false);
 const openDeviceBind = () => {
   bindBool.value = true;
-  activeKey.value = 'device';
+  activeKey.value = "device";
 };
 
 const onChange = (id: string) => {
-  departmentId.value = id
-  if(!id){
-
+  departmentId.value = id;
+  if (!id) {
   }
-}
+};
 
 const onChangeTabs = (id) => {
-  positionId.value = id
-  activeKey.value = 'user';
+  positionId.value = id;
+  activeKey.value = "user";
   setTimeout(() => {
-    positionId.value = undefined
-  }, 100)
-}
+    positionId.value = undefined;
+  }, 100);
+};
 
 onMounted(() => {
-  extraComponents.value = getModulesComponents('department')
-})
+  extraComponents.value = getModulesComponents("department");
+});
 </script>
 
 <style lang="less" scoped>

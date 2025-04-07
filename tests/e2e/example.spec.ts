@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test } from '@playwright/test';
 import { chromium } from 'playwright';
 
 test('搜索测试', async ({   }) => {
