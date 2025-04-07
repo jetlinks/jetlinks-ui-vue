@@ -1,4 +1,4 @@
-import { cloneDeep, omit } from 'lodash-es';
+import { cloneDeep } from 'lodash-es';
 import type {
     AntTreeNodeDropEvent,
     TreeProps,
@@ -78,7 +78,7 @@ export const mergeArr = (oldData: Array<any>, newData: Array<any>) => {
 
         return oldItem
     };
-    
+
     for (const newItem of newData) {
         const oldItem = oldData.find((item) => item.code === newItem.code);
         mergedData.push(mergeItem(oldItem, newItem));

@@ -4,7 +4,7 @@
       <div style="padding: 0 10px">
         <div class="alert">
           <AIcon type="InfoCircleOutlined" />
-          {{ $t('Subscribe.index.994011-0') }}
+          {{ $t("Subscribe.index.994011-0") }}
         </div>
         <div class="content-collapse">
           <template v-if="dataSource.length">
@@ -50,63 +50,62 @@
 </template>
 
 <script lang="ts" setup>
-import { getAllNotice } from '@/api/account/center'
-import { getNoticeList_api } from '@/api/account/notificationSubscription'
-import { getInitData } from '../data'
-import Item from './components/Item.vue'
-import { useMenuStore } from '@/store/menu'
-import { omit } from 'lodash-es';
+import { getAllNotice } from "@/api/account/center";
+import { getNoticeList_api } from "@/api/account/notificationSubscription";
+import Item from "./components/Item.vue";
+import { useMenuStore } from "@/store/menu";
+import { omit } from "lodash-es";
 
-const menuStore = useMenuStore()
-const subscribe = ref<any[]>([])
-const dataSource = ref<any[]>([])
-const activeKey = ref<string[]>()
-const loading = ref<boolean>(false)
-let initData: any[]
+const menuStore = useMenuStore();
+const subscribe = ref<any[]>([]);
+const dataSource = ref<any[]>([]);
+const activeKey = ref<string[]>();
+const loading = ref<boolean>(false);
+let initData: any[];
 const handleSearch = () => {
-  loading.value = true
+  loading.value = true;
   getAllNotice().then((resp: any) => {
     if (resp.status === 200) {
-      const dataMap = new Map()
-            resp.result.forEach((i: any) => {
-                if (!dataMap.has(i.type.id)) {
-                    dataMap.set(i.type.id, {
-                        name: i.type.name,
-                        provider: i.type.id,
-                        children: [
-                            {
-                                ...omit(i, ['type'])
-                            }
-                        ]
-                    })
-                } else {
-                    dataMap.get(i.type.id).children.push({
-                        ...omit(i, ['type'])
-                    })
-                }
-            })
-            dataSource.value = [...dataMap.values()];
-            if (!activeKey.value) {
-                activeKey.value = dataSource.value.map((i:any)=>{
-                    return i?.provider
-                })
-            }
+      const dataMap = new Map();
+      resp.result.forEach((i: any) => {
+        if (!dataMap.has(i.type.id)) {
+          dataMap.set(i.type.id, {
+            name: i.type.name,
+            provider: i.type.id,
+            children: [
+              {
+                ...omit(i, ["type"]),
+              },
+            ],
+          });
+        } else {
+          dataMap.get(i.type.id).children.push({
+            ...omit(i, ["type"]),
+          });
+        }
+      });
+      dataSource.value = [...dataMap.values()];
+      if (!activeKey.value) {
+        activeKey.value = dataSource.value.map((i: any) => {
+          return i?.provider;
+        });
+      }
     }
-  })
+  });
   getNoticeList_api()
     .then((resp: any) => {
       if (resp.status === 200) {
-        subscribe.value = resp?.result?.data || []
+        subscribe.value = resp?.result?.data || [];
       }
     })
     .finally(() => {
-      loading.value = false
-    })
-}
+      loading.value = false;
+    });
+};
 
 onMounted(() => {
-  handleSearch()
-})
+  handleSearch();
+});
 </script>
 
 <style lang="less" scoped>
