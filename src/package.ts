@@ -41,6 +41,7 @@ const _handleReconnect = async () => {
     const modalWrapper = document.createElement('div');
     const modalApp = createApp(Relogin).mount(modalWrapper);
     document.body.appendChild(modalWrapper);
+
     return await modalApp?.open?.();
 }
 export const initAxios = () => {
