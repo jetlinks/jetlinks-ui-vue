@@ -278,7 +278,7 @@ const columns = [
 ];
 
 if(isNoCommunity) {
-  columns.splice(4, 1, {
+  columns.splice(4, 0, {
     title: i18n.global.t('Department.util.780026-9'),
     dataIndex: 'positions',
     key: 'positions',
