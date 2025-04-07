@@ -27,13 +27,13 @@ importers:
         specifier: 2.5.4
         version: 2.5.4(@types/markdown-it@14.1.2)(typescript@5.8.2)(vue-router@4.5.0(vue@3.5.13(typescript@5.8.2)))(vue@3.5.13(typescript@5.8.2))
       '@jetlinks-web/constants':
-        specifier: ^1.0.7
+        specifier: ^1.0.9
         version: 1.0.9
       '@jetlinks-web/core':
-        specifier: ^2.2.1
-        version: 2.2.1(@types/lodash-es@4.17.12)(lodash@4.17.21)(typescript@5.8.2)
+        specifier: ^2.2.3
+        version: 2.2.3(@types/lodash-es@4.17.12)(lodash@4.17.21)(typescript@5.8.2)
       '@jetlinks-web/hooks':
-        specifier: ^1.0.21
+        specifier: ^1.0.24
         version: 1.0.24(@types/lodash-es@4.17.12)(lodash@4.17.21)(typescript@5.8.2)
       '@jetlinks-web/types':
         specifier: ^1.0.2
@@ -51,16 +51,16 @@ importers:
         specifier: ^11.3.0
         version: 11.3.0(vue-router@4.5.0(vue@3.5.13(typescript@5.8.2)))(vue@3.5.13(typescript@5.8.2))
       axios:
-        specifier: ^1.6.7
-        version: 1.8.1
+        specifier: ^1.8.4
+        version: 1.8.4
       colorpicker-v3:
         specifier: ^2.10.2
         version: 2.10.2(typescript@5.8.2)
       dayjs:
-        specifier: ^1.11.8
+        specifier: ^1.11.13
         version: 1.11.13
       echarts:
-        specifier: ^5.4.3
+        specifier: ^5.6.0
         version: 5.6.0
       event-source-polyfill:
         specifier: ^1.0.31
@@ -69,45 +69,45 @@ importers:
         specifier: ^4.17.21
         version: 4.17.21
       marked:
-        specifier: ^14.1.1
+        specifier: ^14.1.4
         version: 14.1.4
       monaco-editor:
         specifier: ^0.52.2
         version: 0.52.2
       pinia:
-        specifier: ^2.1.3
+        specifier: ^2.3.1
         version: 2.3.1(typescript@5.8.2)(vue@3.5.13(typescript@5.8.2))
       rxjs:
-        specifier: ^7.8.1
+        specifier: ^7.8.2
         version: 7.8.2
       vue:
-        specifier: ^3.3.4
+        specifier: ^3.5.13
         version: 3.5.13(typescript@5.8.2)
       vue-cropper:
-        specifier: ^1.0.9
+        specifier: ^1.1.4
         version: 1.1.4
       vue-i18n:
-        specifier: ^9.10.1
+        specifier: ^9.14.3
         version: 9.14.3(vue@3.5.13(typescript@5.8.2))
       vue-router:
-        specifier: ^4.2.2
+        specifier: ^4.5.0
         version: 4.5.0(vue@3.5.13(typescript@5.8.2))
       vue3-json-viewer:
         specifier: ^2.2.2
         version: 2.2.2(vue@3.5.13(typescript@5.8.2))
       xgplayer:
-        specifier: ^3.0.20
+        specifier: ^3.0.21
         version: 3.0.21(core-js@3.41.0)
       xgplayer-flv:
-        specifier: ^3.0.20
+        specifier: ^3.0.21
         version: 3.0.21(core-js@3.41.0)(xgplayer@3.0.21(core-js@3.41.0))
       xgplayer-hls:
-        specifier: ^3.0.20
+        specifier: ^3.0.21
         version: 3.0.21(core-js@3.41.0)(xgplayer@3.0.21(core-js@3.41.0))
     devDependencies:
       '@playwright/test':
-        specifier: ^1.49.1
-        version: 1.51.0
+        specifier: ^1.51.1
+        version: 1.51.1
       '@types/fs-extra':
         specifier: ^11.0.4
         version: 11.0.4
@@ -115,25 +115,25 @@ importers:
         specifier: ^8.1.0
         version: 8.1.0
       '@types/lodash-es':
-        specifier: ^4.17.11
+        specifier: ^4.17.12
         version: 4.17.12
       '@vitejs/plugin-vue':
-        specifier: ^4.2.3
+        specifier: ^4.6.2
         version: 4.6.2(vite@4.5.9(less@4.2.2))(vue@3.5.13(typescript@5.8.2))
       '@vitejs/plugin-vue-jsx':
-        specifier: ^3.0.1
+        specifier: ^3.1.0
         version: 3.1.0(vite@4.5.9(less@4.2.2))(vue@3.5.13(typescript@5.8.2))
       '@vuemap/unplugin-resolver':
-        specifier: ^2.0.0
+        specifier: ^2.0.1
         version: 2.0.1(unplugin-vue-components@0.24.1(@babel/parser@7.26.9)(rollup@3.29.5)(vue@3.5.13(typescript@5.8.2)))
       '@vueuse/core':
-        specifier: ^10.6.1
+        specifier: ^10.11.1
         version: 10.11.1(vue@3.5.13(typescript@5.8.2))
       ant-design-vue:
         specifier: ^3.2.20
         version: 3.2.20(vue@3.5.13(typescript@5.8.2))
       dotenv:
-        specifier: ^16.1.4
+        specifier: ^16.4.7
         version: 16.4.7
       fs-extra:
         specifier: ^11.3.0
@@ -142,34 +142,34 @@ importers:
         specifier: ^11.0.1
         version: 11.0.1
       less:
-        specifier: ^4.2.0
+        specifier: ^4.2.2
         version: 4.2.2
       pkg-types:
-        specifier: ^1.0.3
+        specifier: ^1.3.1
         version: 1.3.1
       playwright:
-        specifier: ^1.49.1
-        version: 1.51.0
+        specifier: ^1.51.1
+        version: 1.51.1
       rollup:
-        specifier: ^3.23.1
+        specifier: ^3.29.5
         version: 3.29.5
       rollup-plugin-visualizer:
-        specifier: ^5.9.0
+        specifier: ^5.14.0
         version: 5.14.0(rollup@3.29.5)
       typescript:
-        specifier: ^5.1.3
+        specifier: ^5.8.2
         version: 5.8.2
       unocss:
         specifier: ^0.52.7
         version: 0.52.7(postcss@8.5.3)(rollup@3.29.5)(vite@4.5.9(less@4.2.2))
       unplugin-auto-import:
-        specifier: ^0.16.4
+        specifier: ^0.16.7
         version: 0.16.7(@vueuse/core@10.11.1(vue@3.5.13(typescript@5.8.2)))(rollup@3.29.5)
       unplugin-vue-components:
         specifier: ^0.24.1
         version: 0.24.1(@babel/parser@7.26.9)(rollup@3.29.5)(vue@3.5.13(typescript@5.8.2))
       vite:
-        specifier: ^4.5.3
+        specifier: ^4.5.9
         version: 4.5.9(less@4.2.2)
       vite-plugin-monaco-editor:
         specifier: ^1.1.0
@@ -184,7 +184,7 @@ importers:
         specifier: ^0.4.0
         version: 0.4.0(vite@4.5.9(less@4.2.2))
       vue-tsc:
-        specifier: ^1.6.5
+        specifier: ^1.8.27
         version: 1.8.27(typescript@5.8.2)
 
   src/modules/data-collector-ui:
@@ -207,8 +207,8 @@ importers:
         specifier: ^4.2.5
         version: 4.2.5
       driver.js:
-        specifier: ^1.3.1
-        version: 1.3.5
+        specifier: 0.9.8
+        version: 0.9.8
       resize-observer-polyfill:
         specifier: ^1.5.1
         version: 1.5.1
@@ -611,8 +611,8 @@ packages:
   '@jetlinks-web/constants@1.0.9':
     resolution: {integrity: sha512-ouIZbvBwD8wCdk9rbnuSbecwjxnE+dmtqS4qrTUvldPIP/9X0fC0m7w3B/MFyttshpELaCZybPoYwQe7PPAzCg==}
 
-  '@jetlinks-web/core@2.2.1':
-    resolution: {integrity: sha512-iMOKCcs+hptwzFLQtRcE5M7SE80UaDrEiaJUQAax1gdnfoY+npOZRWcfOmgxY1YUmoIvj7bVI4pCSM/0mEqjyg==}
+  '@jetlinks-web/core@2.2.3':
+    resolution: {integrity: sha512-hlGmge53B8yeHHKCGkYNEgEw4T0E0boHjIFXHxAyw1099guAlxH87JywNPFJDj7qbk26AzhGLZ4/5XhdQZXZlg==}
 
   '@jetlinks-web/hooks@1.0.24':
     resolution: {integrity: sha512-RnWt7gzLtLx0SxFnYcCKYE0IkEv+mu3wboi47bkt09J0iIUdgupMtNWo+1y22NVRPyOr5pUGwXL7Wr3GAq2HZw==}
@@ -662,8 +662,8 @@ packages:
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
 
-  '@playwright/test@1.51.0':
-    resolution: {integrity: sha512-dJ0dMbZeHhI+wb77+ljx/FeC8VBP6j/rj9OAojO08JI80wTZy6vRk9KvHKiDCUh4iMpEiseMgqRBIeW+eKX6RA==}
+  '@playwright/test@1.51.1':
+    resolution: {integrity: sha512-nM+kEaTSAoVlXmMPH10017vn3FSiFqr/bh4fKg9vmAdMfd9SDqRZNvPSiAHADc/itWak+qPvMPZQOPwCBW7k7Q==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -1066,6 +1066,9 @@ packages:
   axios@1.8.1:
     resolution: {integrity: sha512-NN+fvwH/kV01dYUQ3PTOZns4LWtWhOFCAhQ/pHb88WQ1hNe5V/dvFwc4VJcDL11LT9xSX0QtsR8sWUuyOuOq7g==}
 
+  axios@1.8.4:
+    resolution: {integrity: sha512-eBSYY4Y68NNlHbHBMdeDmKNtDgXWhQsJcGqzO3iLUM0GraQFSS9cVgPX5I9b3lbdFKyYoAEGAZF1DwhTaljNAw==}
+
   balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
 
@@ -1423,8 +1426,8 @@ packages:
   downloadjs@1.4.7:
     resolution: {integrity: sha512-LN1gO7+u9xjU5oEScGFKvXhYf7Y/empUIIEAGBs1LzUq/rg5duiDrkuH5A2lQGd5jfMOb9X9usDa2oVXwJ0U/Q==}
 
-  driver.js@1.3.5:
-    resolution: {integrity: sha512-exkp49hXuujvTOZ3zYgySWRlEAa8/3nA8glYjtuZjmkTdsQITXivBsW1ytyhKQx3WkeYaovlnvVcLbtTaN86kA==}
+  driver.js@0.9.8:
+    resolution: {integrity: sha512-bczjyKdX6XmFyCDkwtRmlaORDwfBk1xXmRO0CAe5VwNQTM98aWaG2LAIiIdTe53iV/B7W5lXlIy2xYtf0JRb7Q==}
 
   dunder-proto@1.0.1:
     resolution: {integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==}
@@ -2035,13 +2038,13 @@ packages:
   pkg-types@2.1.0:
     resolution: {integrity: sha512-wmJwA+8ihJixSoHKxZJRBQG1oY8Yr9pGLzRmSsNms0iNWyHHAlZCa7mmKiFR10YPZuz/2k169JiS/inOjBCZ2A==}
 
-  playwright-core@1.51.0:
-    resolution: {integrity: sha512-x47yPE3Zwhlil7wlNU/iktF7t2r/URR3VLbH6EknJd/04Qc/PSJ0EY3CMXipmglLG+zyRxW6HNo2EGbKLHPWMg==}
+  playwright-core@1.51.1:
+    resolution: {integrity: sha512-/crRMj8+j/Nq5s8QcvegseuyeZPxpQCZb6HNk3Sos3BlZyAknRjoyJPFWkpNn8v0+P3WiwqFF8P+zQo4eqiNuw==}
     engines: {node: '>=18'}
     hasBin: true
 
-  playwright@1.51.0:
-    resolution: {integrity: sha512-442pTfGM0xxfCYxuBa/Pu6B2OqxqqaYq39JS8QDMGThUvIOCd6s0ANDog3uwA0cHavVlnTQzGCN7Id2YekDSXA==}
+  playwright@1.51.1:
+    resolution: {integrity: sha512-kkx+MB2KQRkyxjYPc3a0wLZZoDczmppyGJIvQ43l+aZihkaVvmu/21kiyaHeHjiFxjxNNFnUncKmcGIyOojsaw==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -2938,12 +2941,12 @@ snapshots:
 
   '@jetlinks-web/constants@1.0.9': {}
 
-  '@jetlinks-web/core@2.2.1(@types/lodash-es@4.17.12)(lodash@4.17.21)(typescript@5.8.2)':
+  '@jetlinks-web/core@2.2.3(@types/lodash-es@4.17.12)(lodash@4.17.21)(typescript@5.8.2)':
     dependencies:
       '@jetlinks-web/constants': 1.0.9
       '@jetlinks-web/types': 1.0.2(typescript@5.8.2)
       '@jetlinks-web/utils': 1.2.8(@types/lodash-es@4.17.12)(lodash@4.17.21)
-      axios: 1.8.1
+      axios: 1.8.4
       rxjs: 7.8.2
     transitivePeerDependencies:
       - '@types/lodash-es'
@@ -3021,9 +3024,9 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.19.1
 
-  '@playwright/test@1.51.0':
+  '@playwright/test@1.51.1':
     dependencies:
-      playwright: 1.51.0
+      playwright: 1.51.1
 
   '@polka/url@1.0.0-next.28': {}
 
@@ -3648,6 +3651,14 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
+  axios@1.8.4:
+    dependencies:
+      follow-redirects: 1.15.9
+      form-data: 4.0.2
+      proxy-from-env: 1.1.0
+    transitivePeerDependencies:
+      - debug
+
   balanced-match@1.0.2: {}
 
   binary-extensions@2.3.0: {}
@@ -3845,7 +3856,7 @@ snapshots:
 
   downloadjs@1.4.7: {}
 
-  driver.js@1.3.5: {}
+  driver.js@0.9.8: {}
 
   dunder-proto@1.0.1:
     dependencies:
@@ -4440,11 +4451,11 @@ snapshots:
       exsolve: 1.0.2
       pathe: 2.0.3
 
-  playwright-core@1.51.0: {}
+  playwright-core@1.51.1: {}
 
-  playwright@1.51.0:
+  playwright@1.51.1:
     dependencies:
-      playwright-core: 1.51.0
+      playwright-core: 1.51.1
     optionalDependencies:
       fsevents: 2.3.2
 

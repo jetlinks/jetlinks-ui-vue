@@ -132,7 +132,7 @@
 </template>
 <script setup name="LoginRight">
 import Remember from "./remember.vue";
-import { encrypt, getImage, setToken } from "@jetlinks-web/utils";
+import {encrypt, getImage, onlyMessage, setToken} from "@jetlinks-web/utils";
 import { useRequest } from "@jetlinks-web/hooks";
 import {
   captchaConfig,
@@ -142,16 +142,18 @@ import {
   login,
 } from "@/api/login";
 import { rules } from "./util";
-import { useUserStore } from "@/store";
-import { useI18n } from "vue-i18n";
+import {useUserStore} from "@/store";
 import { LocalStore } from "@jetlinks-web/utils";
-const BASE_API_PATH = import.meta.env.VITE_APP_BASE_API
 import { iconMap } from "./util";
 
 import defaultImg from '@/assets/apply/internal-standalone.png'
+import {initPackages} from "@/package";
+import i18n from "@/locales";
+
+const BASE_API_PATH = import.meta.env.VITE_APP_BASE_API
 
 const logoImage = getImage("/login/logo.png");
-const { t: $t } = useI18n();
+const $t = i18n.global.t
 
 const props = defineProps({
   loading: {
@@ -170,6 +172,10 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+  type: {
+    type: String,
+    default: 'login' // 'login' 'relogin'
+  }
 });
 
 const emit = defineEmits(["submit", "update:loading"]);
@@ -226,6 +232,18 @@ const { loading, run } = useRequest(login, {
   async onSuccess(res) {
     if (res.success) {
       setToken(res.result.token);
+      // 登录成功后，直接关闭模态弹窗，停留在当前页面//若使用另外账号登录,直接跳转默认首页
+      const flag = LocalStore.get('username') === res.result.user?.username
+      if(props.type === 'relogin'){
+        // 处理websocket
+        initPackages()
+        if(flag){
+          emit('submit')
+          return
+        } else {
+          onlyMessage($t("login.right.419974-8"))
+        }
+      }
       await userStore.getUserInfo();
       if (userStore.isAdmin) {
         const initResp = await getInitSet();
@@ -284,7 +302,7 @@ watch(
   padding: 0 70px;
 
   .top {
-    padding-top: 30%;
+    //padding-top: 30%;
 
     .header {
       text-align: center;

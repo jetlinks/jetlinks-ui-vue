@@ -89,6 +89,7 @@ getOpen();
     min-width: 400px;
     width: 27%;
     display: flex;
+    padding-top: 10%;
     flex-direction: column;
     justify-content: space-between;
   }

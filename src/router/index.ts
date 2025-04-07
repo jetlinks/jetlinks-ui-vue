@@ -7,6 +7,7 @@ import {NOT_FIND_ROUTE, LOGIN_ROUTE, OAuth2, OAuthWechat, AccountCenterBind} fro
 import {useUserStore} from "@/store/user";
 import {useSystemStore} from "@/store/system";
 import {useMenuStore} from "@/store/menu";
+import {Modal} from "ant-design-vue";
 
 let TokenFilterRoute: string[] = [OAuth2.path, AccountCenterBind.path]
 

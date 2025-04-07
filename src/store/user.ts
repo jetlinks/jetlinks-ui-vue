@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { detail } from '@/api/system/user'
 import { tabList } from "@/views/account/center/data";
+import {LocalStore} from "@jetlinks-web/utils/src/storage";
 
 type UserInfo = {
   name: string
@@ -31,6 +32,7 @@ export const useUserStore = defineStore('user', () => {
     if (resp.success) {
       setUserInfo(resp.result)
       isAdmin.value = resp.result.username === 'admin'
+      LocalStore.set('username', resp.result?.username)
     }
   }
   const updateAlarm = () => {
