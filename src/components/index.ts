@@ -15,8 +15,10 @@ import SelectAMap from './SelectAMap/index.vue'
 import MonacoEditor from './MonacoEditor/monacoEditor.vue'
 import FormItemValue from './FormItem'
 
+
 export default {
     install(app: App) {
+
         app.component('TitleComponent', TitleComponent)
             .component('ImageUpload', ImageUpload)
             .component('CardBox', CardBox)
