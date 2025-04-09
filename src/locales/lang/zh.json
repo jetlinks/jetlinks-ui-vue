@@ -1419,5 +1419,7 @@
 	"auth.index.559799-4": "同意授权",
 	"auth.index.559799-5": "切换账号",
 	"auth.index.559799-6": "OAuth授权-{0}",
-	"auth.index.559799-7": "OAuth授权"
+	"auth.index.559799-7": "OAuth授权",
+  "Login.index.265048-11": "JETLINKS团队全新力作可视化大屏系统",
+  "Login.index.265048-12": "体验DEMO"
 }
