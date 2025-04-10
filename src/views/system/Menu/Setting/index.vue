@@ -204,20 +204,20 @@ const dealTree = (
   return filtered;
 };
 const handleOk = async () => {
-  // const _dataArr = filterTree(cloneDeep(treeData.value), selectedKeys.value);
-  const _dataArr = dealTree(cloneDeep(treeData.value), selectedKeys.value);
-  const _dataSorts = handleSorts(_dataArr);
-  loading.value = true;
-  _dataSorts.push(USER_CENTER_MENU_DATA);
-  const res = await updateMenus(_dataSorts).catch(() => {});
-  if (res?.status === 200) {
-    loading.value = false;
-    visible.value = false;
-    onlyMessage($t("Setting.index.113436-8"), "success");
-    setTimeout(() => {
-      location.reload();
-    }, 100);
-  }
+    // const _dataArr = filterTree(cloneDeep(treeData.value), selectedKeys.value);
+    const _dataArr = dealTree(cloneDeep(treeData.value), selectedKeys.value);
+    const _dataSorts = handleSorts(_dataArr);
+    loading.value = true;
+    _dataSorts.push(USER_CENTER_MENU_DATA);
+    const res = await updateMenus(_dataSorts).catch(() => {}).finally(() => loading.value = false);
+    if (res?.status === 200) {
+        loading.value = false;
+        visible.value = false;
+        onlyMessage($t('Setting.index.113436-8'), 'success');
+        setTimeout(() => {
+            location.reload();
+        }, 100);
+    }
 };
 const handleCancel = () => {
   visible.value = false;

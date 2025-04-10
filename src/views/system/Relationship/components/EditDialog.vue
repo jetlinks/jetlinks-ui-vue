@@ -26,92 +26,93 @@
         />
       </a-form-item>
 
-      <a-row :gutter="24">
-        <a-col :span="12">
-          <a-form-item
-            name="objectType"
-            :label="$t('components.EditDialog.375810-3')"
-            :rules="[
-              { required: true, message: $t('components.EditDialog.375810-4') },
-            ]"
-          >
-            <a-select
-              v-model:value="form.data.objectType"
-              :disabled="!!form.data.id"
-              @change="form.handleObjectTypeChange"
-              :placeholder="$t('components.EditDialog.375810-4')"
+            <a-row :gutter="24">
+                <a-col :span="12">
+                    <a-form-item
+                        name="objectType"
+                        :label="$t('components.EditDialog.375810-3')"
+                        :rules="[{ required: true, message: $t('components.EditDialog.375810-4') }]"
+                    >
+                        <a-select
+                            v-model:value="form.data.objectType"
+                            :disabled="!!form.data.id"
+                            @change="form.handleObjectTypeChange"
+                            :placeholder="$t('components.EditDialog.375810-4')"
+                        >
+                            <a-select-option
+                                v-for="item in relationTypes"
+                                :value="item.id"
+                                :key="item.id"
+                            >
+                                {{ item.i18nName || item.name }}
+                            </a-select-option>
+                        </a-select>
+                    </a-form-item>
+                </a-col>
+                <a-col :span="12">
+                    <a-form-item
+                        name="targetType"
+                        :label="$t('components.EditDialog.375810-5')"
+                        :rules="[{ required: true, message: $t('components.EditDialog.375810-6') }]"
+                    >
+                        <a-select
+                            v-model:value="form.data.targetType"
+                            :disabled="!!form.data.id"
+                            @change="form.rules.checkUnique"
+                            :placeholder="$t('components.EditDialog.375810-6')"
+                        >
+                            <a-select-option
+                                v-for="item in beRelationTypes"
+                                :value="item.id"
+                                :key="item.id"
+                            >
+                                {{ item.i18nName || item.name }}
+                            </a-select-option>
+                        </a-select>
+                    </a-form-item>
+                </a-col>
+            </a-row>
+            <a-form-item
+                :label="$t('components.EditDialog.375810-7')"
+                name="name"
+                :rules="[
+                    { required: true, message: $t('components.EditDialog.375810-8') },
+                    { max: 64, message: $t('components.EditDialog.375810-2') },
+                    { required: true , validator:validateName, trigger: 'blur',}
+                ]"
             >
-              <a-select-option v-for="item in relationTypes" :value="item.id">
-                {{ item.i18nName || item.name }}
-              </a-select-option>
-            </a-select>
-          </a-form-item>
-        </a-col>
-        <a-col :span="12">
-          <a-form-item
-            name="targetType"
-            :label="$t('components.EditDialog.375810-5')"
-            :rules="[
-              { required: true, message: $t('components.EditDialog.375810-6') },
-            ]"
-          >
-            <a-select
-              v-model:value="form.data.targetType"
-              :disabled="!!form.data.id"
-              @change="form.rules.checkUnique"
-              :placeholder="$t('components.EditDialog.375810-6')"
+                <a-input
+                    v-model:value="form.data.name"
+                    :placeholder="$t('components.EditDialog.375810-8')"
+                />
+                <span class="example">{{ $t('components.EditDialog.375810-9') }}</span>
+            </a-form-item>
+          
+            <a-form-item
+                :label="$t('components.EditDialog.375810-10')"
+                name="reverseName"
+                :rules="[
+                    { required: true, message: $t('components.EditDialog.375810-8') },
+                    { max: 64, message: $t('components.EditDialog.375810-2') },
+                    { required: true , validator:validateName, trigger: 'blur',}
+                ]"
             >
-              <a-select-option v-for="item in beRelationTypes" :value="item.id">
-                {{ item.i18nName || item.name }}
-              </a-select-option>
-            </a-select>
-          </a-form-item>
-        </a-col>
-      </a-row>
-      <a-form-item
-        :label="$t('components.EditDialog.375810-7')"
-        name="name"
-        :rules="[
-          { required: true, message: $t('components.EditDialog.375810-8') },
-          { max: 64, message: $t('components.EditDialog.375810-2') },
-          { required: true, validator: validateName, trigger: 'blur' },
-        ]"
-      >
-        <a-input
-          v-model:value="form.data.name"
-          :placeholder="$t('components.EditDialog.375810-8')"
-        />
-        <span class="example">{{ $t("components.EditDialog.375810-9") }}</span>
-      </a-form-item>
-
-      <a-form-item
-        :label="$t('components.EditDialog.375810-10')"
-        name="reverseName"
-        :rules="[
-          { required: true, message: $t('components.EditDialog.375810-8') },
-          { max: 64, message: $t('components.EditDialog.375810-2') },
-          { required: true, validator: validateName, trigger: 'blur' },
-        ]"
-      >
-        <a-input
-          v-model:value="form.data.reverseName"
-          :placeholder="$t('components.EditDialog.375810-8')"
-        />
-        <span class="example">{{ $t("components.EditDialog.375810-11") }}</span>
-      </a-form-item>
-      <a-form-item
-        name="description"
-        :label="$t('components.EditDialog.375810-12')"
-      >
-        <a-textarea
-          v-model:value="form.data.description"
-          :placeholder="$t('components.EditDialog.375810-13')"
-          show-count
-          :maxlength="200"
-        />
-      </a-form-item>
-    </a-form>
-  </a-modal>
+                <a-input
+                    v-model:value="form.data.reverseName"
+                    :placeholder="$t('components.EditDialog.375810-8')"
+                />
+                <span class="example">{{ $t('components.EditDialog.375810-11') }}</span>
+            </a-form-item>
+            <a-form-item name="description" :label="$t('components.EditDialog.375810-12')">
+                <a-textarea
+                    v-model:value="form.data.description"
+                    :placeholder="$t('components.EditDialog.375810-13')"
+                    show-count
+                    :maxlength="200"
+                />
+            </a-form-item>
+        </a-form>
+    </a-modal>
 </template>
 
 <script setup lang="ts">
@@ -159,59 +160,61 @@ const confirm = () => {
 
 const formRef = ref<FormInstance>();
 const form = reactive({
-  data: props.data,
-  rules: {
-    /**
-     * 验证标识
-     * @param _rule
-     * @param value
-     */
-    checkRelation: async (_rule: Rule, value: string) => {
-      const reg = new RegExp("^[0-9a-zA-Z_\\\\-]+$");
-      if (!value) return Promise.reject("");
-      if (!reg.test(value))
-        return Promise.reject($t("components.EditDialog.375810-17"));
-      return form.rules.checkUnique();
+    data: props.data,
+    rules: {
+        /**
+         * 验证标识
+         * @param _rule
+         * @param value
+         */
+        checkRelation: async (_rule: Rule, value: string) => {
+            const reg = new RegExp('^[0-9a-zA-Z_\\\\-]+$');
+            if (!value) return Promise.reject('');
+            if (!reg.test(value))
+                return Promise.reject(
+                    $t('components.EditDialog.375810-17'),
+                );
+            return form.rules.checkUnique();
+        },
+        /**
+         * 验证标识唯一性
+         * @param value
+         */
+        checkUnique: () => {
+            if (
+                props.data?.id ||
+                !form.data.relation ||
+                !form.data.objectType ||
+                !form.data.targetType
+            )
+                return;
+            return new Promise(async (resolve, reject) => {
+                const { result } = await validateField({
+                    relation: form.data.relation,
+                    objectType: form.data.objectType,
+                    targetType: form.data.targetType,
+                });
+                result.passed ? resolve('') : reject(result.reason);
+            });
+        },
     },
-    /**
-     * 验证标识唯一性
-     * @param value
-     */
-    checkUnique: () => {
-      if (
-        props.data?.id ||
-        !form.data.relation ||
-        !form.data.objectType ||
-        !form.data.targetType
-      )
-        return;
-      return new Promise(async (resolve, reject) => {
-        const { result } = await validateField({
-          relation: form.data.relation,
-          objectType: form.data.objectType,
-          targetType: form.data.targetType,
-        });
-        result.passed ? resolve("") : reject(result.reason);
-      });
+    handleObjectTypeChange: () => {
+        form.data.targetType = undefined;
+        form.rules.checkUnique();
     },
-  },
-  handleObjectTypeChange: () => {
-    form.data.targetType = undefined;
-    form.rules.checkUnique();
-  },
-  submit: () => {
-    const params = {
-      ...form.data,
-      objectTypeName: form.objectList.find(
-        (item) => item.id === form.data.objectType,
-      )?.name,
-      targetTypeName: targetList.value.find(
-        (item: dictItemType) => item.id === form.data.targetType,
-      )?.name,
-    };
-    const api = props.data.id ? editRelation_api : addRelation_api;
-    return api(params);
-  },
+    submit: () => {
+        const params = {
+            ...form.data,
+            objectTypeName: relationTypes.value.find(
+                (item) => item.id === form.data.objectType,
+            )?.name,
+            targetTypeName: beRelationTypes.value.find(
+                (item: dictItemType) => item.id === form.data.targetType,
+            )?.name,
+        };
+        const api = props.data.id ? editRelation_api : addRelation_api;
+        return api(params);
+    },
 });
 const validateName = async (_: any, value: any) => {
   if (!value) {

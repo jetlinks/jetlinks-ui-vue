@@ -8,7 +8,7 @@ import components from './components'
 import directive from '@/directive'
 import dayjs from 'dayjs';
 import { loadMicroApp, initAxios } from "@/package";
-import Antdv from 'ant-design-vue'
+import andtv from 'ant-design-vue'
 
 import 'ant-design-vue/dist/antd.variable.min.css'
 import "vue3-json-viewer/dist/index.css";
@@ -28,7 +28,7 @@ app.use(pinia)
     .use(router)
     .use(directive) // 注册自定义指令
     .use(i18n)
-    .use(Antdv) // 注册自定义通用组件
+    .use(andtv)
     .use(JetlinksComponents) // 注册脚手架通用组件
     .use(components) // 注册自定义通用组件
     .mount('#app')

@@ -1422,5 +1422,7 @@
 	"auth.index.559799-4": "Agree to authorize",
 	"auth.index.559799-5": "Switch accounts",
 	"auth.index.559799-6": "OAuth Authorization - {0}",
-	"auth.index.559799-7": "OAuth Authorization"
+	"auth.index.559799-7": "OAuth Authorization",
+  "Login.index.265048-11": "JETLINKS team's new visual large screen system",
+  "Login.index.265048-12": "Experience DEMO"
 }
