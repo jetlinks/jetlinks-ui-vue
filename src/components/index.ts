@@ -14,7 +14,7 @@ import CheckButton from './CheckButton/CheckButton.vue'
 import SelectAMap from './SelectAMap/index.vue'
 import MonacoEditor from './MonacoEditor/monacoEditor.vue'
 import FormItemValue from './FormItem'
-
+import { TimeSelect } from './Dashboard/components'
 
 export default {
     install(app: App) {
@@ -35,6 +35,7 @@ export default {
             .component('CheckButton',CheckButton)
             .component('SelectAMap', SelectAMap)
           .component('monaco-editor', MonacoEditor)
+          .component(TimeSelect.name, TimeSelect)
 
         Object.keys(FormItemValue).forEach(key => {
             app.component(key, FormItemValue[key])
