@@ -127,6 +127,23 @@
       </div>
     </div>
   </div>
+  <div v-if="basis.recommend === 'true'" class="bottom">
+    <div class="view">
+        {{ $t('Login.index.265048-11') }}
+    </div>
+    <div class="url">
+        <div style="height: 33px">
+            <img :src="viewLogo" />
+        </div>
+        <a
+            href="https://view.jetlinks.cn/"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            {{ $t('Login.index.265048-12') }}
+        </a>
+    </div>
+  </div>
 </template>
 <script setup name="LoginRight">
 import Remember from "./remember.vue";
@@ -145,10 +162,13 @@ import { useI18n } from "vue-i18n";
 import { LocalStore } from "@jetlinks-web/utils";
 const BASE_API_PATH = import.meta.env.VITE_APP_BASE_API;
 import { iconMap } from "./util";
+import { useSystemStore } from '@/store/system'
 
 import defaultImg from "@/assets/apply/internal-standalone.png";
 
 const logoImage = getImage("/login/logo.png");
+const viewLogo = getImage("/login/view-logo.png");
+const systemStore = useSystemStore()
 const { t: $t } = useI18n();
 
 const props = defineProps({
@@ -173,6 +193,10 @@ const props = defineProps({
 const emit = defineEmits(["submit", "update:loading"]);
 const moreVisible = ref(false);
 const userStore = useUserStore();
+
+const basis = computed(() => {
+    return systemStore['front'] || {};
+});
 
 const formData = reactive({
   username: "",
@@ -306,6 +330,49 @@ watch(
     height: 44px;
     margin: 0 auto;
     vertical-align: top;
+  }
+}
+.bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 11%;
+  border-top: 1px solid #e0e4e8;
+
+  .view {
+    width: 247px;
+    height: 20px;
+    margin-right: 10%;
+    margin-bottom: 10px;
+    padding-top: 2px;
+    color: rgba(0, 0, 0, 0.65);
+    font-size: 14px;
+    font-family: 'PingFang SC';
+  }
+
+  .url {
+    display: flex;
+    align-items: center;
+    margin-right: 10%;
+
+    img {
+      width: 100%;
+      height: 100%;
+    }
+
+    a {
+      position: relative;
+      left: 60px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      padding: 2px 7px;
+      line-height: 20px;
+      border: 1px solid #2f54eb;
+      border-radius: 2px;
+    }
   }
 }
 .other {

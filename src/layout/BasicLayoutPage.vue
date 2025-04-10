@@ -19,6 +19,7 @@
     <template #rightContentRender>
       <div class="right-content">
         <Language />
+        <Resource v-if="systemInfo?.['front']?.resources"/>
         <Notice />
         <User />
       </div>
@@ -34,7 +35,7 @@
 import { reactive, computed, watchEffect } from 'vue'
 import { useSystemStore } from '@/store/system'
 import { useMenuStore } from '@/store/menu'
-import { User, Notice, Language } from './components'
+import { User, Notice, Language, Resource } from './components'
 import { storeToRefs } from 'pinia'
 
 const router = useRouter();
@@ -44,7 +45,7 @@ const menuStore = useMenuStore()
 const layoutType = ref('list')
 const updateRoute = ref(true)
 
-const { theme, layout, language } = storeToRefs(systemStore)
+const { theme, layout, language, systemInfo } = storeToRefs(systemStore)
 
 const components = computed(() => {
   const componentName = route.matched[route.matched.length - 1]?.components?.default?.name

@@ -65,7 +65,7 @@ const {data: treeData, run} = useRequest(getDepartmentList_api, {
     paging: false,
     sorts: [{name: 'sortIndex', order: 'asc'}]
   },
-  immediate: false,
+  immediate: true,
   defaultValue: []
 })
 
@@ -95,9 +95,9 @@ watch(() => props.value, () => {
 }, {immediate: true})
 
 
-onMounted(() => {
-  run()
-})
+// onMounted(() => {
+//   run()
+// })
 </script>
 
 <template>
