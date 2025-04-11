@@ -29,7 +29,7 @@ export default defineConfig(({ mode }) => {
         build: {
             outDir: 'dist',
             assetsDir: 'assets',
-            sourcemap: false,
+            sourcemap: true,
             cssCodeSplit: false,
             manifest: true,
             chunkSizeWarningLimit: 2000,
@@ -39,7 +39,6 @@ export default defineConfig(({ mode }) => {
                     entryFileNames: `assets/[name].${ new Date().getTime() }.js`,
                     chunkFileNames: `assets/[name].${ new Date().getTime() }.js`,
                     assetFileNames: (pre) => {
-                        console.log(pre.name)
                         const fileType = pre.name.split('.')?.pop()
                         if (['png', 'svg', 'ico', 'jpg'].includes(fileType)) {
                             return `assets/[name].[ext]`
@@ -49,6 +48,8 @@ export default defineConfig(({ mode }) => {
                     compact: true,
                     manualChunks: {
                         vue: ['vue', 'vue-router', 'pinia'],
+                        'lodash-es': ['lodash-es'],
+                        'echarts': ['echarts']
                     },
                 },
             },
@@ -61,10 +62,6 @@ export default defineConfig(({ mode }) => {
             optimizeDeps(),
             Components({
                 resolvers: [
-                    AntDesignVueResolver({
-                        resolveIcons: true,
-                        importStyle: 'less',
-                    }),
                     VueAmapResolver(),
                 ],
                 directoryAsNamespace: true,
