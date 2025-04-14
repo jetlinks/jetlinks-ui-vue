@@ -205,6 +205,7 @@ const formData = inject('plugin-form', {
 })
 
 const collectorData = inject('plugin-form-collector', {})
+const showDeathArea = inject('plugin-form-death-area-show', ref(false))
 const provOptions = ref([])
 
 const writeByteConfig = ref(false);
@@ -393,7 +394,7 @@ const providerChange = (val) => {
 const functionChange = (v) => {
   formData.accessModes = [];
   if (!['HoldingRegisters', 'InputRegisters'].includes(formData.configuration.function)) {
-    formData.configuration.codec.provider = 'int8'
+    formData.configuration.codec.provider = 'bool'
   } else {
     formData.configuration.codec.provider = undefined
   }
@@ -425,5 +426,10 @@ watch(
     {deep: true},
 );
 
+watch(() => formData.configuration.codec?.provider, (val) => {
+  showDeathArea.value = val && ['int8', 'int16', 'int32', 'int64', 'ieee754_float', 'ieee754_double'].includes(val)
+}, {
+  immediate: true,
+})
 </script>
 <style></style>
