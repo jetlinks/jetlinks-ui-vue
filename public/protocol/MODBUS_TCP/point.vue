@@ -394,7 +394,7 @@ const providerChange = (val) => {
 const functionChange = (v) => {
   formData.accessModes = [];
   if (!['HoldingRegisters', 'InputRegisters'].includes(formData.configuration.function)) {
-    formData.configuration.codec.provider = 'bool'
+    formData.configuration.codec.provider = 'int8'
   } else {
     formData.configuration.codec.provider = undefined
   }
@@ -427,7 +427,7 @@ watch(
 );
 
 watch(() => formData.configuration.codec?.provider, (val) => {
-  showDeathArea.value = val && ['int8', 'int16', 'int32', 'int64', 'ieee754_float', 'ieee754_double'].includes(val)
+  showDeathArea.value = val && ['int8', 'int16', 'int32', 'int64', 'ieee754_float', 'ieee754_double'].includes(val) && !['Coils', 'DiscreteInputs'].includes(formData.configuration.function)
 }, {
   immediate: true,
 })
