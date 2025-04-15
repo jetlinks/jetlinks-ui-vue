@@ -205,6 +205,7 @@ const formData = inject('plugin-form', {
 })
 
 const collectorData = inject('plugin-form-collector', {})
+const showDeathArea = inject('plugin-form-death-area-show', ref(false))
 const provOptions = ref([])
 
 const writeByteConfig = ref(false);
@@ -425,5 +426,10 @@ watch(
     {deep: true},
 );
 
+watch(() => formData.configuration.codec?.provider, (val) => {
+  showDeathArea.value = val && ['int8', 'int16', 'int32', 'int64', 'ieee754_float', 'ieee754_double'].includes(val) && !['Coils', 'DiscreteInputs'].includes(formData.configuration.function)
+}, {
+  immediate: true,
+})
 </script>
 <style></style>
