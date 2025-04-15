@@ -1,4 +1,5 @@
 <template>
+  <j-title :data="$lang('MODBUS_TCP.point.20250207-32')"/>
   <a-form-item :label="$lang('MODBUS_TCP.point.20250207-1')" :name="['configuration', 'function']"
                :rules="[
     {
@@ -16,87 +17,134 @@
               :placeholder="$lang('MODBUS_TCP.point.20250207-2')"
               allowClear show-search :filter-option="filterOption" @change="functionChange"/>
   </a-form-item>
-  <a-form-item :label="$lang('MODBUS_TCP.point.20250207-3')" name="pointKey" validate-first :rules="[
-    {
-            required: true,
-            message: $lang('MODBUS_TCP.point.20250207-4'),
-    },
-    {
-      validator: checkPointKey,
-      trigger: 'blur',
-    },
-  ]">
-    <a-input-number v-model:value="formData.pointKey" :controls="false" :max="9999999" :maxlength="64" :min="0"
-                    :precision="0"
-                    :placeholder="$lang('MODBUS_TCP.point.20250207-4')"
-                    style="width: 100%"/>
+  <a-form-item
+      :label="$lang('MODBUS_TCP.point.20250207-3')"
+      name="pointKey"
+      validate-first
+      :rules="[
+        {
+          required: true,
+          message: $lang('MODBUS_TCP.point.20250207-4'),
+        },
+        {
+          validator: checkPointKey,
+          trigger: 'blur',
+        },
+      ]"
+  >
+    <a-input-number
+        v-model:value="formData.pointKey"
+        :controls="false"
+        :max="255"
+        :min="0"
+        :precision="0"
+        :placeholder="$lang('MODBUS_TCP.point.20250207-4')"
+        style="width: 100%"
+    />
     <p v-show="plcFormat" style="margin: 10px 0; color: #616161">
-      PLC地址：{{ formData.pointKey != undefined ? plcFormat : '' }}
+      PLC{{ $lang('MODBUS_TCP.point.20250207-3') }}：{{ formData.pointKey !== undefined ? plcFormat : '' }}
     </p>
   </a-form-item>
-  <a-form-item v-if="showProvider" :name="['configuration', 'codec', 'provider']" :rules="[
-    {
-      required: true,
-      message: $lang('MODBUS_TCP.point.20250207-7')
-    },
-    {
-      validator: checkProvider,
-      trigger: 'change',
-    },
-  ]"
-               :label="$lang('MODBUS_TCP.point.20250207-6')"
+  <a-divider/>
+  <j-title :data="$lang('MODBUS_TCP.point.20250207-33')"/>
+  <a-form-item
+      v-if="showProvider"
+      :name="['configuration', 'codec', 'provider']"
+      :rules="[
+        {
+          required: true,
+          message: $lang('MODBUS_TCP.point.20250207-7')
+        },
+        {
+          validator: checkProvider,
+          trigger: 'change',
+        },
+      ]"
+      :label="$lang('MODBUS_TCP.point.20250207-6')"
   >
-    <a-select v-model:value="formData.configuration.codec.provider" :options="filterProvOptions"
-              :placeholder="$lang('MODBUS_TCP.point.20250207-7')"
-              show-search @change="providerChange"/>
-  </a-form-item>
-  <a-form-item :name="['configuration', 'parameter', 'quantity']" :rules="[
-    {
-      required: true,
-      message: $lang('MODBUS_TCP.point.20250207-9')
-    },
-    {
-      pattern: new RegExp(/^\d+$/),
-      message: $lang('MODBUS_TCP.point.20250207-10')
-    },
-  ]" :label="$lang('MODBUS_TCP.point.20250207-8')">
-    <a-input-number v-model:value="formData.configuration.parameter.quantity" :controls="false" :max="65535" :min="1"
-                    :precision="0"
-                    :placeholder="$lang('MODBUS_TCP.point.20250207-9')" style="width: 100%"/>
-  </a-form-item>
-
-  <a-form-item v-if="showScaleFactor" :name="[
-    'configuration',
-    'codec',
-    'configuration',
-    'scaleFactor',
-  ]" :label="$lang('MODBUS_TCP.point.20250207-11')"
-               :rules="[
-    {
-      required: true,
-      message: $lang('MODBUS_TCP.point.20250207-12')
-    }
-    ]"
-  >
-    <a-input-number v-model:value="formData.configuration.codec.configuration.scaleFactor" :controls="false"
-                    :max="65535"
-                    :maxlength="64"
-                    :placeholder="$lang('MODBUS_TCP.point.20250207-12')" style="width: 100%" type="number"/>
-  </a-form-item>
-  <a-form-item v-if="showCodecProvider" :name="['configuration', 'codec', 'configuration', 'scale']"
-               :label="$lang('MODBUS_TCP.point.20250207-13')">
-    <a-input-number v-model:value="formData.configuration.codec.configuration.scale" :controls="false" :max="65535"
-                    :maxlength="64" :min="0" :precision="0"
-                    :placeholder="$lang('MODBUS_TCP.point.20250207-14')" style="width: 100%"
+    <a-select
+        v-model:value="formData.configuration.codec.provider"
+        :options="filterProvOptions"
+        :placeholder="$lang('MODBUS_TCP.point.20250207-7')"
+        show-search @change="providerChange"
     />
   </a-form-item>
+  <a-form-item
+      :name="['configuration', 'parameter', 'quantity']"
+      :rules="[
+        {
+          required: true,
+          message: $lang('MODBUS_TCP.point.20250207-9')
+        },
+        {
+          pattern: new RegExp(/^\d+$/),
+          message: $lang('MODBUS_TCP.point.20250207-10')
+        },
+      ]"
+      :label="$lang('MODBUS_TCP.point.20250207-8')"
+  >
+    <a-input-number
+        v-model:value="formData.configuration.parameter.quantity"
+        :controls="false"
+        :max="65535"
+        :min="1"
+        :precision="0"
+        :placeholder="$lang('MODBUS_TCP.point.20250207-9')"
+        style="width: 100%"
+    />
+  </a-form-item>
+
+  <a-form-item
+      v-if="showScaleFactor"
+      :name="[
+          'configuration',
+          'codec',
+          'configuration',
+          'scaleFactor',
+        ]"
+      :label="$lang('MODBUS_TCP.point.20250207-11')"
+      :rules="[
+      {
+        required: true,
+        message: $lang('MODBUS_TCP.point.20250207-12')
+      }
+    ]"
+  >
+    <a-input-number
+        v-model:value="formData.configuration.codec.configuration.scaleFactor"
+        :controls="false"
+        :max="65535"
+        :placeholder="$lang('MODBUS_TCP.point.20250207-12')"
+        style="width: 100%"
+        type="number"
+    />
+  </a-form-item>
+  <a-form-item
+      v-if="showCodecProvider"
+      :name="['configuration', 'codec', 'configuration', 'scale']"
+      :label="$lang('MODBUS_TCP.point.20250207-13')"
+  >
+    <a-input-number
+        v-model:value="formData.configuration.codec.configuration.scale"
+        :controls="false"
+        :max="65535"
+        :min="0"
+        :precision="0"
+        :placeholder="$lang('MODBUS_TCP.point.20250207-14')"
+        style="width: 100%"
+    />
+  </a-form-item>
+  <a-divider/>
+  <j-title :data="$lang('MODBUS_TCP.point.20250207-34')"/>
   <div v-if="showWriteByteConfig">
-    <a-form-item style="
+    <a-form-item
+        style="
             display: flex;
             flex-direction: row;
             align-items: center;
             margin: 0;
-          ">
+        "
+    >
       <a-form-item-rest>
         <span>{{ $lang('MODBUS_TCP.point.20250207-15') }}</span>
       </a-form-item-rest>
@@ -116,24 +164,32 @@
         </a-space>
       </a-radio-group>
     </a-form-item>
-    <a-form-item v-if="writeByteConfig" :name="['configuration', 'parameter', 'byteCount']" :rules="[
-    {
-      required: true,
-      message: $lang('MODBUS_TCP.point.20250207-20')
-    },
-  ]"
-                 :label="$lang('MODBUS_TCP.point.20250207-21')">
+    <a-form-item
+        v-if="writeByteConfig"
+        :name="['configuration', 'parameter', 'byteCount']"
+        :rules="[
+          {
+            required: true,
+            message: $lang('MODBUS_TCP.point.20250207-20')
+          },
+        ]"
+        :label="$lang('MODBUS_TCP.point.20250207-21')"
+    >
       <a-input
-          :placeholder="$lang('MODBUS_TCP.point.20250207-20')" v-model:value="formData.configuration.parameter.byteCount"/>
+          :placeholder="$lang('MODBUS_TCP.point.20250207-20')"
+          v-model:value="formData.configuration.parameter.byteCount"/>
     </a-form-item>
   </div>
-  <a-form-item :rules="[
+  <a-form-item
+      :rules="[
     {
-      required: true,
-      message: $lang('MODBUS_TCP.point.20250207-23')
-    },
-  ]"
-               :label="$lang('MODBUS_TCP.point.20250207-22')" name="accessModes">
+        required: true,
+        message: $lang('MODBUS_TCP.point.20250207-23')
+      },
+    ]"
+      :label="$lang('MODBUS_TCP.point.20250207-22')"
+      name="accessModes"
+  >
     <j-check-button v-model:value="formData.accessModes" :multiple="true" :options="accessModesOptions"/>
   </a-form-item>
 </template>
@@ -149,7 +205,7 @@ const formData = inject('plugin-form', {
 })
 
 const collectorData = inject('plugin-form-collector', {})
-
+const showDeathArea = inject('plugin-form-death-area-show', ref(false))
 const provOptions = ref([])
 
 const writeByteConfig = ref(false);
@@ -161,7 +217,7 @@ if (!('configuration' in formData)) {
     parameter: {
       quantity: 1,
       writeByteCount: undefined,
-      byteCount: 2,
+      byteCount: undefined,
       address: undefined,
     },
     codec: {
@@ -178,7 +234,7 @@ if (!('parameter' in formData.configuration)) {
   formData.configuration.parameter = {
     quantity: 1,
     writeByteCount: undefined,
-    byteCount: 2,
+    byteCount: undefined,
     address: undefined,
   }
 }
@@ -252,10 +308,9 @@ function checkPointKey(_rule, value) {
       if (!reg.test(value)) {
         return reject($lang('MODBUS_TCP.point.20250207-29'))
       }
-
       if (Number(oldPointKey) === Number(value)) return resolve('');
       if (typeof value === 'object') return resolve('');
-      const res = await request.get(`/data-collect/point/${collectorData.id}/_validate`, {
+      const res = await request.get(`/data-collect/point/${collectorData.id || formData.collectorId}/_validate`, {
         pointKey: value,
       });
       return res.result?.passed ? resolve('') : reject(res.result.reason);
@@ -328,7 +383,6 @@ const providerValueMap = {
 }
 
 const providerChange = (val) => {
-  console.log('providerValueMap[val]====', providerValueMap[val], providerValueMap);
   formData.configuration.parameter.quantity = providerValueMap[val]
 
   if (val === 'bool') {
@@ -352,13 +406,14 @@ watch(
     () => writeByteConfig.value,
     (val) => {
       if (
-          val &&
-          !formData.configuration.parameter.byteCount &&
-          formData.configuration.parameter.quantity
+          val && !formData.configuration.parameter.byteCount && formData.configuration.parameter.quantity
       ) {
         formData.configuration.parameter.byteCount = formData.configuration.parameter.quantity * 2;
       }
     },
+    {
+      immediate: true
+    }
 );
 
 watch(
@@ -371,5 +426,10 @@ watch(
     {deep: true},
 );
 
+watch(() => formData.configuration.codec?.provider, (val) => {
+  showDeathArea.value = val && ['int8', 'int16', 'int32', 'int64', 'ieee754_float', 'ieee754_double'].includes(val) && !['Coils', 'DiscreteInputs'].includes(formData.configuration.function)
+}, {
+  immediate: true,
+})
 </script>
 <style></style>

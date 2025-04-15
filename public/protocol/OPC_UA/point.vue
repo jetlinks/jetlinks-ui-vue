@@ -34,11 +34,13 @@
   </a-form-item>
 </template>
 <script setup>
-import {inject, ref} from 'vue'
+import {inject, ref, watch} from 'vue'
 import {request} from '@jetlinks-web/core'
 import {useLocales} from '@hooks'
 
 const formData = inject('plugin-form')
+const showDeathArea = inject('plugin-form-death-area-show', ref(false))
+
 const opcuaDataTypeList = ref([])
 const {$lang} = useLocales('OPC_UA')
 
@@ -49,5 +51,11 @@ const getOpcuaDataType = async () => {
   }
 };
 getOpcuaDataType()
+
+watch(() => formData.configuration.type, (val) => {
+  showDeathArea.value = val && ['Byte', 'Short', 'Word', 'Integer', 'DWord', 'Long', 'LLong', 'Float', 'Double'].includes(val)
+}, {
+  immediate: true,
+})
 </script>
 <style></style>

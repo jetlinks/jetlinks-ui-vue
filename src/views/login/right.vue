@@ -127,27 +127,10 @@
       </div>
     </div>
   </div>
-  <div v-if="basis.recommend === 'true'" class="bottom">
-    <div class="view">
-        {{ $t('Login.index.265048-11') }}
-    </div>
-    <div class="url">
-        <div style="height: 33px">
-            <img :src="viewLogo" />
-        </div>
-        <a
-            href="https://view.jetlinks.cn/"
-            target="_blank"
-            rel="noopener noreferrer"
-        >
-            {{ $t('Login.index.265048-12') }}
-        </a>
-    </div>
-  </div>
 </template>
 <script setup name="LoginRight">
 import Remember from "./remember.vue";
-import { encrypt, getImage, setToken } from "@jetlinks-web/utils";
+import {encrypt, getImage, onlyMessage, setToken} from "@jetlinks-web/utils";
 import { useRequest } from "@jetlinks-web/hooks";
 import {
   captchaConfig,
@@ -157,19 +140,18 @@ import {
   login,
 } from "@/api/login";
 import { rules } from "./util";
-import { useUserStore } from "@/store";
-import { useI18n } from "vue-i18n";
+import {useUserStore} from "@/store";
 import { LocalStore } from "@jetlinks-web/utils";
-const BASE_API_PATH = import.meta.env.VITE_APP_BASE_API;
 import { iconMap } from "./util";
-import { useSystemStore } from '@/store/system'
 
-import defaultImg from "@/assets/apply/internal-standalone.png";
+import defaultImg from '@/assets/apply/internal-standalone.png'
+import {initPackages} from "@/package";
+import i18n from "@/locales";
+
+const BASE_API_PATH = import.meta.env.VITE_APP_BASE_API
 
 const logoImage = getImage("/login/logo.png");
-const viewLogo = getImage("/login/view-logo.png");
-const systemStore = useSystemStore()
-const { t: $t } = useI18n();
+const $t = i18n.global.t
 
 const props = defineProps({
   loading: {
@@ -188,15 +170,15 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+  type: {
+    type: String,
+    default: 'login' // 'login' 'relogin'
+  }
 });
 
 const emit = defineEmits(["submit", "update:loading"]);
 const moreVisible = ref(false);
 const userStore = useUserStore();
-
-const basis = computed(() => {
-    return systemStore['front'] || {};
-});
 
 const formData = reactive({
   username: "",
@@ -251,6 +233,18 @@ const { loading, run } = useRequest(login, {
   async onSuccess(res) {
     if (res.success) {
       setToken(res.result.token);
+      // 登录成功后，直接关闭模态弹窗，停留在当前页面//若使用另外账号登录,直接跳转默认首页
+      const flag = LocalStore.get('username') === res.result.user?.username
+      if(props.type === 'relogin'){
+        // 处理websocket
+        initPackages()
+        if(flag){
+          emit('submit')
+          return
+        } else {
+          onlyMessage($t("login.right.419974-8"))
+        }
+      }
       await userStore.getUserInfo();
       if (userStore.isAdmin) {
         const initResp = await getInitSet();
@@ -309,7 +303,7 @@ watch(
   padding: 0 70px;
 
   .top {
-    padding-top: 30%;
+    //padding-top: 30%;
 
     .header {
       text-align: center;
@@ -330,49 +324,6 @@ watch(
     height: 44px;
     margin: 0 auto;
     vertical-align: top;
-  }
-}
-.bottom {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 11%;
-  border-top: 1px solid #e0e4e8;
-
-  .view {
-    width: 247px;
-    height: 20px;
-    margin-right: 10%;
-    margin-bottom: 10px;
-    padding-top: 2px;
-    color: rgba(0, 0, 0, 0.65);
-    font-size: 14px;
-    font-family: 'PingFang SC';
-  }
-
-  .url {
-    display: flex;
-    align-items: center;
-    margin-right: 10%;
-
-    img {
-      width: 100%;
-      height: 100%;
-    }
-
-    a {
-      position: relative;
-      left: 60px;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: center;
-      padding: 2px 7px;
-      line-height: 20px;
-      border: 1px solid #2f54eb;
-      border-radius: 2px;
-    }
   }
 }
 .other {

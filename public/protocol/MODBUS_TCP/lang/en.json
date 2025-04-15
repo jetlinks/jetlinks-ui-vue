@@ -46,5 +46,8 @@
   "MODBUS_TCP.point.20250207-28": "Data type length must be <= register quantity * 2",
   "MODBUS_TCP.point.20250207-29": "Please enter a positive integer between 0 and 999999",
   "MODBUS_TCP.point.20250207-30": "Read",
-  "MODBUS_TCP.point.20250207-31": "Write"
+  "MODBUS_TCP.point.20250207-31": "Write",
+  "MODBUS_TCP.point.20250207-32": "Basic Parameters",
+  "MODBUS_TCP.point.20250207-33": "Data Parsing",
+  "MODBUS_TCP.point.20250207-34": "Collection & Transmission"
 }
