@@ -116,7 +116,7 @@
   </a-form-item>
 </template>
 <script setup>
-import {inject, ref, computed, toRaw, watch} from 'vue'
+import {inject, ref, computed, toRaw} from 'vue'
 import {request} from '@jetlinks-web/core'
 import {randomString} from "@jetlinks-web/utils";
 import {useLocales} from '@hooks'
@@ -133,7 +133,6 @@ const defaultValue = {
 
 const formData = inject('plugin-form', {})
 const collectorData = inject('plugin-form-collector', {})
-const showDeathArea = inject('plugin-form-death-area-show', ref(false))
 
 Object.keys(defaultValue).forEach(key => {
   if (!toRaw(formData.configuration).hasOwnProperty(key)) {
@@ -183,35 +182,35 @@ const dataAreaFilter = {
   S400: ['I', 'Q', 'M', 'DB', 'C', 'T'],
 };
 
-// const rules = {
-//   terms: [{
-//     validator(_, value) {
-//       if (!value) {
-//         return Promise.resolve
-//       }
-//       if (value.length === 0) {
-//         return Promise.resolve()
-//       } else if (value?.length === 1) {
-//         return value[0].value && value[0].termType ? Promise.resolve() : Promise.reject($lang('snap7.point.20250207-27'));
-//       } else {
-//         if (value?.[0].column === 'currentValue') {
-//           const pass = value.every((item) => item.termType && item.value)
-//           return pass ? Promise.resolve() : Promise.reject($lang('snap7.point.20250207-27'))
-//         } else {
-//           value.forEach((item) => {
-//             if (item.column === `this['currentValue'] - this['lastValue']*init/100`) {
-//               return Promise.reject($lang('snap7.point.20250207-27'))
-//             } else {
-//               return Promise.resolve()
-//             }
-//           });
-//         }
-//
-//       }
-//     },
-//     trigger: 'change',
-//   }]
-// }
+const rules = {
+  terms: [{
+    validator(_, value) {
+      if (!value) {
+        return Promise.resolve
+      }
+      if (value.length === 0) {
+        return Promise.resolve()
+      } else if (value?.length === 1) {
+        return value[0].value && value[0].termType ? Promise.resolve() : Promise.reject($lang('snap7.point.20250207-27'));
+      } else {
+        if (value?.[0].column === 'currentValue') {
+          const pass = value.every((item) => item.termType && item.value)
+          return pass ? Promise.resolve() : Promise.reject($lang('snap7.point.20250207-27'))
+        } else {
+          value.forEach((item) => {
+            if (item.column === `this['currentValue'] - this['lastValue']*init/100`) {
+              return Promise.reject($lang('snap7.point.20250207-27'))
+            } else {
+              return Promise.resolve()
+            }
+          });
+        }
+
+      }
+    },
+    trigger: 'change',
+  }]
+}
 
 const dataAreaFilterList = computed(() => {
   let result = daveAreaList.value.filter((item) =>
@@ -264,12 +263,6 @@ const getTypes = async () => {
     dataTypesList.value = res.result;
   }
 };
-
-watch(() => formData.configuration.type, (val) => {
-  showDeathArea.value = val && ['Word', 'DWord', 'USInt', 'Byte', 'SInt', 'UInt', 'Int', 'UDInt', 'DInt', 'Real', 'LReal'].includes(val)
-}, {
-  immediate: true,
-})
 
 getTypes();
 </script>
