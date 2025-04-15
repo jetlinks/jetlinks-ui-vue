@@ -628,7 +628,7 @@
 	"Role.index.617700-7": "Description",
 	"Save.index.320308-0": "Configure Notification Method",
 	"Save.index.320308-1": "Control which users can subscribe to 【{0}】's 【{1} Notification】 through roles",
-	"Save.index.320308-4": "Note: Current configuration will be overridden by outer layer's【0】permission control.",
+	"Save.index.320308-4": "Note: Current configuration will be overridden by outer layer's【{0}】permission control.",
 	"Save.index.320308-6": "In Progress",
 	"Save.index.320308-7": "Not Started",
 	"Save.index.320308-8": "Completed",
