@@ -38,7 +38,7 @@
 							<div v-if="item.id !== 'default_group' && isAdmin" @click="(e) => e.stopPropagation()">
 								<j-permission-button :disabled="item.id === 'default_group'" :popConfirm="{
                                     title: $t('RoleLeft.index.507330-2'),
-                                    onConfirm: () => deleteGroup(item.id),
+                                    onConfirm: () => deleteGroup(item.id, item.isNew),
                                 }" type="text">
 									{{ $t('RoleLeft.index.507330-3') }}
 								</j-permission-button>
@@ -107,7 +107,8 @@ const addGroup = () => {
 	const newId = randomString()
 	listData.value[0].children.splice(1, 0, ({
 		name: '',
-		id: newId
+		id: newId,
+    isNew: true,
 	}))
 	selectId.value = newId
 	nextTick(() => {
@@ -144,7 +145,11 @@ const selectGroup = (id: string) => {
 	selectedKeys.value = [id]
 	id === 'global_role' ? emit('selectData', '') : emit('selectData', selectedKeys.value)
 }
-const deleteGroup = async (id: string) => {
+const deleteGroup = async (id: string, isNew: boolean) => {
+  if (isNew) {
+    listData.value[0].children = listData.value[0].children.filter((item: any) => item.id !== id)
+    return;
+  }
 	const res: any = await deleteRoleGroup(id)
 	if (res.status === 200) {
 		onlyMessage($t('RoleLeft.index.507330-6'))
