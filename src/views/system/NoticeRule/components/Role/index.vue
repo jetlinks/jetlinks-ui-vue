@@ -182,7 +182,7 @@ const onSearch = (val: any) => {
             {
                 column: 'name',
                 termType: 'like',
-                value: `%${val}%`,
+                value: `%${val || ''}%`,
             },
         ],
     };
