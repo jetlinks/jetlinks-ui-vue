@@ -46,7 +46,7 @@
             />
           </a-form-item>
         </a-col>
-        <a-col :span="12">
+        <a-col :span="12" v-if="isNoCommunity">
           <a-form-item :label="$t('EditInfo.index.557023-9')">
             <a-input
                 :value="
@@ -61,7 +61,7 @@
           <a-form-item :label="$t('EditInfo.index.557023-18')">
             <a-input
                 :value="
-                                form.positions.map((item) => item.name).join(',')
+                                (form.positions || []).map((item) => item.name).join(',')
                             "
                 :placeholder="$t('EditInfo.index.557023-19')"
                 disabled
@@ -112,6 +112,7 @@ import {updateMeInfo_api} from '@/api/account/center';
 import {onlyMessage} from "@jetlinks-web/utils";
 import {cloneDeep} from 'lodash-es';
 import {useI18n} from 'vue-i18n';
+import {isNoCommunity} from "@/utils";
 
 const {t: $t} = useI18n();
 const emits = defineEmits(['save', 'close']);

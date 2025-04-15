@@ -1,5 +1,5 @@
 <template>
-  <div style="overflow-y: auto;">
+  <div style="height: 100%; display: flex; flex-direction: column">
     <pro-search
         v-if="show"
         noMargin
@@ -9,79 +9,79 @@
         @search="handleParams"
         ref="searchRef"
     />
-    <j-pro-table
-        v-if="show"
-        ref="tableRef"
-        :columns="columns"
-        :request="handleSearch"
-        :params="queryParams"
-        :rowSelection="{
+    <div style="flex: 1; min-height: 0">
+      <j-pro-table
+          v-if="show"
+          ref="tableRef"
+          :columns="columns"
+          :request="handleSearch"
+          :params="queryParams"
+          :rowSelection="{
           selectedRowKeys: _selectedRowKeys,
           onSelect: onSelect,
           onSelectAll: onSelectAll,
           onSelectNone: cancelSelect,
         }"
-        mode="TABLE"
-        :scroll="{y: 'calc(100vh - 450px)'}"
-    >
-      <template #headerLeftRender>
-        <a-space>
-          <j-permission-button
-              type="primary"
-              :hasPermission="`${permission}:bind-user`"
-              @click="dialogVisible = true"
-              style="margin-right: 15px"
-              :disabled="isShow"
-          >
-            <AIcon type="PlusOutlined"/>
-            {{ $t('user.index.252066-0') }}
-          </j-permission-button>
-          <j-permission-button
-              :hasPermission="`${permission}:bind`"
-              :popConfirm="{
+          mode="TABLE"
+      >
+        <template #headerLeftRender>
+          <a-space>
+            <j-permission-button
+                type="primary"
+                :hasPermission="`${permission}:bind-user`"
+                @click="dialogVisible = true"
+                style="margin-right: 15px"
+                :disabled="isShow"
+            >
+              <AIcon type="PlusOutlined"/>
+              {{ $t('user.index.252066-0') }}
+            </j-permission-button>
+            <j-permission-button
+                :hasPermission="`${permission}:bind`"
+                :popConfirm="{
                 title: $t('user.index.252066-1'),
                 onConfirm: () => unBind(),
               }"
-          >
-            <AIcon type="DisconnectOutlined"/>
-            {{ $t('user.index.252066-2') }}
-          </j-permission-button>
-        </a-space>
-      </template>
-      <template #positions="slotProps">
+            >
+              <AIcon type="DisconnectOutlined"/>
+              {{ $t('user.index.252066-2') }}
+            </j-permission-button>
+          </a-space>
+        </template>
+        <template #positions="slotProps">
           {{ slotProps.positions?.filter(item => item.orgId === props.parentId)?.map(item => item.name).join(',') || '--' }}
-      </template>
-      <template #status="slotProps">
-        <j-badge-status
-            :status="slotProps.status"
-            :text="slotProps.status ? $t('user.index.252066-3') : $t('user.index.252066-4')"
-            :statusNames="{
+        </template>
+        <template #status="slotProps">
+          <j-badge-status
+              :status="slotProps.status"
+              :text="slotProps.status ? $t('user.index.252066-3') : $t('user.index.252066-4')"
+              :statusNames="{
               1: 'success',
               0: 'error',
             }"
-        ></j-badge-status>
-      </template>
-      <template #action="slotProps">
-        <j-permission-button
-            type="link"
-            :hasPermission="`${permission}:bind`"
-            :popConfirm="{
+          ></j-badge-status>
+        </template>
+        <template #action="slotProps">
+          <j-permission-button
+              type="link"
+              :hasPermission="`${permission}:bind`"
+              :popConfirm="{
                 title: $t('user.index.252066-1'),
                 onConfirm: () => unBind(slotProps),
               }"
-        >
-          <AIcon type="DisconnectOutlined"/>
-        </j-permission-button>
-      </template>
-    </j-pro-table>
-
-    <AddBindUserDialog
-        v-if="dialogVisible"
-        :parent-id="props.parentId"
-        @save="onSave"
-        @close="dialogVisible = false"
-    />
+          >
+            <AIcon type="DisconnectOutlined"/>
+          </j-permission-button>
+        </template>
+      </j-pro-table>
+    </div>
   </div>
+  <AddBindUserDialog
+      v-if="dialogVisible"
+      :parent-id="props.parentId"
+      @save="onSave"
+      @close="dialogVisible = false"
+  />
 </template>
 
 <script setup lang="ts" name="user">

@@ -30,7 +30,7 @@
                         {{ org }}
                     </j-ellipsis>
                 </a-descriptions-item>
-                <a-descriptions-item :label="$t('Detail.index.153077-8')">
+                <a-descriptions-item :label="$t('Detail.index.153077-8')" v-if="isNoCommunity">
                   <j-ellipsis :lineClamp="2">
                     {{ pos }}
                   </j-ellipsis>
@@ -56,6 +56,7 @@
 <script lang="ts" setup>
 import { useUserStore } from '@/store/user'
 import { useI18n } from 'vue-i18n';
+import {isNoCommunity} from "@/utils";
 
 const { t: $t } = useI18n();
 const { userInfo } = useUserStore();

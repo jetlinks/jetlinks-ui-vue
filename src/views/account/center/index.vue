@@ -39,7 +39,7 @@
         <div class="person-content-item-content">
           <a-tabs v-model:activeKey="user.tabKey" type="card">
             <a-tab-pane
-              v-for="item in tabList"
+              v-for="item in _tabList"
               :key="item.key"
               :tab="item.title"
             />
@@ -82,6 +82,7 @@ import {
 import { usePermission } from '@jetlinks-web/hooks'
 import RoleShow from './components/RoleShow/index.vue'
 import { tabList } from '@/views/account/center/data'
+import {isNoCommunity} from "@/utils";
 
 const imageTypes = reactive([
   'image/jpeg',
@@ -109,6 +110,10 @@ const editPasswordVisible = ref<boolean>(false)
 
 const { hasPerm } = usePermission(ref(`${USER_CENTER_MENU_CODE}:${USER_CENTER_MENU_BUTTON_CODE}`))
 
+const _tabList = computed(() => {
+  return tabList.filter(i => (i.key !== 'BindThirdAccount' || isNoCommunity) && (!user.isApplicationUser || i.key !== 'HomeView'))
+})
+
 const onSave = () => {
   user.getUserInfo()
   editInfoVisible.value = false
@@ -130,18 +135,23 @@ const onAvatarChange = (url: string) => {
   })
 }
 
+const getTabKey = () => {
+  user.tabKey = !user.isApplicationUser ? 'HomeView' : (!isNoCommunity ? 'Subscribe' : 'BindThirdAccount')
+}
+
 watchEffect(() => {
   if (router.params.value?.tabKey) {
     user.tabKey = router.params.value?.tabKey
   }
 })
 
-onMounted(() => {
-  user.getUserInfo()
+onMounted(async () => {
+  await user.getUserInfo()
+  getTabKey()
 })
 
 onUnmounted(() => {
-  user.tabKey = tabList?.[0]?.key || 'HomeView'
+  user.tabKey = tabList?.[0]?.key || (user.isApplicationUser ? 'BindThirdAccount' : 'HomeView')
   user.other.tabKey = ''
 })
 </script>
