@@ -194,9 +194,9 @@ const loading = ref<boolean>(false);
 const spinning = ref<boolean>(false);
 const user = useUserStore();
 
-const action = usePermission('system/NoticeRule:action');
-const add = usePermission('system/NoticeRule:add');
-const update = usePermission('system/NoticeRule:update');
+const action = usePermission(ref('system/NoticeRule:action'));
+const add = usePermission(ref('system/NoticeRule:add'));
+const update = usePermission(ref('system/NoticeRule:update'));
 
 watchEffect(() => {
     checked.value = props.data?.state?.value === 'enabled';
