@@ -107,9 +107,7 @@ const visible = ref<boolean>(false)
 const editInfoVisible = ref<boolean>(false)
 const editPasswordVisible = ref<boolean>(false)
 
-const { hasPerm } = usePermission(
-  `${USER_CENTER_MENU_CODE}:${USER_CENTER_MENU_BUTTON_CODE}`,
-)
+const { hasPerm } = usePermission(ref(`${USER_CENTER_MENU_CODE}:${USER_CENTER_MENU_BUTTON_CODE}`))
 
 const onSave = () => {
   user.getUserInfo()
@@ -168,7 +166,7 @@ onUnmounted(() => {
         display: flex;
         width: calc(100% - 380px);
         padding: 16px 0;
-        
+
         .person-header-item-info-left {
           margin-right: 30px;
         }
