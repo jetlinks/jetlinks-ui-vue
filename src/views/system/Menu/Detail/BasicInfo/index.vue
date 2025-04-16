@@ -39,6 +39,7 @@ const route = useRoute()
 const basicFormRef = ref<any>()
 const permissionFormRef = ref<any>()
 
+const emits = defineEmits(['refresh'])
 const props = defineProps({
   value: {
     type: Object,
@@ -51,6 +52,7 @@ const { loading, run } = useRequest(route.query.id !== ':id' ? updateMenu : addM
   onSuccess(res: any) {
     if (res.success) {
       onlyMessage($t('BasicInfo.index.966110-3'))
+      emits('refresh')
       if (!props.value?.id) {
         menuStore.jumpPage('system/Menu/Detail', {
           params: { id: res.result.id },

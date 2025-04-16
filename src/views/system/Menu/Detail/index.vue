@@ -3,7 +3,7 @@
     <div class="menu-detail-container">
       <a-tabs v-model:activeKey="activeKey">
         <a-tab-pane key="basic" :tab="$t('Detail.index.765389-0')">
-          <BasicInfo :value="initData" />
+          <BasicInfo :value="initData" @refresh="onRefresh"/>
         </a-tab-pane>
         <a-tab-pane key="button" :tab="$t('Detail.index.765389-1')">
           <ButtonMange :value="initData" @refresh="onRefresh" />

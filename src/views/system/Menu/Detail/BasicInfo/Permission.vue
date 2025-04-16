@@ -6,7 +6,7 @@
       layout="vertical"
       class="basic-form permission-form"
     >
-      <a-form-item name="accessSupport" required>
+      <a-form-item v-if="isNoCommunity" name="accessSupport" required>
         <template #label>
           <span style="margin-right: 3px">{{ $t('BasicInfo.Permission.040830-0') }}</span>
           <a-tooltip :title="$t('BasicInfo.Permission.040830-1')">
@@ -88,6 +88,7 @@
 <script lang="ts" setup>
 import PermissionChoose from '../../components/PermissionChoose.vue'
 import { getAssetsType, getMenuTree } from '@/api/system/menu'
+import { isNoCommunity } from '@/utils';
 
 const props = defineProps({
   value: {
@@ -138,7 +139,9 @@ const queryAssetsType = () => {
 
 onMounted(() => {
   queryMenuTree()
-  queryAssetsType()
+  if(isNoCommunity) {
+    queryAssetsType()
+  }
 })
 
 const onSave = () =>
