@@ -48,7 +48,7 @@
                                 "
                             >
                                 <TypeSelect
-                                    v-model:value="record.valueType.type"
+                                    v-model:value="record.valueType"
                                     style="flex: 1 1 0; min-width: 0"
                                 />
                                 <DoubleParams
