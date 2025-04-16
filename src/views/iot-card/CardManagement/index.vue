@@ -217,6 +217,9 @@
                         }"
           />
         </template>
+        <template #syncCardStatus="slotProps">
+          <span>{{slotProps.syncCardStatus?.text || '--'}}</span>
+        </template>
         <template #cardState="slotProps">
           <BadgeStatus
               v-if="slotProps.cardState?.state"
@@ -396,6 +399,7 @@ const columns = [
     dataIndex: 'platformConfigName',
     key: 'platformConfigName',
     width: 200,
+    ellipsis: true,
     search: {
       rename: 'platformConfigId',
       type: 'select',
@@ -478,6 +482,7 @@ const columns = [
     key: 'updateTime',
     scopedSlots: true,
     width: 200,
+    ellipsis: true,
     search: {
       type: 'date',
     },
@@ -487,6 +492,7 @@ const columns = [
     dataIndex: 'cardStateType',
     key: 'cardStateType',
     width: 180,
+    ellipsis: true,
     scopedSlots: true,
     search: {
       type: 'select',
@@ -506,6 +512,7 @@ const columns = [
     key: 'cardState',
     width: 180,
     scopedSlots: true,
+    ellipsis: true,
   },
   {
     title: '运营商状态',
@@ -544,6 +551,8 @@ const columns = [
     title: '同步状态',
     dataIndex: 'syncCardStatus',
     key: 'syncCardStatus',
+    width: 100,
+    ellipsis: true,
     search: {
       type: 'select',
       options: [
@@ -554,6 +563,7 @@ const columns = [
         {label: '同步成功', value: 'success'},
       ],
     },
+    scopedSlots: true
   },
   {
     title: '操作',
