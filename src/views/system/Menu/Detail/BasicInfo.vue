@@ -289,6 +289,14 @@ import { Rule } from 'ant-design-vue/lib/form';
 import { isNoCommunity } from '@/utils/utils';
 import { onlyMessage } from '@/utils/comm';
 
+const props = defineProps({
+  value: {
+    type: Object,
+    default: () => ({}),
+  }
+})
+
+const emits = defineEmits(['refresh'])
 const permission = 'system/Menu';
 // 路由
 const route = useRoute();
@@ -325,21 +333,6 @@ const form = reactive({
     sourceCode: '', // 原本的code
 
     init: () => {
-        // 获取菜单详情
-        routeParams.id ?
-            getMenuInfo_api(routeParams.id).then((resp: any) => {
-                form.data = {
-                    ...(resp.result as formType),
-                    permissions: resp.result?.permissions
-                        ? resp.result.permissions
-                        : [],
-                    accessSupport:
-                        resp.result?.accessSupport?.value || 'unsupported',
-                };
-                form.sourceCode = resp.result.code;
-                showPermissionChoose.value = true
-            }) : showPermissionChoose.value = true
-
         if (isNoCommunity) {
             // 获取关联菜单
             getMenuTree_api({
@@ -415,6 +408,7 @@ const form = reactive({
                         if (resp.status === 200) {
                             onlyMessage('操作成功！');
                             // 新增后刷新页面，编辑则不需要
+                            emits('refresh', resp.result.id || routeParams.id);
                             if (!routeParams.id) {
                                 router.push(
                                     `/system/Menu/detail/${resp.result.id}`,
@@ -464,6 +458,21 @@ type assetType = {
     label: string;
     value: string;
 };
+
+watch(() => props.value, (val) => {
+  if(val) {
+    form.data = {
+          ...(val as formType),
+          permissions: val?.permissions
+              ? val.permissions
+              : [],
+          accessSupport:
+              val?.accessSupport?.value || 'unsupported',
+      };
+      form.sourceCode = val.code;
+      showPermissionChoose.value = true
+  }
+}, {immediate: true})
 </script>
 
 <style lang="less" scoped>

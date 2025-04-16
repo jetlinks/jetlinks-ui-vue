@@ -3,10 +3,10 @@
         <div class="menu-detail-container">
             <j-tabs v-model:activeKey="activeKey">
                 <j-tab-pane key="basic" tab="基本信息">
-                    <BasicInfo />
+                    <BasicInfo :value="data" @refresh="onRefresh"/>
                 </j-tab-pane>
                 <j-tab-pane key="button" tab="按钮管理">
-                    <ButtonMange />
+                    <ButtonMange :value="data" @refresh="onRefresh"/>
                 </j-tab-pane>
             </j-tabs>
         </div>
@@ -16,7 +16,31 @@
 <script setup lang="ts">
 import BasicInfo from './BasicInfo.vue';
 import ButtonMange from './ButtonMange.vue';
+import { getMenuInfo_api } from '@/api/system/menu';
+import { useRequest } from '@/hook'
+
+const route = useRoute()
 const activeKey = ref('basic');
+
+const {data, run} = useRequest(getMenuInfo_api, {
+  immediate: false,
+})
+const onRefresh = (id: string) => {
+  run(id || route.params.id);
+}
+
+watch(
+  () => route.params.id,
+  (newValue) => {
+    if (newValue && newValue !== ':id') {
+      run(newValue as string)
+    }
+  },
+  {
+    immediate: true,
+    deep: true,
+  },
+)
 </script>
 
 <style lang="less" scoped>

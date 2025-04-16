@@ -884,9 +884,9 @@ watch(
     async () => {
         noData.value = false
         formRef.value?.resetFields();
+        getTypes();
         if (props.data?.id) {
             await getProduct(props.data?.id as string);
-            getTypes();
             const resp = await detail(props.data?.id as string);
             const _data: any = resp.result;
             const _obj = cloneDeep(_data);
@@ -896,6 +896,7 @@ watch(
             Object.assign(modelRef, _obj);
         } else {
             if (props.data?.type === 'add') {
+                await getProduct();
                 modelRef.id = undefined;
                 modelRef.name = undefined;
                 modelRef.applianceType = undefined;
