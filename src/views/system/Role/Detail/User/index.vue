@@ -157,12 +157,9 @@ const table = {
             },
           ],
         },
+        ...oParams.terms,
       ],
     }
-    if (oParams.terms[0])
-      params.terms.unshift({
-        terms: oParams.terms[0].terms,
-      })
     return getUserByRole_api(params)
   },
   // 批量解绑

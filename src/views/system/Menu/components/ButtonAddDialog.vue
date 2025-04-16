@@ -62,9 +62,9 @@
           :key="formModel.id || ''"
         />
       </a-form-item>
-      <a-form-item :label="$t('components.ButtonAddDialog.947292-9')" name="describe">
+      <a-form-item :label="$t('components.ButtonAddDialog.947292-9')" name="description">
         <a-textarea
-          v-model:value="formModel.describe"
+          v-model:value="formModel.description"
           :rows="4"
           :placeholder="$t('components.ButtonAddDialog.947292-10')"
           :disabled="props.mode === $t('components.ButtonAddDialog.947292-6')"
@@ -108,7 +108,7 @@ const formModel = reactive({
   name: '',
   id: '',
   permissions: [],
-  describe: '',
+  description: '',
 })
 
 const checkPermission = (_rule: any, value: string[]) => {

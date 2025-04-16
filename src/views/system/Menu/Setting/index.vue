@@ -224,6 +224,9 @@ const handleCancel = () => {
 };
 
 const onSelect = (selecteds: Array<string>, e: any) => {
+  if(e.node.code === 'system' && e.node.children.filter((item: any) => selectedKeys.value.includes(item.code)).length === 1) {
+    e.selected = true;
+  }
   selectedKeys.value = select(selecteds, e, cloneDeep(treeData.value));
   const requiredKeys = ["system", "system/Menu"];
   requiredKeys.forEach((key) => {
