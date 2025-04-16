@@ -8,8 +8,13 @@
     <template #content>
       <div style="width: 450px">
         <a-form ref="formRef" layout="vertical" :model="formData">
-          <a-form-item label="元素类型" required name="type" :rules="rules" :validate-first="true">
-            <TypeSelect v-model:value="formData.type"/>
+          <a-form-item label="元素类型" required name="type" :rules="[
+              {
+                required: true,
+                message: '请选择元素类型'
+              }
+          ]" :validate-first="true">
+            <ArrayTypeSelect v-model:value="formData.type" :data="formData" :filter="showObjectItem ? [] : ['object', 'array']" />
           </a-form-item>
           <ScaleItem v-if="showDouble" v-model:value="formData.scale" />
           <StringItem v-else-if="showString" v-model:value="formData.expands.maxLength" />
@@ -17,7 +22,7 @@
           <DateItem v-else-if="showDate" v-model:value="formData.format"/>
           <EnumItem ref="enumTableRef" v-else-if="showEnum" v-model:value="formData.enum.elements"/>
           <a-form-item v-else-if="showArray" label="子元素类型" required :name="['elementType','type']" :rules="[{ required: true, message: '请选择子元素类型'}]">
-            <TypeSelect  v-model:value="formData.elementType.type" :filter="['array', 'object']" />
+            <TypeSelect  v-model:value="formData.elementType" :filter="['array', 'object']" />
           </a-form-item>
         </a-form>
       </div>
@@ -41,6 +46,7 @@ import DateItem from '../Date/Item.vue'
 import EnumItem from '../Enum/Item.vue'
 import {cloneDeep, pick} from 'lodash-es'
 import {Form} from "ant-design-vue";
+import ArrayTypeSelect from "./ArrayTypeSelect.vue";
 
 const emit = defineEmits(['update:value', 'cancel', 'confirm']);
 
@@ -60,7 +66,11 @@ const props = defineProps({
   disabled: {
     type: Boolean,
     default:false
-  }
+  },
+  showObjectItem: {
+    type: Boolean,
+    default: false
+  },
 });
 
 const formItemContext = Form.useInjectFormItemContext();
@@ -113,18 +123,6 @@ const showEnum = computed(() => {
 const showArray = computed(() => {
   return formData.type === 'array'
 })
-
-const rules = [
-  {
-    validator(_, value) {
-      if (!value) {
-        return Promise.reject('请选择元素类型');
-      }
-      return Promise.resolve();
-    },
-    trigger: 'change',
-  },
-];
 
 const typeChange = (e) => {
   if (['float', 'double'].includes(e)) {
@@ -207,6 +205,8 @@ const onCancel = () => {
 
 watch(() => JSON.stringify(props.value), () => {
   initValue()
+}, {
+  immediate: true
 })
 
 </script>

@@ -228,6 +228,7 @@ const getOptions = (arr: any[]) => {
         ],
     };
 };
+
 watch(
     () => prop.time,
     (val) => {
@@ -309,18 +310,23 @@ watch(
 watch(
     () => [cycle.value, agg.value],
     ([newCycle]) => {
+      console.log('newCycle', newCycle)
         if (newCycle === '*' && _type.value) {
             queryChartsList();
         } else {
             queryChartsAggList();
         }
     },
-    { deep: true},
+    { deep: true, immediate: true},
 );
 
-watchEffect(() => {
-    if (chartsList.value.length) {
-        getOptions(chartsList.value);
-    }
-});
+watch(() => chartsList.value, () => {
+  if (chartsList.value.length) {
+    getOptions(chartsList.value);
+  }
+}, {
+  immediate: true,
+  deep: true
+})
+
 </script>

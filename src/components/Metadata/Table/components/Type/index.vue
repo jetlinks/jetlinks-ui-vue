@@ -20,18 +20,25 @@
 import { selectProps } from 'ant-design-vue/lib/select';
 import defaultOptions from './data';
 import {useTableWrapper} from "@/components/Metadata/Table/context";
+import {BooleanValueMap} from "@/components/Metadata/Table/components/utils";
 
 const props = defineProps({
   ...selectProps(),
   filter: {
     type: Array ,
     default: () => [],
-  }
+  },
+  value: {
+    type: Object,
+    default: () => ({
+      type: undefined
+    })
+  },
 });
 
 const emit = defineEmits(['update:value']);
 
-const myValue = ref(props.value)
+const myValue = ref(props.value.type)
 
 const options = computed(() => {
   return defaultOptions.filter(item => !props.filter.includes(item.value) )
@@ -40,16 +47,28 @@ const options = computed(() => {
 const tableWrapperRef = useTableWrapper()
 const change = (key) => {
   myValue.value = key
-  emit('update:value', key)
+  const extra = {}
+  let newValueType = {type: key}
+
+  if (key === 'boolean') {
+    const BooleanDefaultValue = BooleanValueMap()
+    Object.keys(BooleanDefaultValue).forEach(key => {
+      if (!props.value[key]) {
+        extra[key] = BooleanDefaultValue[key]
+      }
+    })
+    newValueType = Object.assign(newValueType, extra)
+  }
+console.log(newValueType, 'newValueType')
+  emit('update:value', newValueType)
 }
 
 watch(
-  () => props.value,
-  (newValue) => {
-    myValue.value = newValue;
-  },
+    () => props.value,
+    (newValue) => {
+      myValue.value = newValue.type;
+    },
 );
-
 </script>
 
 <style scoped>

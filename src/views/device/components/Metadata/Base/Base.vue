@@ -110,7 +110,7 @@
     <template #valueType="{ record, index }">
       <EditTableFormItem :name="[index, 'valueType']" @change="metadataChange">
         <div style="display: flex; align-items: center" v-if="['properties', 'tags'].includes(type)">
-          <TypeSelect v-model:value="record.valueType.type" style="flex: 1 1 0;min-width: 0" :disabled="record.expands?.isProduct"/>
+          <TypeSelect v-model:value="record.valueType" style="flex: 1 1 0;min-width: 0" :disabled="record.expands?.isProduct"/>
           <IntegerParams v-if="['int', 'long'].includes(record.valueType.type)" v-model:value="record.valueType.unit" :disabled="record.expands?.isProduct"/>
           <DoubleParams v-else-if="['float', 'double'].includes(record.valueType.type)" v-model:value="record.valueType" :disabled="record.expands?.isProduct"/>
           <StringParams v-else-if="record.valueType.type === 'string'" v-model:value="record.valueType" :disabled="record.expands?.isProduct"/>
@@ -126,7 +126,7 @@
               :disabled="record.expands?.isProduct"
           />
           <ObjectParams v-else-if="record.valueType.type === 'object'" v-model:value="record.valueType.properties" :disabled="record.expands?.isProduct"/>
-          <ArrayParams v-else-if="record.valueType.type === 'array'" v-model:value="record.valueType.elementType" :disabled="record.expands?.isProduct"/>
+          <ArrayParams v-else-if="record.valueType.type === 'array'" :showObjectItem="true" v-model:value="record.valueType.elementType" :disabled="record.expands?.isProduct"/>
         </div>
         <div v-else-if="type === 'events'">
           <ObjectParams v-model:value="record.valueType.properties">
@@ -203,7 +203,7 @@
     <template #output="{ record, index }">
       <EditTableFormItem :name="[index, 'output']" @change="metadataChange">
         <div style="display: flex; align-items: center">
-          <TypeSelect v-model:value="record.output.type" style="flex: 1 1 0;min-width: 0" :disabled="record.expands?.isProduct"/>
+          <TypeSelect v-model:value="record.output" style="flex: 1 1 0;min-width: 0" :disabled="record.expands?.isProduct"/>
           <IntegerParams v-if="['int', 'long'].includes(record.output.type)" v-model:value="record.output.unit" :disabled="record.expands?.isProduct"/>
           <DoubleParams v-else-if="['float', 'double'].includes(record.output.type)" v-model:value="record.output" :disabled="record.expands?.isProduct"/>
           <StringParams v-else-if="record.output.type === 'string'" v-model:value="record.output.maxLength" :disabled="record.expands?.isProduct"/>
@@ -655,7 +655,7 @@ watch(() => metadata.value, () => {
     }
     if(props.type === 'functions' && !item.output){
       item['output'] = {
-        
+
       }
     }
     return item
