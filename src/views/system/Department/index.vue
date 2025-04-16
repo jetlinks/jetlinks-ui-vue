@@ -58,6 +58,7 @@ const openDeviceBind = () => {
 const onChange = (id: string) => {
   departmentId.value = id;
   if (!id) {
+    console.log('1111111')
   }
 };
 

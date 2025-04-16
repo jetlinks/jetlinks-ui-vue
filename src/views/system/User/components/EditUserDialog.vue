@@ -299,7 +299,6 @@ const form = reactive({
     },
     getUserInfo: () => {
         const id = props.data.id || '';
-
         if (props.type === 'add') form.data = {} as formType;
         else if (props.type === 'reset') form.data = { id } as formType;
         else if (props.type === 'edit') {
@@ -322,9 +321,9 @@ const form = reactive({
                     return i.id
                 });
                 form._departmentOptions = resp.result?.orgList
-                // nextTick(() => {
-                //     formRef.value?.clearValidate();
-                // });
+                nextTick(() => {
+                    formRef.value?.clearValidate();
+                });
             });
         }
     },
@@ -393,9 +392,9 @@ onMounted(() => {
           positionsMap.set(i.id, i)
         })
       }
-      form.init();
     })
   }
+  form.init();
 })
 
 watch(
