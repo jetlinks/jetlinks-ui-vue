@@ -95,12 +95,13 @@
 <script setup lang="ts" name="BindChildDevice">
 import {
     query,
-    queryByParent,
     bindDevice,
     queryDeviceMapping,
     saveDeviceMapping,
-    queryNoPagingPost,
 } from '@/api/device/instance';
+import {
+  queryNoPagingPost,
+} from '@/api/device/product';
 import dayjs from 'dayjs';
 import { useInstanceStore } from '@/store/instance';
 import { storeToRefs } from 'pinia';
