@@ -39,7 +39,7 @@
             <j-permission-button
                 :hasPermission="`${permission}:bind`"
                 :popConfirm="{
-                title: $t('user.index.252066-1'),
+                title: !isNoCommunity ? $t('device.index.988419-6') : $t('user.index.252066-1'),
                 onConfirm: () => unBind(),
               }"
             >
@@ -66,7 +66,7 @@
               type="link"
               :hasPermission="`${permission}:bind`"
               :popConfirm="{
-                title: $t('user.index.252066-1'),
+                title: !isNoCommunity ? $t('device.index.988419-6') : $t('user.index.252066-1'),
                 onConfirm: () => unBind(slotProps),
               }"
           >
