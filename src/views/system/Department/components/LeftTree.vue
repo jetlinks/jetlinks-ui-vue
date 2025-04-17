@@ -127,7 +127,7 @@ const getTree = (cb?: Function) => {
   loading.value = true
   const params = {
     paging: false,
-    sorts: [{ name: 'sortIndex', order: 'asc' }],
+    sorts: [{ name: 'sortIndex', order: 'asc' }, { name: 'name', order: 'asc' }],
   } as any
   if (searchValue.value) {
     params.terms = [{ column: 'name$LIKE', value: `%${searchValue.value}%` }]

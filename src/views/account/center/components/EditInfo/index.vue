@@ -46,7 +46,7 @@
             />
           </a-form-item>
         </a-col>
-        <a-col :span="12" v-if="isNoCommunity">
+        <a-col :span="12">
           <a-form-item :label="$t('EditInfo.index.557023-9')">
             <a-input
                 :value="
@@ -57,7 +57,7 @@
             />
           </a-form-item>
         </a-col>
-        <a-col :span="12">
+        <a-col :span="12" v-if="isNoCommunity">
           <a-form-item :label="$t('EditInfo.index.557023-18')">
             <a-input
                 :value="
