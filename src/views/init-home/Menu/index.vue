@@ -81,7 +81,7 @@ const filterMenu = (
   return menus.filter((item) => {
     let isShow = false;
     if (item.showPage && item.showPage.length) {
-      isShow = item.showPage.some((pItem: any) => {
+      isShow = item.showPage.every((pItem: any) => {
         return permissions.includes(pItem);
       });
     }
