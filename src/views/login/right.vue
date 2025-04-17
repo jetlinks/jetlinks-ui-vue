@@ -6,34 +6,34 @@
         <p class="desc">{{ title }}</p>
       </div>
       <div class="main">
-        <a-form
+        <Form
           layout="vertical"
           :model="formData"
           :rules="rules"
           @finish="submit"
         >
-          <a-form-item :label="$t('login.right.419974-0')" name="username">
-            <a-input
+          <form-item :label="$t('login.right.419974-0')" name="username">
+            <Input
               v-model:value="formData.username"
               :placeholder="$t('login.right.419974-1')"
               :maxlength="64"
               autocomplete="off"
             />
-          </a-form-item>
-          <a-form-item :label="$t('login.right.419974-2')" name="password">
-            <a-input-password
+          </form-item>
+          <form-item :label="$t('login.right.419974-2')" name="password">
+            <input-password
               v-model:value="formData.password"
               :placeholder="$t('login.right.419974-3')"
               :maxlength="64"
               autocomplete="off"
             />
-          </a-form-item>
-          <a-form-item
+          </form-item>
+          <form-item
             v-if="showCode"
             :label="$t('login.right.419974-4')"
             name="verifyCode"
           >
-            <a-input
+            <Input
               v-model:value="formData.verifyCode"
               autocomplete="off"
               :maxlength="64"
@@ -42,16 +42,16 @@
               <template #addonAfter>
                 <img :src="url.base64" @click="getCode" />
               </template>
-            </a-input>
-          </a-form-item>
-          <a-form-item>
+            </Input>
+          </form-item>
+          <form-item>
             <Remember
               v-model:value="formData.remember"
               v-model:expires="formData.expires"
             />
-          </a-form-item>
-          <a-form-item>
-            <a-button
+          </form-item>
+          <form-item>
+            <Button
               :loading="loading"
               type="primary"
               html-type="submit"
@@ -59,15 +59,15 @@
               block
             >
               {{ $t("login.right.419974-6") }}
-            </a-button>
-          </a-form-item>
-        </a-form>
+            </Button>
+          </form-item>
+        </Form>
         <div class="other" v-if="bindings.length">
-          <a-divider plain>
+          <Divider plain>
             <div class="other-text">
               {{ $t("login.right.419974-7") }}
             </div>
-          </a-divider>
+          </Divider>
           <div class="other-button">
             <div
               class="other-button-item"
@@ -81,7 +81,7 @@
                 :src="item.logoUrl || iconMap.get(item.provider) || defaultImg"
               />
             </div>
-            <a-popover
+            <Popover
               trigger="click"
               v-model:visible="moreVisible"
               placement="bottomRight"
@@ -121,7 +121,7 @@
                   style="font-size: 20px"
                 ></AIcon>
               </div>
-            </a-popover>
+            </Popover>
           </div>
         </div>
       </div>
@@ -143,6 +143,7 @@ import { rules } from "./util";
 import {useUserStore} from "@/store";
 import { LocalStore } from "@jetlinks-web/utils";
 import { iconMap } from "./util";
+import { Form, FormItem, Button, Divider, Popover, Input, InputPassword } from 'ant-design-vue'
 
 import defaultImg from '@/assets/apply/internal-standalone.png'
 import {initPackages} from "@/package";

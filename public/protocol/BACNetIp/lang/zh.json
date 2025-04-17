@@ -24,5 +24,10 @@
   "BACNetIp.point.20250207-8": "请选择访问类型",
   "BACNetIp.point.20250207-9": "读",
   "BACNetIp.point.20250207-10": "写",
-  "BACNetIp.point.20250207-11": "订阅"
+  "BACNetIp.point.20250207-11": "订阅",
+  "BACNetIp.scan.20250414-1": "对象类型",
+  "BACNetIp.scan.20250414-2": "对象实例号",
+  "BACNetIp.scan.20250414-3": "名称",
+  "BACNetIp.scan.20250414-4": "属性ID",
+  "BACNetIp.scan.20250414-5": "值类型"
 }

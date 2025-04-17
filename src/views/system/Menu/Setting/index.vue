@@ -190,9 +190,7 @@ const dealTree = (
       }
     } else if (node.children) {
       node.children = dealTree(node.children, selectedKeys, node.id);
-      const children = node.children.filter((item: any) => {
-        item.options.show === true;
-      });
+      const children = node.children.filter((item: any) => item.options.show === true);
       if (children.length > 0) {
         node.options.show = true;
       }

@@ -1,9 +1,9 @@
 <template>
-  <a-modal v-model:visible="visible" :footer="null" :width="900" :bodyStyle="{padding: 0}" @cancel="onCancel">
+  <Modal v-model:visible="visible" :footer="null" :width="900" :bodyStyle="{padding: 0}" @cancel="onCancel">
     <template #closeIcon>
-      <a-button danger type="link" @click="onCancel">
+      <Button danger type="link" @click="onCancel">
         <AIcon type="ExportOutlined" />
-      </a-button>
+      </Button>
     </template>
     <div class="relogin">
       <div class="left">
@@ -26,7 +26,7 @@
         />
       </div>
     </div>
-  </a-modal>
+  </Modal>
 </template>
 
 <script setup>
@@ -36,6 +36,7 @@ import {storeToRefs} from "pinia";
 import {jumpLogin} from "@/router";
 import i18n from "@/locales";
 import { AIcon } from '@jetlinks-web/components'
+import { Modal, Button } from 'ant-design-vue'
 
 const systemStore = useSystemStore();
 const { systemInfo, layout } = storeToRefs(systemStore);

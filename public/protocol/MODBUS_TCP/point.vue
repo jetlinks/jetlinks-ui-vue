@@ -423,7 +423,7 @@ watch(
         writeByteConfig.value = true;
       }
     },
-    {deep: true},
+    {deep: true, immediate: true},
 );
 
 watch(() => formData.configuration.codec?.provider, (val) => {

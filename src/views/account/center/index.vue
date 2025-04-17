@@ -70,7 +70,7 @@ import StationMessage from './components/StationMessage/index.vue'
 import Detail from './components/Detail/index.vue'
 import EditInfo from './components/EditInfo/index.vue'
 import EditPassword from './components/EditPassword/index.vue'
-import { useUserStore } from '@/store/user'
+import { useUserStore, useAuthStore } from '@/store'
 import UploadAvatar from './components/UploadAvatar/index.vue'
 import { updateMeInfo_api } from '@/api/account/center'
 import { onlyMessage } from '@jetlinks-web/utils'
@@ -79,7 +79,6 @@ import {
   USER_CENTER_MENU_BUTTON_CODE,
   USER_CENTER_MENU_CODE,
 } from '@/utils/consts'
-import { usePermission } from '@jetlinks-web/hooks'
 import RoleShow from './components/RoleShow/index.vue'
 import { tabList } from '@/views/account/center/data'
 
@@ -107,7 +106,7 @@ const visible = ref<boolean>(false)
 const editInfoVisible = ref<boolean>(false)
 const editPasswordVisible = ref<boolean>(false)
 
-const { hasPerm } = usePermission(
+const hasPerm = useAuthStore().hasPermission(
   `${USER_CENTER_MENU_CODE}:${USER_CENTER_MENU_BUTTON_CODE}`,
 )
 
@@ -168,7 +167,7 @@ onUnmounted(() => {
         display: flex;
         width: calc(100% - 380px);
         padding: 16px 0;
-        
+
         .person-header-item-info-left {
           margin-right: 30px;
         }
