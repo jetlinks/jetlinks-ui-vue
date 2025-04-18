@@ -147,7 +147,7 @@ import {FullPage} from "@/layout";
 
 const {t: $t} = useI18n();
 const permission = 'system/Permission'
-const {hasPerm} = usePermission(`${permission}:import`)
+const {hasPerm} = usePermission(ref(`${permission}:import`))
 
 const params = ref<any>({})
 const visible = ref<boolean>(false)

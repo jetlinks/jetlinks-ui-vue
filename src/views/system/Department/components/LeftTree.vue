@@ -127,7 +127,7 @@ const getTree = (cb?: Function) => {
   loading.value = true
   const params = {
     paging: false,
-    sorts: [{ name: 'sortIndex', order: 'asc' }],
+    sorts: [{ name: 'sortIndex', order: 'asc' }, { name: 'name', order: 'asc' }],
   } as any
   if (searchValue.value) {
     params.terms = [{ column: 'name$LIKE', value: `%${searchValue.value}%` }]
@@ -198,7 +198,11 @@ const delDepartment = (id: string) => {
   delDepartment_api(id).then((resp) => {
     if (resp.success) {
       onlyMessage($t('components.LeftTree.755653-6'))
-      getTree()
+      getTree(() => {
+        if(selectedKeys.value.includes(id)){
+          selectedKeys.value = selectedKeys.value.filter(i => i !== id)
+        }
+      })
     }
   })
 }
@@ -241,6 +245,8 @@ const onSelect = (val: string[]) => {
 watch(
   () => selectedKeys.value,
   (n) => {
+    console.log('sssss')
+
     emits('change', n?.[0])
   },
   {

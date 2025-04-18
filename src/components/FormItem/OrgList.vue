@@ -63,7 +63,7 @@ const _extraData = computed(() => {
 const {data: treeData, run} = useRequest(getDepartmentList_api, {
   defaultParams: {
     paging: false,
-    sorts: [{name: 'sortIndex', order: 'asc'}]
+    sorts: [{ name: 'sortIndex', order: 'asc' }, { name: 'name', order: 'asc' }]
   },
   immediate: true,
   defaultValue: []

@@ -107,7 +107,7 @@ const showSave = () => {
 }
 const downVisible = ref(false)
 const searchValue = ref()
-const permission = usePermission('system/Dictionary:action')
+const permission = usePermission(ref('system/Dictionary:action'))
 const queryData = (first?: Boolean, searchName?: any) => {
     const params = searchName ? { paging:false ,sorts: [{ name: 'createTime', order: 'desc' }, { name: 'name', order: 'desc' }], terms: [{ terms: [{ value: '%' + searchName + '%', termType: 'like', column: 'name' }] }] } : { sorts: [{ name: 'createTime', order: 'desc' }, { name: 'name', order: 'desc' }], paging:false  }
     getDicList(params).then((res: any) => {

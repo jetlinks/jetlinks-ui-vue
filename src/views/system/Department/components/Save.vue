@@ -98,6 +98,9 @@ const confirm = () => {
   formRef.value
     ?.validate()
     .then((_data: any) => {
+      // if(!_data.parentId){
+      //   _data.parentId = undefined
+      // }
       run(props.data.id ? { ...props.data, ..._data } : _data)
     })
 }
