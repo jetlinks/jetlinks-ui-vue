@@ -11,8 +11,8 @@ scanSetting.value.handleData = (data) => {
   return data.map(item => ({
     name: item.name,
     provider: 'OPC_UA',
-    collectorId: props.data?.id,
-    collectorName: props.data?.name,
+    collectorId: collectionData.value.id,
+    collectorName: collectionData.value.name,
     pointKey: item.id,
     configuration: {
       interval: item.configuration?.interval?.value,
@@ -24,10 +24,16 @@ scanSetting.value.handleData = (data) => {
 }
 
 setTimeout(() => {
-  scanSetting.columns = [
+  scanSetting.value.columns = [
     {
       title: $lang('OPC_UA.scan.20250414-1'),
       dataIndex: 'name',
+      template: {
+        components: 'a-input',
+        props: {
+          allowClear: true
+        }
+      },
       ellipsis: true,
     },
     {

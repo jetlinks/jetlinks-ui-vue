@@ -103,16 +103,18 @@ setTimeout(() => {
   ]
 }, 500)
 
-onMounted(() => {
-
-  request.post('/data-collect/BACNetIp/command/QueryPropertyIds').then(resp => {
+const getPropertyIds = async () => {
+  const pointsResp = await request.post('/data-collect/point/_query', {})
+  if (pointsResp.success) {
+    const usedPropertyIds = new Set(pointsResp.result.data.map(item => item.configuration.propertyId))
+    const resp = await request.post('/data-collect/BACNetIp/command/QueryPropertyIds')
     if (resp.success) {
-      // 获取已有点位，从configuration中获取propertyId 并过滤范返回的数据
-      scanSetting.value.options = resp.result.map(v => ({ label: v, value: v }))
-      console.log(scanSetting)
+      scanSetting.value.options = resp.result.filter(item => !usedPropertyIds.has(item))
     }
-  })
-})
+  }
+}
+
+getPropertyIds()
 </script>
 
 <template>
