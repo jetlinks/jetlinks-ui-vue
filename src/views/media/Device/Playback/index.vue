@@ -247,6 +247,8 @@ const queryLocalRecords = async (date: Dayjs) => {
                               )
                             : false,
                     };
+                }).sort((a: recordsItemType, b: recordsItemType) => {
+                    return b.startTime - a.startTime;
                 });
 
                 historyList.value = newList;
