@@ -138,6 +138,7 @@ const table = reactive({
         };
         const response = saveMenuInfo_api(params)
         response.then(() => {
+            emits('refresh');
             onlyMessage('操作成功');
         });
         return response
