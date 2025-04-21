@@ -1,44 +1,18 @@
-# jetlinks-project-ui-template
+# jetlinks-ui-vue
 
-<a id=".env.development"></a>
-
-## .env.development
-
-``` shell
-# public path
-VITE_PUBLIC_PATH = /
-
-# 代理标识
-VITE_APP_BASE_API = /api
-
-# 代理端口
-VITE_PORT=9100
-
-# 代理配置
-VITE_PROXY = [["/api","http://192.168.33.46:8844"]]
-
-# 配置多个代理
-# VITE_PROXY = [
-#     ["/login","http://120.77.179.54:8844"],
-#     ["/api","http://192.168.33.46:8844"]
-# ]
-
-#  token标识
-VITE_TOKEN_KEY = X-Access-Token
-
-# 管理员标识
-VITE_GLOB_APP_SHORT_NAME = JetLinks_admin
-
-# 是否在开发环境开启 https 和 http2（开启后将大幅优化首次启动时加载速度）
-VITE_USE_HTTPS = false
-
-```
+[更新说明](./changelog.md)
 
 ## 运行
 
 使用pnpm命令运行，安装[pnpm](https://www.pnpm.cn/installation)
 
 ```shell
+# 拉取子仓库
+pnpm modules:init
+
+# 更新子仓库
+pnpm modules:update
+
 # 安装依赖
 pnpm install
 

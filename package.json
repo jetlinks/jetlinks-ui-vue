@@ -1,14 +1,14 @@
 {
-  "name": "jetlinks-ui-template",
+  "name": "jetlinks-ui-vue",
   "private": true,
-  "version": "2.1.0",
+  "version": "2.3.0",
   "scripts": {
     "dev": "vite",
     "dev:force": "vite --force",
     "build": "node --max_old_space_size=1024000 ./node_modules/vite/bin/vite.js build",
     "preview": "vite preview",
     "clean": "pnpm rimraf node_modules && pnpm rimraf dist && pnpm rimraf .turbo",
-    "modules:init": "git submodule init && git submodule update && git submodule foreach git checkout master && git submodule foreach git pull origin master",
+    "modules:init": "git submodule init && git submodule update && git submodule foreach git checkout 2.3 && git submodule foreach git pull origin 2.3",
     "modules:update": "git submodule update",
     "test": "playwright test"
   },
