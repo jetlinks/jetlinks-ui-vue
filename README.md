@@ -1,44 +1,18 @@
-# jetlinks-project-ui-template
+# jetlinks-ui-vue
 
-<a id=".env.development"></a>
-
-## .env.development
-
-``` shell
-# public path
-VITE_PUBLIC_PATH = /
-
-# 代理标识
-VITE_APP_BASE_API = /api
-
-# 代理端口
-VITE_PORT=9100
-
-# 代理配置
-VITE_PROXY = [["/api","http://192.168.33.46:8844"]]
-
-# 配置多个代理
-# VITE_PROXY = [
-#     ["/login","http://120.77.179.54:8844"],
-#     ["/api","http://192.168.33.46:8844"]
-# ]
-
-#  token标识
-VITE_TOKEN_KEY = X-Access-Token
-
-# 管理员标识
-VITE_GLOB_APP_SHORT_NAME = JetLinks_admin
-
-# 是否在开发环境开启 https 和 http2（开启后将大幅优化首次启动时加载速度）
-VITE_USE_HTTPS = false
-
-```
+[更新说明](./changelog.md)
 
 ## 运行
 
 使用pnpm命令运行，安装[pnpm](https://www.pnpm.cn/installation)
 
 ```shell
+# 拉取子仓库
+pnpm modules:init
+
+# 更新子仓库
+pnpm modules:update
+
 # 安装依赖
 pnpm install
 
@@ -418,17 +392,17 @@ JConfigProvider组件新增 IconConfig和MapConfig，作为全局的配置
 
 <template>
   <j-advanced-search
-    :columns="columns"
-    target="search-table"
-    @search="handleParams"
+          :columns="columns"
+          target="search-table"
+          @search="handleParams"
   />
   <j-pro-table
-    :columns="columns"
-    :request="query"
-    :params="params"
-    :defaultParams="{ sorts: [{ name: 'createTime', order: 'desc' }] }"
-    ref="instanceRef"
-    :pagination="{
+          :columns="columns"
+          :request="query"
+          :params="params"
+          :defaultParams="{ sorts: [{ name: 'createTime', order: 'desc' }] }"
+          ref="instanceRef"
+          :pagination="{
             pageSizeOptions: ['10', '20'],
         }"
   >
@@ -442,7 +416,7 @@ JConfigProvider组件新增 IconConfig和MapConfig，作为全局的配置
     >
     <template #card="slotProps">
       <div
-        style="width: 100%; border: 1px solid lightgray; padding: 20px"
+              style="width: 100%; border: 1px solid lightgray; padding: 20px"
       >
         <p>年龄： {{ slotProps?.age }}</p>
         <p>{{ slotProps?.address }}</p>
@@ -487,31 +461,31 @@ JConfigProvider组件新增 IconConfig和MapConfig，作为全局的配置
   ({});
 
   const query = (_params: Record<string, any>) =>
-    new Promise((resolve) => {
-      const data = Array(100000)
-        .fill(1)
-        .map((item, index) => {
-          return {
-            key: index + item,
-            name: 'John Brown',
-            age: random(100),
-            address: 'New York No. 1 Lake Park',
-          };
-        });
-      const _from = _params.pageIndex * _params.pageSize;
-      const _to = (_params.pageIndex + 1) * _params.pageSize;
-      setTimeout(() => {
-        resolve({
-          result: {
-            data: data.slice(_from, _to),
-            pageIndex: _params.pageIndex || 0,
-            pageSize: _params.pageSize || 10,
-            total: data.length,
-          },
-          status: 200,
-        });
-      }, 500);
-    });
+          new Promise((resolve) => {
+            const data = Array(100000)
+                    .fill(1)
+                    .map((item, index) => {
+                      return {
+                        key: index + item,
+                        name: 'John Brown',
+                        age: random(100),
+                        address: 'New York No. 1 Lake Park',
+                      };
+                    });
+            const _from = _params.pageIndex * _params.pageSize;
+            const _to = (_params.pageIndex + 1) * _params.pageSize;
+            setTimeout(() => {
+              resolve({
+                result: {
+                  data: data.slice(_from, _to),
+                  pageIndex: _params.pageIndex || 0,
+                  pageSize: _params.pageSize || 10,
+                  total: data.length,
+                },
+                status: 200,
+              });
+            }, 500);
+          });
 
   const refresh = () => {
     instanceRef.value?.reload();
