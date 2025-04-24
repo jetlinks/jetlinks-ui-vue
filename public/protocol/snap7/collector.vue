@@ -9,12 +9,12 @@
              :disabled="false"/>
   </a-form-item>
   <a-form-item :label="$lang('snap7.collector.20250207-2')" :name="['configuration', 'port']" :rules="[{required: true, trigger: 'blur', validator: validator1}]">
-    <a-input-number style="width: 100%" v-model:value="formData.configuration.port" :precision="0" autocomplete="off"
+    <a-input-number style="width: 100%" v-model:value="formData.configuration.port" :precision="0" :min="1" :max="65535" autocomplete="off"
                     :placeholder="$lang('snap7.collector.20250207-3')"/>
   </a-form-item>
   <a-form-item
       :label="$lang('snap7.collector.20250207-4')" :name="['configuration', 'rack']" :rules="[{required: true, trigger: 'blur', validator: validator2}]">
-    <a-input-number style="width: 100%" v-model:value="formData.configuration.rack" autocomplete="off"
+    <a-input-number style="width: 100%" v-model:value="formData.configuration.rack" autocomplete="off" :precision="0" :min="1" :max="65535"
                     :placeholder="$lang('snap7.collector.20250207-5')" :maxlength="64"/>
   </a-form-item>
   <a-form-item
@@ -25,13 +25,13 @@
   </a-form-item>
   <a-form-item
       :label="$lang('snap7.collector.20250207-8')" :name="['configuration', 'slot']" :rules="[{required: true, trigger: 'blur', validator: validator3}]">
-    <a-input-number style="width: 100%" v-model:value="formData.configuration.slot" autocomplete="off"
+    <a-input-number style="width: 100%" v-model:value="formData.configuration.slot" autocomplete="off" :min="1" :max="65535" :precision="0"
                     :placeholder="$lang('snap7.collector.20250207-9')"
                     :maxlength="64" :disabled="showSlot"/>
   </a-form-item>
   <a-form-item
       :label="$lang('snap7.collector.20250207-10')" :name="['configuration', 'timeout']" :rules="[{required: true, trigger: 'blur', validator: validator4}]">
-    <a-input-number style="width: 100%" v-model:value="formData.configuration.timeout" autocomplete="off"
+    <a-input-number style="width: 100%" v-model:value="formData.configuration.timeout" autocomplete="off" :min="1" :max="65535" :precision="0"
                     :placeholder="$lang('snap7.collector.20250207-11')" :maxlength="64"/>
   </a-form-item>
   <a-form-item
