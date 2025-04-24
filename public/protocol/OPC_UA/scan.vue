@@ -37,7 +37,7 @@ setTimeout(() => {
       ellipsis: true,
     },
     {
-      title: 'nodeId',
+      title: $lang('OPC_UA.scan.20250424-1'),
       dataIndex: 'id',
       key: 'id',
       width: 200,

@@ -21,5 +21,6 @@
   "OPC_UA.point.20250207-5": "Read",
   "OPC_UA.point.20250207-6": "Write",
   "OPC_UA.point.20250207-7": "Subscribe",
-  "OPC_UA.scan.20250414-1": "Name"
+  "OPC_UA.scan.20250414-1": "Name",
+  "OPC_UA.scan.20250424-1": "nodeId"
 }
