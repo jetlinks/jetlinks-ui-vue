@@ -15,8 +15,9 @@
                 multiple
                 draggable
                 :tree-data="treeData"
-                @select="onSelect"
                 :selectedKeys="selectedKeys"
+                :fieldNames="{key: 'code'}"
+                @select="onSelect"
                 @drop="onDrop"
                 @dragend="onDragend"
               >
@@ -79,9 +80,9 @@ import {
   getMaxDepth,
   findAllParentsAndChildren,
   handleSorts,
-  handleSortsArr,
+  handleSortsArr, handleMenuFilterMessage, handleMergeTree,
 } from "./utils";
-import BaseMenu from "@/views/init-home/data/baseMenu";
+import { handleBaseMenu } from "@/views/init-home/data";
 import type { AntTreeNodeDropEvent } from "ant-design-vue/es/tree";
 import { cloneDeep, unionBy } from "lodash-es";
 import { onlyMessage } from "@/utils/comm";
@@ -295,32 +296,30 @@ const synchronizationMenu = (menu: any, baseMenu: any) => {
 };
 onMounted(() => {
   getSystemPermission_api().then((resp: any) => {
-    const filterBaseMenu = BaseMenu.filter(
+    const filterBaseMenu = handleBaseMenu().filter(
       (item) => ![USER_CENTER_MENU_CODE, messageSubscribe].includes(item.code),
     );
-    console.log(
-      resp.result.map((item: any) => JSON.parse(item).id),
-      "map",
-    );
+
+    // 根据showPage过滤菜单
     baseMenu.value = filterMenu(
       resp.result.map((item: any) => JSON.parse(item).id),
       filterBaseMenu,
     );
+
     getMenuTree(params).then((resp: any) => {
       if (resp.status == 200) {
-        systemMenu.value = resp.result?.filter(
-          (item: { code: string }) =>
-            ![USER_CENTER_MENU_CODE, messageSubscribe].includes(item.code),
-        );
+        const filterMenu = handleMenuFilterMessage(resp.result)
+
+        systemMenu.value = handleMergeTree( baseMenu.value, filterMenu);
+        // systemMenu.value = resp.result?.filter(
+        //   (item: { code: string }) =>
+        //     ![USER_CENTER_MENU_CODE, messageSubscribe].includes(item.code),
+        // );
         //初始化菜单
         // initData(baseMenu.value); // 不要克隆，通过引用 处理key和name
-        const systemMenuData = inItSelected(systemMenu.value);
+        const systemMenuData = inItSelected(filterMenu);
+
         selectedKeys.value = systemMenuData.checkedKeys;
-        // const AllMenu = filterMenus(mergeArr(
-        //     cloneDeep(baseMenu.value),
-        //     cloneDeep(systemMenu.value),
-        // ))
-        // console.log(AllMenu);
         // 处理排序
         treeData.value = handleSortsArr(systemMenu.value);
       }

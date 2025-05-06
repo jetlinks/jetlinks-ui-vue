@@ -30,6 +30,10 @@ export const handleChildren = (trees: any[]) => {
   return Array.from(nodeMap.values());
 }
 
+export const handleBaseMenu = () => {
+  return handleChildren(baseModuleMenu)
+}
+
 menus.forEach((item) => {
   baseModuleMenu.push(...item);
 })
