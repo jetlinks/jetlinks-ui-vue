@@ -12,7 +12,7 @@ import andtv from 'ant-design-vue'
 
 import 'ant-design-vue/dist/antd.variable.min.css'
 import "vue3-json-viewer/dist/index.css";
-import '@jetlinks-web/components/es/style/index.css'
+import '@jetlinks-web/components/es/style/index.less'
 import 'xgplayer/dist/index.min.css'
 import '@/style/global.less'
 import 'dayjs/locale/zh-cn';
