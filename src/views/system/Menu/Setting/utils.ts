@@ -4,6 +4,7 @@ import type {
     TreeProps,
     TreeDataItem,
 } from 'ant-design-vue/es/tree';
+import {messageSubscribe, USER_CENTER_MENU_CODE} from "@/utils/consts";
 
 /**
  * 根据权限过滤菜单
@@ -133,7 +134,7 @@ export const inItSelected = (Menu:any) =>{
             item.title = item.code;
             item.key = item.code; // treeData需要唯一key
             item?.options?.show === false ?  '' : checkedKeys.push(item.code);
-            if (item?.children) {
+            if (item.children) {
                 getMap(item?.children);
             }
         });
@@ -345,4 +346,38 @@ export const handleSortsArr = (node: any[]) => {
         }
         return item
     })
+}
+
+export const handleMergeTree = (treeA: any[], treeB: any[]) => {
+    const map = new Map();
+
+    // 遍历并构建 Map（以 id 为 key）
+    function addNodes(nodes) {
+        for (const node of nodes) {
+            if (!node || typeof node !== 'object') continue;
+
+            const existing = map.get(node.id);
+            if (existing) {
+                // 合并当前节点的 children
+                const childrenA = existing.children || [];
+                const childrenB = node.children || [];
+                existing.children = handleMergeTree(childrenA, childrenB);
+            } else {
+                // 深拷贝新节点并加入 Map
+                map.set(node.id, {
+                    ...node,
+                    children: node.children ? handleMergeTree(node.children, []) : []
+                });
+            }
+        }
+    }
+
+    addNodes(treeA);
+    addNodes(treeB);
+
+    return Array.from(map.values());
+}
+
+export const handleMenuFilterMessage = (menus: any[] = []) => {
+    return menus.filter(item => ![USER_CENTER_MENU_CODE, messageSubscribe].includes(item.code))
 }

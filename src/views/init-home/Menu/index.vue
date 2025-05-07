@@ -13,7 +13,7 @@
 <script lang="ts" setup>
 import { getImage } from "@jetlinks-web/utils";
 import { USER_CENTER_MENU_DATA } from "../data/baseMenu";
-import BaseMenu from "../data";
+import BaseMenu, { handleChildren } from "../data";
 import {
   updateMenus,
   systemVersion,
@@ -27,7 +27,7 @@ import { protocolList } from "@/utils/consts";
  */
 const menuDatas = reactive({
   count: 0,
-  current: BaseMenu,
+  current: handleChildren(BaseMenu),
 });
 
 /**
