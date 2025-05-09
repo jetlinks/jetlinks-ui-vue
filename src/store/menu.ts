@@ -8,10 +8,11 @@ import {getOwnMenuThree} from '@/api/system/menu'
 import {getGlobModules} from '@/router/globModules'
 import {getExtraRouters} from '@/router/extraMenu'
 import {USER_CENTER_ROUTE, INIT_HOME, EDGE_TOKEN_ROUTE} from '@/router/basic'
-import {useAuthStore} from '@/store/auth'
+import {useAuthStore, useApplication} from '@/store'
 import {OWNER_KEY} from "@/utils/consts";
 import i18n from "@/locales";
-import {useUserStore} from "@/store/user";
+import {BASE_API} from "@jetlinks-web/constants";
+import { modules } from '@/utils/modules'
 
 const $t = i18n.global.t
 
@@ -53,7 +54,7 @@ export const useMenuStore = defineStore('menu', () => {
     const siderMenus = ref([])
 
     const authStore = useAuthStore()
-    const userInfoStore = useUserStore();
+    const app = useApplication();
 
     const hasRouteMenu = () => {
         return !!Object.keys(menu).length
@@ -114,29 +115,81 @@ export const useMenuStore = defineStore('menu', () => {
             paging: false,
             terms: defaultOwnParams,
         })
+
+        let menuResult = resp.result
+
+        //  遍历树节点，处理子应用页面
+
+        if (app.appList.length > 0) {
+            const modulesFile = modules()
+
+            const handleMicroApp = (nodes: any[]) => {
+                if (!nodes || nodes.length === 0) return;
+
+                for (const node of nodes) {
+                    // 处理当前节点
+                    if (node.children && node.children.length > 0) {
+                        // 处理子节点
+                        handleMicroApp(node.children);
+                    }
+
+                    if(node.options && node.options.appName) {
+                        const appInfo = app.findAppById(node.options.appName)
+
+                        let url = appInfo?.path
+                        if (url && !url.startsWith('http') && !url.startsWith('/')) {
+                            url =  '/' + url
+                        }
+
+                        if (url?.startsWith('/')) {
+                            url =  BASE_API + url
+                        }
+
+                        let isLocal = false
+
+                        if (import.meta.env.DEV) {
+                            // isLocal = Object.values(modulesFile).some(v => {
+                            //     const localMenus = (v as any).default.getAsyncRoutesMap()
+                            //     return localMenus[node.code]
+                            // })
+                        }
+
+                        if (!isLocal) {
+                            node.meta = {
+                                appName: node.options.appName,
+                                appUrl: url
+                            }
+                        }
+                    }
+                }
+            }
+
+            // 开始遍历处理
+            handleMicroApp(menuResult);
+
+        }
+
         const asyncRoutes = getGlobModules()
         menusMap.value.clear()
 
         if (resp.success) {
             const extraMenu = getExtraRouters()
-            const _routes = handleMenus(cloneDeep(resp.result), extraMenu, asyncRoutes) // 处理路由
-            const routes = [..._routes, USER_CENTER_ROUTE, EDGE_TOKEN_ROUTE];
-            // routes.push(USER_CENTER_ROUTE) // 添加个人中心
-            // routes.push(EDGE_TOKEN_ROUTE) //添加边缘网关token失效页面
-            // if (_routes.length) {
-            routes.push({
-                path: '/',
-                redirect: routes[0].path,
-            })
-            // }
-            if(userInfoStore.userInfo?.username === 'admin'){
-                routes.push(INIT_HOME) // 添加初始化页面
+
+            const routes = handleMenus(cloneDeep(menuResult), extraMenu, asyncRoutes) // 处理路由
+            if (routes.length) {
+                routes.push({
+                    path: '/',
+                    redirect: routes[0].path,
+                })
             }
-            authStore.handlePermission(resp.result) // 处理按钮权限
+
+            routes.push(USER_CENTER_ROUTE) // 添加个人中心
+            routes.push(INIT_HOME) // 添加初始化页面
+            authStore.handlePermission(menuResult) // 处理按钮权限
             menu.value = routes
             console.log('routes', routes)
             handleMenusMap(routes, handleMenusMapById)
-            siderMenus.value = handleSiderMenu(cloneDeep(resp.result)) // 处理菜单
+            siderMenus.value = handleSiderMenu(cloneDeep(menuResult)) // 处理菜单
         }
     }
 

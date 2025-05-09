@@ -16,11 +16,16 @@ import '@jetlinks-web/components/es/style/index.less'
 import 'xgplayer/dist/index.min.css'
 import '@/style/global.less'
 import 'dayjs/locale/zh-cn';
+import microApp from "@micro-zoe/micro-app";
 
 dayjs.locale('zh-cn');
 
 initAxios()
 loadMicroApp()
+
+microApp.start({
+  iframe: true,
+})
 
 const app = createApp(App)
 

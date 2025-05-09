@@ -57,6 +57,7 @@ export const useSystemStore = defineStore('system', () => {
   const changeIco = (url: string) => {
     ico.value = url
     const icoDom: any = document.querySelector('link[rel="icon"]')!;
+    if (!icoDom) return
     icoDom.href = url
   }
 
@@ -68,6 +69,7 @@ export const useSystemStore = defineStore('system', () => {
     const _data = systemInfo.value['front']
     if (_data) {
       const ico: any = document.querySelector('link[rel="icon"]');
+      if (!ico) return
       ico.href = _data.ico;
       document.title = _data.title || '';
     }

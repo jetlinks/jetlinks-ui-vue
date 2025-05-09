@@ -155,3 +155,5 @@ export function getLocalizedPathname(
   }
   return { path: fullPath, query };
 }
+
+export const isSubApp = (window as any).__MICRO_APP_ENVIRONMENT__
