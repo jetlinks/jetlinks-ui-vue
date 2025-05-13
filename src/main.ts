@@ -30,7 +30,7 @@ if (import.meta.env.VITE_MICRO_APP) { // 是否开启微前端
 }
 
 const app = createApp(App)
-
+app.provide('appInstance', app);
 app.use(pinia)
     .use(router)
     .use(directive) // 注册自定义指令

@@ -24,5 +24,6 @@
   "BACNetIp.point.20250207-8": "Please select the access type",
   "BACNetIp.point.20250207-9": "Read",
   "BACNetIp.point.20250207-10": "Write",
-  "BACNetIp.point.20250207-11": "Subscribe"
+  "BACNetIp.point.20250207-11": "Subscribe",
+  "BACNetIp.scan.20250414-1": "Name"
 }

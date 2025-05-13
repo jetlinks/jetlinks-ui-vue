@@ -53,8 +53,10 @@ export default defineConfig(({ mode }) => {
             vue(),
             vueJsx(),
             VueSetupExtend(),
-            monacoEditorPlugin({}),
-            optimizeDeps(),
+            monacoEditorPlugin({
+                languages: ['json', 'yaml','less', 'javascript', 'typescript', 'java', 'xml', 'sql'],
+                languageWorkers: [ 'editorWorkerService', 'json', 'typescript']
+            }),
             Components({
                 resolvers: [
                     VueAmapResolver(),
