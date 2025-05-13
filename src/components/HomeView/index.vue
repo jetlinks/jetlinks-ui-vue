@@ -16,21 +16,21 @@
 
 <script lang="ts" setup>
 import { getImage } from '@jetlinks-web/utils';
-import { useI18n } from 'vue-i18n';
+// import { useI18n } from 'vue-i18n';
 
-const { t: $t } = useI18n();
+// const { t: $t } = useI18n();
 const list = [
     {
         id: 'device',
-        name: $t('HomeView.index.817508-0'),
+        // name: $t('HomeView.index.817508-0'),
     },
     {
         id: 'ops',
-        name: $t('HomeView.index.817508-1'),
+        // name: $t('HomeView.index.817508-1'),
     },
     {
         id: 'comprehensive',
-        name: $t('HomeView.index.817508-2'),
+        // name: $t('HomeView.index.817508-2'),
     },
 ];
 

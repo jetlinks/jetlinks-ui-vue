@@ -52,7 +52,7 @@ export const NOT_FIND_ROUTE: RouteRecordItem = {
 export const INIT_HOME: RouteRecordItem = {
   path: '/init-home',
   name: 'init-home',
-  component: () => import("@/views/init-home/index.vue"),
+  component: () => import("@/modules/authentication-manager-ui/views/init-home/index.vue"),
   meta: {
     title: "初始化",
   },
