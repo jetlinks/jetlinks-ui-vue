@@ -1,8 +1,6 @@
-interface RouteRecordItem {
+import type { RouteRecordRaw} from 'vue-router'
 
-}
-
-export const USER_CENTER_ROUTE: RouteRecordItem = {
+export const USER_CENTER_ROUTE: RouteRecordRaw = {
   path: "/account",
   name: "Account",
   redirect: "/account/center",
@@ -30,7 +28,7 @@ export const USER_CENTER_ROUTE: RouteRecordItem = {
   ],
 };
 
-export const LOGIN_ROUTE: RouteRecordItem = {
+export const LOGIN_ROUTE: RouteRecordRaw = {
   path: "/login",
   name: "Login",
   // @ts-ignore
@@ -40,7 +38,7 @@ export const LOGIN_ROUTE: RouteRecordItem = {
   },
 };
 
-export const NOT_FIND_ROUTE: RouteRecordItem = {
+export const NOT_FIND_ROUTE: RouteRecordRaw = {
   path: "/:pathMatch(.*)",
   name: "error",
   component: () => import("@/views/Error/404.vue"),
@@ -49,16 +47,16 @@ export const NOT_FIND_ROUTE: RouteRecordItem = {
   },
 };
 
-export const INIT_HOME: RouteRecordItem = {
+export const INIT_HOME: RouteRecordRaw = {
   path: '/init-home',
   name: 'init-home',
-  component: () => import("@/views/init-home/index.vue"),
+  component: () => import("@/modules/authentication-manager-ui/views/init-home/index.vue"),
   meta: {
     title: "初始化",
   },
 }
 
-export const EDGE_TOKEN_ROUTE: RouteRecordItem = {
+export const EDGE_TOKEN_ROUTE: RouteRecordRaw = {
   path: '/edge/token/:id',
   meta: {
     title: 'token失效'
@@ -88,4 +86,13 @@ export const OAuthWechat = {
     title: '微信授权页'
   },
   component: () => import('@/views/oauth/WeChat.vue')
+}
+
+export const AUTHORIZE_ROUTE: RouteRecordRaw = {
+  path: '/share/authorize',
+  name: 'Authorize',
+  component: () => import('@/views/share/authorize/index.vue'),
+  meta: {
+    title: '授权认证'
+  }
 }

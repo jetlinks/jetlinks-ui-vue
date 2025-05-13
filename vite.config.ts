@@ -3,13 +3,8 @@ import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import Components from 'unplugin-vue-components/vite'
 import AutoImport from 'unplugin-auto-import/vite'
-import { AntDesignVueResolver } from 'unplugin-vue-components/resolvers'
 import { VueAmapResolver } from '@vuemap/unplugin-resolver'
 import VueSetupExtend from 'vite-plugin-vue-setup-extend'
-import {
-    createStyleImportPlugin,
-    AndDesignVueResolve,
-} from 'vite-plugin-style-import'
 import * as path from 'path'
 import monacoEditorPlugin from 'vite-plugin-monaco-editor'
 import { optimizeDeps, registerModulesAlias, copyImagesPlugin } from './configs/plugin'
@@ -58,8 +53,10 @@ export default defineConfig(({ mode }) => {
             vue(),
             vueJsx(),
             VueSetupExtend(),
-            monacoEditorPlugin({}),
-            optimizeDeps(),
+            monacoEditorPlugin({
+                languages: ['json', 'yaml','less', 'javascript', 'typescript', 'java', 'xml', 'sql'],
+                languageWorkers: [ 'editorWorkerService', 'json', 'typescript']
+            }),
             Components({
                 resolvers: [
                     VueAmapResolver(),
@@ -70,9 +67,6 @@ export default defineConfig(({ mode }) => {
                 imports: ['vue', 'vue-router'],
                 dts: 'src/auto-imports.d.ts',
                 resolvers: [VueAmapResolver()],
-            }),
-            createStyleImportPlugin({
-                resolves: [AndDesignVueResolve()],
             }),
             progress(),
             copyImagesPlugin()

@@ -4,9 +4,10 @@ import {
 } from 'vue-router'
 import { getToken, removeToken } from '@jetlinks-web/utils'
 import {NOT_FIND_ROUTE, LOGIN_ROUTE, OAuth2, OAuthWechat, AccountCenterBind} from './basic'
-import { isSubApp } from '@/utils'
-import { useApplication, useUserStore, useSystemStore, useMenuStore  } from '@/store'
-import microApp from '@micro-zoe/micro-app'
+import {useUserStore} from "@/store/user";
+import {useSystemStore} from "@/store/system";
+import {useMenuStore} from "@/store/menu";
+import {Modal} from "ant-design-vue";
 
 let TokenFilterRoute: string[] = [OAuth2.path, AccountCenterBind.path]
 
@@ -24,7 +25,7 @@ const router = createRouter({
     return savedPosition || {top: 0}
   },
 })
-microApp.router.setBaseAppRouter(router)
+
 const NoTokenJump = (to: any, next: any, isLogin: boolean) => {
   // 登录页，不需要token 的页面直接放行，否则跳转登录页
   if (isLogin || TokenFilterRoute.includes(to.path)) {
@@ -39,7 +40,6 @@ const getRoutesByServer = async (to: any, next: any) => {
   const UserInfoStore = useUserStore()
   const SystemStore = useSystemStore()
   const MenuStore = useMenuStore()
-  const application = useApplication()
 
   if (!Object.keys(UserInfoStore.userInfo).length) {
     // 是否有用户信息
@@ -49,10 +49,6 @@ const getRoutesByServer = async (to: any, next: any) => {
     await SystemStore.queryInfo()
     await SystemStore.setMircoData()
   }
-
-  // if (!isSubApp && !application.appList.length) {
-  //   await application.queryApplication() // 获取子应用
-  // }
 
   // 没有菜单的情况下获取菜单
   if (!MenuStore.menu.length && !FilterPath.includes(to.path as string)) {
