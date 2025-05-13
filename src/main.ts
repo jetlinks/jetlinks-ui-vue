@@ -28,7 +28,7 @@ microApp.start({
 })
 
 const app = createApp(App)
-
+app.provide('appInstance', app);
 app.use(pinia)
     .use(router)
     .use(directive) // 注册自定义指令
