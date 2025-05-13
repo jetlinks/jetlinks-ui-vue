@@ -2,8 +2,7 @@ import dayjs from "dayjs";
 import { downloadFileByUrl, getImage, LocalStore } from "@jetlinks-web/utils";
 import { getFileUrlById } from "@/api/comm";
 import { message } from "ant-design-vue";
-
-const modules = import.meta.glob("../modules/*/index.ts", { eager: true });
+import { modules } from './modules'
 
 export const downloadJson = (
   record: Record<string, any>,
@@ -103,8 +102,9 @@ export const isFullScreen = () => {
 };
 
 export const getModulesComponents = (name: string) => {
+
   const components: any = {};
-  Object.values(modules).forEach((item) => {
+  Object.values(modules()).forEach((item) => {
     const c = (item as any).default.getComponents?.();
     if (c) {
       Object.keys(c).forEach((key: string) => {

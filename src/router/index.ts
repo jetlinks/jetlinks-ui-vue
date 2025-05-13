@@ -3,14 +3,31 @@ import {
   createWebHashHistory,
 } from 'vue-router'
 import { getToken, removeToken } from '@jetlinks-web/utils'
-import {NOT_FIND_ROUTE, LOGIN_ROUTE, OAuth2, OAuthWechat, AccountCenterBind} from './basic'
+import { NOT_FIND_ROUTE, LOGIN_ROUTE, OAuth2, OAuthWechat, AccountCenterBind, AUTHORIZE_ROUTE } from './basic'
+import type { RouteRecordRaw } from 'vue-router'
 import { isSubApp } from '@/utils'
 import { useApplication, useUserStore, useSystemStore, useMenuStore  } from '@/store'
+import { modules } from '@/utils/modules'
 import microApp from '@micro-zoe/micro-app'
 
-let TokenFilterRoute: string[] = [OAuth2.path, AccountCenterBind.path]
+let TokenFilterRoute: string[] = [OAuth2.path, AccountCenterBind.path, AUTHORIZE_ROUTE.path]
 
-let FilterPath: string[] = [OAuth2.path]
+let FilterPath: string[] = [OAuth2.path, AUTHORIZE_ROUTE.path]
+
+// 获取子模块默认路由
+const getModulesRoutes = () => {
+  const modulesFile = modules()
+  const _routes: RouteRecordRaw[] = []
+  Object.keys(modulesFile).forEach((key) => {
+    if ((modulesFile[key] as any).default) {
+      const routes = (modulesFile[key] as any).default.getDefaultRoutes?.()
+      const filter = (modulesFile[key] as any).default.getFilterRoutes?.()
+      routes?.length && _routes.push(...routes)
+      filter?.length && TokenFilterRoute.push(...filter)
+    }
+  })
+  return _routes
+}
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -18,13 +35,17 @@ const router = createRouter({
     LOGIN_ROUTE,
     OAuth2,
     OAuthWechat,
-    AccountCenterBind
+    AccountCenterBind,
+    AUTHORIZE_ROUTE,
+    ...getModulesRoutes()
   ],
   scrollBehavior(to, form, savedPosition) {
     return savedPosition || {top: 0}
   },
 })
+
 microApp.router.setBaseAppRouter(router)
+
 const NoTokenJump = (to: any, next: any, isLogin: boolean) => {
   // 登录页，不需要token 的页面直接放行，否则跳转登录页
   if (isLogin || TokenFilterRoute.includes(to.path)) {

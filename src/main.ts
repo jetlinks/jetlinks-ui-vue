@@ -23,17 +23,19 @@ dayjs.locale('zh-cn');
 initAxios()
 loadMicroApp()
 
-microApp.start({
-  iframe: true,
-})
+if (import.meta.env.VITE_MICRO_APP) { // 是否开启微前端
+  microApp.start({
+    iframe: true,
+  })
+}
 
 const app = createApp(App)
 
 app.use(pinia)
     .use(router)
     .use(directive) // 注册自定义指令
-    .use(i18n)
     .use(andtv)
+    .use(i18n)
     .use(JetlinksComponents) // 注册脚手架通用组件
     .use(components) // 注册自定义通用组件
     .mount('#app')

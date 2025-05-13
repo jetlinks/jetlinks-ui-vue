@@ -1,9 +1,10 @@
 import { createI18n } from 'vue-i18n'
 import type { Locale } from 'vue-i18n';
 import {langKey} from "@/utils/consts";
+import { getLang } from './loader'
 
 const mainModules = import.meta.glob('./lang/*.json', {eager: true})
-const modules = import.meta.glob('../modules/*/locales/lang/*.json', {eager: true});
+const modules = getLang()
 
 const allModules = Object.assign({}, mainModules, modules)
 

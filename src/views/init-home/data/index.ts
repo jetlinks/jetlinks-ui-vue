@@ -1,6 +1,7 @@
 import proMenu from './baseMenu';
+import { getModulesMenu } from '@/utils/modules'
 
-const menusModule = import.meta.glob('../../../modules/**/baseMenu.ts', {eager: true});
+const menusModule = getModulesMenu()
 const modules = Object.values(menusModule);
 const menus = modules.map((item) => item.default?.());
 
