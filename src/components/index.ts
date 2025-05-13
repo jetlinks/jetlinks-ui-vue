@@ -15,6 +15,7 @@ import SelectAMap from './SelectAMap/index.vue'
 import MonacoEditor from './MonacoEditor/monacoEditor.vue'
 import FormItemValue from './FormItem'
 import { TimeSelect } from './Dashboard/components'
+import FullCalendar from './FullCalendar/index.vue'
 
 export default {
     install(app: App) {
@@ -36,6 +37,7 @@ export default {
             .component('SelectAMap', SelectAMap)
           .component('monaco-editor', MonacoEditor)
           .component(TimeSelect.name, TimeSelect)
+          .component('FullCalendar', FullCalendar)
 
         Object.keys(FormItemValue).forEach(key => {
             app.component(key, FormItemValue[key])
