@@ -168,6 +168,7 @@ const tabChange = (key: string) => {
     }
     .property-box-right {
         flex: 1;
+        overflow-x: auto;
     }
 }
 .tabTitle {
