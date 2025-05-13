@@ -1,18 +1,18 @@
 <template>
-  <Modal v-model:visible="visible" :footer="null" :width="900" :bodyStyle="{padding: 0}" @cancel="onCancel">
+  <Modal v-model:visible="visible" :footer="null" :width="1020" :bodyStyle="{padding: 0}" @cancel="onCancel">
     <template #closeIcon>
-      <Button danger type="link" @click="onCancel">
-        <AIcon type="ExportOutlined" />
+      <Button danger type="link" @click="onCancel" style="font-size: 18px">
+        <svg focusable="false" class="" data-icon="export" width="1em" height="1em" fill="currentColor" aria-hidden="true" viewBox="64 64 896 896"><path d="M888.3 757.4h-53.8c-4.2 0-7.7 3.5-7.7 7.7v61.8H197.1V197.1h629.8v61.8c0 4.2 3.5 7.7 7.7 7.7h53.8c4.2 0 7.7-3.4 7.7-7.7V158.7c0-17-13.7-30.7-30.7-30.7H158.7c-17 0-30.7 13.7-30.7 30.7v706.6c0 17 13.7 30.7 30.7 30.7h706.6c17 0 30.7-13.7 30.7-30.7V765.1c0-4.3-3.5-7.7-7.7-7.7zm18.6-251.7L765 393.7c-5.3-4.2-13-.4-13 6.3v76H438c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h314v76c0 6.7 7.8 10.5 13 6.3l141.9-112a8 8 0 000-12.6z"></path></svg>
       </Button>
     </template>
     <div class="relogin">
       <div class="left">
         <div class="left-box">
           <div>
-            <img :width="150" src="https://gw.alipayobjects.com/mdn/miniapp_social/afts/img/A*pevERLJC9v0AAAAAAAAAAABjAQAAAQ/original" />
+            <img :width="280" :src="'/images/relogin.png'" />
           </div>
-          <h3>{{ $t('relogin.419974-1') }}</h3>
-          <p>{{ $t('relogin.419974-2') }}</p>
+          <div style="font-size: 16px; color: #1A1A1A">{{ $t('relogin.419974-1') }}</div>
+          <div style="font-size: 12px; color: #777777;">{{ $t('relogin.419974-2') }}</div>
         </div>
       </div>
       <div class="right">
@@ -73,17 +73,17 @@ defineExpose({ open })
 
 <style lang="less" scoped>
 .relogin {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  height: 600px;
+  display: flex;
+  height: 650px;
   align-items: center;
 }
 
 .left {
   height: 100%;
-  background-color: rgba(123, 88, 122, .1);
+  background-color: #F1F7FF;
   display: flex;
   justify-content: center;
+  width: 466px;
 
   .left-box {
     display: flex;
@@ -96,5 +96,7 @@ defineExpose({ open })
 
 .right {
   padding: 24px;
+  flex: 1;
+  min-width: 0;
 }
 </style>
