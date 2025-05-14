@@ -56,7 +56,7 @@
                 :mode="dialogTitle"
                 :data="selectItem"
                 :menuData="table.tableData"
-                @confirm="table.getList"
+                @confirm="emits('refresh')"
             />
         </div>
     </div>
@@ -68,6 +68,13 @@ import ButtonAddDialog from '../components/ButtonAddDialog.vue';
 import { getMenuInfo_api, saveMenuInfo_api } from '@/api/system/menu';
 import { onlyMessage } from '@/utils/comm';
 
+const props = defineProps({
+  value: {
+    type: Object,
+    default: () => ({}),
+  }
+})
+const emits = defineEmits(['refresh'])
 const permission = 'system/Menu';
 // 路由
 const route = useRoute();
@@ -121,14 +128,6 @@ const table = reactive({
         },
     ],
     tableData: [] as tableDataItem[],
-    getList: () => {
-        routeParams.id &&
-            getMenuInfo_api(routeParams.id).then((resp: any) => {
-                menuInfo.value = resp.result;
-                table.tableData =
-                    (resp.result?.buttons as tableDataItem[]) || [];
-            });
-    },
     clickDel: (row: tableDataItem) => {
         const buttons = menuInfo.value.buttons.filter(
             (item: tableDataItem) => item.id !== row.id,
@@ -139,13 +138,12 @@ const table = reactive({
         };
         const response = saveMenuInfo_api(params)
         response.then(() => {
+            emits('refresh');
             onlyMessage('操作成功');
-            table.getList();
         });
         return response
     },
 });
-table.getList();
 type tableDataItem = {
     id: string;
     name: string;
@@ -161,6 +159,12 @@ watch(
         }
     },
 );
+
+watch(() => props.value, (value) => {
+  menuInfo.value = value;
+  table.tableData =
+      (value?.buttons as tableDataItem[]) || [];
+}, {immediate: true})
 </script>
 
 <style lang="less" scoped>

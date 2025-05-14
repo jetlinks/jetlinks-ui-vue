@@ -12,6 +12,7 @@
         model="TABLE"
         :params="params"
         :bodyStyle="{ padding: '0 0 0 24px' }"
+        :scroll="{x: 'max-content'}"
     >
         <template  v-for="i in objectKey" #[i.key]='slotProps'>
             <Ellipsis >
@@ -73,6 +74,7 @@ const defaultColumns = [
         dataIndex: 'action',
         key: 'action',
         scopedSlots: true,
+        fixed: 'right',
     },
 ];
 
@@ -81,6 +83,23 @@ const params = ref<Record<string, any>>({});
 const visible = ref<boolean>(false);
 const info = ref<Record<string, any>>({});
 const objectKey = ref<Array>([]);
+
+const componentsType = {
+    int: 'number',
+    long: 'number',
+    float: 'number',
+    double: 'number',
+    string: 'string',
+    array: 'string',
+    password: 'string',
+    enum: 'select',
+    boolean: 'select',
+    date: 'date',
+    object: 'string',
+    geoPoint: 'string',
+    file: 'string',
+    time: 'time',
+}
 
 const _getEventList = (_params: any) =>
     getEventList(instanceStore.current.id || '', events.data.id || '', _params);
