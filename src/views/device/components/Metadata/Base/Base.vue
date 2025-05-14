@@ -155,9 +155,9 @@
             v-model:value="record.expands.level"
             style="width: 100%"
             :options="EventLevel"
-            :getPopupContainer="(node) => tableRef.tableWrapperRef || node"
             :disabled="record.expands?.isProduct"
         />
+        <!-- :getPopupContainer="(node) => tableRef.tableWrapperRef || node" 会导致35559-->
       </EditTableFormItem>
     </template>
     <template #other="{ record }">
