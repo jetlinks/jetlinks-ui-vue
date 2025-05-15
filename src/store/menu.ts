@@ -171,7 +171,7 @@ export const useMenuStore = defineStore('menu', () => {
         menusMap.value.clear()
 
         if (resp.success) {
-            const extraMenu = getExtraRouters()
+            const extraMenu = await getExtraRouters()
 
             const routes = handleMenus(cloneDeep(menuResult), extraMenu, asyncRoutes) // 处理路由
             if (routes.length) {

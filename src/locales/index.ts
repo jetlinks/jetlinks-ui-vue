@@ -37,6 +37,7 @@ async function loadLocalesMapFromDir(regexp: RegExp) {
   for (const localesRawKey in localesRaw) { // 因异步操作，需要动态添加message
     i18n.global.mergeLocaleMessage(localesRawKey, localesRaw[localesRawKey]);
   }
+    console.log(localesRaw)
 }
 loadLocalesMapFromDir(/([^/]*)\.json$/);
 

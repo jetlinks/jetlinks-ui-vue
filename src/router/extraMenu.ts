@@ -10,5 +10,6 @@ export const getExtraRouters = async () => {
     const routes = item.default.getExtraRoutesMap?.() || []
     Object.assign(extraMenu, routes)
   })
+  console.log(extraMenu)
   return extraMenu
 }
