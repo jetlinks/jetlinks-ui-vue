@@ -12,6 +12,8 @@ type MenuItem = {
     url: string
     isShow?: boolean
     buttons?: Buttons
+    options?: Record<string, any>,
+    meta?: Record<string, any>
 }
 
 const hasAppID = (item: { appId?: string, url?: string }): { isApp: boolean, appUrl: string } => {
