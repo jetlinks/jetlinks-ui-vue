@@ -26,13 +26,16 @@ const handleButtons = (buttons?: Buttons) => {
 }
 
 const handleMeta = (item: MenuItem, isApp: boolean) => {
-    return {
-        icon: item.icon,
-        title: item.i18nName || item.name,
-        hideInMenu: item.isShow === false,
-        buttons: handleButtons(item.buttons),
-        isApp
-    }
+  const _meta = item.options?.meta || {}
+  return {
+    ..._meta,
+    ...(item.meta || {}),
+    icon: item.icon,
+    title: item.i18nName || item.name,
+    hideInMenu: item.isShow === false,
+    buttons: handleButtons(item.buttons),
+    isApp
+  }
 }
 
 const findComponents = (code: string, level: number, isApp: boolean, components: any, meta: any, hasChildren: false) => {
