@@ -23,7 +23,7 @@ export const langKey = 'Accept-Language'
 //规则编排国际化LocalStorage的key
 export const ruleEditorKey = 'editor-language'
 
-export const MODULES_KEYS: string[] = import.meta.env.VITE_BUILD_MODULES?.split(',').filter(Boolean) || [];
+export const MODULES_KEYS: string[] = import.meta.env.VITE_BUILD_MODULES || [];
 
 export const isSubApp = (window as any).__MICRO_APP_ENVIRONMENT__
 

@@ -167,7 +167,7 @@ export const useMenuStore = defineStore('menu', () => {
 
         }
 
-        const asyncRoutes = getGlobModules()
+        const asyncRoutes = await getGlobModules()
         menusMap.value.clear()
 
         if (resp.success) {

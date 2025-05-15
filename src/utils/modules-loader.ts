@@ -4,7 +4,7 @@ import { MODULES_KEYS } from '@/utils/consts'
 
 export const getTargetModule = async (modulesFiles: Record<string, any>, regexp: RegExp) => {
   const targetModules: Record<string, any> = {}
-
+  console.log(MODULES_KEYS)
   for (const path in modulesFiles) {
     const match = path.match(regexp);
     const moduleName = match?.[1];
