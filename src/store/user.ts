@@ -11,7 +11,7 @@ type UserInfo = {
 export const useUserStore = defineStore('user', () => {
   const userInfo = ref<Partial<UserInfo>>({})
   const isAdmin = ref(false)
-  const tabKey = ref(tabList?.[0]?.key || 'HomeView') // 个人中心的tabKey,
+  const tabKey = ref(tabList[0].key || 'HomeView') // 个人中心的tabKey,
   const other = {
     tabKey: '' // 站内信的tabkey
   }

@@ -4,7 +4,7 @@ import {
   getTagsColor,
 } from '@/api/system/calendar'
 import {LocalStore} from "@jetlinks-web/utils";
-import {langKey} from "@/utils/consts";
+import {langKey, OpenMicroApp} from "@/utils/consts";
 
 interface LayoutType {
   siderWidth: number
@@ -111,7 +111,7 @@ export const useSystemStore = defineStore('system', () => {
   }
 
   const setMircoData = () => {
-    if ((window as any).__MICRO_APP_ENVIRONMENT__) {
+    if ((window as any).__MICRO_APP_ENVIRONMENT__ && OpenMicroApp) {
       microApp.value = (window as any).microApp.getData() // 获取主应用下发的数据
     }
   }

@@ -7,12 +7,11 @@ import {handleMenus, handleMenusMap, handleSiderMenu} from '@/utils'
 import {getOwnMenuThree} from '@/api/system/menu'
 import {getGlobModules} from '@/router/globModules'
 import {getExtraRouters} from '@/router/extraMenu'
-import {USER_CENTER_ROUTE, INIT_HOME, EDGE_TOKEN_ROUTE} from '@/router/basic'
+import {USER_CENTER_ROUTE, EDGE_TOKEN_ROUTE} from '@/router/basic'
 import {useAuthStore, useApplication} from '@/store'
 import {OWNER_KEY} from "@/utils/consts";
 import i18n from "@/locales";
 import {BASE_API} from "@jetlinks-web/constants";
-import { modules } from '@/utils/modules'
 
 const $t = i18n.global.t
 
@@ -121,7 +120,6 @@ export const useMenuStore = defineStore('menu', () => {
         //  遍历树节点，处理子应用页面
 
         if (app.appList.length > 0) {
-            const modulesFile = modules()
 
             const handleMicroApp = (nodes: any[]) => {
                 if (!nodes || nodes.length === 0) return;
@@ -184,7 +182,6 @@ export const useMenuStore = defineStore('menu', () => {
             }
 
             routes.push(USER_CENTER_ROUTE) // 添加个人中心
-            routes.push(INIT_HOME) // 添加初始化页面
             authStore.handlePermission(menuResult) // 处理按钮权限
             menu.value = routes
             console.log('routes', routes)

@@ -47,15 +47,6 @@ export const NOT_FIND_ROUTE: RouteRecordRaw = {
   },
 };
 
-export const INIT_HOME: RouteRecordRaw = {
-  path: '/init-home',
-  name: 'init-home',
-  component: () => import("@/modules/authentication-manager-ui/views/init-home/index.vue"),
-  meta: {
-    title: "初始化",
-  },
-}
-
 export const EDGE_TOKEN_ROUTE: RouteRecordRaw = {
   path: '/edge/token/:id',
   meta: {

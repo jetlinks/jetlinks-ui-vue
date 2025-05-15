@@ -4,8 +4,7 @@ import {
 } from 'vue-router'
 import { getToken, removeToken } from '@jetlinks-web/utils'
 import { NOT_FIND_ROUTE, LOGIN_ROUTE, OAuth2, OAuthWechat, AccountCenterBind, AUTHORIZE_ROUTE } from './basic'
-import type { RouteRecordRaw } from 'vue-router'
-import { isSubApp } from '@/utils'
+import {isSubApp} from '@/utils/consts'
 import { useApplication, useUserStore, useSystemStore, useMenuStore  } from '@/store'
 import { modules } from '@/utils/modules'
 import microApp from '@micro-zoe/micro-app'
@@ -14,21 +13,6 @@ let TokenFilterRoute: string[] = [OAuth2.path, AccountCenterBind.path, AUTHORIZE
 
 let FilterPath: string[] = [OAuth2.path, AUTHORIZE_ROUTE.path]
 
-// 获取子模块默认路由
-const getModulesRoutes = () => {
-  const modulesFile = modules()
-  const _routes: RouteRecordRaw[] = []
-  Object.keys(modulesFile).forEach((key) => {
-    if ((modulesFile[key] as any).default) {
-      const routes = (modulesFile[key] as any).default.getDefaultRoutes?.()
-      const filter = (modulesFile[key] as any).default.getFilterRoutes?.()
-      routes?.length && _routes.push(...routes)
-      filter?.length && TokenFilterRoute.push(...filter)
-    }
-  })
-  return _routes
-}
-
 const router = createRouter({
   history: createWebHashHistory(),
   routes: [
@@ -36,13 +20,28 @@ const router = createRouter({
     OAuth2,
     OAuthWechat,
     AccountCenterBind,
-    AUTHORIZE_ROUTE,
-    ...getModulesRoutes()
+    AUTHORIZE_ROUTE
   ],
   scrollBehavior(to, form, savedPosition) {
     return savedPosition || {top: 0}
   },
 })
+
+// 获取子模块默认路由
+const getModulesRoutes = async () => {
+  const modulesFiles = await modules()
+  Object.values(modulesFiles).forEach(item => {
+    const routes = item.default.getDefaultRoutes?.() || []
+    const filter = item.default.getFilterRoutes?.() || []
+    routes.forEach((r: any) => {
+      router.addRoute(r)
+    })
+
+    filter?.length && TokenFilterRoute.push(...filter)
+  })
+}
+
+getModulesRoutes()
 
 microApp.router.setBaseAppRouter(router)
 
@@ -71,9 +70,9 @@ const getRoutesByServer = async (to: any, next: any) => {
     await SystemStore.setMircoData()
   }
 
-  // if (!isSubApp && !application.appList.length) {
-  //   await application.queryApplication() // 获取子应用
-  // }
+  if (!isSubApp && !application.appList.length) { // 是否开启微前端
+    await application.queryApplication() // 获取子应用
+  }
 
   // 没有菜单的情况下获取菜单
   if (!MenuStore.menu.length && !FilterPath.includes(to.path as string)) {

@@ -10,7 +10,8 @@
     "clean": "pnpm rimraf node_modules && pnpm rimraf dist && pnpm rimraf .turbo",
     "modules:init": "git submodule init && git submodule update && git submodule foreach git checkout 2.3 && git submodule foreach git pull origin 2.3",
     "modules:update": "git submodule update",
-    "test": "playwright test"
+    "test": "playwright test",
+    "build:modules-server": "pnpm build --mode server"
   },
   "dependencies": {
     "@ant-design/icons-vue": "^7.0.1",

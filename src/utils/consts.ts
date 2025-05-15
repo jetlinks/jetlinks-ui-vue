@@ -24,3 +24,7 @@ export const langKey = 'Accept-Language'
 export const ruleEditorKey = 'editor-language'
 
 export const MODULES_KEYS: string[] = import.meta.env.VITE_BUILD_MODULES?.split(',').filter(Boolean) || [];
+
+export const isSubApp = (window as any).__MICRO_APP_ENVIRONMENT__
+
+export const OpenMicroApp = import.meta.env.VITE_MICRO_APP
