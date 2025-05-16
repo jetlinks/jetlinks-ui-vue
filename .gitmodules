@@ -25,3 +25,6 @@
 [submodule "src/modules/device-manager-ui"]
 	path = src/modules/device-manager-ui
 	url = git@github.com:jetlinks-v2/device-manager-ui.git
+[submodule "src/modules/authentication-manager-ui"]
+    path = src/modules/authentication-manager-ui
+    url = git@github.com:jetlinks-v2/authentication-manager-ui.git
