@@ -8,7 +8,7 @@ git submodule update
 main_branch=$(git symbolic-ref --short HEAD)
 
 # 如果是dev，就使用master，否则用当前分支
-if [ "$main_branch" = "dev" || "$main_branch" = "master" ]; then
+if [[ "$main_branch" = "dev" || "$main_branch" = "master" ]]; then
   submodule_branch="master"
 else
   submodule_branch="$main_branch"
