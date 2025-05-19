@@ -46,5 +46,8 @@
   "MODBUS_TCP.point.20250207-28": "数据类型长度需 <= 寄存器数量 * 2",
   "MODBUS_TCP.point.20250207-29": "请输入0-999999之间的正整数",
   "MODBUS_TCP.point.20250207-30": "读",
-  "MODBUS_TCP.point.20250207-31": "写"
+  "MODBUS_TCP.point.20250207-31": "写",
+  "MODBUS_TCP.point.20250207-32": "基本参数",
+  "MODBUS_TCP.point.20250207-33": "数据解析",
+  "MODBUS_TCP.point.20250207-34": "采集传输"
 }

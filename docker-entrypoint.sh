@@ -3,7 +3,8 @@
 API_BASE_PATH=$API_BASE_PATH;
 SERVER_NAME=$SERVER_NAME;
 
-NAMESERVERS=$(cat /etc/resolv.conf | grep "nameserver" | awk '{print $2}' | tr '\n' ' ')
+#NAMESERVERS=$(cat /etc/resolv.conf | grep "nameserver" | awk '{print $2}' | tr '\n' ' ')
+NAMESERVERS=$(grep "^nameserver" /etc/resolv.conf | awk '{print $2}' | tr '\n' ' ')
 if [ -z "$API_BASE_PATH" ]; then
     API_BASE_PATH="http://jetlinks:8844/";
 fi

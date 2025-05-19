@@ -1,5 +1,5 @@
 <template>
-  <page-container class="iframe-warp">
+  <j-page-container class="iframe-warp">
     <full-page>
       <iframe
         v-if="loading"
@@ -9,7 +9,7 @@
         style="width: 100%; height: 100%"
       ></iframe>
     </full-page>
-  </page-container>
+  </j-page-container>
 </template>
 
 <script name="IframePage" setup>

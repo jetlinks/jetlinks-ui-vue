@@ -50,7 +50,7 @@ export const getInitSet = () => request.get(`/user/settings/init`)
 /**
  * 查看后端配置模块
  */
-export const queryModal = (serviceId:string) => request.get(`/command-supports/service/${serviceId}/exists`)
+export const queryModal  = (serviceId:string) => request.get(`/command-supports/service/${serviceId}/exists`)
 
 /**
  * 获取支持的SSO的应用

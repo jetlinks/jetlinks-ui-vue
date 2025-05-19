@@ -35,3 +35,16 @@ export const deleteSearchHistory = (target:string, id:string) => request.remove(
 export const queryDashboard = (data: Record<string, any>) => request.post(`/dashboard/_multi`, data)
 
 export const lowCodeUrl = () => request.get('/system/config/low-code')
+/**
+ * 获取认证配置
+ * @param tokenId
+ */
+export const getTokenConfig = (tokenId: string) => request.get(`/personal/token/${tokenId}/_config`)
+
+/**
+ * 获取跳转链接
+ * @param tokenId
+ * @param data
+ */
+export const getTokenRedirect = (tokenId: string, data: any) =>
+  request.post(`/personal/token/${tokenId}/_redirect`, data)

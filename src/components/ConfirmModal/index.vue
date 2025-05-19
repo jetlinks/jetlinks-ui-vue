@@ -20,7 +20,7 @@ const props = defineProps({
     },
     onConfirm: {
         type: [Object,Function],
-        default: {},
+        default: () => ({}),
     },
     className: {
         type: String,
