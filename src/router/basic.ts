@@ -1,8 +1,6 @@
-interface RouteRecordItem {
+import type { RouteRecordRaw } from 'vue-router'
 
-}
-
-export const USER_CENTER_ROUTE: RouteRecordItem = {
+export const USER_CENTER_ROUTE: RouteRecordRaw = {
   path: "/account",
   name: "Account",
   redirect: "/account/center",
@@ -30,7 +28,7 @@ export const USER_CENTER_ROUTE: RouteRecordItem = {
   ],
 };
 
-export const LOGIN_ROUTE: RouteRecordItem = {
+export const LOGIN_ROUTE: RouteRecordRaw = {
   path: "/login",
   name: "Login",
   // @ts-ignore
@@ -40,7 +38,7 @@ export const LOGIN_ROUTE: RouteRecordItem = {
   },
 };
 
-export const NOT_FIND_ROUTE: RouteRecordItem = {
+export const NOT_FIND_ROUTE: RouteRecordRaw = {
   path: "/:pathMatch(.*)",
   name: "error",
   component: () => import("@/views/Error/404.vue"),
@@ -49,16 +47,7 @@ export const NOT_FIND_ROUTE: RouteRecordItem = {
   },
 };
 
-export const INIT_HOME: RouteRecordItem = {
-  path: '/init-home',
-  name: 'init-home',
-  component: () => import("@/views/init-home/index.vue"),
-  meta: {
-    title: "初始化",
-  },
-}
-
-export const EDGE_TOKEN_ROUTE: RouteRecordItem = {
+export const EDGE_TOKEN_ROUTE: RouteRecordRaw = {
   path: '/edge/token/:id',
   meta: {
     title: 'token失效'
@@ -66,7 +55,7 @@ export const EDGE_TOKEN_ROUTE: RouteRecordItem = {
   component: () => import('@/views/TokenJump/index.vue')
 };
 
-export const AccountCenterBind = {
+export const AccountCenterBind: RouteRecordRaw = {
   path: '/account/center/bind',
   meta: {
     title: '第三方'
@@ -74,7 +63,7 @@ export const AccountCenterBind = {
   component: () => import("@/views/account/center/bind/index.vue"),
 }
 
-export const OAuth2 = {
+export const OAuth2: RouteRecordRaw = {
   path: '/oauth',
   meta: {
     title: '授权页'
@@ -82,10 +71,19 @@ export const OAuth2 = {
   component: () => import('@/views/oauth/index.vue')
 }
 
-export const OAuthWechat = {
+export const OAuthWechat: RouteRecordRaw = {
   path: '/oauth/wechat',
     meta: {
     title: '微信授权页'
   },
   component: () => import('@/views/oauth/WeChat.vue')
+}
+
+export const AUTHORIZE_ROUTE: RouteRecordRaw = {
+  path: '/share/authorize',
+  name: 'Authorize',
+  component: () => import('@/views/share/authorize/index.vue'),
+  meta: {
+    title: '授权认证'
+  }
 }

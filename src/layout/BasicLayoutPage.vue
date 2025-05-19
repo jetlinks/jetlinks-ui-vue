@@ -62,7 +62,7 @@ const config = computed(() => ({
   splitMenus: layout.value.layout === 'mix'
 }))
 
-const state = reactive<StateType>({
+const state = reactive({
   pure: false,
   collapsed: false, // default value
   openKeys: [],
@@ -80,7 +80,7 @@ const breadcrumb = computed(() =>
         index,
         isLast: index === (paths.length -1),
         path: item.path,
-        breadcrumbName: menuStore.menusMap.get(item.name)?.title || (item.meta as any).title || '',
+        breadcrumbName: (item.meta as any).title || '',
       }
     })
   }

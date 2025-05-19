@@ -119,7 +119,7 @@ const props = defineProps({
   },
   statusText: {
     type: String,
-    default: i18n.global.t('DeviceAccess.accessModal.551011-8'),
+    default: () => i18n.global.t('DeviceAccess.accessModal.551011-8'),
   },
   status: {
     type: [String, Number] as PropType<string | number>,

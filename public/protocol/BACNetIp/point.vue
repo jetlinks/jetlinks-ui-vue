@@ -33,14 +33,14 @@
   </a-form-item>
 </template>
 <script setup>
-import {inject, ref} from 'vue'
+import {inject, ref, watch} from 'vue'
 import {request} from '@jetlinks-web/core'
 import {useLocales} from '@hooks'
 
 const {$lang} = useLocales('BACNetIp')
 
 const formData = inject('plugin-form')
-
+const showDeathArea = inject('plugin-form-death-area-show', ref(false))
 const bacnetValueType = ref([])
 
 const valValue = (_, value) => {
@@ -77,5 +77,10 @@ const getOptions = () => {
 
 getOptions()
 
+watch(() => formData.configuration?.objectId?.type, (val) => {
+  showDeathArea.value = val && ['Unsigned8', 'Unsigned16', 'Unsigned32', 'UnsignedInteger', 'Double'].includes(val)
+}, {
+  immediate: true,
+})
 </script>
 <style></style>

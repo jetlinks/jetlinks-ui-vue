@@ -3,17 +3,12 @@ import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import Components from 'unplugin-vue-components/vite'
 import AutoImport from 'unplugin-auto-import/vite'
-import { AntDesignVueResolver } from 'unplugin-vue-components/resolvers'
 import { VueAmapResolver } from '@vuemap/unplugin-resolver'
 import VueSetupExtend from 'vite-plugin-vue-setup-extend'
-import {
-    createStyleImportPlugin,
-    AndDesignVueResolve,
-} from 'vite-plugin-style-import'
-import * as path from 'path'
 import monacoEditorPlugin from 'vite-plugin-monaco-editor'
 import { optimizeDeps, registerModulesAlias, copyImagesPlugin } from './configs/plugin'
 import progress from 'vite-plugin-progress'
+import * as path from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
@@ -29,7 +24,7 @@ export default defineConfig(({ mode }) => {
         build: {
             outDir: 'dist',
             assetsDir: 'assets',
-            sourcemap: true,
+            sourcemap: false,
             cssCodeSplit: false,
             manifest: true,
             chunkSizeWarningLimit: 2000,
@@ -58,8 +53,10 @@ export default defineConfig(({ mode }) => {
             vue(),
             vueJsx(),
             VueSetupExtend(),
-            monacoEditorPlugin({}),
-            optimizeDeps(),
+            monacoEditorPlugin({
+                languages: ['json', 'yaml','less', 'javascript', 'typescript', 'java', 'xml', 'sql'],
+                languageWorkers: [ 'editorWorkerService', 'json', 'typescript']
+            }),
             Components({
                 resolvers: [
                     VueAmapResolver(),
@@ -71,9 +68,6 @@ export default defineConfig(({ mode }) => {
                 dts: 'src/auto-imports.d.ts',
                 resolvers: [VueAmapResolver()],
             }),
-            createStyleImportPlugin({
-                resolves: [AndDesignVueResolve()],
-            }),
             progress(),
             copyImagesPlugin()
         ],
@@ -82,7 +76,7 @@ export default defineConfig(({ mode }) => {
             port: Number(env.VITE_PORT),
             proxy: {
                 [env.VITE_APP_BASE_API]: {
-                    target: 'http://192.168.33.99:8844',
+                    target: 'http://192.168.32.93:8844',
                     // target: 'http://192.168.32.233:8601', // 王
                     // target: 'http://192.168.35.114:8844',
                     // target: 'http://192.168.33.210:8800',
