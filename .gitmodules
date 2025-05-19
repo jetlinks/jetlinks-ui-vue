@@ -28,3 +28,6 @@
 [submodule "src/modules/authentication-manager-ui"]
     path = src/modules/authentication-manager-ui
     url = git@github.com:jetlinks-v2/authentication-manager-ui.git
+[submodule "src/modules/jetlinks-components-ui"]
+	path = src/modules/jetlinks-components-ui
+	url = git@github.com:jetlinks-v2/jetlinks-components-ui.git
