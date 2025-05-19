@@ -3,8 +3,7 @@
 [更新说明](./CHANGELOG.md)
 
 ## 运行以及安装步骤
-
-使用pnpm命令运行，安装[pnpm](https://www.pnpm.cn/installation)
+推荐使用pnpm命令运行该项目，[安装pnpm](https://www.pnpm.cn/installation)
 
 ### 1. 拉取子仓库
 ```shell
@@ -30,8 +29,6 @@ pnpm modules:update
 
 # 打包
 pnpm build
-
-
 ```
 
 ## 依赖包
