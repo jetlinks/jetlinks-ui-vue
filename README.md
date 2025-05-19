@@ -1,26 +1,37 @@
 # jetlinks-ui-vue
 
-[更新说明](./changelog.md)
+[更新说明](./CHANGELOG.md)
 
-## 运行
+## 运行以及安装步骤
 
 使用pnpm命令运行，安装[pnpm](https://www.pnpm.cn/installation)
 
+### 1. 拉取子仓库
 ```shell
-# 拉取子仓库
 pnpm modules:init
+```
 
+### 2. 安装依赖
+```shell
+pnpm install
+```
+
+### 3. 运行
+```shell
+pnpm dev
+```
+- 运行完成之后在浏览器访问`http://localhost:9100`即可
+
+### 4. 其它指令
+
+```shell
 # 更新子仓库
 pnpm modules:update
 
-# 安装依赖
-pnpm install
-
-# 运行
-pnpm dev
-
 # 打包
 pnpm build
+
+
 ```
 
 ## 依赖包
