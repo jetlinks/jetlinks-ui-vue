@@ -1,5 +1,11 @@
 # 更新日志
 
+
+## 2.10.0
+* 拆分 [系统管理](https://github.com/jetlinks-v2/authentication-manager-ui)
+* 添加 [组件ui](https://github.com/jetlinks-v2/jetlinks-components-ui)
+
+
 ## 2.3.0
 
 * 对业务功能进行模块化拆分，拆分为以下几个子模块
