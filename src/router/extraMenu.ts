@@ -5,7 +5,7 @@ export const getExtraRouters = async () => {
 
   }
 
-  const modulesFiles = await modules()
+  const modulesFiles = modules()
   Object.values(modulesFiles).forEach(item => {
     const routes = item.default.getExtraRoutesMap?.() || []
     Object.assign(extraMenu, routes)
