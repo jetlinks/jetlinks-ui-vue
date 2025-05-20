@@ -16,3 +16,7 @@ export const systemVersion = () => request.get('/system/version')
  */
 export const settingDetail = (scopes: string) => request.get(`/system/config/${scopes}`)
 
+/**
+ * 判断预处理数据是否开启
+ */
+export const preprocessorExists = () => request.get(`/command-supports/service/metadataPreprocessor/exists`)
