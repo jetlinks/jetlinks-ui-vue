@@ -16,7 +16,7 @@ export const getAsyncRoutesMap = () => {
 export const getGlobModules = async () => {
   const asyncRoutesMap = getAsyncRoutesMap()
 
-  const modulesFiles = await modules()
+  const modulesFiles = modules()
   Object.values(modulesFiles).forEach(item => {
     const routes = item.default.getAsyncRoutesMap?.() || []
     Object.assign(asyncRoutesMap, routes)
