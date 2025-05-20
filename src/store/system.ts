@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import {getDetails_api, settingDetail, systemVersion} from "@/api/system/basis";
+import {getDetails_api, preprocessorExists, settingDetail, systemVersion} from "@/api/system/basis";
 import {
   getTagsColor,
 } from '@/api/system/calendar'
@@ -133,6 +133,13 @@ export const useSystemStore = defineStore('system', () => {
     }
   }
 
+  const getShowThreshold = async () => {
+    const resp = await preprocessorExists()
+    if(resp.success){
+      showThreshold.value = resp.result
+    }
+  }
+
   return {
     systemInfo,
     theme,
@@ -149,6 +156,7 @@ export const useSystemStore = defineStore('system', () => {
     querySingleInfo,
     setMircoData,
     queryTagsColor,
-    queryVersion
+    queryVersion,
+    getShowThreshold
   }
 })

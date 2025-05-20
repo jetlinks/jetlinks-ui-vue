@@ -69,6 +69,7 @@ const getRoutesByServer = async (to: any, next: any) => {
     await UserInfoStore.getUserInfo()
     //
     await SystemStore.queryVersion()
+    await SystemStore.getShowThreshold()
     await SystemStore.queryInfo()
     await SystemStore.setMircoData()
   }
