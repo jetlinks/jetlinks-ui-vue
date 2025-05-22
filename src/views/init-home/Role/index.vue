@@ -85,7 +85,7 @@
 
 <script lang="ts" setup>
 import RoleMenuData, { ROLEKEYS, RoleData } from '../data/RoleData';
-import { updateRoleMenu, addRole, getRoleMenu, addRoleGroup } from '@authentication-manager/api/initHome';
+import { updateRoleMenu, addRole, getRoleMenu, addRoleGroup } from '@/api/initHome';
 import { randomString } from '@jetlinks-web/utils';
 import { useI18n } from 'vue-i18n';
 
