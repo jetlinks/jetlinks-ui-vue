@@ -71,6 +71,15 @@ export const OAuth2: RouteRecordRaw = {
   component: () => import('@/views/oauth/index.vue')
 }
 
+export const INIT_HOME: RouteRecordRaw = {
+  path: '/init-home',
+  name: 'init-home',
+  component: () => import("@/views/init-home/index.vue"),
+  meta: {
+    title: "初始化",
+  },
+}
+
 export const OAuthWechat: RouteRecordRaw = {
   path: '/oauth/wechat',
     meta: {
