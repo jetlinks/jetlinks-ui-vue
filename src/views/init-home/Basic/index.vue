@@ -6,7 +6,7 @@
   />
 </template>
 <script setup lang="ts">
-import BasicForm from '../../system/Basis/Form.vue'
+import BasicForm from './Form.vue'
 
 const formRef = ref()
 /**
