@@ -107,7 +107,7 @@ const editInfoVisible = ref<boolean>(false)
 const editPasswordVisible = ref<boolean>(false)
 
 const hasPerm = useAuthStore().hasPermission(
-  `${USER_CENTER_MENU_CODE}:${USER_CENTER_MENU_BUTTON_CODE}`,
+  ref(`${USER_CENTER_MENU_CODE}:${USER_CENTER_MENU_BUTTON_CODE}`),
 )
 
 const onSave = () => {
