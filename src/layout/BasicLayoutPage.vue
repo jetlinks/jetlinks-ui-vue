@@ -25,7 +25,7 @@
       </div>
     </template>
 
-      <router-view v-if="updateRoute" v-slot="{ Component }">
+      <router-view v-if="updateRoute" v-slot="{ Component }" :key="$route.fullPath">
         <component :is="components || Component" />
       </router-view>
   </j-pro-layout>
@@ -62,7 +62,7 @@ const config = computed(() => ({
   splitMenus: layout.value.layout === 'mix'
 }))
 
-const state = reactive<StateType>({
+const state = reactive({
   pure: false,
   collapsed: false, // default value
   openKeys: [],
