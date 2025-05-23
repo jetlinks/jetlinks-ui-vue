@@ -71,9 +71,6 @@ export default defineConfig(({ mode }) => {
                 dts: 'src/auto-imports.d.ts',
                 resolvers: [VueAmapResolver()],
             }),
-            createStyleImportPlugin({
-                resolves: [AndDesignVueResolve()],
-            }),
             progress(),
             copyImagesPlugin()
         ],
