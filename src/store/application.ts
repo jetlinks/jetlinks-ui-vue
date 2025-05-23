@@ -14,7 +14,7 @@ export const useApplication = defineStore('application', () => {
   let lock = false
 
   const queryApplication = async () => {
-    if (lock && OpenMicroApp === 'false') return
+    if (lock || OpenMicroApp === 'false') return
 
     const resp = await uiList()
     if (resp.success) {
