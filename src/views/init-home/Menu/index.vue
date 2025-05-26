@@ -64,8 +64,8 @@ const getSystemPermissionData = async () => {
       BaseMenu,
       hasProtocol,
     );
+    debugger
     const _count = menuCount(newTree);
-    console.log(newTree)
     menuDatas.current = newTree;
     menuDatas.count = _count;
   }
@@ -89,6 +89,7 @@ const filterMenu = (
     if (item.children) {
       item.children = filterMenu(permissions, item.children, hasProtocol);
     }
+
     if (!hasProtocol && item.code == "link/DataCollect") {
       return false;
     }
@@ -103,7 +104,7 @@ const menuCount = (menus: any[]) => {
   return menus.reduce((pre, next) => {
     let _count = 1;
 
-    if (next.children) {
+    if (next.children?.length) {
       _count = menuCount(next.children);
     }
     return pre + _count;
