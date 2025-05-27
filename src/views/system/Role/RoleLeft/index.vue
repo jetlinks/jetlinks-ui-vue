@@ -124,14 +124,17 @@ const saveGroup = async (data: any) => {
 		const res = await saveRoleGroup(saveData)
 		if (res.status === 200) {
 			onlyMessage($t('RoleLeft.index.507330-6'))
-			queryGroup()
+			await queryGroup()
 		} else {
 			onlyMessage($t('RoleLeft.index.507330-7'))
 		}
-	}
-	setTimeout(() => {
-		selectId.value = ''
-	}, 300)
+	} else {
+    const index = listData.value[0].children.findIndex((item: any) => item.id === data.id)
+    listData.value[0].children.splice(index, 1)
+  }
+  setTimeout(() => {
+    selectId.value = ''
+  }, 300)
 }
 const search = () => {
 	queryGroup(true, searchValue.value)
