@@ -26,7 +26,7 @@ const props = defineProps({
 const {data: treeData, run} = useRequest(queryPageNoPage, {
   defaultParams: {
     paging: false,
-    sorts: [{name: 'sortIndex', order: 'asc'}]
+    sorts: [{name: 'sortIndex', order: 'asc'}, { name: 'name', order: 'asc' }]
   },
   defaultValue: []
 })

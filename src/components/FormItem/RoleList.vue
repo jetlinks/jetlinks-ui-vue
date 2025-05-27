@@ -61,7 +61,7 @@ const _treeData = computed(() => {
 const { data: treeData, run } = useRequest(getRoleList, {
   defaultParams: {
     paging: false,
-    sorts: [{ name: 'createTime', order: 'desc' }]
+    sorts: [{ name: 'createTime', order: 'desc' }, { name: 'groupName', order: 'asc' }]
   },
   defaultValue: []
 })

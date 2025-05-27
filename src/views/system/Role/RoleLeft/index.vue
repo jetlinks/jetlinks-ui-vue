@@ -1,6 +1,6 @@
 <template>
 	<div class="left-contain">
-		<a-input v-model:value="searchValue" :placeholder="$t('RoleLeft.index.507330-0')" @change="searchChange" @pressEnter="search">
+		<a-input v-model:value="searchValue" :placeholder="$t('RoleLeft.index.507330-0')" allow-clear @change="searchChange" @pressEnter="search">
 			<template #suffix>
 				<AIcon type="SearchOutlined" @click="search"/>
 			</template>
@@ -83,8 +83,9 @@ const selectId = ref()
 const queryGroup = async (select?: Boolean, searchName?: string) => {
 	const params = searchName ? {
 		sorts: [{ name: 'createTime', order: 'desc' }],
-		terms: [{ terms: [{ value: '%' + searchName + '%', termType: 'like', column: 'name' }] }]
-	} : { sorts: [{ name: 'createTime', order: 'desc' }] }
+		terms: [{ terms: [{ value: '%' + searchName + '%', termType: 'like', column: 'name' }] }],
+    paging: false
+	} : { sorts: [{ name: 'createTime', order: 'desc' }], paging: false }
 	const req: any = await queryRoleGroup(params)
 	if (req.status === 200) {
     // 排序，把default_group放在最前面
