@@ -129,7 +129,7 @@ const saveGroup = async (data: any) => {
 		} else {
 			onlyMessage($t('RoleLeft.index.507330-7'))
 		}
-	} else {
+	} else if (data.isNew) {
     const index = listData.value[0].children.findIndex((item: any) => item.id === data.id)
     listData.value[0].children.splice(index, 1)
   }
