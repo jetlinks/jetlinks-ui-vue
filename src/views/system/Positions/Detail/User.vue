@@ -6,7 +6,7 @@
       :style="{
         padding: 0,
       }"
-      @search="(params)=>queryParams = {...params}"
+      @search="onSearch"
     />
 
     <div class="table-content">
@@ -164,24 +164,17 @@ const selectedRowKeys = ref<string[]>([])
 // 弹窗相关
 const dialogVisible = ref(false)
 const table = {
-  getList: (oParams: any) => {
-    const params = {
-      ...oParams,
+  getList: (params: any) => {
+
+    params.terms.push({
       terms: [
         {
-          terms: [
-            {
-              column: 'id$in-dimension$position',
-              value: positionId,
-            },
-          ],
+          column: 'id$in-dimension$position',
+          value: positionId,
         },
       ],
-    }
-    if (oParams.terms[0])
-      params.terms.unshift({
-        terms: oParams.terms[0].terms,
-      })
+    },)
+
     return getUser(params)
   },
   // 批量解绑
@@ -203,6 +196,11 @@ const table = {
     tableRef.value.reload()
     selectedRowKeys.value = []
   },
+}
+
+const onSearch = (p) => {
+  console.log(p)
+  queryParams.value = p
 }
 
 const cancelSelect = () => {
