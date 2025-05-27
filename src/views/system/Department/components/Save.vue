@@ -20,7 +20,11 @@
             :field-names="{ value: 'id' }"
             @change="handleTreeSelectChange"
         >
-          <template #title="{ name }"> {{ name }} </template>
+          <template #title="{ name }">
+            <div style="width: calc(100% - 10px) ">
+              <j-ellipsis>{{ name }}</j-ellipsis>
+            </div>
+          </template>
         </a-tree-select>
       </a-form-item>
       <a-form-item

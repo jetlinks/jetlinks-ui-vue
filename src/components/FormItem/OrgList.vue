@@ -60,12 +60,12 @@ const _extraData = computed(() => {
   }).map(i => i.id)
 })
 
-const {data: treeData, run} = useRequest(getDepartmentList_api, {
+const {data: treeData, reload} = useRequest(getDepartmentList_api, {
   defaultParams: {
     paging: false,
     sorts: [{ name: 'sortIndex', order: 'asc' }, { name: 'name', order: 'asc' }]
   },
-  immediate: true,
+  immediate: false,
   defaultValue: []
 })
 
@@ -81,7 +81,7 @@ const clickAddItem = () => {
       myValue.value = value
     }
     emit('update:value', myValue.value);
-    run()
+    reload()
   };
 }
 
@@ -94,10 +94,9 @@ watch(() => props.value, () => {
   myValue.value = props.value
 }, {immediate: true})
 
-
-// onMounted(() => {
-//   run()
-// })
+onMounted(() => {
+  reload()
+})
 </script>
 
 <template>
