@@ -121,7 +121,7 @@ const confirm = async() => {
 };
 // 表单相关
 const  getGroupOptions = ()=>{
-    queryRoleGroup({sorts: [{ name: 'createTime', order: 'desc' }]}).then((res:any)=>{
+    queryRoleGroup({sorts: [{ name: 'createTime', order: 'desc' }], paging: false}).then((res:any)=>{
         if(res.status ===200){
            groupOptions.value = res.result.map((item:any)=>{
                 return {
