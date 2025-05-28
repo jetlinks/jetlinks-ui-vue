@@ -17,6 +17,7 @@ import FormItemValue from './FormItem'
 import { TimeSelect } from './Dashboard/components'
 import FullCalendar from './FullCalendar/index.vue'
 import Image from './Image/index.vue'
+import BatchImport from './BatchImport/index.vue'
 
 export default {
     install(app: App) {
@@ -36,10 +37,11 @@ export default {
             .component('ConfirmModal',ConfirmModal)
             .component('CheckButton',CheckButton)
             .component('SelectAMap', SelectAMap)
-          .component('monaco-editor', MonacoEditor)
-          .component(TimeSelect.name, TimeSelect)
-          .component('FullCalendar', FullCalendar)
-          .component('Image', Image)
+            .component('monaco-editor', MonacoEditor)
+            .component(TimeSelect.name, TimeSelect)
+            .component('FullCalendar', FullCalendar)
+            .component('Image', Image)
+            .component('BatchImport', BatchImport)
 
         Object.keys(FormItemValue).forEach(key => {
             app.component(key, FormItemValue[key])

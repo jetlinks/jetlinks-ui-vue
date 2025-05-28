@@ -538,5 +538,18 @@
   "auth.index.559799-6": "OAuth Authorization - {0}",
   "auth.index.559799-7": "OAuth Authorization",
   "Login.index.265048-11": "JETLINKS team's new visual large screen system",
-  "Login.index.265048-12": "Experience DEMO"
+  "Login.index.265048-12": "Experience DEMO",
+  "BatchImport.index.250528-1": "Batch Import",
+  "BatchImport.index.250528-2": "Uploading files",
+  "BatchImport.index.250528-3": "Click to upload a file",
+  "BatchImport.index.250528-4": "Format: .xlsx, .csv",
+  "BatchImport.index.250528-5": "Importing",
+  "BatchImport.index.250528-6": "Import complete",
+  "BatchImport.index.250528-7": "Imported successfully：",
+  "BatchImport.index.250528-8": "Import failure：",
+  "BatchImport.index.250528-9": "downloading",
+  "BatchImport.index.250528-10": "Download Templates",
+  "BatchImport.index.250528-11": "Template format .xlsx",
+  "BatchImport.index.250528-12": "Template format .csv",
+  "BatchImport.index.250528-13": "Please upload files in .xlsx or .csv format"
 }

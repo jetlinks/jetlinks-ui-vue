@@ -539,5 +539,18 @@
   "auth.index.559799-6": "OAuth授权-{0}",
   "auth.index.559799-7": "OAuth授权",
   "Login.index.265048-11": "JETLINKS团队全新力作可视化大屏系统",
-  "Login.index.265048-12": "体验DEMO"
+  "Login.index.265048-12": "体验DEMO",
+  "BatchImport.index.250528-1": "批量导入",
+  "BatchImport.index.250528-2": "上传文件",
+  "BatchImport.index.250528-3": "点击上传文件",
+  "BatchImport.index.250528-4": "格式：.xlsx, .csv",
+  "BatchImport.index.250528-5": "正在导入",
+  "BatchImport.index.250528-6": "导入完成",
+  "BatchImport.index.250528-7": "导入成功：",
+  "BatchImport.index.250528-8": "导入失败：",
+  "BatchImport.index.250528-9": "下载",
+  "BatchImport.index.250528-10": "下载模板",
+  "BatchImport.index.250528-11": "模板格式.xlsx",
+  "BatchImport.index.250528-12": "模板格式.csv",
+  "BatchImport.index.250528-13": "请上传.xlsx或.csv格式文件"
 }
