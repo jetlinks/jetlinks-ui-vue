@@ -11,7 +11,7 @@ import {
   onUnmounted,
   nextTick
 } from 'vue';
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+import * as monaco from 'monaco-editor';
 import { omit } from 'lodash-es';
 
 defineOptions({
