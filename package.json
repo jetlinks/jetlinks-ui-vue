@@ -1,7 +1,7 @@
 {
   "name": "jetlinks-ui-vue",
   "private": true,
-  "version": "2.3.0",
+  "version": "2.10.0",
   "scripts": {
     "dev": "vite",
     "dev:force": "vite --force",
