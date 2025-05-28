@@ -2,15 +2,31 @@ import {
   createRouter,
   createWebHashHistory,
 } from 'vue-router'
+import type { RouteRecordRaw } from 'vue-router'
 import { getToken, removeToken } from '@jetlinks-web/utils'
 import {NOT_FIND_ROUTE, LOGIN_ROUTE, OAuth2, OAuthWechat, AccountCenterBind} from './basic'
 import {useUserStore} from "@/store/user";
 import {useSystemStore} from "@/store/system";
 import {useMenuStore} from "@/store/menu";
+import { modules } from '@/utils/modules'
 
 let TokenFilterRoute: string[] = [OAuth2.path, AccountCenterBind.path]
 
 let FilterPath: string[] = [OAuth2.path]
+
+const getModulesRoutes = () => {
+  const modulesFiles = modules()
+  const _routes: RouteRecordRaw[] = []
+  Object.values(modulesFiles).forEach((item: any) => {
+    const routes = item.default.getDefaultRoutes?.() || []
+    const filter = item.default.getFilterRoutes?.() || []
+
+    _routes.push(...routes)
+    TokenFilterRoute.push(...filter)
+  })
+  return _routes
+}
+
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -18,7 +34,8 @@ const router = createRouter({
     LOGIN_ROUTE,
     OAuth2,
     OAuthWechat,
-    AccountCenterBind
+    AccountCenterBind,
+    ...getModulesRoutes()
   ],
   scrollBehavior(to, form, savedPosition) {
     return savedPosition || {top: 0}

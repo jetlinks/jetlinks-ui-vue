@@ -1,6 +1,6 @@
 <template>
 	<div class="left-contain">
-		<a-input v-model:value="searchValue" :placeholder="$t('RoleLeft.index.507330-0')" @change="searchChange" @pressEnter="search">
+		<a-input v-model:value="searchValue" :placeholder="$t('RoleLeft.index.507330-0')" allow-clear @change="searchChange" @pressEnter="search">
 			<template #suffix>
 				<AIcon type="SearchOutlined" @click="search"/>
 			</template>
@@ -83,8 +83,9 @@ const selectId = ref()
 const queryGroup = async (select?: Boolean, searchName?: string) => {
 	const params = searchName ? {
 		sorts: [{ name: 'createTime', order: 'desc' }],
-		terms: [{ terms: [{ value: '%' + searchName + '%', termType: 'like', column: 'name' }] }]
-	} : { sorts: [{ name: 'createTime', order: 'desc' }] }
+		terms: [{ terms: [{ value: '%' + searchName + '%', termType: 'like', column: 'name' }] }],
+    paging: false
+	} : { sorts: [{ name: 'createTime', order: 'desc' }], paging: false }
 	const req: any = await queryRoleGroup(params)
 	if (req.status === 200) {
     // 排序，把default_group放在最前面
@@ -124,14 +125,17 @@ const saveGroup = async (data: any) => {
 		const res = await saveRoleGroup(saveData)
 		if (res.status === 200) {
 			onlyMessage($t('RoleLeft.index.507330-6'))
-			queryGroup()
+			await queryGroup()
 		} else {
 			onlyMessage($t('RoleLeft.index.507330-7'))
 		}
-	}
-	setTimeout(() => {
-		selectId.value = ''
-	}, 300)
+	} else if (data.isNew) {
+    const index = listData.value[0].children.findIndex((item: any) => item.id === data.id)
+    listData.value[0].children.splice(index, 1)
+  }
+  setTimeout(() => {
+    selectId.value = ''
+  }, 300)
 }
 const search = () => {
 	queryGroup(true, searchValue.value)

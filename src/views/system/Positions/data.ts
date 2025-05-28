@@ -60,7 +60,7 @@ export const useColumns = () => {
       scopedSlots: true,
       search: {
         type: 'select',
-        options: () => queryPageNoPage().then(resp => {
+        options: () => queryPageNoPage({ paging: false, sorts: [{name: 'createTime', order: 'desc'}] }).then(resp => {
           return resp.result?.map((item: any) => ({
             ...item,
             label: item.name,

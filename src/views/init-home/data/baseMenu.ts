@@ -1614,7 +1614,7 @@ export default [
                         ]
                     }
                 ],
-                showPage: ["position", 'user'],
+                showPage: ["position"],
                 i18nMessages: {
                     name: {
                         zh_CN: "职位管理",

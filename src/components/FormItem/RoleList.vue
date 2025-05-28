@@ -58,10 +58,11 @@ const _treeData = computed(() => {
   return [...arr, ..._arr]
 })
 
-const { data: treeData, run } = useRequest(getRoleList, {
+const { data: treeData, reload } = useRequest(getRoleList, {
+  immediate: false,
   defaultParams: {
     paging: false,
-    sorts: [{ name: 'createTime', order: 'desc' }]
+    sorts: [{ name: 'createTime', order: 'desc' }, { name: 'groupName', order: 'asc' }]
   },
   defaultValue: []
 })
@@ -96,7 +97,7 @@ watch(() => props.value, () => {
 }, { immediate: true })
 
 onMounted(() => {
-  run()
+  reload()
 })
 </script>
 

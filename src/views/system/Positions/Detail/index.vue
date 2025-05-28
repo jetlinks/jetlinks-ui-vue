@@ -32,11 +32,18 @@ const { loading: updateLoading, run: updateRun } = useRequest(update, {
   immediate: false
 })
 
-const { data: positionsList } = usePositionList(route.params.id !== ':id' ? { terms: [{
-    column: 'id',
-    termType: 'not',
-    value: route.params.id
-  }]} : undefined)
+const { data: positionsList } = usePositionList(
+  route.params.id !== ':id' ?
+    {
+      terms: [{
+      column: 'id',
+      termType: 'not',
+      value: route.params.id
+    }],
+      sorts: [{name: 'createTime', order: 'desc'}]
+    } : {
+      sorts: [{name: 'createTime', order: 'desc'}]
+    })
 
 const formModel = reactive({
   name: undefined,

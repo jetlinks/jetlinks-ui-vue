@@ -71,9 +71,6 @@ export default defineConfig(({ mode }) => {
                 dts: 'src/auto-imports.d.ts',
                 resolvers: [VueAmapResolver()],
             }),
-            createStyleImportPlugin({
-                resolves: [AndDesignVueResolve()],
-            }),
             progress(),
             copyImagesPlugin()
         ],
@@ -82,7 +79,7 @@ export default defineConfig(({ mode }) => {
             port: Number(env.VITE_PORT),
             proxy: {
                 [env.VITE_APP_BASE_API]: {
-                    target: 'http://192.168.33.99:8844',
+                    target: 'http://192.168.33.52:8844',
                     // target: 'http://192.168.32.233:8601', // 王
                     // target: 'http://192.168.35.114:8844',
                     // target: 'http://192.168.33.210:8800',

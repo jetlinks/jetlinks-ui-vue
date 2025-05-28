@@ -81,11 +81,13 @@ onMounted(() => {
   background-color: #fff;
   padding: 24px;
   height: 100%;
+  position: relative;
 
   .left {
     position: absolute;
-    height: 100%;
     width: 300px;
+    top: 24px;
+    bottom: 24px;
   }
 
   .right {

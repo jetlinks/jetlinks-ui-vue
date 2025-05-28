@@ -62,7 +62,7 @@ const config = computed(() => ({
   splitMenus: layout.value.layout === 'mix'
 }))
 
-const state = reactive<StateType>({
+const state = reactive({
   pure: false,
   collapsed: false, // default value
   openKeys: [],
