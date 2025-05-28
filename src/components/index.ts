@@ -16,6 +16,7 @@ import MonacoEditor from './MonacoEditor/monacoEditor.vue'
 import FormItemValue from './FormItem'
 import { TimeSelect } from './Dashboard/components'
 import FullCalendar from './FullCalendar/index.vue'
+import Image from './Image/index.vue'
 
 export default {
     install(app: App) {
@@ -38,6 +39,7 @@ export default {
           .component('monaco-editor', MonacoEditor)
           .component(TimeSelect.name, TimeSelect)
           .component('FullCalendar', FullCalendar)
+          .component('Image', Image)
 
         Object.keys(FormItemValue).forEach(key => {
             app.component(key, FormItemValue[key])
