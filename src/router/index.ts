@@ -2,6 +2,7 @@ import {
   createRouter,
   createWebHashHistory,
 } from 'vue-router'
+import type { RouteRecordRaw } from 'vue-router'
 import { getToken, removeToken } from '@jetlinks-web/utils'
 import { NOT_FIND_ROUTE, LOGIN_ROUTE, OAuth2, OAuthWechat, AccountCenterBind, AUTHORIZE_ROUTE } from './basic'
 import {isSubApp} from '@/utils/consts'
@@ -13,6 +14,22 @@ let TokenFilterRoute: string[] = [OAuth2.path, AccountCenterBind.path, AUTHORIZE
 
 let FilterPath: string[] = [OAuth2.path, AUTHORIZE_ROUTE.path]
 
+
+// 获取子模块默认路由
+const getModulesRoutes = () => {
+  const modulesFiles = modules()
+  const _routes: RouteRecordRaw[] = []
+  Object.values(modulesFiles).forEach((item: any) => {
+    const routes = item.default.getDefaultRoutes?.() || []
+    const filter = item.default.getFilterRoutes?.() || []
+
+    _routes.push(...routes)
+    TokenFilterRoute.push(...filter)
+  })
+  return _routes
+}
+
+
 const router = createRouter({
   history: createWebHashHistory(),
   routes: [
@@ -20,28 +37,14 @@ const router = createRouter({
     OAuth2,
     OAuthWechat,
     AccountCenterBind,
-    AUTHORIZE_ROUTE
+    AUTHORIZE_ROUTE,
+    ...getModulesRoutes()
   ],
   scrollBehavior(to, form, savedPosition) {
     return savedPosition || {top: 0}
   },
 })
 
-// 获取子模块默认路由
-const getModulesRoutes = async () => {
-  const modulesFiles = await modules()
-  Object.values(modulesFiles).forEach(item => {
-    const routes = item.default.getDefaultRoutes?.() || []
-    const filter = item.default.getFilterRoutes?.() || []
-    routes.forEach((r: any) => {
-      router.addRoute(r)
-    })
-
-    filter?.length && TokenFilterRoute.push(...filter)
-  })
-}
-
-getModulesRoutes()
 
 microApp.router.setBaseAppRouter(router)
 
