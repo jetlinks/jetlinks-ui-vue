@@ -79,7 +79,12 @@ export const useColumns = () => {
         termOptions: ['eq'],
         options: () =>
           new Promise((resolve) => {
-            getTreeData_api({}).then((resp: any) => {
+            getTreeData_api(
+                {
+                  paging: false,
+                  sorts: [{ name: 'sortIndex', order: 'asc' }, { name: 'name', order: 'asc' }]
+                }
+            ).then((resp: any) => {
               const formatValue = (list: any[]) => {
                 const _list: any[] = [];
                 list.forEach((item) => {
