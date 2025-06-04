@@ -1,6 +1,6 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-
+import router from '@/router'
 import pinia from '@/store'
 import i18n from '@/locales'
 import JetLinksComponents from '@jetlinks-web/components'
@@ -29,21 +29,14 @@ if (import.meta.env.VITE_MICRO_APP) {
   })
 }
 
-// 👇 用 async 包装启动逻辑
-async function bootstrap() {
-  const router = await import('@/router').then(mod => mod.default)
+const app = createApp(App)
 
-  const app = createApp(App)
-
-  app.provide('appInstance', app)
-    .use(pinia)
-    .use(router)       // ✅ 异步引入后的 router
-    .use(directive)
-    .use(andtv)
-    .use(i18n)
-    .use(JetLinksComponents)
-    .use(components)
-    .mount('#app')
-}
-
-bootstrap()
+app.provide('appInstance', app)
+  .use(pinia)
+  .use(router)
+  .use(directive)
+  .use(andtv)
+  .use(i18n)
+  .use(JetLinksComponents)
+  .use(components)
+  .mount('#app')
