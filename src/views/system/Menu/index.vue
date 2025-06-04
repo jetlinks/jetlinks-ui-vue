@@ -128,6 +128,7 @@ const columns = [
     dataIndex: 'name',
     key: 'name',
     scopedSlots: true,
+    ellipsis: true,
     search: {
       type: 'string',
       componentProps: {
