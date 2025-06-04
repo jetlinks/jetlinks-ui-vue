@@ -14,12 +14,11 @@ export const useApplication = defineStore('application', () => {
   let lock = false
 
   const queryApplication = async () => {
-    if (lock || OpenMicroApp === 'false') return
+    if (appList.value.length > 0 || OpenMicroApp === 'false') return
 
     const resp = await uiList()
     if (resp.success) {
       appList.value = resp.result
-      lock = true
       // appList.value = [{
       //   id: 'device-manager',
       //   path: 'http://localhost:9100/'
