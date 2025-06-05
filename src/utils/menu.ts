@@ -41,7 +41,7 @@ const handleMeta = (item: MenuItem, isApp: boolean) => {
 }
 
 const findComponents = (code: string, level: number, isApp: boolean, components: any, meta: any, hasChildren: false) => {
-    const myComponents = components[code]
+    const myComponents = components[meta?.componentCode || code]
     if (isApp && !hasChildren) {
       return Iframe
     }
