@@ -58,12 +58,13 @@ const _treeData = computed(() => {
   return [...arr, ..._arr]
 })
 
-const { data: treeData, run } = useRequest(getRoleList, {
+const { data: treeData, reload } = useRequest(getRoleList, {
   defaultParams: {
     paging: false,
     sorts: [{ name: 'createTime', order: 'desc' }]
   },
-  defaultValue: []
+  defaultValue: [],
+  immediate: false
 })
 const myValue = ref()
 const _extraData = computed(() => {
@@ -82,7 +83,7 @@ const clickAddItem = () => {
     }
 
     emit('update:value', myValue.value);
-    run()
+    reload()
   };
 }
 
@@ -96,7 +97,7 @@ watch(() => props.value, () => {
 }, { immediate: true })
 
 onMounted(() => {
-  run()
+  reload()
 })
 </script>
 
