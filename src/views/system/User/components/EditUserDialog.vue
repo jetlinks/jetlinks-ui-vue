@@ -185,7 +185,7 @@ import { passwordRegEx } from '@/utils/validate';
 import { onlyMessage } from '@/utils/comm';
 import {cloneDeep, flatten, map} from 'lodash-es';
 import { useI18n } from 'vue-i18n';
-import {queryPageNoPage} from "@/api/system/positions";
+import {queryPositionDetailNoPage} from "@/api/system/positions";
 import {isNoCommunity} from '@/utils/utils';
 
 const { t: $t } = useI18n();
@@ -383,7 +383,7 @@ const hasNodeWithId = (arr: any, id: any)=>{
 
 onMounted(() => {
   if(isNoCommunity) {
-    queryPageNoPage({
+    queryPositionDetailNoPage({
       paging: false,
       sorts: [{name: 'sortIndex', order: 'asc'}]
     }).then(resp => {

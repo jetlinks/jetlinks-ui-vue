@@ -289,7 +289,7 @@ if(isNoCommunity) {
       //   placeholder: i18n.global.t('Department.util.780026-3'),
       // },
       options() {
-        return queryPageNoPage().then(resp => {
+        return queryPageNoPage({sorts: [{name: 'createTime', order: 'desc'}], paging: false}).then(resp => {
           if (resp.success) {
             return resp.result.map(item => {
               return {

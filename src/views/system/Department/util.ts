@@ -137,7 +137,7 @@ export const useColumns = (departmentId: string) => {
             // },
             options() {
                 const params = departmentId ? {terms: [{column: 'orgId', value: departmentId}]} : {}
-                return queryPageNoPage(params).then(resp => {
+                return queryPageNoPage({...params, sorts: [{name: 'createTime', order: 'desc'}], paging: false}).then(resp => {
                     if (resp.success) {
                         return resp.result.map(item => {
                             return {

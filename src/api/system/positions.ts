@@ -20,4 +20,6 @@ export const getUser = (data: any) => request.post(`/user/detail/_query`, data)
 
 export const queryPage = (data: any) => request.post('/position/_query/detail', data)
 
-export const queryPageNoPage = (data?: any) => request.post('/position/_query/detail/no-paging', data)
+export const queryPageNoPage = (data?: any) => request.post('/position/_query/no-paging', data)
+
+export const queryPositionDetailNoPage = (data?: any) => request.post('/position/_query/detail/no-paging', data)
