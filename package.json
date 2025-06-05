@@ -11,7 +11,8 @@
     "modules:init": "gitmodules.sh",
     "modules:update": "git submodule update",
     "test": "playwright test",
-    "build:modules-server": "pnpm build --mode server"
+    "build:modules-server": "pnpm build --mode server",
+    "build:modules": "pnpm build --mode server --"
   },
   "dependencies": {
     "@ant-design/icons-vue": "^7.0.1",
@@ -42,7 +43,7 @@
     "vue-cropper": "^1.1.4",
     "vue-i18n": "^9.14.3",
     "vue-router": "^4.5.0",
-    "vue3-json-viewer": "^2.2.2",
+    "vue3-json-viewer": "2.3.0",
     "xgplayer": "^3.0.21",
     "xgplayer-flv": "^3.0.21",
     "xgplayer-hls": "^3.0.21"
