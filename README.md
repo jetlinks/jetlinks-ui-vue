@@ -2,6 +2,13 @@
 
 [更新说明](./CHANGELOG.md)
 
+## 重要说明
+推荐使用`SSH`协议拉取代码，因为 .gitmodules 文件中已经使用了 SSH 地址（例如：git@github.com:xxx/xxx.git）。
+
+但如果你使用`HTTPS`协议 拉取主项目，会出现问题：
+Git 在拉取子模块时仍然使用`SSH`地址，这会导致出错或卡住，特别是在没有配置`SSH`密钥的情况下。
+
+**这是因为主项目用的是 HTTPS，而子模块还是 SSH，两种协议混在一起容易出问题，比如权限不一致或认证失败。**
 ## 运行以及安装步骤
 推荐使用pnpm命令运行该项目，[安装pnpm](https://www.pnpm.cn/installation)
 
