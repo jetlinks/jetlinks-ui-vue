@@ -129,7 +129,7 @@ export const usePositionList = (params: any) => {
     onSuccess(resp) {
       return resp.result.map((item: any) => ({ ...item, value: item.id, label: item.name }))
     },
-    defaultParams: params
+    defaultParams: {...params, paging: false}
   })
 
   return { data }
