@@ -127,7 +127,7 @@
                             >
                                 {{ $t('Player.ScreenPlayer.521467-11') }}
                             </div>
-                            <LivePlayer :live="true" :url="item.url" autoplay />
+                            <LivePlayer ref="playersRef" :live="true" :url="item.url" autoplay/>
                         </div>
                     </template>
                 </div>
@@ -200,6 +200,7 @@ const formRef = ref();
 const formData = ref({
     name: '',
 });
+const playersRef = ref()
 
 // 全屏元素
 const fullscreenRef = ref(null);
@@ -436,6 +437,10 @@ const handleMouseUp = (type: string) => {
     }
 };
 
+const destroyPlayer = () => {
+  playersRef.value.forEach((item: any) => { item.destroy?.() })
+}
+
 watch(
     () => props.url,
     (val) => {
@@ -451,6 +456,15 @@ watchEffect(() => {
     }
     mediaInit();
 });
+
+onMounted(() => {
+  window.addEventListener('beforeunload', destroyPlayer)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('beforeunload', destroyPlayer)
+  destroyPlayer()
+})
 
 defineExpose({
     replaceVideo,
