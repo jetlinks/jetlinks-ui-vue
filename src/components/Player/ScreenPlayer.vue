@@ -134,7 +134,7 @@
             </div>
             <!-- 控制器 -->
         </div>
-        <MediaTool @onMouseDown="handleMouseDown" @onMouseUp="handleMouseUp" />
+<!--        <MediaTool @onMouseDown="handleMouseDown" @onMouseUp="handleMouseUp" />-->
     </div>
 </template>
 
