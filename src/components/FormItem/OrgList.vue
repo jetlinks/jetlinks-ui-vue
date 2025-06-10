@@ -23,7 +23,11 @@ const props = defineProps({
   extraData: { // 为了修改没有权限，但是要展示名称的数据
     type: Array,
     default: []
-  }
+  },
+  disabled: {
+    type: Boolean,
+    default: false
+  },
 })
 const dataMap = new Map()
 const handleData = (arr) => {
@@ -108,6 +112,7 @@ watch(() => props.value, () => {
           v-model:value="myValue"
           show-search
           multiple
+          :disabled="disabled"
           :placeholder="$t('components.EditUserDialog.939453-15')"
           :tree-data="_treeData"
           :fieldNames="{ label: 'name', value: 'id' }"

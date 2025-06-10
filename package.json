@@ -32,6 +32,7 @@
     "colorpicker-v3": "^2.10.2",
     "dayjs": "^1.11.13",
     "echarts": "^5.6.0",
+    "echarts-liquidfill": "^3.1.0",
     "event-source-polyfill": "^1.0.31",
     "lodash-es": "^4.17.21",
     "marked": "^14.1.4",
