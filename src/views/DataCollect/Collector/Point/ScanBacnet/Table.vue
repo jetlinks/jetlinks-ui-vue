@@ -94,6 +94,34 @@
                         </j-select>
                     </j-form-item>
                 </template>
+          <template #encoding="{record,index}">
+            <div v-if= "record.valueType === 'CharacterString'">
+              <j-form-item
+                  :name="['dataSource', index, 'encoding']"
+                  :rules="{
+                            required: true,
+                            message: '请选择',
+                        }"
+              >
+                <j-select
+                    v-model:value="record.encoding"
+                    style="width: 80%"
+                    placeholder="请选择"
+                    :options="[
+                        { label: 'ANSI_X3_4', value: 0 },
+                        { label: 'IBM_MS_DBCS', value: 1 },
+                        { label: 'JIS_C_6226', value: 2 },
+                        { label: 'ISO_10646_UCS_4', value: 3 },
+                        { label: 'ISO_10646_UCS_2', value: 4 },
+                        { label: 'ISO_8859_1', value: 5 },
+                    ]"
+                >
+                </j-select>
+              </j-form-item>
+            </div>
+            <div v-else>-</div>
+
+          </template>
                 <template #accessModes="{record,index}">
                     <j-form-item
                         class="form-item"
