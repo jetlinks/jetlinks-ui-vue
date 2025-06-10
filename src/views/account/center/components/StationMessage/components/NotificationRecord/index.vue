@@ -16,11 +16,40 @@
       :defaultParams="defaultParams"
       :scroll="{ y: 420 }"
     >
-<!--      <template #headerRightRender>-->
-<!--        <a-popconfirm title="确认全部已读？" @confirm="on">-->
-<!--          <a-button type="link">全部已读</a-button>-->
-<!--        </a-popconfirm>-->
-<!--      </template>-->
+      <template #headerRightRender>
+        <a-dropdown>
+          <template #overlay>
+            <a-menu>
+              <a-menu-item key="1">
+                <j-permission-button
+                    type="text"
+                    :popConfirm="{
+                      title: $t('NotificationRecord.index.803553-13'),
+                      onConfirm: () => onAllRead,
+                    }"
+                >
+                  {{$t('NotificationRecord.index.803553-12')}}
+                </j-permission-button>
+              </a-menu-item>
+              <a-menu-item key="2">
+                <j-permission-button
+                    type="text"
+                    :popConfirm="{
+                      title: $t('NotificationRecord.index.803553-15'),
+                      onConfirm: () => onAllRead,
+                    }"
+                >
+                  {{ $t('NotificationRecord.index.803553-14') }}
+                </j-permission-button>
+              </a-menu-item>
+            </a-menu>
+          </template>
+          <a-button>
+            {{ $t('NotificationRecord.index.803553-16') }}
+            <AIcon type="DownOutlined" />
+          </a-button>
+        </a-dropdown>
+      </template>
       <template #topicProvider="slotProps">
         {{ slotProps.topicName }}
       </template>
@@ -244,14 +273,14 @@ watch(() => user.messageInfo?.id, (val) => {
   immediate: true
 })
 
-// const onAllRead = async () => {
-//     const resp = await changeAllStatus('_read', getType.value);
-//     if (resp.status === 200) {
-//         onlyMessage($t('NotificationRecord.index.803553-11'));
-//         refresh();
-//         user.updateAlarm();
-//     }
-// };
+const onAllRead = async () => {
+    // const resp = await changeAllStatus('_read', getType.value);
+    // if (resp.status === 200) {
+    //     onlyMessage($t('NotificationRecord.index.803553-11'));
+    //     refresh();
+    //     user.updateAlarm();
+    // }
+};
 
 onMounted(() => {
   if (routerParams.params?.value.row) {
