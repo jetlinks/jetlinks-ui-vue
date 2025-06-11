@@ -64,7 +64,6 @@ const getSystemPermissionData = async () => {
       BaseMenu,
       hasProtocol,
     );
-    debugger
     const _count = menuCount(newTree);
     menuDatas.current = newTree;
     menuDatas.count = _count;
