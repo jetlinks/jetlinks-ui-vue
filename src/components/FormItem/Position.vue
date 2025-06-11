@@ -23,12 +23,13 @@ const props = defineProps({
   }
 })
 
-const {data: treeData, run} = useRequest(queryPageNoPage, {
+const {data: treeData, reload} = useRequest(queryPageNoPage, {
   defaultParams: {
     paging: false,
-    sorts: [{name: 'sortIndex', order: 'asc'}]
+    sorts: [{name: 'createTime', order: 'desc'}]
   },
-  defaultValue: []
+  defaultValue: [],
+  immediate: false
 })
 
 const myValue = ref()
@@ -56,7 +57,7 @@ const clickAddItem = () => {
       myValue.value = value
     }
     emit('update:value', myValue.value);
-    run()
+    reload()
   };
 }
 
@@ -77,7 +78,7 @@ watch(() => props.value, () => {
 }, {immediate: true})
 
 onMounted(() => {
-  run()
+  reload()
 })
 </script>
 
