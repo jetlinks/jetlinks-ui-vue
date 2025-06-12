@@ -107,14 +107,7 @@
                     v-model:value="record.encoding"
                     style="width: 80%"
                     placeholder="请选择"
-                    :options="[
-                        { label: 'ANSI_X3_4', value: 0 },
-                        { label: 'IBM_MS_DBCS', value: 1 },
-                        { label: 'JIS_C_6226', value: 2 },
-                        { label: 'ISO_10646_UCS_4', value: 3 },
-                        { label: 'ISO_10646_UCS_2', value: 4 },
-                        { label: 'ISO_8859_1', value: 5 },
-                    ]"
+                    :options="bacnetCharacterString"
                 >
                 </j-select>
               </j-form-item>
@@ -268,7 +261,7 @@
 </template>
 
 <script lang="ts" setup>
-import { getBacnetValueType  } from '@/api/data-collect/collector';
+import {getBacnetCharacterString, getBacnetValueType} from '@/api/data-collect/collector';
 import { BacnetFormTableColumns, regOnlyNumber } from '../../data';
 import { Rule } from 'ant-design-vue/lib/form';
 import PropertyId from './PropertyId.vue';
@@ -364,6 +357,21 @@ const getValueTypeData = async () => {
     }
 };
 
+const bacnetCharacterString = ref([]);
+
+const getCharacterString = async () => {
+  const resp: any = await getBacnetCharacterString();
+  if (resp.success) {
+    bacnetCharacterString.value = (resp?.result || []).map((item: any) => {
+      return {
+        label: item.description,
+        value: item.id,
+      }
+    })
+  }
+};
+
+getCharacterString();
 getValueTypeData();
 
 const validate = () => {

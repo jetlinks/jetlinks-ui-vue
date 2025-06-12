@@ -49,14 +49,7 @@
           <j-form-item label="字符集" :name="['configuration', 'encoding']" v-if = "formData.configuration.valueType === 'CharacterString'">
             <j-select
                 v-model:value="formData.configuration.encoding"
-                :options="[
-                        { label: 'ANSI_X3_4', value: 0 },
-                        { label: 'IBM_MS_DBCS', value: 1 },
-                        { label: 'JIS_C_6226', value: 2 },
-                        { label: 'ISO_10646_UCS_4', value: 3 },
-                        { label: 'ISO_10646_UCS_2', value: 4 },
-                        { label: 'ISO_8859_1', value: 5 },
-                    ]"
+                :options="bacnetCharacterString"
             />
           </j-form-item>
 
@@ -156,9 +149,10 @@
 </template>
 <script setup lang="ts">
 import {
-    savePoint,
-    updatePoint,
-    getBacnetValueType,
+  savePoint,
+  updatePoint,
+  getBacnetValueType,
+  getBacnetCharacterString,
 } from '@/api/data-collect/collector';
 import { randomString } from '@/utils/utils';
 import DeathArea from './DeathArea.vue';
@@ -271,7 +265,23 @@ const getIdAndType = async () => {
     }
 };
 
+
+const bacnetCharacterString = ref([]);
+
+const getCharacterString = async () => {
+  const resp: any = await getBacnetCharacterString();
+  if (resp.success) {
+    bacnetCharacterString.value = (resp?.result || []).map((item: any) => {
+      return {
+        label: item.description,
+        value: item.id,
+      }
+    })
+  }
+};
+
 getIdAndType();
+getCharacterString();
 const handleOk = async () => {
     const res: any = await formRef.value?.validate();
 

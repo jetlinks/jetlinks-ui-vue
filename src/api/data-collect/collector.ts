@@ -91,6 +91,10 @@ export const getBacnetPropertyIdNotUse = (data: any) => server.post(`/collect/ba
 /**查询bacnet值类型*/
 export const getBacnetValueType = () => server.get(`/collect/bacnet/value/types`)
 
+/**查询bacnet字符集*/
+export const getBacnetCharacterString = () => server.get(`/collect/bacnet/property/characters`)
+
+
 /**
  * 导出点位数据
  */
