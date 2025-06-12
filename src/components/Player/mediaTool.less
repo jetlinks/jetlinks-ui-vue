@@ -1,181 +1,170 @@
 .live-player-tools {
-    display: flex;
-    flex-basis: 250px;
-    flex-direction: column;
-    justify-content: center;
-    margin-left: 24px;
-    padding: 0 12px;
+  display: flex;
+  flex-basis: 250px;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  gap: 30px;
 
-    .direction {
-        position: relative;
-        display: grid;
-        grid-template-rows: 1fr 1fr;
-        grid-template-columns: 1fr 1fr;
-        margin-bottom: 30px;
-        overflow: hidden;
-        border-radius: 50%;
-        transform: rotateZ(45deg);
+  .direction {
+    position: relative;
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
+    overflow: hidden;
+    border-radius: 50%;
+    transform: rotateZ(45deg);
+    background-color: #4096FF;
+
+    .direction-item {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-bottom: 100%;
+      font-size: 36px;
+      background-color: @primary-color;
+      color: #fff;
+      transition: background-color 0.3s;
+      cursor: pointer;
+      aspect-ratio: 1;
+
+      .direction-icon {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotateZ(-45deg);
+      }
+
+      &:hover {
         background-color: #4096FF;
+      }
 
-        .direction-item {
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding-bottom: 100%;
-            font-size: 36px;
-            background-color: @primary-color;
-            color: #fff;
-            transition: background-color 0.3s;
-            cursor: pointer;
+      &:active {
+        background-color: #4096FF;
+      }
 
-            .direction-icon {
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%) rotateZ(-45deg);
-            }
+      &.disabled {
+        background-color: #A3A3A3;
+        cursor: not-allowed;
 
-            &:hover {
-                background-color: #4096FF;
-            }
-
-            &:active {
-                background-color: #4096FF;
-            }
+        &:hover {
+          background-color: #A3A3A3;
         }
-
-        .direction-audio {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 45%;
-            height: 45%;
-            background-color: #fff;
-            border-radius: 50%;
-            transform: translate(-50%, -50%) rotateZ(-45deg);
-            box-shadow: 0 0 10px 0 #7F868D;
-            padding: 15px;
-
-            &-outside {
-                background-color: #F1F7FF;
-                padding: 10px;
-                border-radius: 50%;
-                width: 100%;
-                height: 100%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            &-inside {
-                background-color: #E6F4FF;
-                color: @primary-color;
-                font-size: 32px;
-                border-radius: 50%;
-                width: 100%;
-                height: 100%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-        }
+      }
     }
 
-    .zoom {
-        display: grid;
-        grid-gap: 16px;
-        grid-template-columns: 1fr 1fr;
+    .direction-audio {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 45%;
+      height: 45%;
+      background-color: #fff;
+      border-radius: 50%;
+      transform: translate(-50%, -50%) rotateZ(-45deg);
+      box-shadow: 0 0 10px 0 #7F868D;
+      padding: 15px;
 
-        .zoom-item {
-            padding: 8px 0;
-            font-size: 24px;
-            text-align: center;
-            background-color: #E4E6E7;
-            cursor: pointer;
-            color: #777777;
+      &-outside {
+        background-color: #F1F7FF;
+        padding: 10px;
+        border-radius: 50%;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
 
-            &:hover {
-                color: #fff;
-                background-color: #4096FF;
-            }
+      &-inside {
+        background-color: #E6F4FF;
+        color: @primary-color;
+        font-size: 32px;
+        border-radius: 50%;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
 
-            &:active {
-                color: #fff;
-                background-color: #4096FF;
-            }
+      &.disabled {
+        cursor: not-allowed;
+
+        .direction-audio-outside {
+          background-color: rgba(163, 163, 163, 0.1);
         }
 
-        .zoom-in {
-            border-top-left-radius: 4px;
-            border-bottom-left-radius: 4px;
+        .direction-audio-inside {
+          background-color: rgba(163, 163, 163, 0.2);
+          color: #A3A3A3;
         }
+      }
+    }
+  }
 
-        .zoom-out {
-            border-top-right-radius: 4px;
-            border-bottom-right-radius: 4px;
-        }
+  .zoom {
+    display: grid;
+    grid-gap: 16px;
+    grid-template-columns: 1fr 1fr;
+
+    .zoom-item {
+      padding: 8px 0;
+      font-size: 24px;
+      text-align: center;
+      background-color: #E4E6E7;
+      cursor: pointer;
+      color: #777777;
+
+      &:hover {
+        color: #fff;
+        background-color: #4096FF;
+      }
+
+      &:active {
+        color: #fff;
+        background-color: #4096FF;
+      }
     }
 
     &.disabled {
-        .direction-item {
-            background-color: #A3A3A3;
+      .zoom-item {
+        background-color: #D9D9D9;
+        color: #A3A3A3;
+        cursor: not-allowed;
 
-            &:hover {
-                background-color: #A3A3A3;
-            }
+        &:hover {
+          background-color: #D9D9D9;
         }
-
-        .direction-audio {
-            &-outside {
-                background-color: rgba(163, 163, 163, 0.1);
-            }
-
-            &-inside {
-                background-color: rgba(163, 163, 163, 0.2);
-                color: #A3A3A3;
-            }
-        }
-
-        .zoom .zoom-item {
-            background-color: #D9D9D9;
-            color: #A3A3A3;
-
-            &:hover {
-                background-color: #D9D9D9;
-            }
-        }
-
-        .icon {
-            cursor: not-allowed;
-        }
-
-        .zoom .zoom-item, .direction-audio, .direction-item {
-            cursor: not-allowed !important;
-        }
+      }
     }
+  }
+
+  .disabled .icon {
+    cursor: not-allowed;
+  }
 }
 
 @media screen {
-    @media (min-width: 1300px) {
-        .live-player-tools {
-            flex-basis: 150px;
-            margin-left: 16px;
+  @media (min-width: 1300px) {
+    .live-player-tools {
+      //flex-basis: 150px;
 
-            .direction {
-                .direction-item {
-                    font-size: 24px;
-                }
-            }
-
-            .zoom {
-                .zoom-item {
-                    font-size: 16px;
-                }
-            }
+      .direction {
+        .direction-item {
+          font-size: 24px;
         }
+      }
+
+      .zoom {
+        .zoom-item {
+          font-size: 16px;
+        }
+      }
     }
+  }
 }

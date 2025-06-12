@@ -27,6 +27,13 @@ export const getSearchHistory = (target:string) => request.get(`/user/settings/$
  */
 export const deleteSearchHistory = (target:string, id:string) => request.remove(`/user/settings/${target}/${id}`)
 
+// /**
+//  * 删除指定查询记录
+//  * @param data
+//  * @param target
+//  */
+// export const updateSearchHistory = (target:string,id: string, data: any) => request.put(`/user/settings/${target}/${id}`, data)
+
 /**
  * 聚合查询
  * @param data

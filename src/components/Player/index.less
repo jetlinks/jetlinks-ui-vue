@@ -69,25 +69,50 @@
                 .player-screen-item {
                     position: relative;
 
-                    .media-btn-refresh {
+                    &-header-action {
+                        z-index: 7;
                         position: absolute;
-                        top: 4px;
-                        right: 4px;
-                        z-index: 2;
-                        padding: 2px 4px;
-                        font-size: 12px;
-                        background-color: #f0f0f0;
-                        border-radius: 2px;
-                        cursor: pointer;
+                        display: flex;
+                        width: 100%;
+                        justify-content: space-between;
+                        padding: 5px 16px;
+                        color: #FFFFFF;
+                        font-size: 16px;
+                        align-items: center;
 
-                        &:hover {
-                            background-color: #d9d9d9;
+                        .left {
+                            background-color: rgba(0, 0, 0, 0.4);
+                            border-radius: 20px;
+                            gap: 10px;
+                            display: flex;
+                            align-items: center;
+                            padding: 6px 10px;
                         }
 
-                        &:active {
-                            background-color: #bfbfbf;
+                        .btn {
+                            cursor: pointer;
                         }
                     }
+
+                    //.media-btn-refresh {
+                    //    position: absolute;
+                    //    top: 4px;
+                    //    right: 4px;
+                    //    z-index: 2;
+                    //    padding: 2px 4px;
+                    //    font-size: 12px;
+                    //    background-color: #f0f0f0;
+                    //    border-radius: 2px;
+                    //    cursor: pointer;
+                    //
+                    //    &:hover {
+                    //        background-color: #d9d9d9;
+                    //    }
+                    //
+                    //    &:active {
+                    //        background-color: #bfbfbf;
+                    //    }
+                    //}
                 }
             }
         }
