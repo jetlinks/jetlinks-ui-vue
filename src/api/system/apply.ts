@@ -31,3 +31,6 @@ export const getOwnerTree_api = (owner: string) => request.post(`/menu/owner/tre
 export const getOwnerTreeStandalone_api = (appId: string, owner: string) => request.post(`/application/${appId}/_/api/menu/owner/tree/${owner}`, {});
 // 保存集成菜单
 export const saveOwnerMenu_api = (owner: string, appId: string, data: object) => request.patch(`/menu/owner/${owner}/${appId}/_all`, data);
+
+// 获取第三方单点登录授权类型
+export const getThirdPartyType = () => request.get<any>(`/dictionary/third-sso-type/items`);
