@@ -305,7 +305,6 @@ const handleSearch = async (value: any) => {
             defualtDataSource.value[0].children = res.result;
         }
         collectorAll.value = res.result;
-
         if (selectedKeys.value.length === 0) {
             selectedKeys.value = res.result.length ? ['*'] : [];
         }
@@ -315,6 +314,10 @@ const handleSearch = async (value: any) => {
             const _selectedKeys = _.cloneDeep(selectedKeys.value);
             selectedKeys.value = [];
             selectedKeys.value = _selectedKeys;
+            const row = collectorAll.value.find((i: any) => i.id === selectedKeys.value?.[0]);
+            if(row) {
+                emits('change', row);
+            }
         }, 0);
     }
     spinning.value = false;
