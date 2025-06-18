@@ -4,6 +4,7 @@ import {useI18n} from 'vue-i18n';
 import {useRequest} from '@jetlinks-web/hooks'
 import {queryPageNoPage} from "@/api/system/positions";
 import {map} from "lodash-es";
+import {randomString} from "@jetlinks-web/utils";
 
 const {t: $t} = useI18n();
 const emit = defineEmits(['update:value', 'change'])
@@ -48,17 +49,20 @@ const _treeData = computed(() => {
 })
 
 const clickAddItem = () => {
-  const tab = window.open(`${origin}/#/system/positions?save=true`);
-  tab.onTabSaveSuccess = (value) => {
-    if (props.extraProps?.multiple) {
-      let oldValue = myValue.value || []
-      myValue.value = [...oldValue, value]
-    } else {
-      myValue.value = value
-    }
-    emit('update:value', myValue.value);
-    reload()
-  };
+  const sourceId = `position_add_${randomString()}`; // 唯一标识
+  const tab = window.open(`${origin}/#/system/positions?save=true&sourceId=${sourceId}`);
+  tab.onTabSaveSuccess = (_sourceId, value) => {
+    if(sourceId === _sourceId){
+      if (props.extraProps?.multiple) {
+        let oldValue = myValue.value || []
+        myValue.value = [...oldValue, value]
+      } else {
+        myValue.value = value
+      }
+      emit('update:value', myValue.value);
+      reload()
+    };
+  }
 }
 
 const _extraData = computed(() => {
