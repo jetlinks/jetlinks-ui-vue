@@ -32,7 +32,7 @@
                     >
                 </j-select>
             </j-form-item>
-          <j-form-item label="字符集" :name="['configuration', 'encoding']" v-if = "formData.configuration.valueType === 'CharacterString'">
+          <j-form-item label="字符集" :name="['configuration', 'encoding']" v-if = "formData.configuration?.valueType === 'CharacterString'">
             <j-select
                 v-model:value="formData.configuration.encoding"
                 :options="bacnetCharacterString"
