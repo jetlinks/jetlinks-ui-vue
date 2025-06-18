@@ -3,6 +3,7 @@ import {filterSelectNode} from "@/utils";
 import {useI18n} from "vue-i18n";
 import { useRequest } from '@jetlinks-web/hooks'
 import {getRoleList} from "@/api/system/user";
+import {randomString} from "@jetlinks-web/utils";
 
 const { t: $t } = useI18n();
 const emit = defineEmits(['update:value', 'change'])
@@ -58,12 +59,13 @@ const _treeData = computed(() => {
   return [...arr, ..._arr]
 })
 
-const { data: treeData, run } = useRequest(getRoleList, {
+const { data: treeData, reload } = useRequest(getRoleList, {
   defaultParams: {
     paging: false,
     sorts: [{ name: 'createTime', order: 'desc' }]
   },
-  defaultValue: []
+  defaultValue: [],
+  immediate: false
 })
 const myValue = ref()
 const _extraData = computed(() => {
@@ -72,17 +74,20 @@ const _extraData = computed(() => {
   }).map(i => i.id)
 })
 const clickAddItem = () => {
-  const tab = window.open(`${origin}/#/system/Role?save=true`);
-  tab.onTabSaveSuccess = (value) => {
-    if (props.extraProps?.multiple) {
-      let oldValue = myValue.value || []
-      myValue.value = [...oldValue, value]
-    } else {
-      myValue.value = value
-    }
+  const sourceId = `position_add_${randomString()}`; // 唯一标识
+  const tab = window.open(`${origin}/#/system/Role?save=true&sourceId=${sourceId}`);
+  tab.onTabSaveSuccess = (_sourceId, value) => {
+    if(sourceId === _sourceId){
+      if (props.extraProps?.multiple) {
+        let oldValue = myValue.value || []
+        myValue.value = [...oldValue, value]
+      } else {
+        myValue.value = value
+      }
 
-    emit('update:value', myValue.value);
-    run()
+      emit('update:value', myValue.value);
+      reload()
+    }
   };
 }
 
@@ -96,7 +101,7 @@ watch(() => props.value, () => {
 }, { immediate: true })
 
 onMounted(() => {
-  run()
+  reload()
 })
 </script>
 

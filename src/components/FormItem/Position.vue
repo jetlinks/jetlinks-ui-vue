@@ -4,6 +4,7 @@ import {useI18n} from 'vue-i18n';
 import {useRequest} from '@jetlinks-web/hooks'
 import {queryPageNoPage} from "@/api/system/positions";
 import {map} from "lodash-es";
+import {randomString} from "@jetlinks-web/utils";
 
 const {t: $t} = useI18n();
 const emit = defineEmits(['update:value', 'change'])
@@ -23,12 +24,13 @@ const props = defineProps({
   }
 })
 
-const {data: treeData, run} = useRequest(queryPageNoPage, {
+const {data: treeData, reload} = useRequest(queryPageNoPage, {
   defaultParams: {
     paging: false,
-    sorts: [{name: 'sortIndex', order: 'asc'}]
+    sorts: [{name: 'createTime', order: 'desc'}]
   },
-  defaultValue: []
+  defaultValue: [],
+  immediate: false
 })
 
 const myValue = ref()
@@ -47,17 +49,20 @@ const _treeData = computed(() => {
 })
 
 const clickAddItem = () => {
-  const tab = window.open(`${origin}/#/system/positions?save=true`);
-  tab.onTabSaveSuccess = (value) => {
-    if (props.extraProps?.multiple) {
-      let oldValue = myValue.value || []
-      myValue.value = [...oldValue, value]
-    } else {
-      myValue.value = value
-    }
-    emit('update:value', myValue.value);
-    run()
-  };
+  const sourceId = `position_add_${randomString()}`; // 唯一标识
+  const tab = window.open(`${origin}/#/system/positions?save=true&sourceId=${sourceId}`);
+  tab.onTabSaveSuccess = (_sourceId, value) => {
+    if(sourceId === _sourceId){
+      if (props.extraProps?.multiple) {
+        let oldValue = myValue.value || []
+        myValue.value = [...oldValue, value]
+      } else {
+        myValue.value = value
+      }
+      emit('update:value', myValue.value);
+      reload()
+    };
+  }
 }
 
 const _extraData = computed(() => {
@@ -77,7 +82,7 @@ watch(() => props.value, () => {
 }, {immediate: true})
 
 onMounted(() => {
-  run()
+  reload()
 })
 </script>
 
