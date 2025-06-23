@@ -32,7 +32,6 @@
     "@vueuse/router": "^11.3.0",
     "axios": "^1.8.4",
     "colorpicker-v3": "^2.10.2",
-    "cross-spawn": "^7.0.6",
     "dayjs": "^1.11.13",
     "echarts": "^5.6.0",
     "event-source-polyfill": "^1.0.31",
