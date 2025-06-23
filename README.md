@@ -14,7 +14,11 @@ Git 在拉取子模块时仍然使用`SSH`地址，这会导致出错或卡住�
 
 ### 1. 拉取子仓库
 ```shell
+# windows
 pnpm modules:init
+
+# arm64 
+pnpm modules:init-arm64
 ```
 
 ### 2. 安装依赖
