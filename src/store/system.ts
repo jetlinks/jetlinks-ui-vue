@@ -17,7 +17,7 @@ interface LayoutType {
 
 export const useSystemStore = defineStore('system', () => {
   const theme = ref<string>('light') // 主题色
-  const ico = ref<string>('/favicon.ico') // 浏览器标签页logo
+  const ico = ref<string>(localStorage.getItem('favicon') ||'/favicon.ico') // 浏览器标签页logo
   const systemInfo = ref<Record<string, any>>({})
   const microApp = ref<Record<string, any>>({})
   const calendarTagColor = new Map([['holiday','rgb(161, 180, 204)'],['weekend','rgb(149, 222, 100)'],['workday', 'rgba(105,177,255)']])
@@ -59,6 +59,8 @@ export const useSystemStore = defineStore('system', () => {
     const icoDom: any = document.querySelector('link[rel="icon"]')!;
     if (!icoDom) return
     icoDom.href = url
+    console.log('icon', url)
+    localStorage.setItem('favicon', url)
   }
 
   const changeTitle = (value: string) => {
@@ -80,7 +82,6 @@ export const useSystemStore = defineStore('system', () => {
     layout.logo = _value.logo
     theme.value = _value.headerTheme
     changeIco(_value.ico)
-    setDocumentTitle()
     changeTitle(_value.title)
   }
 
