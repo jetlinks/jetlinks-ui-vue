@@ -47,12 +47,12 @@ const props = defineProps({
   },
 })
 
-const { loading, run } = useRequest(route.query.id !== ':id' ? updateMenu : addMenu, {
+const { loading, run } = useRequest(route.params.id !== ':id' ? updateMenu : addMenu, {
   immediate: false,
   onSuccess(res: any) {
     if (res.success) {
       onlyMessage($t('BasicInfo.index.966110-3'))
-      emits('refresh')
+      // emits('refresh')
       if (!props.value?.id) {
         menuStore.jumpPage('system/Menu/Detail', {
           params: { id: res.result.id },
