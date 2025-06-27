@@ -25,7 +25,7 @@
 import Info from './Info.vue'
 import Permission from './Permission.vue'
 import { addMenu, updateMenu } from '@/api/system/menu'
-import { useRequest } from '@jetlinks-web/hooks'
+// import { useRequest } from '@jetlinks-web/hooks'
 import { onlyMessage } from '@jetlinks-web/utils'
 import { useMenuStore } from '@/store/menu'
 import {OWNER_KEY} from "@/utils/consts";
@@ -47,20 +47,44 @@ const props = defineProps({
   },
 })
 
-const { loading, run } = useRequest(route.query.id !== ':id' ? updateMenu : addMenu, {
-  immediate: false,
-  onSuccess(res: any) {
-    if (res.success) {
-      onlyMessage($t('BasicInfo.index.966110-3'))
-      emits('refresh')
-      if (!props.value?.id) {
-        menuStore.jumpPage('system/Menu/Detail', {
-          params: { id: res.result.id },
-        })
-      }
+const loading = ref(false)
+
+// const { loading, run } = useRequest(route.params.id !== ':id' ? updateMenu : addMenu, {
+//   immediate: false,
+//   onSuccess(res: any) {
+//     if (res.success) {
+//       onlyMessage($t('BasicInfo.index.966110-3'))
+//       // emits('refresh')
+//       if (!props.value?.id) {
+//         menuStore.jumpPage('system/Menu/Detail', {
+//           params: { id: res.result.id },
+//         })
+//       }
+//     }
+//   },
+// })
+
+const handleSave = async (params: any) => {
+  let resp;
+  loading.value = true
+  if(props.value?.id){
+    resp = await updateMenu({...params, id: props.value?.id}).finally(()=>{
+      loading.value = false
+    })
+  }else{
+    resp = await addMenu(params).finally(()=>{
+      loading.value = false
+    })
+  }
+  if (resp.success) {
+    onlyMessage($t('BasicInfo.index.966110-3'))
+    if (!props.value?.id) {
+      menuStore.jumpPage('system/Menu/Detail', {
+        params: { id: resp.result.id },
+      })
     }
-  },
-})
+  }
+}
 
 const onSave = async () => {
   const info = await basicFormRef.value?.onSave()
@@ -80,7 +104,7 @@ const onSave = async () => {
     },
     owner: OWNER_KEY,
   }
-  run(params)
+  handleSave(params)
 }
 </script>
 
