@@ -96,6 +96,10 @@ const getDeviceList = async () => {
                         column: 'deviceId',
                         value: treeData.value[0].id,
                     },
+                    {
+                      "column":"catalogType",
+                      "value":"device"
+                    }
                 ],
             },true)
                 }
@@ -191,6 +195,10 @@ const onLoadData = ({ key, children }: any): Promise<void> => {
                     column: 'deviceId',
                     value: key,
                 },
+              {
+                "column":"catalogType",
+                "value":"device"
+              }
             ],
         });
         resolve();
