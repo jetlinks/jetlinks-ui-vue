@@ -12,8 +12,8 @@ export const getDeviceList = (parmas?:any) => server.get('/device-instance/_quer
 
 /**
  * 获取有设备的告警的产品名称
- */ 
-export const getAlarmProduct = (parmas:any) => server.post('/device-instance/_query',parmas) 
+ */
+export const getAlarmProduct = (parmas:any) => server.post('/device-instance/_query',parmas)
 
 /**
  * 获取组织列表
@@ -27,8 +27,8 @@ export const query = (data:any) => server.post('/alarm/record/_query/',data);
 
 /**
  * 设备产品专用查询
- * @param data 
- * @returns 
+ * @param data
+ * @returns
  */
 export const queryByDevice = (data:any) => server.post(`/alarm/record/device/_query`,data)
 
@@ -38,7 +38,7 @@ export const queryByDevice = (data:any) => server.post(`/alarm/record/device/_qu
 export const handleLog = (data:any) => server.post('/alarm/record/_handle',data);
 
 /**
- * 
+ *
  * 预处理告警处理
  */
 export const handlePreconditioning = (data:any) => server.post(`/alarm/record/device/_handle`,data)
@@ -67,7 +67,8 @@ export const queryHandleHistory = (data:any) => server.post('/alarm/record/handl
 /**
  * 获取预处理数据告警处理结果
  */
-export const queryPreHandleHistory = (recordId:any,data:any) => server.post(`/alarm/record/handle-history/device/${recordId}/_query`,data)
+// export const queryPreHandleHistory = (recordId:any,data:any) => server.post(`/alarm/record/handle-history/device/${recordId}/_query`,data)
+export const queryPreHandleHistory = (recordId:any,data:any) => server.post(`/alarm/record//${recordId}/handle-history/_query`,data)
 
 /**
  * 获取告警日志（新）

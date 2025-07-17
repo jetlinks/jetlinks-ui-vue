@@ -68,6 +68,7 @@ const handleOk = async () => {
             pointKey: item.id,
             configuration: {
                 interval: item.configuration?.interval?.value,
+                encoding: item.encoding,
                 valueType: item.valueType,
                 propertyId: item.propertyId,
                 objectId: item.objectId,

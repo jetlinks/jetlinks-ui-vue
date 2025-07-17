@@ -32,7 +32,14 @@
                     >
                 </j-select>
             </j-form-item>
-            <j-form-item label="访问类型" name="accessModes">
+          <j-form-item label="字符集" :name="['configuration', 'encoding']" v-if = "formData.configuration?.valueType === 'CharacterString'">
+            <j-select
+                v-model:value="formData.configuration.encoding"
+                :options="bacnetCharacterString"
+            />
+          </j-form-item>
+
+          <j-form-item label="访问类型" name="accessModes">
                 <j-card-select
                     multiple
                     :showImage="false"
@@ -103,8 +110,8 @@
 <script lang="ts" setup>
 import type { FormInstance } from 'ant-design-vue';
 import {
-    savePointBatch,
-    getBacnetValueType,
+  savePointBatch,
+  getBacnetValueType, getBacnetCharacterString,
 } from '@/api/data-collect/collector';
 import { cloneDeep, isObject , omit } from 'lodash-es';
 import { regOnlyNumber } from '../../../data';
@@ -141,8 +148,22 @@ const getIdAndType = async () => {
     }
 };
 
+const bacnetCharacterString = ref([]);
+
+const getCharacterString = async () => {
+  const resp: any = await getBacnetCharacterString();
+  if (resp.success) {
+    bacnetCharacterString.value = (resp?.result || []).map((item: any) => {
+      return {
+        label: item.description,
+        value: item.id,
+      }
+    })
+  }
+};
+
 const handleOk = async () => {
-    const data = cloneDeep(formData.value);
+  const data = cloneDeep(formData.value);
     const { accessModes, features, interval, valueType , pushControl } = data;
     const ischange =
         accessModes.length !== 0 ||
@@ -200,6 +221,7 @@ watch(
     () => {
         if (props.provider === 'BACNetIp') {
             getIdAndType();
+            getCharacterString()
         }
     },
     { immediate: true },

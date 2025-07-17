@@ -347,6 +347,7 @@ export const BacnetFormTableColumns = [
         title: '对象类型',
         dataIndex: 'type',
         key: 'type',
+        width: 150,
         form:{
             required: true
         }
@@ -355,6 +356,7 @@ export const BacnetFormTableColumns = [
         title: '对象号',
         dataIndex: 'instanceNumber',
         key: 'instanceNumber',
+        width: 140,
         form:{
             required: true
         }
@@ -372,6 +374,15 @@ export const BacnetFormTableColumns = [
         title: '值类型',
         dataIndex: 'valueType',
         key: 'valueType',
+        form:{
+            required: true
+        },
+        width: 200,
+    },
+    {
+        title: '字符集',
+        dataIndex: 'encoding',
+        key: 'encoding',
         form:{
             required: true
         },

@@ -94,6 +94,27 @@
                         </j-select>
                     </j-form-item>
                 </template>
+          <template #encoding="{record,index}">
+            <div v-if= "record.valueType === 'CharacterString'">
+              <j-form-item
+                  :name="['dataSource', index, 'encoding']"
+                  :rules="{
+                            required: true,
+                            message: '请选择',
+                        }"
+              >
+                <j-select
+                    v-model:value="record.encoding"
+                    style="width: 80%"
+                    placeholder="请选择"
+                    :options="bacnetCharacterString"
+                >
+                </j-select>
+              </j-form-item>
+            </div>
+            <div v-else>-</div>
+
+          </template>
                 <template #accessModes="{record,index}">
                     <j-form-item
                         class="form-item"
@@ -240,7 +261,7 @@
 </template>
 
 <script lang="ts" setup>
-import { getBacnetValueType  } from '@/api/data-collect/collector';
+import {getBacnetCharacterString, getBacnetValueType} from '@/api/data-collect/collector';
 import { BacnetFormTableColumns, regOnlyNumber } from '../../data';
 import { Rule } from 'ant-design-vue/lib/form';
 import PropertyId from './PropertyId.vue';
@@ -336,6 +357,21 @@ const getValueTypeData = async () => {
     }
 };
 
+const bacnetCharacterString = ref([]);
+
+const getCharacterString = async () => {
+  const resp: any = await getBacnetCharacterString();
+  if (resp.success) {
+    bacnetCharacterString.value = (resp?.result || []).map((item: any) => {
+      return {
+        label: item.description,
+        value: item.id,
+      }
+    })
+  }
+};
+
+getCharacterString();
 getValueTypeData();
 
 const validate = () => {

@@ -130,6 +130,7 @@ const onCheck = (info: any) => {
         name: one?.name || '',
         propertyId: one?.propertyId || '',
         valueType: one?.valueType || '',
+        encoding: 0,
         accessModes: {
             value: last ? last?.accessModes?.value : one?.accessModes || [],
             check: true,
@@ -203,6 +204,7 @@ const allControl = () => {
                 name: i?.name || '',
                 propertyId: i?.propertyId || '',
                 valueType: i?.valueType || '',
+                encoding: i?.encoding || 0,
                 accessModes: {
                     value: i?.accessModes || [],
                     check: true,
