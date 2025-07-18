@@ -21,7 +21,9 @@ export const FormState: FormDataType = {
         instanceNumber: undefined,
         overIp: {
             localBindAddress: '0.0.0.0',
-            port: 47808
+            port: 47808,
+            subnetAddress: '',
+            networkPrefixLength: undefined
         }
     },
     description: '',

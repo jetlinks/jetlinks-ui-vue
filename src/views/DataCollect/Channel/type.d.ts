@@ -15,6 +15,8 @@ export interface ConfigurationType {
     overIp: {
         localBindAddress: string,
         port: number
+        subnetAddress?: string
+        networkPrefixLength?: number
     }
 }
 

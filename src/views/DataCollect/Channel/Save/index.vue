@@ -214,6 +214,34 @@
                         placeholder="请输入广播端口"
                     ></j-input-number>
                 </j-form-item>
+                <a-form-item
+                    label="子网地址"
+                    :name="['configuration', 'overIp', 'subnetAddress']"
+                    :rules="[
+                        {
+                            validator: validateSubnetAddress
+                        }
+                    ]"
+                >
+                    <a-input
+                        v-model:value="formData.configuration.overIp.subnetAddress"
+                        style="width: 100%"
+                        placeholder="请输入子网地址"
+                    />
+                </a-form-item>
+                <a-form-item
+                    label="网络前缀长度"
+                    :name="['configuration', 'overIp', 'networkPrefixLength']"
+                >
+                    <a-input-number
+                        v-model:value="formData.configuration.overIp.networkPrefixLength"
+                        style="width: 100%"
+                        :min="1"
+                        :max="65535"
+                        :precision="0"
+                        placeholder="请输入网络前缀长度"
+                    />
+                </a-form-item>
             </template>
             <!-- <j-form-item
                 v-if="formData.provider === 'snap7'"
@@ -260,6 +288,7 @@ import type { FormDataType } from '../type.d';
 import { cloneDeep, isArray } from 'lodash-es';
 import { protocolList } from '@/utils/consts';
 import GateWayFormItem from '@/views/DataCollect/Channel/Save/GateWayFormItem.vue';
+import { testIpv4_6 } from '@/utils/validate';
 
 const props = defineProps({
     data: {
@@ -320,6 +349,13 @@ const validate = async (_rule: any, value: string) => {
     }
     return Promise.resolve()
   }
+}
+
+const validateSubnetAddress = async (_rule: any, value: string) => { 
+    if (value && !testIpv4_6(value)) {
+        return Promise.reject('请输入正确的子网地址');
+    }
+    return Promise.resolve();
 }
 
 const handleCancel = () => {
