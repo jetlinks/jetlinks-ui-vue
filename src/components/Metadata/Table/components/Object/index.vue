@@ -11,6 +11,7 @@
                     ref="tableRef"
                     :columns="myColumns"
                     :dataSource="dataSource"
+                    :disableMenu="false"
                     :pagination="false"
                     :height="200"
                 >
