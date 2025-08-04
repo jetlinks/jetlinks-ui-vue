@@ -218,7 +218,7 @@ const getScanOpcUAList = async (nodeId: string | undefined) => {
     const params = nodeId
         ? {
               id: channelId,
-              nodeId: nodeId,
+              nodeId: encodeURI(nodeId),
           }
         : {
               id: channelId,
