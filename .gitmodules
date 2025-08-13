@@ -1,6 +1,3 @@
-[submodule "src/modules/jetlinks-media-ui"]
-	path = src/modules/jetlinks-media-ui
-	url = git@github.com:jetlinks-v2/jetlinks-media-ui.git
 [submodule "src/modules/rule-engine-manager-ui"]
 	path = src/modules/rule-engine-manager-ui
 	url = git@github.com:jetlinks-v2/rule-engine-manager-ui.git
