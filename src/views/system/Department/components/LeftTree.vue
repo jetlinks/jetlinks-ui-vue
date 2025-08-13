@@ -21,7 +21,7 @@
             </PermissionButton>
         </div>
 
-        <div class="tree">
+        <div class="tree" ref="treeContainer">
             <j-spin :spinning="loading">
                 <jTree
                     v-if="treeData.length > 0"
@@ -30,6 +30,7 @@
                     v-model:expandedKeys="expandedKeys"
                     :fieldNames="{ key: 'id' }"
                     :showLine="{ showLeafIcon: false }"
+                    :height="treeHeight"
                     :show-icon="true"
                 >
                     <template #title="{ name, data }">
@@ -117,6 +118,21 @@ const treeMap = new Map(); // 数据的map版本
 const treeData = ref<any[]>([]); // 展示的数据
 const selectedKeys = ref<string[]>([]); // 当前选中的项
 const expandedKeys = ref<string[] | number[]>([]);
+const treeHeight = ref<number>(400)
+const treeContainer = ref()
+// 计算树的高度
+const calculateTreeHeight = () => {
+  if (treeContainer.value) {
+    const containerHeight = treeContainer.value.clientHeight
+    treeHeight.value = Math.max(200, containerHeight - 10)
+  }
+}
+
+// 监听窗口大小变化
+const resizeObserver = new ResizeObserver(() => {
+  calculateTreeHeight()
+})
+
 function findParents(tree:any, targetId:any) {
     let parents:any = [];
     function findAndCollectParents(node:any) {
@@ -277,6 +293,22 @@ const init = () => {
 };
 
 init();
+
+onMounted(() => {
+    // 初始化高度计算
+  nextTick(() => {
+    calculateTreeHeight()
+    if (treeContainer.value) {
+      resizeObserver.observe(treeContainer.value)
+    }
+  })
+})
+
+onUnmounted(() => {
+  if (treeContainer.value) {
+    resizeObserver.unobserve(treeContainer.value)
+  }
+})
 </script>
 
 <style lang="less" scoped>
