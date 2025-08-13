@@ -1,9 +1,6 @@
 [submodule "src/modules/rule-engine-manager-ui"]
 	path = src/modules/rule-engine-manager-ui
 	url = git@github.com:jetlinks-v2/rule-engine-manager-ui.git
-[submodule "src/modules/datasource-manager-ui"]
-	path = src/modules/datasource-manager-ui
-	url = git@github.com:jetlinks-v2/datasource-manager-ui.git
 [submodule "src/modules/data-collector-ui"]
 	path = src/modules/data-collector-ui
 	url = git@github.com:jetlinks-v2/data-collector-ui.git
