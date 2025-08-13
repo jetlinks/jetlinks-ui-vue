@@ -201,7 +201,7 @@ const getChildren = (node: any): Promise<any> => {
       terms: [
         {
           column: "parentId",
-          value: node._type === 'catalog' ? node.id : ''
+          value: node._type === 'catalog' ? node.id : node.deviceId
         }
       ]
     })
