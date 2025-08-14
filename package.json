@@ -79,5 +79,10 @@
   "volta": {
     "node": "18.14.0",
     "yarn": "1.22.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "jsencrypt": "3.3.2"
+    }
   }
 }
