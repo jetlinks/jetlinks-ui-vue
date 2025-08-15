@@ -3,6 +3,7 @@
     <a-dropdown
       v-model:visible="visible"
       :trigger="['click']"
+      destroyPopupOnHide
     >
       <a-badge :count="total" :offset="[3, -3]">
         <AIcon type="BellOutlined" style="font-size: 16px" />
@@ -108,7 +109,7 @@ const read = (type: string, data: any) => {
 // 查询未读数量
 const getList = () => {
     if(tabs.value.length <= 0) return;
-    loading.value = true; 
+    loading.value = true;
       const params = {
       paging:false,
         sorts: [{
