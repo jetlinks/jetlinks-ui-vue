@@ -227,6 +227,7 @@
                         v-model:value="formData.configuration.overIp.subnetAddress"
                         style="width: 100%"
                         placeholder="请输入子网地址"
+                        @change="changeSubnetAddress"
                     />
                 </a-form-item>
                 <a-form-item
@@ -404,6 +405,13 @@ const getCertificateList = async () => {
         }));
     }
 };
+
+// 子网地址长度为0时，设置为undefined
+const changeSubnetAddress = (val: Event) => {
+    if(!val?.target?.value) {
+        formData.value.configuration.overIp.subnetAddress = undefined
+    }
+}
 
 const getProvidersList = async () => {
     const resp: any = await getProviders();
