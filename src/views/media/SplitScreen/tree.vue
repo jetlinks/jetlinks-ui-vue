@@ -198,12 +198,18 @@ const getChildren = (node: any): Promise<any> => {
     await getChannelChildren(node.key, node._type === 'catalog' ? node.deviceId : node.key, {
       pageIndex: 0,
       pageSize: 100,
-      terms: node._type === 'catalog' ? [
+      terms: [
         {
           column: "parentId",
-          value: node._type === 'catalog' ? node.id : node.deviceId
+          value: node.id,
+          type: 'or'
+        },
+        {
+          column: "parentId",
+          value: '',
+          type: 'or'
         }
-      ] : []
+      ]
     })
     resolve(true)
   });
