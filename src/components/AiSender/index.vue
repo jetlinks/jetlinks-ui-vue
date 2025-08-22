@@ -19,12 +19,12 @@ const props = defineProps({
 	},
 	placeholder: {
 		type: String,
-		default: $t('Agent.data.sender.456813-1'),
+		default: '请描述你的问题...',
 	},
 	// 请求失败时的描述
 	requestFallDesc: {
 		type: String,
-		default: $t('Agent.data.sender.456813-2'),
+		default: '请求失败，请稍后再试',
 	},
 });
 

@@ -10,3 +10,6 @@
 [submodule "src/modules/authentication-manager-ui"]
 	path = src/modules/authentication-manager-ui
 	url = git@github.com:jetlinks-v2/authentication-manager-ui.git
+[submodule "src/modules/agent-manager-ui"]
+	path = src/modules/agent-manager-ui
+	url = git@github.com:BetaStreetOmnis/otterflow-frontend-.git

@@ -4,11 +4,36 @@
 	</div>
 </template>
 
+<script lang="ts">
+import { UserOutlined } from '@ant-design/icons-vue';
+
+export const DefaultBubbleRoles: BubbleListProps['roles'] = {
+  ai: {
+    placement: 'start',
+    typing: { step: 5, interval: 20 },
+    styles: {
+      content: {
+        borderRadius: '16px',
+      },
+    },
+    avatar: { icon: h(UserOutlined), style: { background: '#fde3cf' } },
+  },
+  local: {
+    placement: 'end',
+    styles: {
+      content: {
+        borderRadius: '16px',
+      },
+    },
+    avatar: { icon: h(UserOutlined), style: { background: '#87d068' } },
+  },
+};
+</script>
+
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { BubbleList } from 'ant-design-x-vue';
 import type { BubbleListProps } from 'ant-design-x-vue';
-import { UserOutlined } from '@ant-design/icons-vue';
 import MarkdownViewer from '@/components/MarkdownViewer/index.vue';
 import { Button } from 'ant-design-vue';
 
@@ -19,27 +44,6 @@ interface IMessageItem {
 	loading?: boolean;
 }
 
-const DefaultBubbleRoles: BubbleListProps['roles'] = {
-	ai: {
-		placement: 'start',
-		typing: { step: 5, interval: 20 },
-		styles: {
-			content: {
-				borderRadius: '16px',
-			},
-		},
-		avatar: { icon: h(UserOutlined), style: { background: '#fde3cf' } },
-	},
-	local: {
-		placement: 'end',
-		styles: {
-			content: {
-				borderRadius: '16px',
-			},
-		},
-		avatar: { icon: h(UserOutlined), style: { background: '#87d068' } },
-	},
-};
 
 const props = defineProps({
 	messages: {
