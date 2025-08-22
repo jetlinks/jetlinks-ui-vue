@@ -8,3 +8,5 @@ declare module "*.vue" {
 declare module "@jetlinks-web/components"
 declare module "vue3-json-viewer"
 declare module "event-source-polyfill"
+declare module '@kangc/v-md-editor/lib/preview'
+declare module '@kangc/v-md-editor/lib/theme/vuepress.js'
