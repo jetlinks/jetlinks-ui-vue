@@ -11,6 +11,7 @@
     "modules:init": "gitmodules.sh && update:tsconfig",
     "modules:update": "git submodule update",
     "test": "playwright test",
+    "build:server": "pnpm build --mode server",
     "build:modules": "pnpm build --mode server -- --module-name",
     "update:tsconfig": "node ./configs/plugin/tsconfig.ts"
   },
