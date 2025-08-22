@@ -473,6 +473,26 @@
                                     />
                                 </j-form-item>
                             </j-col>
+                            <j-col :span="12">
+                              <j-form-item
+                                label="每次上报通道数量"
+                                name="catalogEach"
+                                :rules="[
+                                          {
+                                              required: true,
+                                              message: '请输入每次上报通道数量',
+                                          }
+                                      ]"
+                              >
+                                <j-input-number
+                                  :min="1"
+                                  :max="10000"
+                                  v-model:value="formData.catalogEach"
+                                  placeholder="请输入每次上报通道数量"
+                                  style="width: 100%"
+                                />
+                              </j-form-item>
+                            </j-col>
                         </j-row>
 
                         <j-form-item>
@@ -604,6 +624,7 @@ const formData = ref({
     firmware: undefined,
     keepaliveInterval: '60',
     registerInterval: '3600',
+    catalogEach: 5
 });
 
 /**
