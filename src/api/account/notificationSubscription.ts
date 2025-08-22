@@ -1,7 +1,7 @@
 import { request } from '@jetlinks-web/core'
 
 // 获取通知订阅列表
-export const getNoticeList_api = () => request.post(`/notifications/subscriptions/_query/`,{});
+export const getNoticeList_api = () => request.post(`/notifications/subscriptions/_query`,{});
 // 保存通知订阅
 export const save_api = (data:any) => request.patch(`/notifications/subscribe`, data);
 

@@ -5,22 +5,36 @@ import Components from 'unplugin-vue-components/vite'
 import AutoImport from 'unplugin-auto-import/vite'
 import {VueAmapResolver} from '@vuemap/unplugin-resolver'
 import VueSetupExtend from 'vite-plugin-vue-setup-extend'
-import monacoEditorPlugin from 'vite-plugin-monaco-editor'
-import {copyImagesPlugin, registerModulesAlias} from './configs/plugin'
+import monacoEditorPlugin from './configs/plugin/monaco-editor'
 import progress from 'vite-plugin-progress'
 import * as path from 'path'
 import {theme} from 'ant-design-vue/lib'
 import convertLegacyToken from 'ant-design-vue/lib/theme/convertLegacyToken'
+import {
+  registerModulesAlias,
+  copyFile,
+  copyImagesPlugin,
+} from './configs/plugin'
 
 const {defaultAlgorithm, defaultSeed} = theme;
 
 const mapToken = defaultAlgorithm(defaultSeed);
 const v3Token = convertLegacyToken(mapToken);
 
+const getModulePath = (moduleName: string, file: string) =>
+  moduleName
+    ? `../modules/${moduleName}/${file}`
+    : `../modules/*/${file}`
+
 // https://vitejs.dev/config/
 export default defineConfig(({mode}) => {
 
   const env: Partial<ImportMetaEnv> = loadEnv(mode, process.cwd())
+
+  const moduleNameIndex = process.argv.indexOf('--module-name');
+  const moduleName = moduleNameIndex !== -1 ? process.argv[moduleNameIndex + 1] : null;
+
+
   return {
     base: './',
     resolve: {
@@ -29,9 +43,14 @@ export default defineConfig(({mode}) => {
         ...registerModulesAlias()
       },
     },
+    define: {
+      'import.meta.env.VITE_MODULE_GLOB': JSON.stringify(getModulePath(moduleName,'index.js')),
+      'import.meta.env.VITE_MODULE_MENU_GLOB': JSON.stringify(getModulePath(moduleName,'baseMenu.js')),
+      'import.meta.env.VITE_MODULE_LANG_GLOB': JSON.stringify(getModulePath(moduleName,'locales/lang/*.json')),
+    },
     build: {
-      outDir: 'dist',
-      assetsDir: 'assets',
+      outDir: moduleName ? `src/modules/${moduleName}/dist` : 'dist',
+      assetsDir: moduleName ? `src/modules/${moduleName}/assets` : 'assets',
       sourcemap: false,
       cssCodeSplit: false,
       manifest: true,
@@ -76,6 +95,7 @@ export default defineConfig(({mode}) => {
         resolvers: [VueAmapResolver()],
       }),
       progress(),
+      copyFile(moduleName),
       copyImagesPlugin(),
     ],
     server: {

@@ -1,0 +1,55 @@
+name: Auto Deploy jetlinks-ui to the JetLinks Maven Repository
+
+on:
+  push:
+    branches: ["master"]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node_version: [ 18.x ]
+        #        os: [ubuntu-latest, windows-latest, macOS-latest]
+        os: [ ubuntu-latest ]
+    steps:
+      - uses: actions/checkout@v1
+      - name: Use Node.js ${{ matrix.node_version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node_version }}
+      - run: echo ${{github.ref}}
+      - run: npm install pnpm -g
+      - run: pnpm install --no-frozen-lockfile
+      - run: pnpm update:tsconfig
+      - run: pnpm run build:server
+        env:
+          CI: true
+          NODE_OPTIONS: --max_old_space_size=8192
+      - name: Set up Repository info
+        uses: actions/setup-java@v2
+        with:
+          java-version: '8'
+          distribution: 'adopt'
+      - name: Cache Maven Repository
+        #uses: actions/cache@v3
+        env:
+          MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
+        run: |
+          mkdir -p ~/.m2
+          echo "<settings>
+                  <servers>
+                    <server>
+                      <id>snapshots</id>
+                      <username>${MAVEN_USERNAME}</username>
+                      <password>${MAVEN_PASSWORD}</password>
+                    </server>
+                  </servers>
+                </settings>" > ~/.m2/settings.xml
+          
+          # Step 4: 构建并发布到 Maven 私有仓库
+      - name: Make shell script executable
+        run: chmod +x ./java/build_modules.sh
+      - name: Build and Deploy to Maven
+        run: ./java/build_modules.sh

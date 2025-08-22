@@ -26,6 +26,18 @@ apps
 *.sln
 *.sw?
 .history
+src/modules
+
+# 忽略所有 java 目录中的内容
+java/**
+
+# 取消忽略 java 目录本身（否则下面的取消规则不生效）
+!java/
+
+# 取消忽略特定文件
+!java/build_modules.sh
+!java/module_config.properties
+!java/*/pom.xml
 
 # 插件生成文件不需要提交
 tsconfig.paths.json

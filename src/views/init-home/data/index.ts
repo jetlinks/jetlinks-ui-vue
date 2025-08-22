@@ -31,8 +31,8 @@ export const handleMenuOptions = (menus: any[], p: { id: string, name: string}):
   options: { appName: p.id || p.name, ...item.options }
 }))
 
-const BaseMenuFn = async () => {
-  const modules = await getModulesMenu()
+const BaseMenuFn = () => {
+  const modules = getModulesMenu()
   let baseModuleMenu: any = [...proMenu]
   baseModuleMenu = mergeTrees(baseModuleMenu, modules)
   return baseModuleMenu
