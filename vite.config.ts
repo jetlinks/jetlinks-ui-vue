@@ -23,7 +23,7 @@ const v3Token = convertLegacyToken(mapToken);
 
 const getModulePath = (moduleName: string, file: string) =>
   moduleName
-    ? `../modules/${moduleName}/${file}`
+    ? `../modules/${moduleName}-ui/${file}`
     : `../modules/*/${file}`
 
 // https://vitejs.dev/config/
@@ -34,7 +34,7 @@ export default defineConfig(({mode}) => {
   const moduleNameIndex = process.argv.indexOf('--module-name');
   const moduleName = moduleNameIndex !== -1 ? process.argv[moduleNameIndex + 1] : null;
 
-
+  console.log('module path',JSON.stringify(getModulePath(moduleName,'index.js')))
   return {
     base: './',
     resolve: {
@@ -44,8 +44,8 @@ export default defineConfig(({mode}) => {
       },
     },
     define: {
-      'import.meta.env.VITE_MODULE_GLOB': JSON.stringify(getModulePath(moduleName,'index.js')),
-      'import.meta.env.VITE_MODULE_MENU_GLOB': JSON.stringify(getModulePath(moduleName,'baseMenu.js')),
+      'import.meta.env.VITE_MODULE_GLOB': JSON.stringify(getModulePath(moduleName,'index.ts')),
+      'import.meta.env.VITE_MODULE_MENU_GLOB': JSON.stringify(getModulePath(moduleName,'baseMenu.ts')),
       'import.meta.env.VITE_MODULE_LANG_GLOB': JSON.stringify(getModulePath(moduleName,'locales/lang/*.json')),
     },
     build: {
