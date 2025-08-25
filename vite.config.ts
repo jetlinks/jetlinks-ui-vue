@@ -82,6 +82,12 @@ export default defineConfig(({mode}) => {
       host: '0.0.0.0',
       port: Number(env.VITE_PORT),
       proxy: {
+          '/api/agent': {
+              target: 'http://192.168.32.108:8000',
+              ws: true,
+              changeOrigin: true,
+              rewrite: (path) => path.replace(new RegExp(`^/api/agent`), ''),
+          },
         [env.VITE_APP_BASE_API]: {
           target: 'http://192.168.33.52:8844',
           // target: 'http://192.168.32.233:8601', // 王
