@@ -200,6 +200,11 @@ const getChildren = (node: any): Promise<any> => {
       pageSize: 100,
       terms: [
         {
+          column: "parentChannelId",
+          value: node.id,
+          type: 'or'
+        },
+        {
           column: "parentId",
           value: node.id,
           type: 'or'
