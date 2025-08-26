@@ -1,10 +1,15 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { isArray } from 'lodash-es'
-import { handleAuthMenu } from '@/utils'
+import { handleMenus } from '@/utils'
 
 export const useAuthStore = defineStore('auth', () => {
   const permissions = ref<Record<string, string[]>>({})
+
+  const setPermissionsAll = (record: Record<string, string[]>) => {
+    cleanPermission()
+    permissions.value = record
+  }
 
   const setPermission = (code: string, buttons: string[]) => {
     permissions.value[code] = buttons
@@ -32,7 +37,6 @@ export const useAuthStore = defineStore('auth', () => {
 
   const handlePermission = (data: any) => {
     cleanPermission()
-    handleAuthMenu(data, setPermission)
   }
 
   return {
@@ -41,6 +45,7 @@ export const useAuthStore = defineStore('auth', () => {
     setPermission,
     cleanPermission,
     handlePermission,
-    hasPermission
+    hasPermission,
+    setPermissionsAll
   }
 })

@@ -4,13 +4,13 @@
     v-model:openKeys="state.openKeys"
     v-model:collapsed="state.collapsed"
     :selectedKeys="state.selectedKeys"
-    :breadcrumb="{ routes: breadcrumb }"
+    :breadcrumb="{ routes: route.meta.breadcrumb }"
     :pure="state.pure"
     :layoutType="layoutType"
     @backClick='routerBack'
   >
     <template #breadcrumbRender="slotProps">
-      <a v-if="slotProps.route.index !== 0 && !slotProps.route.isLast" @click="() => jumpPage(slotProps.route)" >
+      <a v-if="slotProps.route.index !== 0 && !slotProps.route.isLast" @click="() => jumpPage(slotProps)" >
         {{ slotProps.route.breadcrumbName }}
       </a>
       <span v-else style='cursor: default' >{{ slotProps.route.breadcrumbName }}</span>
@@ -24,10 +24,7 @@
         <User />
       </div>
     </template>
-
-      <router-view v-if="updateRoute" v-slot="{ Component }">
-        <component :is="components || Component" />
-      </router-view>
+    <router-view />
   </j-pro-layout>
 </template>
 
@@ -43,17 +40,8 @@ const route = useRoute();
 const systemStore = useSystemStore()
 const menuStore = useMenuStore()
 const layoutType = ref('list')
-const updateRoute = ref(true)
 
 const { theme, layout, language, systemInfo } = storeToRefs(systemStore)
-
-const components = computed(() => {
-  const componentName = route.matched[route.matched.length - 1]?.components?.default?.name
-  if (componentName !== 'BasicLayoutPage') {
-    return route.matched[route.matched.length - 1]?.components?.default
-  }
-  return undefined
-})
 
 const config = computed(() => ({
   ...layout.value,
@@ -70,27 +58,10 @@ const state = reactive({
 });
 
 /**
- * 面包屑
- */
-const breadcrumb = computed(() =>
-  {
-    const paths = router.currentRoute.value.matched
-    return paths.map((item, index) => {
-      return {
-        index,
-        isLast: index === (paths.length -1),
-        path: item.path,
-        breadcrumbName: (item.meta as any).title || '',
-      }
-    })
-  }
-);
-
-/**
  * 路由跳转
  */
-const jumpPage = (route: { path: string}) => {
-  router.push(route.path)
+const jumpPage = (record: any) => {
+  menuStore.jumpPage(record.route.name, {})
 }
 
 const routerBack = () => {
@@ -107,21 +78,15 @@ const init = () => {
 
 init()
 
-// watch(() => systemStore.language, () => {
-//   updateRoute.value = false
-//   nextTick(() => {
-//     updateRoute.value = true
-//   })
-// })
-
 /**
  * 处理菜单选中，展开状态
  */
 watchEffect(() => {
   if (router.currentRoute) {
-    const paths = router.currentRoute.value.matched
+    const paths = route.meta.breadcrumb
     state.selectedKeys = paths.map(item => item.path)
     state.openKeys = paths.map(item => item.path)
+    console.log(state, router.currentRoute.value.matched)
     // console.log(paths) //
   }
   // if (route.query?.layout === 'false' || self.frameElement?.tagName === 'IFRAME') {

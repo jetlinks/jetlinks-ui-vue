@@ -1,195 +1,203 @@
-import { BasicLayoutPage, BlankLayoutPage, Iframe } from '@/layout'
-import { shallowRef } from 'vue'
 import {isArray, isFunction} from "lodash-es";
+import type { RouteMeta } from 'vue-router'
+import type { RouteRecordRaw } from 'vue-router'
+import { USER_CENTER_MENU_CODE } from '@/utils/consts'
 
 type Buttons = Array<{ id: string }>
 
 type MenuItem = {
-    icon: string,
-    name: string
-    i18nName: string
+  icon: string,
+  name: string
+  i18nName: string
+  code: string
+  url: string
+  appId?: string
+  isShow?: boolean
+  buttons?: Buttons
+  options?: Record<string, any>
+  meta?: RouteMeta
+  children?: MenuItem[]
+}
+
+type BreadcrumbType = {
+  name: string
+  breadcrumbName: string
+  path: string
+}
+
+type ParentType = {
     code: string
-    url: string
-    isShow?: boolean
-    buttons?: Buttons
-    options?: Record<string, any>,
-    meta?: Record<string, any>
+    title: string
+    breadcrumb?: BreadcrumbType[] | any[]
 }
 
-const hasAppID = (item: { appId?: string, url?: string }): { isApp: boolean, appUrl: string } => {
-    return {
-        isApp: !!item.appId,
-        appUrl: `/${item.appId}${item.url}`
-    }
-}
-
-const handleButtons = (buttons?: Buttons) => {
-    return buttons?.map((b) => b.id) || []
-}
-
-const handleMeta = (item: MenuItem, isApp: boolean) => {
+const handleMeta = (item: MenuItem, isApp: boolean):RouteMeta  => {
   const _meta = item.options?.meta || {}
   return {
     ..._meta,
     ...(item.meta || {}),
     icon: item.icon,
     title: item.i18nName || item.name,
-    hideInMenu: item.isShow === false,
-    buttons: handleButtons(item.buttons),
+    hideInMenu: item.options?.show === false, // 隐藏菜单
     isApp
   }
 }
 
-const findComponents = (code: string, level: number, isApp: boolean, components: any, meta: any, hasChildren: false) => {
-    const myComponents = components[meta?.componentCode || code]
-    if (isApp && !hasChildren) {
-      return Iframe
-    }
+const handleRoute = (item: MenuItem, parent?: ParentType): Partial<RouteRecordRaw> => {
+  const isApp = !!item.appId
+  const meta = handleMeta(item, isApp)
+  const appUrl = `/${item.appId}${item.url}`
 
-    if (!hasChildren && meta && meta.appName && meta.appUrl) {
-      return () => import('../views/mirco/SubAppRedirect/base.vue')
-    }
+  // 面包屑处理
+  const breadcrumb: Array<BreadcrumbType> = []
+  if (parent?.breadcrumb) {
+    breadcrumb.push(...parent.breadcrumb)
+  }
+  breadcrumb.push({ name: item.code, breadcrumbName: meta.title as string, path: isApp ? appUrl : item.url  })
 
-    if (level === 1) { // BasicLayoutPage
-        // if (myComponents && !hasChildren) {
-        //     return meta?.hasLayout === false ? () => myComponents() : h(BasicLayoutPage, {}, h(defineAsyncComponent(() => myComponents()), {}))
-        // }
-        return myComponents ? () => myComponents() : shallowRef(BasicLayoutPage)
-    } else if (level === 2) { // BlankLayoutPage or components
-      return myComponents ? () => myComponents() : BlankLayoutPage
-    } else if(myComponents) { // components
-        return () => myComponents()
+  return {
+    path: isApp ? appUrl : item.url,
+    name: isApp ? appUrl : item.code,
+    meta: {
+      ...meta,
+      breadcrumb
     }
-    // return components['demo'] // 开发测试用
-    return undefined
+  }
 }
 
-const hasExtraChildren = (item: MenuItem, extraMenus: any ) => {
-    const extraItem = extraMenus[item.code]
+/**
+ *
+ * @param menuData 服务端菜单数据
+ * @param extraMenus 额外菜单数据，比如详情页，新增页
+ * @param components 扫描出来的页面
+ * @param level
+ */
+export const handleMenus = (menuData: MenuItem[], extraMenus: any, components: Record<string, any>, level: number = 1) => {
+  const filterMenuCode = [USER_CENTER_MENU_CODE]
+  const menuMap = new Map<string, { path: string, title: string }>() //
+  let authButtons: Record<string, any> = {}
+  let menuRoutes: RouteRecordRaw[] = []
+  let menus: Partial<RouteRecordRaw>[] = []
 
-    if (!extraItem) return undefined
+  /**
+   * 过滤不需要生成路由的菜单数据
+   * @param data
+   */
+  const filterMenuData = (data: MenuItem[]) => {
+    return data.filter(item => !filterMenuCode.includes(item.code))
+  }
 
-    const extraRoutes = isArray(extraItem) ? extraItem : extraItem.children
-    if (extraItem && extraRoutes) {
-        return extraRoutes.map(e => ({
-          ...e,
-            code: `${item.code}/${e.code}`,
-          url: `${item.url}${e.url}`,
-          isShow: false
-        }))
+  const findComponent = (record: MenuItem, level: number) => {
+    const myComponents = components[record.meta?.componentCode as string || record.code]
+
+    if (record.appId && !record.children?.length) {
+      return () => import('../layout/Iframe.vue')
+    }
+
+    if (myComponents) {
+      return () => myComponents()
+    }
+
+    if (level === 1) {
+      return () => import('../layout/BasicLayoutPage.vue')
+    }
+
+    if (level === 2) {
+      return () => import('../layout/BlankLayoutPage.vue')
     }
 
     return undefined
-}
+  }
 
-const filterMenuCode = ['account-center']
+  const getExtraChildren = (item: MenuItem) => {
+    const menu = extraMenus[item.code]
 
-export const handleMenus = (menuData: any, extraMenus: any, components: any, level: number = 1) => {
-    if (menuData && menuData.length) {
-        return menuData.filter(item => !filterMenuCode.includes(item.code)).map(item => {
-            const { isApp, appUrl } = hasAppID(item) // 是否为第三方程序
-            const meta = handleMeta(item, isApp)
-            const route: any = {
-                path: isApp ? appUrl : `${item.url}`,
-                name: isApp ? appUrl : item.code,
-                url: isApp ? appUrl : item.url,
-                meta: meta,
-                children: item.children || []
-            }
+    if (!menu) return
 
-            const myComponent = item.component ?? findComponents(item.code, level, isApp, components, meta, route.children.length)
-            if (level === 1 && !route.children.length && myComponent && isFunction(myComponent)) {
-              // 一级菜单，没有子菜单，且有组件，使用组件
-              const _path = isApp ? appUrl : `${item.url}`
-              const parentPath = _path + '/parent'
-              route.name = `${item.code}-parent`
-              route.path = parentPath
-              route.url = parentPath
-              route.component = shallowRef(BasicLayoutPage)
-              meta.title = ''
-              route.meta = meta
-              route.children = [item]
-            } else {
-              route.component = item.component ?? myComponent
+    const routes = isArray(menu) ? menu: menu.children
 
-              const extraRoute = hasExtraChildren(item, extraMenus)
-              if (extraRoute && !isApp) {
-                // 包含额外的子路由
+    return routes?.map((e: any) => {
+      const meta: RouteMeta = {
+        title: e.i18nName || e.name,
+        hideInMenu: true
+      }
+      return {
+        ...e,
+        code: `${item.code}/${e.code}`,
+        url: `${item.url}${e.url}`,
+        options: { show: false },
+        meta
+      }
+    })
+  }
 
-                route.children = [...route.children, ...extraRoute]
-              }
-            }
+  function loop(data: MenuItem[], level: number = 1, parent?: ParentType): RouteRecordRaw[] {
+    const _menu = filterMenuData(data)
+    const _routes = []
 
-            if (route.children && route.children.length) {
-              route.children = handleMenus(route.children, extraMenus, components, level + 1)
-            }
+    for (let i = _menu.length; i > 0; i--) {
+      const item = _menu[i - 1]
 
-            const showChildren = route.children?.filter(r => !r.meta?.hideInMenu) || []
+      const _route = handleRoute(item, parent)
+      const myComponent = findComponent(item, level)
 
-            if (route.children && route.children.length && showChildren.length) {
-              route.redirect = showChildren[0].path
-            }
+      menuMap.set(item.code, { path: _route.path!, title: _route.meta?.title as string })
+      _route.component = myComponent
 
-            return route
-        })
+      if (level === 1 && components[item.code]) { // 1级菜单，并且是页面
+        // 为1级菜单添加父级路由
+        _route.name = `${item.code}-parent`
+        _route.path = `${item.url}/parent`
+        _route.component = () => import('../layout/BasicLayoutPage.vue')
+        _route.children = [item]
+      } else {
+        const extraRoute = getExtraChildren(item) || [];
+        if (extraRoute) {
+          const result = loop(extraRoute, level + 1, { code: item.code, title: _route.meta?.title as string, breadcrumb: _route.meta?.breadcrumb as BreadcrumbType[] })
+          _routes.push(...result)
+        }
+        _route.children = item.children
+      }
+
+      if (_route.children && _route.children.length) {
+        _route.children = loop(_route.children, level + 1, { code: item.code, title: _route.meta?.title as string, breadcrumb: _route.meta?.breadcrumb as BreadcrumbType[] })
+      }
+
+      const showChildren = _route.children?.filter(item => !item.meta?.hideInMenu) || []
+
+      if (showChildren.length) {
+        _route.redirect = showChildren[0].path
+      }
+      _routes.unshift(_route as RouteRecordRaw)
     }
+    return _routes
+  }
 
+  function siderLoop(data: MenuItem[]) {
+    const _menu = filterMenuData(data).filter(item => item.meta?.options?.show !== false)
+
+    if (_menu && _menu.length) {
+      return _menu.map(item => {
+        const _route = handleRoute(item)
+        if (item.buttons) {
+          authButtons[item.code] = item.buttons.map(item => item.id)
+        }
+        _route.children = siderLoop(item.children || [])
+        return _route as RouteRecordRaw
+      })
+    }
     return []
-}
+  }
 
-export const handleMenusMap = (menuData: any, cb: (data: any) => void) => {
-  if (menuData && menuData.length) {
-    menuData.forEach(item => {
-      cb(item)
-      if (item.children) {
-        handleMenusMap(item.children, cb)
-      }
-    })
+  menus = siderLoop(menuData)
+
+  menuRoutes = loop(menuData, level)
+
+  return {
+    menuMap,
+    menus,
+    menuRoutes,
+    authButtons
   }
 }
 
-const hideInMenu = (code: string) => {
-  return ['account-center', 'message-subscribe'].includes(code)
-}
-
-export const handleSiderMenu = (menuData: any) => {
-  if (menuData && menuData.length) {
-    return menuData.filter((item) => item.isShow !== false).map(item => {
-      const { isApp, appUrl } = hasAppID(item) // 是否为第三方程序
-      const meta = handleMeta(item, isApp)
-      const route: any = {
-        path: isApp ? appUrl : `${item.url}`,
-        name: isApp ? appUrl : item.code,
-        url: isApp ? appUrl : item.url,
-        meta: meta,
-        children: item.children
-      }
-
-      if (route.children && route.children.length) {
-        route.children = handleSiderMenu(route.children)
-      }
-
-      route.meta.hideInMenu = hideInMenu(item.code)
-
-      return route
-    })
-  }
-  return []
-}
-
-
-export const handleAuthMenu = (menuData: any, cb: (code, buttons) => void) => {
-  if (menuData && menuData.length) {
-    return menuData.forEach(item => {
-      const { code, buttons, children} = item
-
-      if (buttons) {
-        cb(code, buttons.map(a => a.id))
-      }
-
-      if (children) {
-        handleAuthMenu(children, cb)
-      }
-    })
-  }
-}

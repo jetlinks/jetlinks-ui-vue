@@ -3,7 +3,7 @@ import router from '@/router'
 import {cloneDeep} from 'lodash-es'
 import {setParamsValue} from '@jetlinks-web/hooks'
 import {onlyMessage} from '@jetlinks-web/utils'
-import {handleMenus, handleMenusMap, handleSiderMenu} from '@/utils'
+import {handleMenus} from '@/utils'
 import {getOwnMenuThree} from '@/api/system/menu'
 import {getGlobModules} from '@/router/globModules'
 import {getExtraRouters} from '@/router/extraMenu'
@@ -12,6 +12,7 @@ import {useAuthStore, useApplication} from '@/store'
 import {OWNER_KEY} from "@/utils/consts";
 import i18n from "@/locales";
 import {BASE_API} from "@jetlinks-web/constants";
+import type { RouteRecordRaw } from 'vue-router'
 
 const $t = i18n.global.t
 
@@ -48,9 +49,9 @@ const defaultOwnParams = [
 ]
 
 export const useMenuStore = defineStore('menu', () => {
-    const menu = ref<any[]>([])
     const menusMap = ref<Map<string, any>>(new Map())
-    const siderMenus = ref([])
+    const menu = ref<RouteRecordRaw[]>([])
+    const siderMenus = ref<RouteRecordRaw[]>([])
 
     const authStore = useAuthStore()
     const app = useApplication();
@@ -173,23 +174,25 @@ export const useMenuStore = defineStore('menu', () => {
         if (resp.success) {
             const extraMenu = await getExtraRouters()
 
-            const routes = handleMenus(cloneDeep(menuResult), extraMenu, asyncRoutes) // 处理路由
+            const { menuRoutes, menuMap, menus, authButtons } = handleMenus(cloneDeep(menuResult), extraMenu, asyncRoutes) // 处理路由
 
-            routes.push(USER_CENTER_ROUTE) // 添加个人中心
-            routes.push(INIT_HOME)
+            menuRoutes.push(USER_CENTER_ROUTE) // 添加个人中心
+            menuRoutes.push(INIT_HOME)
 
-            if (routes.length) {
-                routes.push({
+            if (menuRoutes.length) {
+                menuRoutes.push({
                     path: '/',
-                    redirect: routes[0].path,
+                    redirect: menuRoutes[0].path,
                 })
             }
 
-            authStore.handlePermission(menuResult) // 处理按钮权限
-            menu.value = routes
-            console.log('routes', routes)
-            handleMenusMap(routes, handleMenusMapById)
-            siderMenus.value = handleSiderMenu(cloneDeep(menuResult)) // 处理菜单
+            // authStore.handlePermission(menuResult) // 处理按钮权限
+            console.log('routes', menuRoutes)
+            console.log('menus', menus)
+            menusMap.value = menuMap
+            menu.value = menuRoutes
+            siderMenus.value = menus // 处理菜单
+            authStore.setPermissionsAll(authButtons)
         }
     }
 
