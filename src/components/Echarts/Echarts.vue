@@ -1,39 +1,29 @@
 <template>
-  <div ref="echartsDom" class="echarts-warp" :style="style"></div>
+  <div ref="echartsDom" class="echarts-warp"></div>
 </template>
 
 <script lang="ts" setup>
-import type {CSSProperties, Ref, PropType} from 'vue'
-import { nextTick, ref, watch, defineProps, defineOptions } from 'vue'
-import {useECharts} from './useEcharts'
+import { ref, defineProps, defineOptions } from 'vue'
+import { useEcharts } from '@/hooks'
 
 defineOptions({
   name: 'JEcharts'
 })
 
 const props = defineProps({
-  options: {
+  option: {
     type: Object,
     default: undefined,
   },
-  style: Object as PropType<CSSProperties>,
+  library: {
+    type: Array,
+    default: () => [],
+  }
 })
 
-const echartsDom = ref<Ref<HTMLDivElement> | HTMLDivElement>()
+const echartsDom = ref<HTMLDivElement>()
+useEcharts(echartsDom, props)
 
-const {setOptions} = useECharts(echartsDom)
-
-watch(
-  () => JSON.stringify(props.options),
-  () => {
-    if (props.options) {
-      nextTick(() => {
-        setOptions(props.options)
-      })
-    }
-  },
-  {immediate: true},
-)
 </script>
 
 <style scoped>

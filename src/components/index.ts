@@ -21,6 +21,7 @@ import EditDialog from './EditDialog/index.vue'
 import CrudTable from './CrudTable/index.vue'
 import MetadataValueItem from './MetadataValueItem/index.vue'
 import VirtualScroll from './VirtualScroll/index.vue'
+import Echarts from './Echarts'
 
 export default {
     install(app: App) {
@@ -40,17 +41,19 @@ export default {
             .component('ConfirmModal',ConfirmModal)
             .component('CheckButton',CheckButton)
             .component('SelectAMap', SelectAMap)
-          .component('monaco-editor', MonacoEditor)
-          .component(TimeSelect.name, TimeSelect)
-          .component('FullCalendar', FullCalendar)
-          .component('Image', Image)
-          .component('EditDialog', EditDialog)
-          .component('CrudTable', CrudTable)
-          .component('MetadataValueItem', MetadataValueItem)
-          .component('VirtualScroll', VirtualScroll)
+            .component('monaco-editor', MonacoEditor)
+            .component(TimeSelect.name, TimeSelect)
+            .component('FullCalendar', FullCalendar)
+            .component('Image', Image)
+            .component('EditDialog', EditDialog)
+            .component('CrudTable', CrudTable)
+            .component('MetadataValueItem', MetadataValueItem)
+            .component('VirtualScroll', VirtualScroll)
 
         Object.keys(FormItemValue).forEach(key => {
             app.component(key, FormItemValue[key])
         })
+
+        app.use(Echarts)
     }
 }
