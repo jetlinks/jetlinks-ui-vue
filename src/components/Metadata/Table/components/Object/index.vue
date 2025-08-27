@@ -158,6 +158,7 @@ import {
     DoubleParams,
 } from '@/components/Metadata/Table';
 import { Form } from 'ant-design-vue';
+import { isObject } from 'lodash-es'
 
 const props = defineProps({
     value: {
