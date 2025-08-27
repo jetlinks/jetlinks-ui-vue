@@ -1,6 +1,7 @@
 <template>
   <Modal
     v-model:open="visible"
+    wrapClassName="relogin-modal"
     :maskClosable="false"
     :footer="null"
     :width="1020"
@@ -42,7 +43,6 @@ import {useSystemStore} from "@/store";
 import {storeToRefs} from "pinia";
 import {jumpLogin} from "@/router";
 import i18n from "@/locales";
-import { AIcon } from '@jetlinks-web/components'
 import { Modal, Button } from 'ant-design-vue'
 
 const systemStore = useSystemStore();
@@ -77,6 +77,21 @@ const handleSuccess = () => {
 
 defineExpose({ open })
 </script>
+
+<style lang="less">
+.relogin-modal {
+  .ant-modal-content {
+    padding: 0;
+
+    .ant-modal-close {
+      width: 56px;
+      height: 56px;
+      top: 0;
+      right: 0;
+    }
+  }
+}
+</style>
 
 <style lang="less" scoped>
 .relogin {
