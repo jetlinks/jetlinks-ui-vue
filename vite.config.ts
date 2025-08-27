@@ -19,7 +19,7 @@ const v3Token = convertLegacyToken(mapToken);
 
 // https://vitejs.dev/config/
 export default defineConfig(({mode}) => {
-
+  
   const env: Partial<ImportMetaEnv> = loadEnv(mode, process.cwd())
   return {
     base: './',
@@ -82,12 +82,13 @@ export default defineConfig(({mode}) => {
       host: '0.0.0.0',
       port: Number(env.VITE_PORT),
       proxy: {
-          '/api/agent': {
-              target: 'http://192.168.32.108:8000',
-              ws: true,
-              changeOrigin: true,
-              rewrite: (path) => path.replace(new RegExp(`^/api/agent`), ''),
-          },
+        '/api/agent': {
+          target: 'http://192.168.32.108:8002',
+          // target: 'http://43.153.213.96:8096',
+          ws: true,
+          changeOrigin: true,
+          rewrite: (path) => path.replace(new RegExp(`^/api/agent`), ''),
+        },
         [env.VITE_APP_BASE_API]: {
           target: 'http://192.168.33.52:8844',
           // target: 'http://192.168.32.233:8601', // 王
@@ -108,7 +109,7 @@ export default defineConfig(({mode}) => {
               'src/style/variable.less',
             )}";`,
             ...v3Token,
-
+            
           },
           javascriptEnabled: true,
         },
