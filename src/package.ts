@@ -5,6 +5,7 @@ import {jumpLogin} from '@/router'
 import {notification} from 'ant-design-vue'
 import {langKey} from "@/utils/consts";
 import Relogin from '@/views/relogin/index.vue'
+import { registerModule } from '@/utils'
 
 /**
  * 初始化package
@@ -95,3 +96,5 @@ export const loadMicroApp = () => {
         }
     }, true)
 }
+
+registerModule()
