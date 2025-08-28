@@ -152,7 +152,7 @@ onBeforeMount(() => {
     height: 100vh;
     padding: 32px 128px 64px;
     overflow: hidden;
-    background-image: url(/images/init-home/background.png);
+    background-image: url('@/assets/init-home/background.png');
     background-repeat: no-repeat;
     background-size: 100% 100%;
     .container-text {

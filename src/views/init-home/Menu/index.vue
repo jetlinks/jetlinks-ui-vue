@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts" setup>
-import { getImage } from "@jetlinks-web/utils";
+import { getImage } from "@/utils";
 import { USER_CENTER_MENU_DATA } from "../data/baseMenu";
 import BaseMenu from "../data";
 import {

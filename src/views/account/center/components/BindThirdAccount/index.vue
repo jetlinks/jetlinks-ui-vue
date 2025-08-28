@@ -55,7 +55,8 @@
 <script setup lang="ts">
 import { BASE_API } from '@jetlinks-web/constants'
 import { getSsoBinds_api , unBind_api} from '@/api/account/center';
-import { onlyMessage  , getImage } from "@jetlinks-web/utils";
+import { onlyMessage } from "@jetlinks-web/utils";
+import { getImage } from '@/utils'
 import { useI18n } from 'vue-i18n';
 
 const { t: $t } = useI18n();

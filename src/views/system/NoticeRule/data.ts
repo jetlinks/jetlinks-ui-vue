@@ -1,4 +1,4 @@
-import { getImage } from "@jetlinks-web/utils";
+import { getImage } from '@/utils'
 
 const iconMap = new Map();
 iconMap.set('notifier-dingTalk', getImage('/notice-rule/dingtalk.png'));

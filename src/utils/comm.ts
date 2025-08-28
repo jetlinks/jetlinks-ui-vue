@@ -1,7 +1,12 @@
 import dayjs from "dayjs";
-import { downloadFileByUrl, getImage, LocalStore } from "@jetlinks-web/utils";
+import { downloadFileByUrl, LocalStore } from "@jetlinks-web/utils";
 import { getFileUrlById } from "@/api/comm";
 import { message } from "ant-design-vue";
+const images = import.meta.glob([
+  '@/assets/**/*',       // 匹配所有
+  '!@/assets/**/*.ts',  // 排除掉 ts 文件
+], { eager: true, import: 'default' })
+const modulesImages = import.meta.glob(['../modules/*/assets/**/*', '!../modules/*/assets/**/*.ts'], { eager: true, import: 'default' })
 
 const modules = import.meta.glob("../modules/*/index.ts", { eager: true });
 
@@ -36,6 +41,12 @@ export const modifySearchColumnValue = (e: any, column: object) => {
   });
   return e;
 };
+
+export const getImage = (url: string, module?: string) => {
+  const base_path = module ? `../modules/${module}/assets` : "/src/assets";
+  const path = base_path + url
+  return images[path] || modulesImages[path]
+}
 
 /**
  * 为了区分是本地的图片还是线上的图片

@@ -76,9 +76,10 @@ import { TOKEN_KEY } from '@jetlinks-web/constants'
 import { captchaConfig, codeUrl, getOAuth2, initApplication, authLogin, encryptionConfig } from '@/api/login'
 import { settingDetail } from '@/api/system/basis'
 import { getMe_api } from '@/api/auth'
-import { getImage, getToken, encrypt } from '@jetlinks-web/utils'
+import { getToken, encrypt } from '@jetlinks-web/utils'
 import { ref, reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { getImage } from '@/utils'
 
 const { t: $t } = useI18n()
 

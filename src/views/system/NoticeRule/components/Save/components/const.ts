@@ -1,4 +1,4 @@
-import { getImage } from '@jetlinks-web/utils';
+import { getImage } from '@/utils'
 import i18n from '@/locales';
 interface INoticeMethod {
     label: string;

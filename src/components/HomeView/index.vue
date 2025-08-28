@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts" setup>
-import { getImage } from '@jetlinks-web/utils';
+import { getImage } from '@/utils';
 import { useI18n } from 'vue-i18n';
 
 const { t: $t } = useI18n();

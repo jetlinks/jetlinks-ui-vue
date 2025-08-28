@@ -71,7 +71,7 @@
 </template>
 
 <script lang="ts" setup>
-import { getImage } from '@jetlinks-web/utils'
+import { getImage } from '@/utils'
 import Detail from './Detail.vue'
 import { useUserStore } from '@/store/user'
 import EditInfo from '../../EditInfo/index.vue'

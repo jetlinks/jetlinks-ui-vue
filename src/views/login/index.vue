@@ -25,12 +25,13 @@
   </a-spin>
 </template>
 <script setup name="Login" lang="ts">
-import { getImage, LocalStore } from "@jetlinks-web/utils";
+import { LocalStore } from "@jetlinks-web/utils";
 import { useSystemStore } from "@/store/system";
 import { storeToRefs } from "pinia";
 import Right from "./right.vue";
 import { bindInfo } from "@/api/login";
 import {useI18n} from "vue-i18n";
+import { getImage } from '@/utils'
 
 const { t: $t } = useI18n();
 const systemStore = useSystemStore();

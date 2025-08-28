@@ -147,7 +147,8 @@
 </template>
 <script setup name="LoginRight">
 import Remember from "./remember.vue";
-import { encrypt, getImage, setToken } from "@jetlinks-web/utils";
+import { getImage } from '@/utils'
+import { encrypt, setToken } from "@jetlinks-web/utils";
 import { useRequest } from "@jetlinks-web/hooks";
 import {
   captchaConfig,

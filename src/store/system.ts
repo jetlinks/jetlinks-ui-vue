@@ -5,6 +5,7 @@ import {
 } from '@/api/system/calendar'
 import {LocalStore} from "@jetlinks-web/utils";
 import {langKey} from "@/utils/consts";
+import logoPng from '@/assets/login/logo.png'
 
 interface LayoutType {
   siderWidth: number
@@ -29,7 +30,7 @@ export const useSystemStore = defineStore('system', () => {
     headerHeight: 48,
     collapsedWidth: 48,
     title: '物联网平台', // 浏览器标签页title和系统名称
-    logo: '/images/login/logo.png',
+    logo: logoPng,
     layout: 'mix'
   })
 
