@@ -102,9 +102,10 @@ const virtualData = computed(()=> {
 // }
 
 const onScroll = () => {
+  if (!viewScrollRef.value) return
+
   const height = viewScrollRef.value.scrollTop
   const clientHeight = viewScrollRef.value.clientHeight
-  const scrollHeight = viewScrollRef.value.scrollHeight
 
   const _index = Math.round(height / props.cellHeight) - 1
 
@@ -167,9 +168,10 @@ const updateSelectedKeys = (keys) => {
 }
 
 onMounted(() => {
-  nextTick(() => {
+  // 防止Modal弹窗中dom还没完全渲染
+  setTimeout(() => {
     onScroll()
-  })
+  }, 1000)
 })
 
 onBeforeUnmount(() => {
@@ -249,7 +251,7 @@ defineExpose({
     flex: 1 1 auto;
     min-width: 0;
     height: 100%;
-    
+
     .metadata-edit-table-row {
       width: 100%;
       display: flex;
