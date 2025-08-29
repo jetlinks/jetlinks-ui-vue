@@ -1,19 +1,47 @@
 /**
  * 模块注册中心
  * 用于统一管理各个子模块的 API、组件、工具函数等资源
+ * 支持微前端和模块联邦
  */
 
 // 导入类型定义
-import type { ModuleResource, RegisterOptions } from '@/types/module-registry.d';
+import type { ModuleResource, RegisterOptions } from '@/types/module-registry.d'
+import { federationBridge } from './micro-federation-bridge'
+import { performanceMonitor } from './federation-performance-monitor'
 
 // 注册表存储所有模块的资源
 const moduleRegistryMap = new Map<string, ModuleResource>();
 
+// 模块状态枚举
+export enum ModuleStatus {
+  IDLE = 'idle',
+  LOADING = 'loading', 
+  LOADED = 'loaded',
+  REGISTERED = 'registered',
+  ERROR = 'error'
+}
+
+// 模块元数据接口
+export interface ModuleMetadata {
+  moduleId: string
+  status: ModuleStatus
+  loadTime?: number
+  registerTime?: number
+  version?: string
+  source: 'local' | 'federation' | 'micro-app'
+  dependencies?: string[]
+  error?: Error
+}
+
 export class ModuleRegistry {
   private static instance: ModuleRegistry;
   private registry = moduleRegistryMap;
+  private metadata = new Map<string, ModuleMetadata>();
+  private loadingPromises = new Map<string, Promise<void>>();
 
-  private constructor() {}
+  private constructor() {
+    this.setupEventListeners();
+  }
 
   /**
    * 获取注册中心实例（单例）
@@ -56,6 +84,19 @@ export class ModuleRegistry {
     };
 
     this.registry.set(moduleId, mergedResource);
+    
+    // 更新模块元数据
+    this.updateMetadata(moduleId, {
+      status: ModuleStatus.REGISTERED,
+      registerTime: Date.now(),
+      source: this.detectSource(resource)
+    });
+    
+    // 发布模块注册事件
+    federationBridge.emit('module:registered', 'module-registry', {
+      moduleId,
+      resource: mergedResource
+    });
     
     console.log(`模块 ${moduleId} 注册成功`);
   }
@@ -296,6 +337,309 @@ export class ModuleRegistry {
 
     return matchingModules;
   }
+
+  /**
+   * 设置事件监听器
+   */
+  private setupEventListeners(): void {
+    // 监听应用加载完成事件
+    federationBridge.on('app:loaded', (event) => {
+      const { appId } = event.payload;
+      this.updateMetadata(appId, {
+        status: ModuleStatus.LOADED,
+        loadTime: Date.now()
+      });
+    });
+
+    // 监听应用卸载事件
+    federationBridge.on('app:unmounted', (event) => {
+      const { appId } = event.payload;
+      this.handleModuleUnload(appId);
+    });
+  }
+
+  /**
+   * 检测资源来源
+   */
+  private detectSource(resource: Partial<ModuleResource>): 'local' | 'federation' | 'micro-app' {
+    // 简单的来源检测逻辑
+    if ((resource as any).federation) return 'federation';
+    if ((resource as any).microApp) return 'micro-app';
+    return 'local';
+  }
+
+  /**
+   * 更新模块元数据
+   */
+  public updateMetadata(moduleId: string, updates: Partial<ModuleMetadata>): void {
+    const existing = this.metadata.get(moduleId) || {
+      moduleId,
+      status: ModuleStatus.IDLE,
+      source: 'local'
+    };
+    
+    const updated: ModuleMetadata = { ...existing, ...updates };
+    this.metadata.set(moduleId, updated);
+  }
+
+  /**
+   * 获取模块元数据
+   */
+  public getMetadata(moduleId: string): ModuleMetadata | undefined {
+    return this.metadata.get(moduleId);
+  }
+
+  /**
+   * 获取所有模块元数据
+   */
+  public getAllMetadata(): Map<string, ModuleMetadata> {
+    return new Map(this.metadata);
+  }
+
+  /**
+   * 动态加载联邦模块
+   */
+  public async loadFederationModule(
+    moduleId: string, 
+    remoteName: string, 
+    exposedModule: string,
+    entryUrl?: string
+  ): Promise<ModuleResource | null> {
+    // 避免重复加载
+    if (this.loadingPromises.has(moduleId)) {
+      await this.loadingPromises.get(moduleId);
+      return this.getModule(moduleId) || null;
+    }
+
+    // 检查模块是否已加载
+    if (this.hasModule(moduleId)) {
+      return this.getModule(moduleId)!;
+    }
+
+    this.updateMetadata(moduleId, {
+      status: ModuleStatus.LOADING
+    });
+
+    const monitorId = performanceMonitor.startLoading(`federation_module_${moduleId}`);
+    
+    const loadPromise = this.doLoadFederationModule(moduleId, remoteName, exposedModule, entryUrl);
+    this.loadingPromises.set(moduleId, loadPromise);
+
+    try {
+      await loadPromise;
+      
+      const module = this.getModule(moduleId);
+      
+      performanceMonitor.endLoading(monitorId);
+      
+      // 发布加载完成事件
+      federationBridge.emit('federation-module:loaded', 'module-registry', {
+        moduleId,
+        remoteName,
+        exposedModule
+      });
+
+      return module || null;
+
+    } catch (error) {
+      this.updateMetadata(moduleId, {
+        status: ModuleStatus.ERROR,
+        error: error as Error
+      });
+      
+      performanceMonitor.endLoadingWithError(monitorId, error as Error);
+      
+      // 发布加载失败事件
+      federationBridge.emit('federation-module:load-failed', 'module-registry', {
+        moduleId,
+        remoteName,
+        exposedModule,
+        error: (error as Error).message
+      });
+
+      throw error;
+
+    } finally {
+      this.loadingPromises.delete(moduleId);
+    }
+  }
+
+  /**
+   * 执行联邦模块加载
+   */
+  private async doLoadFederationModule(
+    moduleId: string,
+    remoteName: string, 
+    exposedModule: string,
+    entryUrl?: string
+  ): Promise<void> {
+    try {
+      // 动态导入federation loader
+      const { loadComponent } = await import('./federation-loader');
+      
+      // 加载远程组件/模块
+      const result = await loadComponent({
+        remoteName,
+        exposedModule,
+        entryUrl,
+        useCache: true
+      });
+
+      if (!result.success || !result.data) {
+        throw new Error(`加载联邦模块失败: ${result.error?.message || '未知错误'}`);
+      }
+
+      // 处理加载的模块
+      const moduleExports = result.data;
+      
+      // 如果模块导出了register函数，自动注册
+      if (typeof moduleExports.register === 'function') {
+        await moduleExports.register();
+      } else if (moduleExports.default?.register) {
+        await moduleExports.default.register();
+      } else {
+        // 手动注册模块资源
+        this.register(moduleId, {
+          components: moduleExports.components || {},
+          apis: moduleExports.apis || {},
+          utils: moduleExports.utils || {},
+          stores: moduleExports.stores || {},
+          routes: moduleExports.routes || [],
+          federation: {
+            remoteName,
+            exposedModule,
+            entryUrl,
+            loaded: true
+          }
+        } as any);
+      }
+
+    } catch (error) {
+      console.error(`联邦模块加载失败 ${moduleId}:`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * 处理模块卸载
+   */
+  public handleModuleUnload(moduleId: string): void {
+    // 更新状态
+    this.updateMetadata(moduleId, {
+      status: ModuleStatus.IDLE
+    });
+
+    // 发布卸载事件
+    federationBridge.emit('module:unloaded', 'module-registry', {
+      moduleId
+    });
+
+    console.log(`模块 ${moduleId} 已卸载`);
+  }
+
+  /**
+   * 批量加载联邦模块
+   */
+  public async batchLoadFederationModules(
+    configs: Array<{
+      moduleId: string;
+      remoteName: string;
+      exposedModule: string;
+      entryUrl?: string;
+    }>
+  ): Promise<(ModuleResource | null)[]> {
+    const promises = configs.map(config => 
+      this.loadFederationModule(
+        config.moduleId,
+        config.remoteName, 
+        config.exposedModule,
+        config.entryUrl
+      ).catch(() => null)
+    );
+
+    return Promise.all(promises);
+  }
+
+  /**
+   * 获取模块统计信息
+   */
+  public getModuleStats() {
+    const allMetadata = Array.from(this.metadata.values());
+    
+    return {
+      totalModules: this.registry.size,
+      registeredModules: allMetadata.filter(m => m.status === ModuleStatus.REGISTERED).length,
+      loadingModules: allMetadata.filter(m => m.status === ModuleStatus.LOADING).length,
+      errorModules: allMetadata.filter(m => m.status === ModuleStatus.ERROR).length,
+      federationModules: allMetadata.filter(m => m.source === 'federation').length,
+      microAppModules: allMetadata.filter(m => m.source === 'micro-app').length,
+      localModules: allMetadata.filter(m => m.source === 'local').length,
+      averageLoadTime: this.calculateAverageLoadTime(),
+      modulesByStatus: this.groupModulesByStatus()
+    };
+  }
+
+  /**
+   * 计算平均加载时间
+   */
+  private calculateAverageLoadTime(): number {
+    const loadedModules = Array.from(this.metadata.values())
+      .filter(m => m.loadTime && m.registerTime);
+    
+    if (loadedModules.length === 0) return 0;
+    
+    const totalTime = loadedModules.reduce((sum, m) => 
+      sum + ((m.registerTime || 0) - (m.loadTime || 0)), 0
+    );
+    
+    return totalTime / loadedModules.length;
+  }
+
+  /**
+   * 按状态分组模块
+   */
+  private groupModulesByStatus(): Record<ModuleStatus, string[]> {
+    const result = {
+      [ModuleStatus.IDLE]: [] as string[],
+      [ModuleStatus.LOADING]: [] as string[],
+      [ModuleStatus.LOADED]: [] as string[],
+      [ModuleStatus.REGISTERED]: [] as string[],
+      [ModuleStatus.ERROR]: [] as string[]
+    };
+    
+    this.metadata.forEach((metadata, moduleId) => {
+      result[metadata.status].push(moduleId);
+    });
+    
+    return result;
+  }
+
+  /**
+   * 重新加载模块
+   */
+  public async reloadModule(moduleId: string): Promise<void> {
+    const metadata = this.metadata.get(moduleId);
+    if (!metadata) {
+      throw new Error(`模块 ${moduleId} 不存在`);
+    }
+
+    // 如果是联邦模块，重新加载
+    if (metadata.source === 'federation') {
+      const module = this.getModule(moduleId);
+      if (module && (module as any).federation) {
+        // 清除现有注册
+        this.unregister(moduleId);
+        
+        // 重新加载
+        await this.loadFederationModule(
+          moduleId,
+          (module as any).federation.remoteName,
+          (module as any).federation.exposedModule,
+          (module as any).federation.entryUrl
+        );
+      }
+    }
+  }
 }
 
 // 导出单例实例
@@ -317,7 +661,16 @@ export const {
   getAllModules,
   clear,
   batchRegister,
-  searchModules
+  searchModules,
+  // 新增的微前端和联邦模块支持方法
+  updateMetadata,
+  getMetadata,
+  getAllMetadata,
+  loadFederationModule,
+  handleModuleUnload,
+  batchLoadFederationModules,
+  getModuleStats,
+  reloadModule
 } = moduleRegistry;
 
 export default moduleRegistry;

@@ -9,6 +9,9 @@ import {isSubApp} from '@/utils/consts'
 import { useApplication, useUserStore, useSystemStore, useMenuStore  } from '@/store'
 import { modules } from '@/utils/modules'
 import microApp from '@micro-zoe/micro-app'
+import { createMicroRouterEnhancer } from './micro-router-enhancer'
+import { microFrontendConfig } from '@/configs/micro-frontend-config'
+import { federationBridge } from '@/utils/micro-federation-bridge'
 
 let TokenFilterRoute: string[] = [OAuth2.path, AccountCenterBind.path, AUTHORIZE_ROUTE.path]
 
@@ -45,6 +48,8 @@ const router = createRouter({
   },
 })
 
+// 创建微前端路由增强器
+const routerEnhancer = createMicroRouterEnhancer(router)
 
 microApp.router.setBaseAppRouter(router)
 
@@ -76,6 +81,21 @@ const getRoutesByServer = async (to: any, next: any) => {
 
   if (!isSubApp && !application.appList.length) { // 是否开启微前端
     await application.queryApplication() // 获取子应用
+    
+    // 初始化微前端配置
+    if (application.appList.length > 0) {
+      await microFrontendConfig.initialize(application.appList)
+      
+      // 注册微前端路由配置
+      application.appList.forEach(app => {
+        routerEnhancer.registerMicroRoute({
+          appId: app.id,
+          prefix: `/${app.id}`,
+          preload: true,
+          preloadStrategy: 'idle' as any
+        })
+      })
+    }
   }
 
   // 没有菜单的情况下获取菜单
@@ -119,5 +139,8 @@ export const jumpLogin = () => {
     })
   })
 }
+
+// 导出路由增强器实例
+export { routerEnhancer }
 
 export default router
