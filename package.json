@@ -31,7 +31,6 @@
     "@micro-zoe/micro-app": "1.0.0-rc.26",
     "@vuemap/vue-amap": "^2.1.9",
     "@vueuse/router": "^11.3.0",
-    "ant-design-x-vue": "^1.3.2",
     "axios": "^1.8.4",
     "colorpicker-v3": "^2.10.2",
     "dayjs": "^1.11.13",
