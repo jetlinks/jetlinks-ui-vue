@@ -9,7 +9,7 @@ import {getGlobModules} from '@/router/globModules'
 import {getExtraRouters} from '@/router/extraMenu'
 import {USER_CENTER_ROUTE, INIT_HOME, EDGE_TOKEN_ROUTE} from '@/router/basic'
 import {useAuthStore, useApplication} from '@/store'
-import {OWNER_KEY} from "@/utils/consts";
+import { isSubApp, OWNER_KEY } from '@/utils/consts'
 import i18n from "@/locales";
 import {BASE_API} from "@jetlinks-web/constants";
 import type { RouteRecordRaw } from 'vue-router'
@@ -110,6 +110,32 @@ export const useMenuStore = defineStore('menu', () => {
         menusMap.value.set(name, {path,title:meta?.title})
     }
 
+    const createRoutes = async (menuResult: any[]) => {
+        menusMap.value.clear()
+        const asyncRoutes = await getGlobModules()
+        const extraMenu = await getExtraRouters()
+
+        const { menuRoutes, menuMap, menus, authButtons } = handleMenus(cloneDeep(menuResult), extraMenu, asyncRoutes) // 处理路由
+
+        menuRoutes.push(USER_CENTER_ROUTE) // 添加个人中心
+        menuRoutes.push(INIT_HOME)
+
+        if (menuRoutes.length) {
+            menuRoutes.push({
+                path: '/',
+                redirect: menuRoutes[0].path,
+            })
+        }
+
+        // authStore.handlePermission(menuResult) // 处理按钮权限
+        console.log('routes', menuRoutes)
+        console.log('menus', menus)
+        menusMap.value = menuMap
+        menu.value = menuRoutes
+        siderMenus.value = menus // 处理菜单
+        authStore.setPermissionsAll(authButtons)
+    }
+
     const queryMenus = async () => {
         const resp = await getOwnMenuThree({
             paging: false,
@@ -162,37 +188,12 @@ export const useMenuStore = defineStore('menu', () => {
                     }
                 }
             }
-
             // 开始遍历处理
             handleMicroApp(menuResult);
-
         }
 
-        const asyncRoutes = await getGlobModules()
-        menusMap.value.clear()
-
         if (resp.success) {
-            const extraMenu = await getExtraRouters()
-
-            const { menuRoutes, menuMap, menus, authButtons } = handleMenus(cloneDeep(menuResult), extraMenu, asyncRoutes) // 处理路由
-
-            menuRoutes.push(USER_CENTER_ROUTE) // 添加个人中心
-            menuRoutes.push(INIT_HOME)
-
-            if (menuRoutes.length) {
-                menuRoutes.push({
-                    path: '/',
-                    redirect: menuRoutes[0].path,
-                })
-            }
-
-            // authStore.handlePermission(menuResult) // 处理按钮权限
-            console.log('routes', menuRoutes)
-            console.log('menus', menus)
-            menusMap.value = menuMap
-            menu.value = menuRoutes
-            siderMenus.value = menus // 处理菜单
-            authStore.setPermissionsAll(authButtons)
+            await createRoutes(menuResult)
         }
     }
 
@@ -210,5 +211,6 @@ export const useMenuStore = defineStore('menu', () => {
         routerPush,
         queryMenus,
         getMenu,
+        createRoutes
     }
 })

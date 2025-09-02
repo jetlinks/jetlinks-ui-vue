@@ -1,4 +1,3 @@
-import {isArray, isFunction} from "lodash-es";
 import type { RouteMeta } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
 import { USER_CENTER_MENU_CODE } from '@/utils/consts'
@@ -90,8 +89,14 @@ export const handleMenus = (menuData: MenuItem[], extraMenus: any, components: R
   const findComponent = (record: MenuItem, level: number) => {
     const myComponents = components[record.meta?.componentCode as string || record.code]
 
-    if (record.appId && !record.children?.length) {
-      return () => import('../layout/Iframe.vue')
+    if (!record.children?.length) {
+      if (record.meta?.appName && record.meta?.appUrl) {
+        return () => import('../views/mirco/SubAppRedirect/base.vue')
+      }
+
+      if (record.appId) {
+        return () => import('../layout/Iframe.vue')
+      }
     }
 
     if (myComponents) {
@@ -114,7 +119,7 @@ export const handleMenus = (menuData: MenuItem[], extraMenus: any, components: R
 
     if (!menu) return
 
-    const routes = isArray(menu) ? menu: menu.children
+    const routes = Array.isArray(menu) ? menu: menu.children
 
     return routes?.map((e: any) => {
       const meta: RouteMeta = {
@@ -166,8 +171,13 @@ export const handleMenus = (menuData: MenuItem[], extraMenus: any, components: R
       const showChildren = _route.children?.filter(item => !item.meta?.hideInMenu) || []
 
       if (showChildren.length) {
-        _route.redirect = showChildren[0].path
+        _route.redirect = showChildren[0].path.replace('/:page*', '')
       }
+
+      if (item.meta?.appName && item.meta?.appUrl) {
+        _route.path = `${item.url}/:page*`
+      }
+
       _routes.unshift(_route as RouteRecordRaw)
     }
     return _routes
