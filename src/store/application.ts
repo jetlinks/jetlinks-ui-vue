@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import {uiList} from "@/api/application";
-import {OpenMicroApp} from "@/utils/consts";
-import { microFrontendConfig, MicroAppStatus } from '@/configs/micro-frontend-config'
-import { federationStrategy } from '@/configs/federation-strategy'
+import { isSubApp, OpenMicroApp } from '@/utils/consts'
+import { microFrontendConfig, MicroAppStatus } from '../../configs/micro-frontend-config'
+import { federationStrategy } from '../../configs/federation-strategy'
 import { federationBridge } from '@/utils/micro-federation-bridge'
 import { preloader, PreloadStrategy } from '@/utils/federation-preloader'
 import { performanceMonitor } from '@/utils/federation-performance-monitor'
@@ -27,12 +27,12 @@ export const useApplication = defineStore('application', () => {
   let lock = false
 
   // 计算属性：活跃的应用列表
-  const activeApps = computed(() => 
+  const activeApps = computed(() =>
     appList.value.filter(app => app.enabled !== false && app.status !== MicroAppStatus.ERROR)
   )
 
   // 计算属性：已加载的应用数量
-  const loadedAppsCount = computed(() => 
+  const loadedAppsCount = computed(() =>
     appList.value.filter(app => app.status === MicroAppStatus.LOADED || app.status === MicroAppStatus.MOUNTED).length
   )
 
@@ -57,24 +57,32 @@ export const useApplication = defineStore('application', () => {
     try {
       const resp = await uiList()
       if (resp.success && resp.result) {
+        let result = resp.result
+        if (import.meta.env.VITE_MODULE_NAME && !isSubApp) { // 子模块编译之后独立运行时
+          result = result.filter((item: any) => item.id !== import.meta.env.VITE_MODULE_NAME)
+        }
+
         // 处理应用数据，添加默认状态
-        const applications = resp.result.map((app: ApplicationItemType) => ({
+        const applications = [{ id: 'device-manager', name: 'device-manager-ui', path: 'http://localhost:8081/'}].map((app: ApplicationItemType) => ({
           ...app,
           enabled: app.enabled !== false,
           status: MicroAppStatus.IDLE,
           lastActive: Date.now()
         }))
-        
+
         appList.value = applications
-        
-        // 初始化微前端配置
-        await initializeMicroFrontend(applications)
-        
-        // 发布应用列表更新事件
-        federationBridge.emit('applications:updated', 'application-store', {
-          applications,
-          count: applications.length
-        })
+
+        // 生成federation策略配置
+        federationStrategy.generateFederationConfig(applications)
+
+        // // 初始化微前端配置
+        // await initializeMicroFrontend(applications)
+        //
+        // // 发布应用列表更新事件
+        // federationBridge.emit('applications:updated', 'application-store', {
+        //   applications,
+        //   count: applications.length
+        // })
 
         console.log(`已加载 ${applications.length} 个微前端应用`)
       }
@@ -93,10 +101,10 @@ export const useApplication = defineStore('application', () => {
     try {
       // 初始化微前端配置管理器
       await microFrontendConfig.initialize(applications)
-      
+
       // 生成federation策略配置
       federationStrategy.generateFederationConfig(applications)
-      
+
       // 设置预加载任务
       applications.forEach(app => {
         if (app.enabled !== false) {
@@ -138,12 +146,12 @@ export const useApplication = defineStore('application', () => {
 
     try {
       await microFrontendConfig.preloadApp(appId)
-      
+
       updateAppStatus(appId, MicroAppStatus.LOADED)
       app.loadTime = Date.now()
-      
+
       performanceMonitor.endLoading(monitorId)
-      
+
       // 发布应用预加载完成事件
       federationBridge.emit('app:preloaded', 'application-store', {
         appId,
@@ -157,9 +165,9 @@ export const useApplication = defineStore('application', () => {
       const errorMessage = (error as Error).message
       errorApps.value.set(appId, errorMessage)
       updateAppStatus(appId, MicroAppStatus.ERROR)
-      
+
       performanceMonitor.endLoadingWithError(monitorId, error as Error)
-      
+
       // 发布应用预加载失败事件
       federationBridge.emit('app:preload-failed', 'application-store', {
         appId,
@@ -179,11 +187,11 @@ export const useApplication = defineStore('application', () => {
    */
   const batchPreloadApps = async (appIds?: string[]): Promise<void> => {
     const targetApps = appIds || activeApps.value.map(app => app.id)
-    
-    const promises = targetApps.map(appId => 
+
+    const promises = targetApps.map(appId =>
       preloadApp(appId).catch(() => false)
     )
-    
+
     await Promise.allSettled(promises)
   }
 
@@ -195,7 +203,7 @@ export const useApplication = defineStore('application', () => {
     if (app) {
       app.status = status
       app.lastActive = Date.now()
-      
+
       // 同步更新微前端配置
       microFrontendConfig.updateAppStatus(appId, status)
     }
@@ -208,10 +216,10 @@ export const useApplication = defineStore('application', () => {
     const app = findAppById(appId)
     if (app) {
       app.enabled = enabled
-      
+
       // 同步更新微前端配置
       microFrontendConfig.setAppEnabled(appId, enabled)
-      
+
       // 发布应用状态变更事件
       federationBridge.emit('app:enabled-changed', 'application-store', {
         appId,
@@ -233,10 +241,10 @@ export const useApplication = defineStore('application', () => {
 
     // 清除错误状态
     errorApps.value.delete(appId)
-    
+
     // 重置状态
     updateAppStatus(appId, MicroAppStatus.IDLE)
-    
+
     // 重新预加载
     return await preloadApp(appId)
   }
@@ -262,7 +270,7 @@ export const useApplication = defineStore('application', () => {
   const getPerformanceStats = () => {
     const stats = performanceMonitor.getStats()
     const microStats = microFrontendConfig.getStats()
-    
+
     return {
       ...stats,
       microFrontend: microStats,
@@ -290,7 +298,7 @@ export const useApplication = defineStore('application', () => {
         }
       })
     }
-    
+
     // 清理微前端配置缓存
     microFrontendConfig.clear()
   }
@@ -301,7 +309,7 @@ export const useApplication = defineStore('application', () => {
   const isAppReady = (appId: string): boolean => {
     const app = findAppById(appId)
     if (!app || !app.enabled) return false
-    
+
     return app.status === MicroAppStatus.LOADED || app.status === MicroAppStatus.MOUNTED
   }
 
@@ -331,7 +339,7 @@ export const useApplication = defineStore('application', () => {
     activeApps,
     loadedAppsCount,
     appStats,
-    
+
     // 方法
     queryApplication,
     findAppById,

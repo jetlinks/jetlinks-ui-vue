@@ -3,8 +3,8 @@
  * 智能预加载远程应用和组件，提升用户体验
  */
 
-import { microFrontendConfig, MicroAppStatus } from '@/configs/micro-frontend-config'
-import { federationStrategy } from '@/configs/federation-strategy'
+import { microFrontendConfig, MicroAppStatus } from '../../configs/micro-frontend-config'
+import { federationStrategy } from '../../configs/federation-strategy'
 import { performanceMonitor } from './federation-performance-monitor'
 import { federationBridge } from './micro-federation-bridge'
 
@@ -63,7 +63,7 @@ export class FederationPreloader {
   private completedTasks = new Set<string>()
   private concurrentCount = 0
   private observer?: IntersectionObserver
-  
+
   // 默认配置
   private defaultConfig: PreloadConfig = {
     strategy: PreloadStrategy.IDLE,
@@ -93,19 +93,19 @@ export class FederationPreloader {
    */
   public addTask(appId: string, config: Partial<PreloadConfig> = {}): string {
     const taskId = `${appId}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-    
+
     const task: PreloadTask = {
       id: taskId,
       appId,
       config: { ...this.defaultConfig, ...config },
       status: 'pending'
     }
-    
+
     this.tasks.set(taskId, task)
-    
+
     // 根据策略执行预加载
     this.scheduleTask(task)
-    
+
     return taskId
   }
 
@@ -121,31 +121,31 @@ export class FederationPreloader {
    */
   private scheduleTask(task: PreloadTask): void {
     const { strategy, delay = 0 } = task.config
-    
+
     const execute = () => {
       switch (strategy) {
         case PreloadStrategy.IMMEDIATE:
           this.executeTask(task)
           break
-          
+
         case PreloadStrategy.IDLE:
           this.scheduleIdleTask(task)
           break
-          
+
         case PreloadStrategy.VISIBLE:
           this.scheduleVisibleTask(task)
           break
-          
+
         case PreloadStrategy.INTERACTION:
           this.scheduleInteractionTask(task)
           break
-          
+
         case PreloadStrategy.ROUTE:
           this.scheduleRouteTask(task)
           break
       }
     }
-    
+
     if (delay > 0) {
       setTimeout(execute, delay)
     } else {
@@ -187,7 +187,7 @@ export class FederationPreloader {
    */
   private scheduleInteractionTask(task: PreloadTask): void {
     const events = ['mousedown', 'touchstart', 'keydown']
-    
+
     const handler = () => {
       if (this.shouldExecuteTask(task)) {
         this.executeTask(task)
@@ -196,7 +196,7 @@ export class FederationPreloader {
         })
       }
     }
-    
+
     events.forEach(event => {
       document.addEventListener(event, handler, { passive: true, once: true })
     })
@@ -221,18 +221,18 @@ export class FederationPreloader {
   private shouldExecuteTask(task: PreloadTask): boolean {
     // 检查任务状态
     if (task.status !== 'pending') return false
-    
+
     // 检查并发限制
     if (!task.config.concurrent && this.concurrentCount > 0) return false
     if (this.concurrentCount >= (task.config.maxConcurrency || 3)) return false
-    
+
     // 检查应用状态
     const appInfo = microFrontendConfig.getAppInfo(task.appId)
     if (appInfo && appInfo.status !== MicroAppStatus.IDLE) return false
-    
+
     // 检查网络条件
     if (!this.checkNetworkCondition(task.config.networkCondition)) return false
-    
+
     return true
   }
 
@@ -241,54 +241,54 @@ export class FederationPreloader {
    */
   private async executeTask(task: PreloadTask): Promise<void> {
     if (!this.shouldExecuteTask(task)) return
-    
+
     task.status = 'loading'
     task.startTime = Date.now()
     this.loadingTasks.add(task.id)
     this.concurrentCount++
-    
+
     const monitorId = performanceMonitor.startLoading(`preload_${task.appId}`)
-    
+
     try {
       // 执行预加载
       await microFrontendConfig.preloadApp(task.appId)
-      
+
       // 更新任务状态
       task.status = 'completed'
       task.endTime = Date.now()
       this.completedTasks.add(task.id)
-      
+
       performanceMonitor.endLoading(monitorId)
-      
+
       // 发布预加载完成事件
       federationBridge.emit('preload:completed', 'preloader', {
         appId: task.appId,
         taskId: task.id,
         loadTime: task.endTime - (task.startTime || 0)
       })
-      
+
       console.log(`✅ 预加载完成: ${task.appId}`)
-      
+
     } catch (error) {
       task.status = 'failed'
       task.endTime = Date.now()
       task.error = error as Error
-      
+
       performanceMonitor.endLoadingWithError(monitorId, error as Error)
-      
+
       // 发布预加载失败事件
       federationBridge.emit('preload:failed', 'preloader', {
         appId: task.appId,
         taskId: task.id,
         error: (error as Error).message
       })
-      
+
       console.error(`❌ 预加载失败: ${task.appId}`, error)
-      
+
     } finally {
       this.loadingTasks.delete(task.id)
       this.concurrentCount--
-      
+
       // 尝试执行下一个任务
       this.executeNextPendingTask()
     }
@@ -301,7 +301,7 @@ export class FederationPreloader {
     const pendingTasks = Array.from(this.tasks.values())
       .filter(task => task.status === 'pending')
       .sort((a, b) => (b.config.priority || 5) - (a.config.priority || 5))
-    
+
     for (const task of pendingTasks) {
       if (this.shouldExecuteTask(task)) {
         this.executeTask(task)
@@ -315,13 +315,13 @@ export class FederationPreloader {
    */
   private checkNetworkCondition(condition?: 'fast' | 'slow' | 'any'): boolean {
     if (!condition || condition === 'any') return true
-    
+
     // 检查网络连接信息
     if ('connection' in navigator) {
       const conn = (navigator as any).connection
       if (conn) {
         const effectiveType = conn.effectiveType
-        
+
         if (condition === 'fast') {
           return ['4g'].includes(effectiveType)
         } else if (condition === 'slow') {
@@ -329,7 +329,7 @@ export class FederationPreloader {
         }
       }
     }
-    
+
     return true
   }
 
@@ -381,7 +381,7 @@ export class FederationPreloader {
     const task = Array.from(this.tasks.values()).find(
       t => t.appId === appId && t.config.strategy === PreloadStrategy.VISIBLE && t.status === 'pending'
     )
-    
+
     if (task && this.shouldExecuteTask(task)) {
       this.executeTask(task)
     }
@@ -411,7 +411,7 @@ export class FederationPreloader {
    */
   public getStats() {
     const allTasks = Array.from(this.tasks.values())
-    
+
     return {
       totalTasks: allTasks.length,
       pendingTasks: allTasks.filter(t => t.status === 'pending').length,
@@ -430,13 +430,13 @@ export class FederationPreloader {
   private calculateAverageLoadTime(): number {
     const completedTasks = Array.from(this.tasks.values())
       .filter(t => t.status === 'completed' && t.startTime && t.endTime)
-    
+
     if (completedTasks.length === 0) return 0
-    
-    const totalTime = completedTasks.reduce((sum, task) => 
+
+    const totalTime = completedTasks.reduce((sum, task) =>
       sum + ((task.endTime || 0) - (task.startTime || 0)), 0
     )
-    
+
     return totalTime / completedTasks.length
   }
 
@@ -446,9 +446,9 @@ export class FederationPreloader {
   private calculateSuccessRate(): number {
     const finishedTasks = Array.from(this.tasks.values())
       .filter(t => t.status === 'completed' || t.status === 'failed')
-    
+
     if (finishedTasks.length === 0) return 0
-    
+
     const successTasks = finishedTasks.filter(t => t.status === 'completed').length
     return (successTasks / finishedTasks.length) * 100
   }
@@ -460,7 +460,7 @@ export class FederationPreloader {
     const completedTaskIds = Array.from(this.tasks.values())
       .filter(t => t.status === 'completed' || t.status === 'failed')
       .map(t => t.id)
-    
+
     completedTaskIds.forEach(id => {
       this.tasks.delete(id)
       this.completedTasks.delete(id)

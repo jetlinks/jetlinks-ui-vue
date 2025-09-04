@@ -5,8 +5,7 @@
 
 import { reactive, ref, computed } from 'vue'
 import type { App } from 'vue'
-import { microFrontendConfig } from '@/configs/micro-frontend-config'
-import { performanceMonitor } from './federation-performance-monitor'
+import { microFrontendConfig } from '../../configs/micro-frontend-config'
 
 // 事件类型
 export interface BridgeEvent {
@@ -42,7 +41,7 @@ export class MicroFederationBridge {
   private sharedData = reactive<SharedData>({})
   private appContexts = new Map<string, AppContext>()
   private globalApp?: App
-  
+
   private constructor() {
     // 监听跨窗口通信
     if (typeof window !== 'undefined') {
@@ -69,7 +68,7 @@ export class MicroFederationBridge {
    */
   public registerAppContext(context: AppContext): void {
     this.appContexts.set(context.appId, context)
-    
+
     // 发布应用注册事件
     this.emit('app:registered', 'system', {
       appId: context.appId,
@@ -120,9 +119,9 @@ export class MicroFederationBridge {
     if (!this.eventBus.has(type)) {
       this.eventBus.set(type, [])
     }
-    
+
     this.eventBus.get(type)!.push(callback)
-    
+
     // 返回取消监听的函数
     return () => this.off(type, callback)
   }
@@ -153,7 +152,7 @@ export class MicroFederationBridge {
       callback(event)
       this.off(type, onceWrapper)
     }
-    
+
     return this.on(type, onceWrapper)
   }
 
@@ -162,7 +161,7 @@ export class MicroFederationBridge {
    */
   public setSharedData(key: string, value: any): void {
     this.sharedData[key] = value
-    
+
     // 发布数据变更事件
     this.emit('data:changed', 'system', {
       key,
@@ -185,7 +184,7 @@ export class MicroFederationBridge {
     Object.entries(data).forEach(([key, value]) => {
       this.sharedData[key] = value
     })
-    
+
     // 发布批量数据变更事件
     this.emit('data:batch_changed', 'system', {
       keys: Object.keys(data),
@@ -202,7 +201,7 @@ export class MicroFederationBridge {
     if (!(key in this.sharedData)) {
       this.setSharedData(key, defaultValue)
     }
-    
+
     return computed({
       get: () => this.getSharedData(key),
       set: (value) => this.setSharedData(key, value)
@@ -262,7 +261,7 @@ export class MicroFederationBridge {
   public getAppStats() {
     const contexts = Array.from(this.appContexts.values())
     const microConfig = microFrontendConfig.getStats()
-    
+
     return {
       registeredApps: contexts.length,
       appList: contexts.map(ctx => ({
@@ -282,15 +281,15 @@ export class MicroFederationBridge {
   public destroy(): void {
     // 清理事件监听器
     this.eventBus.clear()
-    
+
     // 清理共享数据
     Object.keys(this.sharedData).forEach(key => {
       delete this.sharedData[key]
     })
-    
+
     // 清理应用上下文
     this.appContexts.clear()
-    
+
     // 移除窗口事件监听
     if (typeof window !== 'undefined') {
       window.removeEventListener('message', this.handleWindowMessage.bind(this))
@@ -305,13 +304,13 @@ export const federationBridge = MicroFederationBridge.getInstance()
 export function installFederationBridge(app: App): void {
   // 设置全局应用实例
   federationBridge.setGlobalApp(app)
-  
+
   // 提供全局属性
   app.config.globalProperties.$bridge = federationBridge
-  
+
   // 提供依赖注入
   app.provide('bridge', federationBridge)
-  
+
   console.log('MicroFederationBridge 插件已安装')
 }
 
@@ -326,13 +325,13 @@ export function useSharedData<T>(key: string, defaultValue: T) {
 
 export function useBridgeEvent(type: string, callback: (event: BridgeEvent) => void) {
   const unsubscribe = federationBridge.on(type, callback)
-  
+
   // Vue 3 的生命周期钩子
   if (typeof window !== 'undefined' && (window as any).getCurrentInstance) {
     const { onUnmounted } = require('vue')
     onUnmounted(unsubscribe)
   }
-  
+
   return unsubscribe
 }
 

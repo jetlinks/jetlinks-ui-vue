@@ -139,10 +139,10 @@ export class MicroFrontendConfig {
 
     try {
       // 动态导入federation loader
-      const { preloadRemote } = await import('@jetlinks-web/vite/federation/dynamic-loader')
+      const { preloadRemoteComponents } = await import('../src/utils/remote-component-loader')
       
       // 预加载远程应用
-      await preloadRemote(app.federation.name, app.federation.entry)
+      await preloadRemoteComponents([{ remoteName: app.federation.name }])
       
       this.updateAppStatus(appId, MicroAppStatus.LOADED)
     } catch (error) {

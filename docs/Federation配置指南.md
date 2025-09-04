@@ -23,7 +23,7 @@ FederationStrategy          // 策略管理器
 ### 1. 联邦策略配置
 
 ```typescript
-import { federationStrategy } from '@/configs/federation-strategy'
+import { federationStrategy } from '../../federation-strategy'
 
 // 注册单个远程应用
 federationStrategy.registerRemote({
@@ -51,7 +51,7 @@ federationStrategy.batchRegisterRemotes([
 ### 2. 微前端配置
 
 ```typescript
-import { microFrontendConfig } from '@/configs/micro-frontend-config'
+import { microFrontendConfig } from '../../micro-frontend-config'
 
 // 初始化配置
 await microFrontendConfig.initialize([
@@ -214,7 +214,7 @@ const { component, loading, error, reload } = useFederationComponent(
 ### 1. 应用预加载
 
 ```typescript
-import { microFrontendConfig } from '@/configs/micro-frontend-config'
+import { microFrontendConfig } from '../../micro-frontend-config'
 
 // 预加载单个应用
 await microFrontendConfig.preloadApp('device-manager')
@@ -265,7 +265,7 @@ console.log('预加载统计:', stats)
 ### 1. 运行时添加远程应用
 
 ```typescript
-import { federationStrategy } from '@/configs/federation-strategy'
+import { federationStrategy } from '../../federation-strategy'
 import { useApplication } from '@/store'
 
 const applicationStore = useApplication()
@@ -422,7 +422,7 @@ if (config) {
 ### 3. 版本管理
 
 ```typescript
-import { federationStrategy } from '@/configs/federation-strategy'
+import { federationStrategy } from '../../federation-strategy'
 
 // 带版本的配置
 federationStrategy.registerRemote({

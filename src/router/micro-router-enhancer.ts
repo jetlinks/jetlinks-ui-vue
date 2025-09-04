@@ -4,7 +4,7 @@
  */
 
 import type { Router, RouteRecordRaw, RouteLocationNormalized } from 'vue-router'
-import { microFrontendConfig } from '@/configs/micro-frontend-config'
+import { microFrontendConfig } from '../../configs/micro-frontend-config'
 import { federationBridge } from '@/utils/micro-federation-bridge'
 import { preloader, PreloadStrategy } from '@/utils/federation-preloader'
 import { performanceMonitor } from '@/utils/federation-performance-monitor'
@@ -88,7 +88,7 @@ export class MicroRouterEnhancer {
   public matchMicroRoute(path: string): RouteMatchResult {
     for (const [appId, config] of this.microRoutes) {
       if (!config.enabled) continue
-      
+
       if (path.startsWith(config.prefix)) {
         return {
           matched: true,
@@ -148,7 +148,7 @@ export class MicroRouterEnhancer {
       this.routeCache.set(cacheKey, processedRoutes)
 
       performanceMonitor.endLoading(monitorId)
-      
+
       // 发布路由加载完成事件
       federationBridge.emit('micro-route:loaded', 'router-enhancer', {
         appId,
@@ -159,7 +159,7 @@ export class MicroRouterEnhancer {
 
     } catch (error) {
       performanceMonitor.endLoadingWithError(monitorId, error as Error)
-      
+
       // 发布路由加载失败事件
       federationBridge.emit('micro-route:load-failed', 'router-enhancer', {
         appId,
@@ -250,7 +250,7 @@ export class MicroRouterEnhancer {
   public async addMicroRoutesToRouter(appId: string): Promise<void> {
     try {
       const routes = await this.loadMicroRoutes(appId)
-      
+
       routes.forEach(route => {
         this.router.addRoute(route)
       })
@@ -280,7 +280,7 @@ export class MicroRouterEnhancer {
 
     // 清除缓存
     this.routeCache.delete(`routes_${appId}`)
-    
+
     console.log(`已移除微前端路由: ${appId}`)
   }
 
@@ -291,18 +291,18 @@ export class MicroRouterEnhancer {
     // 前置守卫：检查是否需要加载微前端路由
     this.router.beforeEach(async (to, from, next) => {
       const matchResult = this.matchMicroRoute(to.path)
-      
+
       if (matchResult.matched && matchResult.appId) {
         const appId = matchResult.appId
-        
+
         try {
           // 检查路由是否已加载
           const hasRoutes = this.routeCache.has(`routes_${appId}`)
-          
+
           if (!hasRoutes) {
             // 动态加载路由
             await this.addMicroRoutesToRouter(appId)
-            
+
             // 重新导航到目标路由
             next({ ...to, replace: true })
             return
@@ -339,7 +339,7 @@ export class MicroRouterEnhancer {
     // 后置守卫：执行路由切换后的操作
     this.router.afterEach((to, from) => {
       const matchResult = this.matchMicroRoute(to.path)
-      
+
       if (matchResult.matched && matchResult.config?.guards?.afterEnter) {
         try {
           matchResult.config.guards.afterEnter(to, from)
@@ -370,10 +370,10 @@ export class MicroRouterEnhancer {
     try {
       const { useUserStore } = await import('@/store')
       const userStore = useUserStore()
-      
+
       // 假设用户store中有permissions数组
       const userPermissions = userStore.userInfo?.permissions || []
-      
+
       return permissions.every(permission => userPermissions.includes(permission))
     } catch (error) {
       console.error('权限检查失败:', error)

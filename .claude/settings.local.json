@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm build:modules device-manager)",
+      "Bash(pnpm add -D @rollup/plugin-virtual)",
+      "Bash(grep -n \"federation\" node_modules/.pnpm/@jetlinks-web+vite@2.1.6/node_modules/@jetlinks-web/vite/dist/index.mjs)",
+      "Bash(node -e \"fetch(''https://www.baidu.com'').then(r=>console.log(r.status)).catch(e=>console.error(e))\")",
+      "Bash(node -e \"fetch(''https://www.mastergo.com'').then(r=>console.log(r.status)).catch(e=>console.error(e))\")",
+      "WebFetch(domain:mastergo.com)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

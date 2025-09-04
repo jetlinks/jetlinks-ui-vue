@@ -14,6 +14,7 @@ import {
   registerModulesAlias,
   copyFile,
   copyImagesPlugin,
+  federation,
 } from './configs/plugin'
 
 const {defaultAlgorithm, defaultSeed} = theme;
@@ -21,20 +22,34 @@ const {defaultAlgorithm, defaultSeed} = theme;
 const mapToken = defaultAlgorithm(defaultSeed);
 const v3Token = convertLegacyToken(mapToken);
 
-const getModulePath = (moduleName: string, file: string) =>
-  moduleName
-    ? `../modules/${moduleName}-ui/${file}`
-    : `../modules/*/${file}`
-
 // https://vitejs.dev/config/
 export default defineConfig(({mode}) => {
 
   const env: Partial<ImportMetaEnv> = loadEnv(mode, process.cwd())
 
   const moduleNameIndex = process.argv.indexOf('--module-name');
-  const moduleName = moduleNameIndex !== -1 ? process.argv[moduleNameIndex + 1] : null;
+  const moduleName = moduleNameIndex !== -1 ? process.argv[moduleNameIndex + 1] + '-ui' : null;
 
-  console.log('module path',JSON.stringify(getModulePath(moduleName,'index.js')))
+  let federationRemote = {}
+
+  if (moduleName) {
+    federationRemote = {
+      filename: 'remoteEntry.js',
+      exposes: {
+        './register' : `./src/modules/${moduleName}/register.ts`
+      },
+      shared: {
+        vue: { singleton: true },
+        'vue-router': { singleton: true },
+        'ant-design-vue': { singleton: true },
+        'pinia': { singleton: true },
+        '@/utils/module-registry': { singleton: true }
+      }
+    }
+  }
+
+  console.log(federationRemote)
+
   return {
     base: './',
     resolve: {
@@ -44,9 +59,7 @@ export default defineConfig(({mode}) => {
       },
     },
     define: {
-      'import.meta.env.VITE_MODULE_GLOB': JSON.stringify(getModulePath(moduleName,'index.ts')),
-      'import.meta.env.VITE_MODULE_MENU_GLOB': JSON.stringify(getModulePath(moduleName,'baseMenu.ts')),
-      'import.meta.env.VITE_MODULE_LANG_GLOB': JSON.stringify(getModulePath(moduleName,'locales/lang/*.json')),
+      'import.meta.env.VITE_MODULE_NAME': JSON.stringify(moduleName)
     },
     build: {
       outDir: moduleName ? `src/modules/${moduleName}/dist` : 'dist',
@@ -68,7 +81,7 @@ export default defineConfig(({mode}) => {
             return `assets/[name].${new Date().getTime()}.[ext]`
           },
           compact: true,
-          manualChunks: {
+          manualChunks: moduleName ? undefined : {
             vue: ['vue', 'vue-router', 'pinia'],
             'lodash-es': ['lodash-es'],
             'echarts': ['echarts']
@@ -97,13 +110,17 @@ export default defineConfig(({mode}) => {
       progress(),
       copyFile(moduleName),
       copyImagesPlugin(),
+      federation({
+        name: moduleName ? `${moduleName}-app` : 'main-app',
+        ...federationRemote,
+      })
     ],
     server: {
       host: '0.0.0.0',
       port: Number(env.VITE_PORT),
       proxy: {
         [env.VITE_APP_BASE_API]: {
-          target: 'http://192.168.33.52:8844',
+          target: 'http://192.168.33.57:8844',
           // target: 'http://192.168.32.233:8601', // 王
           // target: 'http://192.168.35.114:8844',
           // target: 'http://192.168.33.210:8800',

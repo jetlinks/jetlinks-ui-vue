@@ -3,9 +3,9 @@
  * 提供动态加载远程组件和模块的统一接口
  */
 
-import { microFrontendConfig, MicroAppStatus } from '@/configs/micro-frontend-config'
-import { federationStrategy } from '@/configs/federation-strategy'
-import type { FederationRemoteConfig } from '@/configs/federation-strategy'
+import { microFrontendConfig, MicroAppStatus } from '../../configs/micro-frontend-config'
+import { federationStrategy } from '../../configs/federation-strategy'
+import type { FederationRemoteConfig } from '../../configs/federation-strategy'
 
 // 组件加载配置
 export interface ComponentLoadConfig {
@@ -65,14 +65,14 @@ export class FederationLoader {
 
       // 获取federation配置
       const federationConfig = await this.getFederationConfig(config)
-      
+
       // 创建加载Promise
       const loadPromise = this.doLoadComponent(federationConfig, config)
       this.loadingPromises.set(cacheKey, loadPromise)
 
       try {
         const component = await loadPromise
-        
+
         // 缓存组件
         if (config.useCache !== false) {
           this.componentCache.set(cacheKey, component)
@@ -103,17 +103,21 @@ export class FederationLoader {
     federationConfig: FederationRemoteConfig,
     config: ComponentLoadConfig
   ): Promise<any> {
-    const { loadRemoteComponent } = await import('@jetlinks-web/vite/federation/dynamic-loader')
-    
+    const { loadRemoteComponent } = await import('./remote-component-loader')
+
     // 设置超时
     const timeout = config.timeout || federationConfig.timeout || 30000
-    
+
+    const remoteComponent = loadRemoteComponent({
+      remoteName: federationConfig.name,
+      componentPath: config.exposedModule,
+      remoteUrl: federationConfig.entry,
+      timeout,
+      cache: true
+    })
+
     return Promise.race([
-      loadRemoteComponent(
-        federationConfig.name,
-        config.exposedModule,
-        federationConfig.entry
-      ),
+      Promise.resolve(remoteComponent),
       new Promise((_, reject) => {
         setTimeout(() => reject(new Error(`加载超时: ${timeout}ms`)), timeout)
       })
@@ -125,19 +129,19 @@ export class FederationLoader {
    */
   private static async getFederationConfig(config: ComponentLoadConfig): Promise<FederationRemoteConfig> {
     let federationConfig = federationStrategy.getRemoteConfig(config.remoteName)
-    
+
     // 如果没有找到配置，尝试从微前端配置中获取
     if (!federationConfig) {
       const appInfo = microFrontendConfig.getAppInfo(config.remoteName)
       federationConfig = appInfo?.federation
     }
-    
+
     // 如果仍然没有配置，创建临时配置
     if (!federationConfig) {
       if (!config.entryUrl) {
         throw new Error(`找不到远程应用 ${config.remoteName} 的配置，请提供 entryUrl`)
       }
-      
+
       federationConfig = {
         name: config.remoteName,
         entry: config.entryUrl,
@@ -204,7 +208,7 @@ export class FederationLoader {
    * 批量预加载
    */
   public static async batchPreload(configs: Array<{remoteName: string, entryUrl?: string}>): Promise<LoadResult<void>[]> {
-    const promises = configs.map(config => 
+    const promises = configs.map(config =>
       this.preloadRemote(config.remoteName, config.entryUrl)
     )
     return Promise.all(promises)

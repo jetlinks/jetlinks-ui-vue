@@ -22,6 +22,7 @@ import CrudTable from './CrudTable/index.vue'
 import MetadataValueItem from './MetadataValueItem/index.vue'
 import VirtualScroll from './VirtualScroll/index.vue'
 import Echarts from './Echarts'
+import RemoteComponent from './RemoteComponent/index.vue'
 
 export default {
     install(app: App) {
@@ -49,6 +50,8 @@ export default {
             .component('CrudTable', CrudTable)
             .component('MetadataValueItem', MetadataValueItem)
             .component('VirtualScroll', VirtualScroll)
+            .component('RemoteComponent', RemoteComponent)
+            .component('RemoteComponent', RemoteComponent)
 
         Object.keys(FormItemValue).forEach(key => {
             app.component(key, FormItemValue[key])
