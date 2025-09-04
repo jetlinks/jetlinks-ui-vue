@@ -2,6 +2,6 @@
 export default {
     colorPrimary: "#1677FF",
     colorLink: "#1677FF",
-    borderRadius: "2px",
+    borderRadius: 2,
     fontFamily: 'AliRegular'
 }
