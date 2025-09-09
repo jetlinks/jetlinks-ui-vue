@@ -1,9 +1,6 @@
 import fs from 'fs';
 import path from 'path';
 
-// const fs = require('fs');
-// const path = require('path');
-
 const copyImage = () => {
   // 定义模块的源目录和图像的目标目录
   const modulesDir = path.resolve(__dirname, '../../src/modules');
@@ -21,8 +18,9 @@ const copyImage = () => {
         const filePath = path.join(assetsDir, file);
         const stat = fs.statSync(filePath);
 
+        const isImg = ['.png', '.svg', '.jpg', '.jpeg', '.gif', '.webp', '.ico', '.bmp'].some(fType => file.endsWith(fType))
         // 如果项目是文件且不是 .js 或 .ts 文件，则复制它
-        if (stat.isFile() && !file.endsWith('.js') && !file.endsWith('.ts')) {
+        if (stat.isFile() && isImg) {
           const destPath = path.join(distDir, filePath.includes('assets\\') ? filePath.split('assets\\')[1] : file);
           if (!fs.existsSync(destPath)) {
             fs.mkdirSync(path.dirname(destPath), { recursive: true });
