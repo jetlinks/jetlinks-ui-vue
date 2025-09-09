@@ -14,8 +14,8 @@ import {
   registerModulesAlias,
   copyFile,
   copyImagesPlugin,
-  federation,
 } from './configs/plugin'
+import { federation } from '@jetlinks-web/vite'
 
 const {defaultAlgorithm, defaultSeed} = theme;
 
@@ -38,13 +38,8 @@ export default defineConfig(({mode}) => {
       exposes: {
         './register' : `./src/modules/${moduleName}/register.ts`
       },
-      shared: {
-        vue: { singleton: true },
-        'vue-router': { singleton: true },
-        'ant-design-vue': { singleton: true },
-        'pinia': { singleton: true },
-        '@/utils/module-registry': { singleton: true }
-      }
+      remotes: {},
+      enableDynamicRemotes: true
     }
   }
 
@@ -112,6 +107,14 @@ export default defineConfig(({mode}) => {
       copyImagesPlugin(),
       federation({
         name: moduleName ? `${moduleName}-app` : 'main-app',
+        shared: {
+          vue: { singleton: true },
+          'vue-router': { singleton: true },
+          'pinia': { singleton: true },
+          'axios': { singleton: true },
+          'vue-i18n': { singleton: true },
+          '@/utils/module-registry': { singleton: true }
+        },
         ...federationRemote,
       })
     ],
@@ -120,10 +123,7 @@ export default defineConfig(({mode}) => {
       port: Number(env.VITE_PORT),
       proxy: {
         [env.VITE_APP_BASE_API]: {
-          target: 'http://192.168.33.57:8844',
-          // target: 'http://192.168.32.233:8601', // 王
-          // target: 'http://192.168.35.114:8844',
-          // target: 'http://192.168.33.210:8800',
+          target: env.VITE_APP_DEV_PROXY_URL,
           ws: true,
           changeOrigin: true,
           rewrite: (path) => path.replace(new RegExp(`^${env.VITE_APP_BASE_API}`), ''),
