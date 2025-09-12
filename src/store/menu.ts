@@ -52,7 +52,8 @@ export const useMenuStore = defineStore('menu', () => {
     const menusMap = ref<Map<string, any>>(new Map())
     const menu = ref<RouteRecordRaw[]>([])
     const siderMenus = ref<RouteRecordRaw[]>([])
-
+    const menuResultCache = ref<any[]>([])
+    const loading = ref(true)
     const authStore = useAuthStore()
     const app = useApplication();
 
@@ -143,6 +144,7 @@ export const useMenuStore = defineStore('menu', () => {
         })
 
         let menuResult = resp.result
+        menuResultCache.value = JSON.parse(JSON.stringify(resp.result))
 
         //  遍历树节点，处理子应用页面
 
@@ -194,6 +196,7 @@ export const useMenuStore = defineStore('menu', () => {
 
         if (resp.success) {
             await createRoutes(menuResult)
+            loading.value = false
         }
     }
 
@@ -205,6 +208,8 @@ export const useMenuStore = defineStore('menu', () => {
         menu,
         siderMenus,
         menusMap,
+        loading,
+        menuResultCache,
         hasRouteMenu,
         hasMenu,
         jumpPage,

@@ -3,15 +3,17 @@ import {getToken} from "@jetlinks-web/utils";
 import app from '@micro-zoe/micro-app'
 import { wsClient } from '@jetlinks-web/core'
 import { useMenuStore } from '@/store'
+import { storeToRefs } from 'pinia'
 
 const route = useRoute()
 const router = useRouter()
 const loading = ref(true)
 const menuStore = useMenuStore()
+const menuStoreRef = storeToRefs(menuStore)
 
 const pageData = reactive({
-  name: 'device-ui',
-  url: 'http://localhost:9101/',
+  name: undefined,
+  url: undefined,
   defaultPage: '/',
 })
 
@@ -72,7 +74,6 @@ const initPage = () => {
   }
 
   const _defaultPage = '#' + `${microPath}?${searchParams.toString()}`
-
   if (pageData.name && pageData.name === appName) {
     app.router.push({ name: pageData.name, path: _defaultPage })
   } else if(appUrl){
@@ -83,9 +84,11 @@ const initPage = () => {
   }
 }
 
-watch(() => route.fullPath, () => {
-  initPage()
-}, { immediate: true})
+watch(() => [route.fullPath, menuStoreRef.loading.value], () => {
+  if (!menuStoreRef.loading.value) {
+    initPage()
+  }
+}, { immediate: true, deep: true })
 
 </script>
 

@@ -8,14 +8,10 @@ import { NOT_FIND_ROUTE, LOGIN_ROUTE, OAuth2, OAuthWechat, AccountCenterBind, AU
 import {isSubApp} from '@/utils/consts'
 import { useApplication, useUserStore, useSystemStore, useMenuStore  } from '@/store'
 import { modules } from '@/utils/modules'
-import microApp from '@micro-zoe/micro-app'
-import { createMicroRouterEnhancer } from './micro-router-enhancer'
-import { microFrontendConfig } from '../../configs/micro-frontend-config'
 
 let TokenFilterRoute: string[] = [OAuth2.path, AccountCenterBind.path, AUTHORIZE_ROUTE.path]
 
 let FilterPath: string[] = [OAuth2.path, AUTHORIZE_ROUTE.path]
-
 
 // 获取子模块默认路由
 const getModulesRoutes = () => {
@@ -61,11 +57,6 @@ const router = createRouter({
     return savedPosition || {top: 0}
   },
 })
-
-// 创建微前端路由增强器
-const routerEnhancer = createMicroRouterEnhancer(router)
-
-// microApp.router.setBaseAppRouter(router)
 
 const NoTokenJump = (to: any, next: any, isLogin: boolean) => {
   // 登录页，不需要token 的页面直接放行，否则跳转登录页

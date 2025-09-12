@@ -51,7 +51,6 @@ export default {
             .component('MetadataValueItem', MetadataValueItem)
             .component('VirtualScroll', VirtualScroll)
             .component('RemoteComponent', RemoteComponent)
-            .component('RemoteComponent', RemoteComponent)
 
         Object.keys(FormItemValue).forEach(key => {
             app.component(key, FormItemValue[key])

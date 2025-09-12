@@ -82,7 +82,7 @@ export const handleMenus = (menuData: MenuItem[], extraMenus: any, components: R
    * 过滤不需要生成路由的菜单数据
    * @param data
    */
-  const filterMenuData = (data: MenuItem[]) => {
+  const filterMenuData = (data: MenuItem[] = []) => {
     return data.filter(item => !filterMenuCode.includes(item.code))
   }
 

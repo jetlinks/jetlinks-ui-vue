@@ -130,6 +130,8 @@ const dealMenu = (data: any) => {
       },
       item?.options || {},
     );
+
+    item.owner = import.meta.env.VITE_APP_NAME
     if (item.children) {
       dealMenu(item.children);
     }

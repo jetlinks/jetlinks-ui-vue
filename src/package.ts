@@ -3,9 +3,11 @@ import {BASE_API, TOKEN_KEY_URL} from "@jetlinks-web/constants";
 import {crateAxios, wsClient} from '@jetlinks-web/core'
 import {jumpLogin} from '@/router'
 import {notification} from 'ant-design-vue'
-import {langKey} from "@/utils/consts";
+import { isSubApp, langKey } from '@/utils/consts'
 import Relogin from '@/views/relogin/index.vue'
 import { registerModule } from '@/utils'
+import microApp from '@micro-zoe/micro-app'
+import { moduleRegistry } from '@/utils/module-registry'
 
 /**
  * 初始化package
@@ -95,6 +97,15 @@ export const loadMicroApp = () => {
             LocalStore.set('appId', data.appId)
         }
     }, true)
+
+    console.log(!isSubApp, moduleRegistry)
+    if (!isSubApp) { // 不是子应用
+        // microApp.setGlobalData({
+        //     api: {
+        //         moduleRegistry
+        //     }
+        // })
+    }
 }
 
 registerModule()

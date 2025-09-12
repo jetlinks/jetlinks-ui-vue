@@ -30,21 +30,7 @@ export default defineConfig(({mode}) => {
   const moduleNameIndex = process.argv.indexOf('--module-name');
   const moduleName = moduleNameIndex !== -1 ? process.argv[moduleNameIndex + 1] + '-ui' : null;
 
-  let federationRemote = {}
-
-  if (moduleName) {
-    federationRemote = {
-      filename: 'remoteEntry.js',
-      exposes: {
-        './register' : `./src/modules/${moduleName}/register.ts`
-      },
-      remotes: {},
-      enableDynamicRemotes: true
-    }
-  }
-
-  console.log(federationRemote)
-
+  console.log(__dirname)
   return {
     base: './',
     resolve: {
@@ -58,9 +44,9 @@ export default defineConfig(({mode}) => {
     },
     build: {
       outDir: moduleName ? `src/modules/${moduleName}/dist` : 'dist',
-      assetsDir: moduleName ? `src/modules/${moduleName}/assets` : 'assets',
+      assetsDir: 'assets',
       sourcemap: false,
-      cssCodeSplit: false,
+      cssCodeSplit: !!moduleName,
       manifest: true,
       chunkSizeWarningLimit: 2000,
       assetsInlineLimit: 1000,
@@ -70,11 +56,17 @@ export default defineConfig(({mode}) => {
           chunkFileNames: `assets/[name].${new Date().getTime()}.js`,
           assetFileNames: (pre) => {
             const fileType = pre.name.split('.')?.pop()
+
             if (['png', 'svg', 'ico', 'jpg'].includes(fileType)) {
               return `assets/[name].[ext]`
             }
             return `assets/[name].${new Date().getTime()}.[ext]`
           },
+          // 如果是模块构建，提取特定的CSS chunks
+          ...(moduleName && {
+            input: `src/modules/${moduleName}/register.ts`,
+            external: ['vue', 'ant-design-vue'], // 外部依赖不打包
+          }),
           compact: true,
           manualChunks: moduleName ? undefined : {
             vue: ['vue', 'vue-router', 'pinia'],
@@ -106,16 +98,13 @@ export default defineConfig(({mode}) => {
       copyFile(moduleName),
       copyImagesPlugin(),
       federation({
-        name: moduleName ? `${moduleName}-app` : 'main-app',
-        shared: {
-          vue: { singleton: true },
-          'vue-router': { singleton: true },
-          'pinia': { singleton: true },
-          'axios': { singleton: true },
-          'vue-i18n': { singleton: true },
-          '@/utils/module-registry': { singleton: true }
-        },
-        ...federationRemote,
+        name: moduleName ? `${moduleName}` : 'main-app',
+        remotes: {},
+        enableDynamicRemotes: true,
+        filename: moduleName ? 'remoteEntry.js' : undefined,
+        exposes: moduleName ? {
+          [moduleName] : `src/modules/${moduleName}/register.ts`
+        } : undefined,
       })
     ],
     server: {

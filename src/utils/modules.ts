@@ -1,5 +1,3 @@
-import {getTargetModule} from "./modules-loader";
-
 export const modules = () => {
   const modulesMap = {}
   const modulesFiles = import.meta.glob('../modules/*/index.ts', {eager: true})

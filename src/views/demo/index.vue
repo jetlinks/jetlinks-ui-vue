@@ -22,24 +22,28 @@
             button
           </template>
         </permission-button>
-        <a-table-card
-          name="卡片标题"
-          width="400px"
-        >
-          <template #content>
-            中间内容
-          </template>
-        </a-table-card>
+          <component v-if="_component" :is="_component" data="12312321"> 12312</component>
+          <RemoteComponent
+            remoteName="device-manager-ui"
+            componentName="Title"
+            remotePath="http://localhost:8081/assets/remoteEntry.js"
+            :componentProps="{
+              data: '这是一段文字'
+            }"
+          />
         </router-view>
       </j-page-container>
 </template>
 
 <script setup name="Demo" lang="ts">
 import { useRouter } from 'vue-router'
-const router = useRouter()
+import { moduleRegistry } from '@/utils/module-registry'
 
-const mapClick = (e: any) => {
-  router.push('/demo/detail/12312')
+const router = useRouter()
+const _component = ref()
+
+const mapClick = async (e: any) => {
+  _component.value = moduleRegistry.getResourceItem('device-manager-ui', 'components', 'Title')
 }
 </script>
 
