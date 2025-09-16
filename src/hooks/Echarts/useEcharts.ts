@@ -6,8 +6,8 @@ export const useEcharts = (el: Ref<HTMLDivElement | undefined>, props: any = {})
   let echartsInstance: echarts.ECharts | null = null  // echarts实例
   let resizeObserver: ResizeObserver | null = null
 
-  if (props?.libray) { // 添加依赖包
-    echarts.use(props.libray)
+  if (props?.library) { // 添加依赖包
+    echarts.use(props.library)
   }
 
   // 初始化
