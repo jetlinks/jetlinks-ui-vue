@@ -87,10 +87,12 @@ export const handleMenus = (menuData: MenuItem[], extraMenus: any, components: R
   }
 
   const findComponent = (record: MenuItem, level: number) => {
-    const myComponents = components[record.meta?.componentCode as string || record.code]
+    const isApp = !!record.appId
+    const meta = handleMeta(record, isApp)
+    const myComponents = components[meta?.componentCode as string || record.code]
 
     if (!record.children?.length) {
-      if (record.meta?.appName && record.meta?.appUrl) {
+      if (meta?.appName && meta?.appUrl) {
         return () => import('../views/mirco/SubAppRedirect/base.vue')
       }
 
@@ -144,7 +146,7 @@ export const handleMenus = (menuData: MenuItem[], extraMenus: any, components: R
       const item = _menu[i - 1]
 
       const _route = handleRoute(item, parent)
-      const myComponent = findComponent(item, level)
+      const myComponent = findComponent(_route, level)
 
       menuMap.set(item.code, { path: _route.path!, title: _route.meta?.title as string })
       _route.component = myComponent
@@ -186,12 +188,15 @@ export const handleMenus = (menuData: MenuItem[], extraMenus: any, components: R
   function siderLoop(data: MenuItem[]) {
     const _menu = filterMenuData(data).filter(item => item.meta?.options?.show !== false)
 
+    for (const menuItem of data) {
+      if (menuItem.buttons) {
+        authButtons[menuItem.code] = menuItem.buttons.map(item => item.id)
+      }
+    }
+
     if (_menu && _menu.length) {
       return _menu.map(item => {
         const _route = handleRoute(item)
-        if (item.buttons) {
-          authButtons[item.code] = item.buttons.map(item => item.id)
-        }
         _route.children = siderLoop(item.children || [])
         return _route as RouteRecordRaw
       })

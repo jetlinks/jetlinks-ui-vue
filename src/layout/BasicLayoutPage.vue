@@ -83,13 +83,10 @@ init()
  */
 watchEffect(() => {
   if (router.currentRoute) {
-    const paths = route.meta.breadcrumb
+    const paths = route.meta.breadcrumb || []
     state.selectedKeys = paths.map(item => item.path)
     state.openKeys = paths.map(item => item.path)
-    console.log(state, router.currentRoute.value.matched)
-    // console.log(paths) //
   }
-  // if (route.query?.layout === 'false' || self.frameElement?.tagName === 'IFRAME') {
   if (route.query?.layout === 'false') {
     state.pure = true
   }
