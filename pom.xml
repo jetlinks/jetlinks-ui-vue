@@ -75,7 +75,7 @@
                                     <!--  挂载子模块-->
                                     <argument>${volume.modules.argument1}</argument>
                                     <argument>${volume.modules.argument2}</argument>
-                                    <argument>registry.cn-shenzhen.aliyuncs.com/jetlinks/jetlinks-template-ui:1.0</argument>
+                                    <argument>registry.cn-shenzhen.aliyuncs.com/jetlinks/jetlinks-template-ui:2.11.0</argument>
                                     <argument>pnpm</argument>
                                     <argument>build:modules</argument>
                                     <argument>${jetlinks.ui.build.module}</argument>
