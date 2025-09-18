@@ -3,7 +3,7 @@ import { filterSelectNode } from "@/utils";
 import { useI18n } from "vue-i18n";
 import { useRequest } from "@jetlinks-web/hooks";
 import { getDepartmentList_api } from "@/api/system/user";
-import {randomString} from "@jetlinks-web/utils";
+import { useTabSaveSuccess } from '@/hooks'
 
 const { t: $t } = useI18n();
 const emit = defineEmits(["update:value", "change"]);
@@ -77,26 +77,20 @@ const { data: treeData, reload } = useRequest(getDepartmentList_api, {
   defaultValue: [],
 });
 
-const myValue = ref();
-
-const clickAddItem = () => {
-  const sourceId = `org_add_${randomString()}`; // 唯一标识
-  const tab = window.open(
-    `${origin}/#/system/Department?save=true&sourceId=${sourceId}`
-  );
-  tab.onTabSaveSuccess = (_sourceId, value) => {
-    if (sourceId === _sourceId) {
-      if (props.extraProps?.multiple) {
-        let oldValue = myValue.value || [];
-        myValue.value = [...oldValue, value];
-      } else {
-        myValue.value = value;
-      }
-      emit("update:value", myValue.value);
-      reload();
+const { onOpen } = useTabSaveSuccess('system/Department', {
+  onSuccess(value) {
+    if (props.extraProps?.multiple) {
+      let oldValue = myValue.value || [];
+      myValue.value = [...oldValue, value];
+    } else {
+      myValue.value = value;
     }
-  };
-};
+    emit("update:value", myValue.value);
+    reload();
+  }
+})
+
+const myValue = ref();
 
 const onChange = (value, label, extra) => {
   emit("update:value", myValue.value);
@@ -181,7 +175,7 @@ watch(
     </div>
     <j-permission-button
       hasPermission="system/Department:add"
-      @click="clickAddItem('orgIdList', 'Department')"
+      @click="onOpen({ save: true})"
       v-if="!props.extraProps?.disabled"
     >
       <template #icon>

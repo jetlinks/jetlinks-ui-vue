@@ -146,7 +146,7 @@ export const handleMenus = (menuData: MenuItem[], extraMenus: any, components: R
       const item = _menu[i - 1]
 
       const _route = handleRoute(item, parent)
-      const myComponent = findComponent(_route, level)
+      const myComponent = findComponent(item, level)
 
       menuMap.set(item.code, { path: _route.path!, title: _route.meta?.title as string })
       _route.component = myComponent

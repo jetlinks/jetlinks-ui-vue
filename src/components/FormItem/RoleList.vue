@@ -3,7 +3,7 @@ import {filterSelectNode} from "@/utils";
 import {useI18n} from "vue-i18n";
 import { useRequest } from '@jetlinks-web/hooks'
 import {getRoleList} from "@/api/system/user";
-import {randomString} from "@jetlinks-web/utils";
+import { useTabSaveSuccess } from '@/hooks'
 
 const { t: $t } = useI18n();
 const emit = defineEmits(['update:value', 'change'])
@@ -31,6 +31,20 @@ const props = defineProps({
   }
 })
 const dataMap = new Map()
+
+const { onOpen } = useTabSaveSuccess('system/Role', {
+  onSuccess(value) {
+    if (props.extraProps?.multiple) {
+      let oldValue = myValue.value || []
+      myValue.value = [...oldValue, value]
+    } else {
+      myValue.value = value
+    }
+
+    emit('update:value', myValue.value);
+    reload()
+  }
+})
 
 const _treeData = computed(() => {
   const arr = (treeData?.value || []).map((item)=>{
@@ -73,23 +87,6 @@ const _extraData = computed(() => {
     return !dataMap.get(i.id)
   }).map(i => i.id)
 })
-const clickAddItem = () => {
-  const sourceId = `position_add_${randomString()}`; // 唯一标识
-  const tab = window.open(`${origin}/#/system/Role?save=true&sourceId=${sourceId}`);
-  tab.onTabSaveSuccess = (_sourceId, value) => {
-    if(sourceId === _sourceId){
-      if (props.extraProps?.multiple) {
-        let oldValue = myValue.value || []
-        myValue.value = [...oldValue, value]
-      } else {
-        myValue.value = value
-      }
-
-      emit('update:value', myValue.value);
-      reload()
-    }
-  };
-}
 
 const onChange = (value, label,  extra) => {
   emit('update:value', myValue.value)
@@ -145,7 +142,7 @@ onMounted(() => {
     </div>
     <j-permission-button
       hasPermission="system/Role:add"
-      @click="clickAddItem('roleIdList', 'Role')"
+      @click="onOpen({save: true})"
       v-if="!disabled"
     >
       <template #icon>

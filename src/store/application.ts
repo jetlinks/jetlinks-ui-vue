@@ -29,11 +29,10 @@ export const useApplication = defineStore('application', () => {
     try {
       const resp = await uiList()
       if (resp.success && resp.result) {
-        let result = resp.result
-        // let result = [
-        //   { id: 'device-manager', name: 'device-manager-ui', path: 'http://localhost:8081/'},
-        //   { id: 'authentication-manager', name: 'authentication-manager-ui', path: 'http://localhost:8082/'}
-        // ]
+        // let result = resp.result
+        let result = [
+          { id: 'authentication-manager', name: 'authentication-manager-ui', path: 'http://localhost:8082/'}
+        ]
         if (import.meta.env.VITE_MODULE_NAME && !isSubApp) { // 子模块编译之后独立运行时，排除自身
           result = result.filter((item: any) => item.name !== import.meta.env.VITE_MODULE_NAME)
         }

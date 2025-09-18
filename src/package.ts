@@ -98,13 +98,24 @@ export const loadMicroApp = () => {
         }
     }, true)
 
-    console.log(!isSubApp, moduleRegistry)
     if (!isSubApp) { // 不是子应用
-        // microApp.setGlobalData({
-        //     api: {
-        //         moduleRegistry
-        //     }
-        // })
+        microApp.setGlobalData({
+            api: {
+                moduleRegistry,
+                onTabSaveSuccess: (id: string, url: string, options?: Record<string, any>) => {
+                    const tabInstance = window.open(url) as WindowProxy
+                    (tabInstance as any).onTabSaveSuccess = (_sourceId: string, value: any) => {
+                        if (_sourceId === id) {
+                            options?.onSuccess?.(value)
+                        }
+                    }
+                },
+                onTabSaveSuccessBack: (id: string,data?: any) => {
+                    (window as any).onTabSaveSuccess(id, data)
+                    setTimeout(() => window.close(), 300)
+                }
+            }
+        })
     }
 }
 

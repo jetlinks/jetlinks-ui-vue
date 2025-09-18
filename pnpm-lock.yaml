@@ -42,8 +42,8 @@ importers:
         specifier: ^1.2.14
         version: 1.2.14(@types/lodash-es@4.17.12)(lodash@4.17.21)
       '@jetlinks-web/vite':
-        specifier: ^2.1.10
-        version: 2.1.10
+        specifier: ^2.1.11
+        version: 2.1.11
       '@micro-zoe/micro-app':
         specifier: 1.0.0-rc.26
         version: 1.0.0-rc.26
@@ -1154,8 +1154,8 @@ packages:
   '@jetlinks-web/utils@1.2.14':
     resolution: {integrity: sha512-Nf5RxxXhbatjwysmStxBSmX1n833RbLLvdncTDfhGGWYE2WR7OezbJ1I53fm/6c8G4U1T8xqFY+TYhHeau6IUA==}
 
-  '@jetlinks-web/vite@2.1.10':
-    resolution: {integrity: sha512-En3cy2JYzx+JcTVlu8So+VLJWJfOTP+0WdG1ImHON+uX02UX9QGFHqQLZgDYDWY0z+Is7VoHPYPQ8N4p9Pn9hQ==}
+  '@jetlinks-web/vite@2.1.11':
+    resolution: {integrity: sha512-5oObTmY2xc6eOHlDtT67ULjrZ3ZXhnXGQY3CIgnIut5OCIB7oWqG+YqgqApXLG9gPW0IEHLgSMjt/qM/0NxUiw==}
     engines: {node: '>=14.0.0', pnpm: '>=7.0.1'}
 
   '@jridgewell/gen-mapping@0.3.13':
@@ -4130,7 +4130,7 @@ snapshots:
       - '@types/lodash-es'
       - lodash
 
-  '@jetlinks-web/vite@2.1.10':
+  '@jetlinks-web/vite@2.1.11':
     dependencies:
       sharp: 0.34.3
 

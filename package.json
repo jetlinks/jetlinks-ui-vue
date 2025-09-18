@@ -27,7 +27,7 @@
     "@jetlinks-web/hooks": "^1.0.31",
     "@jetlinks-web/types": "^1.0.2",
     "@jetlinks-web/utils": "^1.2.14",
-    "@jetlinks-web/vite": "^2.1.10",
+    "@jetlinks-web/vite": "^2.1.11",
     "@micro-zoe/micro-app": "1.0.0-rc.26",
     "@vuemap/vue-amap": "^2.1.9",
     "@vueuse/router": "^11.3.0",

@@ -22,6 +22,14 @@ const {defaultAlgorithm, defaultSeed} = theme;
 const mapToken = defaultAlgorithm(defaultSeed);
 const v3Token = convertLegacyToken(mapToken);
 
+const federationSharedMap = {
+  'vue': ['vue'],
+  'vue-router': ['vue-router'],
+  'pinia': ['pinia'],
+  'vue-i18n': ['vue-i18n'],
+  'lodash-es': ['lodash-es'],
+  'echarts': ['echarts']
+}
 // https://vitejs.dev/config/
 export default defineConfig(({mode}) => {
 
@@ -65,14 +73,9 @@ export default defineConfig(({mode}) => {
           // 如果是模块构建，提取特定的CSS chunks
           ...(moduleName && {
             input: `src/modules/${moduleName}/register.ts`,
-            external: ['vue', 'ant-design-vue'], // 外部依赖不打包
           }),
           compact: true,
-          manualChunks: moduleName ? undefined : {
-            vue: ['vue', 'vue-router', 'pinia'],
-            'lodash-es': ['lodash-es'],
-            'echarts': ['echarts']
-          },
+          manualChunks: moduleName ? undefined : federationSharedMap,
         },
       },
     },
@@ -98,10 +101,12 @@ export default defineConfig(({mode}) => {
       copyFile(moduleName),
       copyImagesPlugin(),
       federation({
-        name: moduleName ? `${moduleName}` : 'main-app',
+        name: moduleName ? `${moduleName}` : 'host',
         remotes: {},
         enableDynamicRemotes: true,
         filename: moduleName ? 'remoteEntry.js' : undefined,
+        isHost:true,
+        shared: Object.keys(federationSharedMap),
         exposes: moduleName ? {
           [moduleName] : `src/modules/${moduleName}/register.ts`
         } : undefined,

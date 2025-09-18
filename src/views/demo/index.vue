@@ -43,6 +43,7 @@ const router = useRouter()
 const _component = ref()
 
 const mapClick = async (e: any) => {
+  console.log( moduleRegistry.getResourceItem('device-manager-ui', 'apis', 'productNoPage'))
   _component.value = moduleRegistry.getResourceItem('device-manager-ui', 'components', 'Title')
 }
 </script>
