@@ -36,9 +36,8 @@ export default defineConfig(({mode}) => {
   const env: Partial<ImportMetaEnv> = loadEnv(mode, process.cwd())
 
   const moduleNameIndex = process.argv.indexOf('--module-name');
-  const moduleName = moduleNameIndex !== -1 ? process.argv[moduleNameIndex + 1] + '-ui' : null;
+  const mavenName = moduleNameIndex !== -1 ? process.argv[moduleNameIndex + 1] : null;
 
-  console.log(__dirname)
   return {
     base: './',
     resolve: {
@@ -48,13 +47,13 @@ export default defineConfig(({mode}) => {
       },
     },
     define: {
-      'import.meta.env.VITE_MODULE_NAME': JSON.stringify(moduleName)
+      'import.meta.env.VITE_MODULE_NAME': JSON.stringify(mavenName)
     },
     build: {
-      outDir: moduleName ? `src/modules/${moduleName}/dist` : 'dist',
+      outDir: mavenName ? `src/modules/${mavenName}/dist` : 'dist',
       assetsDir: 'assets',
       sourcemap: false,
-      cssCodeSplit: !!moduleName,
+      cssCodeSplit: !!mavenName,
       manifest: true,
       chunkSizeWarningLimit: 2000,
       assetsInlineLimit: 1000,
@@ -71,11 +70,11 @@ export default defineConfig(({mode}) => {
             return `assets/[name].${new Date().getTime()}.[ext]`
           },
           // 如果是模块构建，提取特定的CSS chunks
-          ...(moduleName && {
-            input: `src/modules/${moduleName}/register.ts`,
+          ...(mavenName && {
+            input: `src/modules/${mavenName}/register.ts`,
           }),
           compact: true,
-          manualChunks: moduleName ? undefined : federationSharedMap,
+          manualChunks: mavenName ? undefined : federationSharedMap,
         },
       },
     },
@@ -98,17 +97,17 @@ export default defineConfig(({mode}) => {
         resolvers: [VueAmapResolver()],
       }),
       progress(),
-      copyFile(moduleName),
+      copyFile(mavenName),
       copyImagesPlugin(),
       federation({
-        name: moduleName ? `${moduleName}` : 'host',
+        name: mavenName ? `${mavenName}` : 'host',
         remotes: {},
         enableDynamicRemotes: true,
-        filename: moduleName ? 'remoteEntry.js' : undefined,
+        filename: mavenName ? 'remoteEntry.js' : undefined,
         isHost:true,
         shared: Object.keys(federationSharedMap),
-        exposes: moduleName ? {
-          [moduleName] : `src/modules/${moduleName}/register.ts`
+        exposes: mavenName ? {
+          [mavenName] : `src/modules/${mavenName}/register.ts`
         } : undefined,
       })
     ],
