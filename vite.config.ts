@@ -28,7 +28,11 @@ const federationSharedMap = {
   'pinia': ['pinia'],
   'vue-i18n': ['vue-i18n'],
   'lodash-es': ['lodash-es'],
-  'echarts': ['echarts']
+  'echarts': ['echarts'],
+  '@jetlinks-web/core': ['@jetlinks-web/core'],
+  '@jetlinks-web/hooks': ['@jetlinks-web/hooks'],
+  '@jetlinks-web/constants': ['@jetlinks-web/constants'],
+  '@jetlinks-web/utils': ['@jetlinks-web/utils'],
 }
 // https://vitejs.dev/config/
 export default defineConfig(({mode}) => {
