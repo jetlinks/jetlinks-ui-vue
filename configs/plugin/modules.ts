@@ -11,11 +11,11 @@ function registerModulesAlias() {
     const folders = fs.readdirSync(pattern)
     folders?.map((name) => {
       try {
-        if (fs.existsSync(path.resolve(rootPath, modulesBasePath, `${name}/config.json`))) {
-          const result = fs.readFileSync(path.resolve(rootPath, modulesBasePath, `${name}/config.json`), 'utf-8')
+        if (fs.existsSync(path.resolve(rootPath, modulesBasePath, `${name}/package.json`))) {
+          const result = fs.readFileSync(path.resolve(rootPath, modulesBasePath, `${name}/package.json`), 'utf-8')
           const content = JSON.parse(result)
-          if (content.aliasName) {
-            modulesAlias[content.aliasName] = path.resolve(modulesBasePath, name)
+          if (content.name) {
+            modulesAlias[`@${content.name}`] = path.resolve(modulesBasePath, name)
           }
         }
       } catch (error) {

@@ -25,18 +25,18 @@ function generateTsconfigPaths() {
     const moduleNames = fs.readdirSync(modulesDir);
     moduleNames.forEach(moduleName => {
       const modulePath = path.join(modulesDir, moduleName);
-      const configPath = path.join(modulePath, 'config.json');
+      const configPath = path.join(modulePath, 'package.json');
       if (fs.existsSync(configPath)) {
         try {
           const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
-          if (config.aliasName) {
+          if (config.name) {
             // 示例： "@my-module/*": ["src/modules/my-module/*"]
-            newPaths[`${config.aliasName}/*`] = [`./src/modules/${moduleName}/*`];
+            newPaths[`@${config.name}/*`] = [`./src/modules/${moduleName}/*`];
             // 如果你还需要一个指向模块根目录的直接别名，可以添加：
             // newPaths[`@${config.alias}`] = [`src/modules/${moduleName}`];
           }
         } catch (e) {
-          console.error(`Error parsing config.json in ${modulePath}:`, e);
+          console.error(`Error parsing package.json in ${modulePath}:`, e);
         }
       }
     });
