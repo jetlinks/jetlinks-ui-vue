@@ -157,6 +157,7 @@ export const handleMenus = (menuData: MenuItem[], extraMenus: any, components: R
         _route.path = `${item.url}/parent`
         _route.component = () => import('../layout/BasicLayoutPage.vue')
         _route.children = [item]
+        _route.meta = {}
       } else {
         const extraRoute = getExtraChildren(item) || [];
         if (extraRoute) {
