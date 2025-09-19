@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
 API_BASE_PATH=$API_BASE_PATH;
 SERVER_NAME=$SERVER_NAME;
