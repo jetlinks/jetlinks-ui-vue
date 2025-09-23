@@ -42,7 +42,7 @@ export default {
             .component('ConfirmModal',ConfirmModal)
             .component('CheckButton',CheckButton)
             .component('SelectAMap', SelectAMap)
-            .component('monaco-editor', MonacoEditor)
+            .component('MonacoEditor', MonacoEditor)
             .component(TimeSelect.name, TimeSelect)
             .component('FullCalendar', FullCalendar)
             .component('Image', Image)
