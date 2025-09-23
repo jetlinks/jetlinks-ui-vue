@@ -34,14 +34,15 @@ export const useApplication = defineStore('application', () => {
         //   { id: 'authentication-manager', name: 'authentication-manager-ui', path: 'http://localhost:8082/'}
         // ]
         if (import.meta.env.VITE_MODULE_NAME && !isSubApp) { // 子模块编译之后独立运行时，排除自身
-          result = result.filter((item: any) => item.name !== import.meta.env.VITE_MODULE_NAME)
+          result = result.filter((item: any) => (item.name + '-ui') !== import.meta.env.VITE_MODULE_NAME)
         }
 
         // 获取是否已在本地注册子模块分享出来的apis，components等
         for (const item of result) {
-          if (!moduleRegistry.hasModule(item.name)) { // 没有本地模块注册，获取微前端模块进行注册
+          const name = item.id + '-ui'
+          if (!moduleRegistry.hasModule(name)) { // 没有本地模块注册，获取微前端模块进行注册
             const path = [item.path, item.path.endsWith('/') ? '' : '/', 'assets/remoteEntry.js' ].join('')
-            await moduleRegistry.loadRemoteModule(item.name, path)
+            await moduleRegistry.loadRemoteModule(name, path)
           }
         }
 

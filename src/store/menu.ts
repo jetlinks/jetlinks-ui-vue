@@ -3,13 +3,13 @@ import router from '@/router'
 import {cloneDeep} from 'lodash-es'
 import {setParamsValue} from '@jetlinks-web/hooks'
 import {onlyMessage} from '@jetlinks-web/utils'
-import {handleMenus} from '@/utils'
+import { handleMenus, modules } from '@/utils'
 import {getOwnMenuThree} from '@/api/system/menu'
 import {getGlobModules} from '@/router/globModules'
 import {getExtraRouters} from '@/router/extraMenu'
-import {USER_CENTER_ROUTE, INIT_HOME, EDGE_TOKEN_ROUTE} from '@/router/basic'
+import {USER_CENTER_ROUTE, INIT_HOME} from '@/router/basic'
 import {useAuthStore, useApplication} from '@/store'
-import { isSubApp, OWNER_KEY } from '@/utils/consts'
+import { OWNER_KEY } from '@/utils/consts'
 import i18n from "@/locales";
 import {BASE_API} from "@jetlinks-web/constants";
 import type { RouteRecordRaw } from 'vue-router'
@@ -175,10 +175,11 @@ export const useMenuStore = defineStore('menu', () => {
                         let isLocal = false
 
                         if (import.meta.env.DEV) {
-                            // isLocal = Object.values(modulesFile).some(v => {
-                            //     const localMenus = (v as any).default.getAsyncRoutesMap()
-                            //     return localMenus[node.code]
-                            // })
+                            const modulesFiles = modules()
+                            isLocal = Object.values(modulesFiles).some(v => {
+                                const localMenus = (v as any).default.getAsyncRoutesMap()
+                                return localMenus[node.code]
+                            })
                         }
 
                         if (!isLocal) {

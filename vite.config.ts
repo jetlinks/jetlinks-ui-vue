@@ -32,7 +32,7 @@ const federationSharedMap = {
   '@jetlinks-web/core': ['@jetlinks-web/core'],
   '@jetlinks-web/hooks': ['@jetlinks-web/hooks'],
   '@jetlinks-web/constants': ['@jetlinks-web/constants'],
-  '@jetlinks-web/utils': ['@jetlinks-web/utils'],
+  // '@jetlinks-web/utils': ['@jetlinks-web/utils'],
 }
 // https://vitejs.dev/config/
 export default defineConfig(({mode}) => {
