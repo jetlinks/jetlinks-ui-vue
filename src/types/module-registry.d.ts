@@ -4,6 +4,7 @@
 
 import { Component } from 'vue';
 import { RouteRecordRaw } from 'vue-router';
+import { moduleRegistry } from '@/utils/module-registry'
 
 // 基础类型定义
 export type ModuleResourceKey = string;
@@ -84,6 +85,8 @@ export interface ModuleResource {
   locales?: LocaleModule;
   /** 状态管理 */
   stores?: Record<string, StoreModule>;
+  /** 各种类型的事件 */
+  events?: Record<string, UtilFunction>;
   /** 其他自定义资源 */
   [key: string]: any;
 }
@@ -195,10 +198,20 @@ export interface IModuleRegistry {
    * 搜索包含特定资源的模块
    */
   searchModules(resourceType: keyof ModuleResource, resourceName?: string): string[];
+
+  /**
+   * 注册远程模块
+   */
+  loadRemoteModule(moduleId: string, path: string): Promise<void>
+
+  /**
+   * 注册单个远程组件
+   */
+  loadRemoteComponent(moduleId: string, path: string, componentName: string): Promise<void>
 }
 
 // 泛型助手类型
-export type GetResourceType<T extends keyof ModuleResource> = 
+export type GetResourceType<T extends keyof ModuleResource> =
   T extends 'apis' ? Record<string, ApiFunction | ApiModule> :
   T extends 'components' ? ComponentResource :
   T extends 'utils' ? Record<string, UtilFunction | UtilModule> :
@@ -207,6 +220,7 @@ export type GetResourceType<T extends keyof ModuleResource> =
   T extends 'routes' ? RouteModule :
   T extends 'locales' ? LocaleModule :
   T extends 'stores' ? Record<string, StoreModule> :
+  T extends 'events' ? Record<string, UtilFunction> :
   any;
 
 // 辅助工具类型

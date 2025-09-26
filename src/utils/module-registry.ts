@@ -3,7 +3,7 @@
  * 用于统一管理各个子模块的 API、组件、工具函数等资源
  * 支持微前端和模块联邦
  */
-import type { ModuleResource, RegisterOptions } from '@/types/module-registry.d'
+import type { GetResourceType, ModuleResource, RegisterOptions } from '@/types/module-registry.d'
 import { dynamicRemoteManager } from '@jetlinks-web/vite/dist/dynamic-remote'
 import { isSubApp } from '@/utils/consts'
 
@@ -159,19 +159,14 @@ export class ModuleRegistry {
    * @param resourceType 资源类型
    * @returns 资源对象或undefined
    */
-  public getResource<T = any>(
+  public getResource<T extends keyof Omit<ModuleResource, 'moduleId'>>(
     moduleId: string,
-    resourceType: keyof ModuleResource
-  ): Record<string, T> | undefined {
+    resourceType: T
+  ): GetResourceType<T> {
     const module = this.registry.get(moduleId);
-    const resource = module?.[resourceType];
+    const resource = module?.[resourceType] || {};
 
-    // 如果 resourceType 是 'routes'，则可能不是 Record 类型
-    if (resourceType === 'routes') {
-      return resource as any;
-    }
-
-    return resource as Record<string, T> | undefined;
+    return resource as GetResourceType<T>;
   }
 
   /**
