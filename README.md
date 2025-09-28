@@ -48,7 +48,10 @@ pnpm modules:update
 pnpm build
 ```
 
-## [注册中心](./docs/模块注册中心.md)
+## 浏览器版本要求
+- chrome: ^105
+- edge: ^105
+- Firefox: ^140
 
-## [模块联邦](./docs/模块注册中心.md#模块联邦)
+## [注册中心](./docs/模块注册中心.md)
 
