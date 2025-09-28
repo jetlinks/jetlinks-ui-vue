@@ -157,7 +157,4 @@ export const jumpLogin = () => {
   })
 }
 
-// 导出路由增强器实例
-export { routerEnhancer }
-
 export default router
