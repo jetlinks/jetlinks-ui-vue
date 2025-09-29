@@ -217,3 +217,19 @@ export const handleMenus = (menuData: MenuItem[], extraMenus: any, components: R
   }
 }
 
+export const handleAuthMenu = (menuData: MenuItem[], cb: (code: string, buttons: Array<string>) => void) => {
+  if (menuData && menuData.length) {
+    return menuData.forEach(item => {
+      const { code, buttons, children} = item
+
+      if (buttons) {
+        cb(code, buttons.map(a => a.id))
+      }
+
+      if (children) {
+        handleAuthMenu(children, cb)
+      }
+    })
+  }
+}
+

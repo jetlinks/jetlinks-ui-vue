@@ -16,11 +16,35 @@
       :defaultParams="defaultParams"
       :scroll="{ y: 420 }"
     >
-<!--      <template #headerRightRender>-->
-<!--        <a-popconfirm title="确认全部已读？" @confirm="on">-->
-<!--          <a-button type="link">全部已读</a-button>-->
-<!--        </a-popconfirm>-->
-<!--      </template>-->
+      <template #headerRightRender>
+        <a-dropdown trigger="hover">
+          <a-button type="link">
+            {{ $t('NotificationRecord.index.803553-12') }}
+            <AIcon type="DownOutlined" />
+          </a-button>
+          <template #overlay>
+            <a-menu>
+              <a-menu-item>
+                <j-permission-button
+                  :popConfirm="{
+                    title: $t('NotificationRecord.index.803553-15'),
+                    onConfirm: () => readPage(),
+                  }"
+                  type="text"
+                >{{ $t('NotificationRecord.index.803553-13') }}</j-permission-button>
+              </a-menu-item>
+              <a-menu-item>
+                <j-permission-button
+                  :popConfirm="{
+                    title: $t('NotificationRecord.index.803553-16'),
+                    onConfirm: () => onAllRead(),
+                  }"
+                  type="text">{{ $t('NotificationRecord.index.803553-14') }}</j-permission-button>
+              </a-menu-item>
+            </a-menu>
+          </template>
+        </a-dropdown>
+      </template>
       <template #topicProvider="slotProps">
         {{ slotProps.topicName }}
       </template>
@@ -74,7 +98,7 @@
 
 <script setup lang="ts" name="NotificationRecord">
 import ViewDialog from './components/ViewDialog.vue'
-import { getList_api, changeStatus_api } from '@/api/account/notificationRecord'
+import { getList_api, changeStatus_api, changeAllStatus } from '@/api/account/notificationRecord'
 import dayjs from 'dayjs'
 import { useUserStore } from '@/store/user'
 import { useRouterParams } from '@jetlinks-web/hooks'
@@ -244,14 +268,25 @@ watch(() => user.messageInfo?.id, (val) => {
   immediate: true
 })
 
-// const onAllRead = async () => {
-//     const resp = await changeAllStatus('_read', getType.value);
-//     if (resp.status === 200) {
-//         onlyMessage($t('NotificationRecord.index.803553-11'));
-//         refresh();
-//         user.updateAlarm();
-//     }
-// };
+const onAllRead = async () => {
+    const resp = await changeAllStatus('_read', getType.value);
+    if (resp.status === 200) {
+        onlyMessage($t('NotificationRecord.index.803553-11'));
+        refresh();
+        user.updateAlarm();
+    }
+};
+
+const readPage = async () => {
+  const resp = await changeStatus_api('_read', [
+    ...tableRef.value?.dataSource.map(item => item.id)
+  ]);
+  if (resp.status === 200) {
+    onlyMessage($t('NotificationRecord.index.803553-11'));
+    refresh();
+    user.updateAlarm();
+  }
+}
 
 onMounted(() => {
   if (routerParams.params?.value.row) {

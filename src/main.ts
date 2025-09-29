@@ -9,6 +9,7 @@ import directive from '@/directive'
 import dayjs from 'dayjs'
 import { loadMicroApp, initAxios } from '@/package'
 import andtv from 'ant-design-vue'
+import '@/style.css'
 
 import 'vue3-json-viewer/dist/index.css'
 import 'xgplayer/dist/index.min.css'

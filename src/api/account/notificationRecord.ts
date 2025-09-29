@@ -7,6 +7,8 @@ export const getList_api = (data: any): any => request.post(`/notifications/_que
 // 修改记录状态
 export const changeStatus_api = (type: '_read' | '_unread', data: string[]): any => request.post(`/notifications/${type}`, data)
 
+export const changeAllStatus = (type: '_read' | '_unread', data: string[]): any => request.post(`/notifications/${type}/provider`, data)
+
 //查看工作流通知详情
 export const getWorkflowNotice = (data:any) => request.post('/process/runtime/processes/_query/no-paging',data)
 

@@ -28,6 +28,10 @@ const props = defineProps({
   extraData: { // 为了修改没有权限，但是要展示名称的数据
     type: Array,
     default: []
+  },
+  showAdd: {
+    type: Boolean,
+    default: true
   }
 })
 const dataMap = new Map()
@@ -142,8 +146,8 @@ onMounted(() => {
     </div>
     <j-permission-button
       hasPermission="system/Role:add"
+      v-if="!disabled && showAdd"
       @click="onOpen({save: true})"
-      v-if="!disabled"
     >
       <template #icon>
         <AIcon type="PlusOutlined" />

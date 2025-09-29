@@ -21,8 +21,11 @@ import EditDialog from './EditDialog/index.vue'
 import CrudTable from './CrudTable/index.vue'
 import MetadataValueItem from './MetadataValueItem/index.vue'
 import VirtualScroll from './VirtualScroll/index.vue'
+import TabsCard from './TabsCard/index.vue'
+import BatchImport from './BatchImport/index.vue'
 import Echarts from './Echarts'
 import RemoteComponent from './RemoteComponent/index.vue'
+
 
 export default {
     install(app: App) {
@@ -42,15 +45,17 @@ export default {
             .component('ConfirmModal',ConfirmModal)
             .component('CheckButton',CheckButton)
             .component('SelectAMap', SelectAMap)
-            .component('MonacoEditor', MonacoEditor)
-            .component(TimeSelect.name, TimeSelect)
-            .component('FullCalendar', FullCalendar)
-            .component('Image', Image)
-            .component('EditDialog', EditDialog)
-            .component('CrudTable', CrudTable)
-            .component('MetadataValueItem', MetadataValueItem)
-            .component('VirtualScroll', VirtualScroll)
-            .component('RemoteComponent', RemoteComponent)
+          .component('MonacoEditor', MonacoEditor)
+          .component(TimeSelect.name, TimeSelect)
+          .component('FullCalendar', FullCalendar)
+          .component('Image', Image)
+          .component('EditDialog', EditDialog)
+          .component('CrudTable', CrudTable)
+          .component('MetadataValueItem', MetadataValueItem)
+          .component('VirtualScroll', VirtualScroll)
+          .component('TabsCard', TabsCard)
+          .component('BatchImport', BatchImport)
+          .component('RemoteComponent', RemoteComponent)
 
         Object.keys(FormItemValue).forEach(key => {
             app.component(key, FormItemValue[key])
