@@ -6,6 +6,8 @@
     "dev": "vite",
     "dev:force": "vite --force",
     "build": "node --max_old_space_size=1024000 ./node_modules/vite/bin/vite.js build",
+    "build:omit": "pnpm build -- --omit",
+    "build:pick": "pnpm build -- --pick",
     "preview": "vite preview",
     "clean": "pnpm rimraf node_modules && pnpm rimraf dist && pnpm rimraf .turbo",
     "modules:init": "gitmodules.sh && update:tsconfig",

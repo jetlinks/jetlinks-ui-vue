@@ -13,6 +13,7 @@ import convertLegacyToken from 'ant-design-vue/lib/theme/convertLegacyToken'
 import {
   registerModulesAlias,
   copyFile,
+  excludeModulesPlugin,
 } from './configs/plugin'
 import { federation, sharpOptimize } from '@jetlinks-web/vite'
 import customTheme from './configs/theme'
@@ -42,6 +43,18 @@ export default defineConfig(({mode}) => {
 
   const moduleNameIndex = process.argv.indexOf('--module-name');
   const mavenName = moduleNameIndex !== -1 ? process.argv[moduleNameIndex + 1] : null;
+
+  // 解析 --omit 和 --pick 参数
+  const omitIndex = process.argv.indexOf('--omit');
+  const pickIndex = process.argv.indexOf('--pick');
+
+  const omitModules = omitIndex !== -1 && process.argv[omitIndex + 1]
+    ? process.argv[omitIndex + 1].split(',').filter(Boolean)
+    : [];
+
+  const pickModules = pickIndex !== -1 && process.argv[pickIndex + 1]
+    ? process.argv[pickIndex + 1].split(',').filter(Boolean)
+    : [];
 
   return {
     base: './',
@@ -84,6 +97,10 @@ export default defineConfig(({mode}) => {
       },
     },
     plugins: [
+      excludeModulesPlugin({
+        omit: omitModules,
+        pick: pickModules
+      }),
       vue(),
       vueJsx(),
       VueSetupExtend(),

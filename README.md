@@ -48,6 +48,20 @@ pnpm modules:update
 pnpm build
 ```
 
+### 子模块按需打包
+
+```shell
+# 指定某个子模块打包
+pnpm build:pick device-manager-ui
+# 指定多个子模块打包
+pnpm build:pick device-manager-ui,authentication-manager-ui
+# 排除某个子模打包
+pnpm build:omit device-manager-ui
+# 排除多个子模打包
+pnpm build:omit device-manager-ui,authentication-manager-ui
+
+```
+
 ## 浏览器版本要求
 - chrome: ^105
 - edge: ^105
