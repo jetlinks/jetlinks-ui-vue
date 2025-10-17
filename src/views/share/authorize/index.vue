@@ -1,6 +1,5 @@
 <template>
   <div class="authorize-wrapper">
-    <!-- 加载状态 -->
     <div
       v-if="isLoading && !isExpired"
       class="loading-container"
@@ -11,7 +10,6 @@
       </div>
     </div>
 
-    <!-- 链接过期状态 -->
     <div
       v-else-if="isExpired"
       class="status-container"
@@ -34,7 +32,6 @@
       </div>
     </div>
 
-    <!-- 密码授权表单 -->
     <div
       v-else-if="config.authType === 'password'"
       class="auth-container"
@@ -128,15 +125,12 @@
 import { getTokenConfig, getTokenRedirect } from '@/api/comm'
 import { codeUrl } from '@/api/login'
 import { useRequest } from '@jetlinks-web/hooks'
-import { encrypt, LocalStore } from '@jetlinks-web/utils'
+import { encrypt, LocalStore, onlyMessage } from '@jetlinks-web/utils'
 
 const PERSONAL_TOKEN_KEY = 'X-Personal-Token'
 const PERSONAL_TOKEN_URL_KEY = ':X_Personal_Token'
 const ERROR_MESSAGES = {
   MISSING_TOKEN: '缺少必要的授权参数',
-  CONFIG_FAILED: '获取授权配置失败',
-  REDIRECT_FAILED: '授权跳转失败',
-  EXPIRED_LINK: '授权链接已失效',
   AUTH_SUCCESS: '授权成功，正在跳转...'
 }
 
@@ -186,13 +180,12 @@ const handleRedirect = async (params) => {
     const response = await getTokenRedirect(personalToken.value, params || {})
 
     if (response?.result) {
-      console.log('response: ', response)
       const redirectUrl = processRedirectUrl(response.result)
       if (params) {
         onlyMessage(ERROR_MESSAGES.AUTH_SUCCESS)
         setTimeout(() => {
           window.location.href = redirectUrl
-        }, 1500)
+        }, 1000)
       } else {
         window.location.href = redirectUrl
       }
@@ -229,7 +222,9 @@ const handleSubmit = async () => {
 
     const authParameters = buildAuthParameters()
     await handleRedirect({ authParameters })
-  } catch (error) {}
+  } catch (error) {
+    console.error('表单验证失败:', error)
+  }
 }
 
 const buildAuthParameters = () => {
@@ -277,7 +272,8 @@ const initialize = async () => {
             onlyMessage('不支持的授权类型', 'error')
         }
       })
-      .catch(() => {
+      .catch((error) => {
+        console.error('获取授权配置失败:', error)
         isExpired.value = true
       })
   } finally {
@@ -310,10 +306,10 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
+  background: #f5f5f5;
   padding: 20px;
 }
 
-/* Loading Container */
 .loading-container {
   display: flex;
   align-items: center;
@@ -322,20 +318,14 @@ onMounted(() => {
 }
 
 .loading-card {
-  background: white;
-  border-radius: 16px;
-  padding: 48px;
   text-align: center;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
 }
 
 .loading-text {
-  margin-top: 24px;
-  font-size: 16px;
+  margin-top: 16px;
   color: #666;
 }
 
-/* Status Container */
 .status-container {
   display: flex;
   align-items: center;
@@ -345,46 +335,40 @@ onMounted(() => {
 
 .status-card {
   background: white;
-  border-radius: 16px;
-  padding: 48px;
+  border-radius: 8px;
+  padding: 40px;
   text-align: center;
-  max-width: 480px;
+  max-width: 400px;
   width: 100%;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .status-card.error .status-icon {
   color: #ff4d4f;
 }
 
-.status-card.info .status-icon {
-  color: #1890ff;
-}
-
 .status-icon {
-  font-size: 72px;
-  margin-bottom: 24px;
-}
-
-.status-title {
-  font-size: 28px;
-  font-weight: 600;
-  color: #1a1a1a;
+  font-size: 48px;
   margin-bottom: 16px;
 }
 
+.status-title {
+  font-size: 20px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 12px;
+}
+
 .status-description {
-  font-size: 16px;
   color: #666;
-  line-height: 1.6;
-  margin-bottom: 32px;
+  line-height: 1.5;
+  margin-bottom: 24px;
 }
 
 .status-footer {
-  margin-top: 32px;
+  margin-top: 24px;
 }
 
-/* Auth Container */
 .auth-container {
   display: flex;
   align-items: center;
@@ -394,54 +378,39 @@ onMounted(() => {
 
 .auth-card {
   background: white;
-  border-radius: 16px;
-  padding: 48px;
-  max-width: 480px;
+  border-radius: 8px;
+  padding: 40px;
+  max-width: 400px;
   width: 100%;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .auth-header {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 32px;
 }
 
 .auth-logo {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 80px;
-  height: 80px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 50%;
-  margin-bottom: 24px;
-  font-size: 36px;
+  width: 60px;
+  height: 60px;
+  background: #1890ff;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-size: 24px;
   color: white;
 }
 
 .auth-title {
-  font-size: 28px;
-  font-weight: 600;
-  color: #1a1a1a;
-  margin-bottom: 8px;
+  font-size: 20px;
+  font-weight: 500;
+  color: #333;
 }
 
 .auth-form {
   width: 100%;
-}
-
-.auth-form :deep(.ant-input-affix-wrapper),
-.auth-form :deep(.ant-input) {
-  border-radius: 8px;
-}
-
-.auth-form :deep(.ant-input) {
-  height: 38px;
-}
-
-.auth-form :deep(.ant-input-prefix) {
-  margin-right: 12px;
-  color: #999;
 }
 
 .verify-code-wrapper {
@@ -467,69 +436,37 @@ onMounted(() => {
   background: #f5f5f5;
   border-radius: 4px;
   color: #999;
-  font-size: 18px;
 }
 
 .verify-code-placeholder:hover {
   background: #e8e8e8;
-  color: #666;
 }
 
 .form-actions {
-  margin-top: 32px;
+  margin-top: 24px;
   margin-bottom: 0;
 }
 
-.form-actions :deep(.ant-btn) {
-  height: 48px;
-  font-size: 16px;
-  font-weight: 500;
-  border-radius: 8px;
-}
-
-/* Responsive Design */
 @media (max-width: 640px) {
   .auth-card,
   .status-card,
   .loading-card {
-    padding: 32px 24px;
+    padding: 24px;
   }
 
   .auth-logo {
-    width: 64px;
-    height: 64px;
-    font-size: 28px;
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
   }
 
   .auth-title,
   .status-title {
-    font-size: 24px;
-  }
-
-  .status-description {
-    font-size: 14px;
+    font-size: 18px;
   }
 
   .status-icon {
-    font-size: 56px;
+    font-size: 40px;
   }
-}
-
-/* Animation */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.auth-card,
-.status-card,
-.loading-card {
-  animation: fadeIn 0.5s ease-out;
 }
 </style>
