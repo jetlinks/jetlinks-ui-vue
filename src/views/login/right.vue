@@ -235,7 +235,7 @@ const { loading, run } = useRequest(login, {
     if (res.success) {
       setToken(res.result.token);
       // 登录成功后，直接关闭模态弹窗，停留在当前页面//若使用另外账号登录,直接跳转默认首页
-      const flag = LocalStore.get('username') === res.result.user?.username
+      const flag = LocalStore.get('userId') === res.result.userId
       if(props.type === 'relogin'){
         // 处理websocket
         initPackages()

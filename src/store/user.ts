@@ -34,7 +34,7 @@ export const useUserStore = defineStore('user', () => {
       setUserInfo(resp.result)
       isAdmin.value = resp.result.username === 'admin'
       isApplicationUser.value = resp.result.type?.id === 'application'
-      LocalStore.set('username', resp.result?.username)
+      LocalStore.set('userId', resp.result?.id)
     }
   }
   const updateAlarm = () => {

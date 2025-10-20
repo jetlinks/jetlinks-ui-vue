@@ -206,8 +206,9 @@ const initializePermissions = (type) => {
       break
     case 'readwrite':
       // 读写：选择查看、编辑、启用/禁用、导入权限
-      const readwriteActions = ['query', 'save', 'enable', 'disable', 'import', 'export']
+      const readwriteActions = ['query', 'save', 'enable', 'disable', 'import', 'export', 'add', 'find-geo', 'save-geo', 'bind-user', 'unbind-user']
       sourceList.value.forEach(item => {
+        console.log(item, 'item')
         if(item.actions.some(action => readwriteActions.includes(action.action))) {
           arr.push({
             id: item.id,

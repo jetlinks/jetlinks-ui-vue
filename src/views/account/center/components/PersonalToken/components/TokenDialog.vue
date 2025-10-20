@@ -25,7 +25,7 @@
         <div class="form-left">
           <a-descriptions v-if="mode === 'view'" :column="1">
             <a-descriptions-item :label="$t('PersonalToken.TokenDialog.168178-7')">{{ token.name }}</a-descriptions-item>
-            <a-descriptions-item :label="$t('PersonalToken.TokenCard.515931-0')">{{ token.sourceType }}</a-descriptions-item>
+            <a-descriptions-item :label="$t('PersonalToken.TokenCard.515931-0')">{{ token.sourceTypeName || token.sourceType }}</a-descriptions-item>
             <a-descriptions-item :label="$t('PersonalToken.TokenCard.515931-1')" >{{ token.creatorName }}</a-descriptions-item>
             <a-descriptions-item :label="$t('PersonalToken.TokenCard.515931-2')" >
               <span v-time-format="'YYYY-MM-DD HH:mm:ss'">{{ token.createTime }}</span>
@@ -122,6 +122,7 @@ import PermissionSelector from './PermissionSelector.vue'
 import Success from './Success.vue'
 import { savePersonalToken_api } from '@/api/account/center'
 import { useUserStore } from '@/store'
+import {randomString} from "@jetlinks-web/utils";
 
 const props = defineProps({
   visible: {
@@ -158,7 +159,7 @@ const formData = ref({
     permissions: []
   },
   sourceType: 'account-center',
-  sourceId: userStore.userInfo.id,
+  sourceId: randomString(8),// userStore.userInfo.id,
   sourceTypeName: '个人中心'
 })
 
@@ -339,7 +340,7 @@ watch(() => props.visible, (visible) => {
       expires: props.token.expires,
       description: props.token.description || '',
       sourceType: props.token.sourceType || 'account-center',
-      sourceId: props.token.sourceId || userStore.userInfo.id,
+      sourceId: props.token.sourceId || randomString(8),// userStore.userInfo.id,
       scope: {
         permissions: props.token.scope?.permissions || []
       }
