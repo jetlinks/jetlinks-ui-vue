@@ -16,6 +16,7 @@ type MenuItem = {
   options?: Record<string, any>
   meta?: RouteMeta
   children?: MenuItem[]
+  component?: any
 }
 
 type BreadcrumbType = {
@@ -90,6 +91,10 @@ export const handleMenus = (menuData: MenuItem[], extraMenus: any, components: R
     const isApp = !!record.appId
     const meta = handleMeta(record, isApp)
     const myComponents = components[meta?.componentCode as string || record.code]
+
+    if (record.component) {
+      return record.component
+    }
 
     if (!record.children?.length) {
       if (meta?.appName && meta?.appUrl) {
