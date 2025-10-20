@@ -1,6 +1,6 @@
 import i18n from "@/locales";
 
-type KeyType = 'HomeView' | 'BindThirdAccount' | 'Subscribe' | 'StationMessage';
+type KeyType = 'HomeView' | 'BindThirdAccount' | 'Subscribe' | 'StationMessage' | 'PersonalToken';
 export const tabList: { key: KeyType; title: string }[] = [
     {
         key: 'HomeView',
@@ -17,5 +17,9 @@ export const tabList: { key: KeyType; title: string }[] = [
     {
         key: 'StationMessage',
         title: i18n.global.t('center.data.756829-1'),
+    },
+    {
+      key: 'PersonalToken',
+      title: i18n.global.t('center.data.756829-4'),
     },
 ]

@@ -27,10 +27,10 @@ const props = defineProps({
     default: [],
   },
 });
-const dataMap = new Map();
+const dataMap = ref(new Map());
 const handleData = (arr) => {
   return arr.map((i) => {
-    dataMap.set(i.id, i);
+    dataMap.value.set(i.id, i);
     if (i.children?.length) {
       i.children = handleData(i.children);
     }
@@ -47,7 +47,7 @@ const _treeData = computed(() => {
   const arr = handleData(treeData.value || []);
   const _arr = props.extraData
     .filter((i) => {
-      return !dataMap.get(i.id);
+      return !dataMap.value.get(i.id);
     })
     .map((item) => {
       return {
@@ -61,7 +61,7 @@ const _treeData = computed(() => {
 const _extraData = computed(() => {
   return props.extraData
     .filter((i) => {
-      return !dataMap.get(i.id);
+      return !dataMap.value.get(i.id);
     })
     .map((i) => i.id);
 });
@@ -105,9 +105,10 @@ watch(
   { immediate: true }
 );
 
-// onMounted(() => {
-//   run()
-// })
+onMounted(() => {
+  // run()
+  dataMap.value = new Map()
+})
 </script>
 
 <template>
@@ -146,7 +147,7 @@ watch(
               >{{ record.name }}</span
             >
           </a-tooltip>
-          <div style="width: calc(100% - 10px)" v-else>
+          <div v-else>
             <j-ellipsis>{{ record.name }}</j-ellipsis>
           </div>
         </template>
@@ -176,7 +177,7 @@ watch(
     <j-permission-button
       hasPermission="system/Department:add"
       @click="onOpen({ save: true})"
-      v-if="!props.extraProps?.disabled"
+      v-if="!props.extraProps?.disabled && showAdd"
     >
       <template #icon>
         <AIcon type="PlusOutlined" />
@@ -195,6 +196,12 @@ watch(
     background: #e6f7ff;
     border-color: #91d5ff;
     color: #096dd9;
+  }
+
+  :deep(.ant-select-selection-overflow-item){
+    & > span {
+      width: 100%;
+    }
   }
 }
 </style>

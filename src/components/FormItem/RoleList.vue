@@ -34,7 +34,7 @@ const props = defineProps({
     default: true
   }
 })
-const dataMap = new Map()
+const dataMap = ref(new Map())
 
 const { onOpen } = useTabSaveSuccess('system/Role', {
   onSuccess(value) {
@@ -57,7 +57,7 @@ const _treeData = computed(() => {
       id: item.groupId,
       disabled: true,
       children: item.roles?.map((i)=>{
-        dataMap.set(i.id, i);
+        dataMap.value.set(i.id, i);
         return {
           name:i.name,
           id:i.id,
@@ -67,7 +67,7 @@ const _treeData = computed(() => {
     }
   })
   const _arr = props.extraData.filter(i => {
-    return !dataMap.get(i.id)
+    return !dataMap.value.get(i.id)
   }).map(item => {
     return {
       ...item,
@@ -88,7 +88,7 @@ const { data: treeData, reload } = useRequest(getRoleList, {
 const myValue = ref()
 const _extraData = computed(() => {
   return props.extraData.filter(i => {
-    return !dataMap.get(i.id)
+    return !dataMap.value.get(i.id)
   }).map(i => i.id)
 })
 
@@ -103,6 +103,7 @@ watch(() => props.value, () => {
 
 onMounted(() => {
   reload()
+  dataMap.value = new Map()
 })
 </script>
 
@@ -122,7 +123,7 @@ onMounted(() => {
           @change="onChange"
       >
         <template #title="record">
-          <div style="width: calc(100% - 10px) ">
+          <div>
             <a-tooltip :title="$t('components.EditUserDialog.939453-34')"  v-if="_extraData.includes(record.id)">
               <span class="j-ellipsis j-ellipsis-line-clamp" style="-webkit-line-clamp: 1;">{{ record.name }}</span>
             </a-tooltip>
@@ -166,6 +167,12 @@ onMounted(() => {
     background: #e6f7ff;
     border-color: #91d5ff;
     color: #096dd9;
+  }
+
+  :deep(.ant-select-selection-overflow-item){
+    & > span {
+      width: 100%;
+    }
   }
 }
 

@@ -51,11 +51,11 @@
 </template>
 
 <script setup>
-import {query, update, _delete} from '@device/api/instance';
+import {query, update, _delete} from '@device-manager-ui/api/instance';
 import CrudTable from '@/components/CrudTable/index.vue'
 import {useI18n} from "vue-i18n";
-import {device} from "@device/assets";
-import {queryNoPagingPost} from "@device/api/product";
+import {device} from "@device-manager-ui/assets";
+import {queryNoPagingPost} from "@device-manager-ui/api/product";
 import dayjs from "dayjs";
 
 const {t: $t} = useI18n();

@@ -23,6 +23,8 @@ import {
 import { OpenMicroApp } from "@/utils/consts";
 import { BASE_API } from '@jetlinks-web/constants'
 import { useApplication } from '@/store'
+import {saveAgentList} from "@/api/comm";
+import {agentData} from "../data/aiData";
 
 const app = useApplication()
 /**
@@ -32,6 +34,7 @@ const menusData = reactive({
   count: 0,
   current: [],
 });
+const hasAgentPermission = ref(false)
 
 /**
  * 查询支持的协议
@@ -62,15 +65,16 @@ const getSystemPermissionData = async ( BaseMenu: any[] ) => {
   const hasProtocol = await getProvidersFn();
   const resp = await getSystemPermission();
   if (resp.success) {
-    const newTree = filterMenu(
-      resp.result.map((item: any) => JSON.parse(item).id),
+    const _permission = resp.result.map((item: any) => JSON.parse(item).id)
+    const newTree = filterMenu(_permission,
       BaseMenu,
       hasProtocol,
     );
     const _count = menuCount(newTree);
     menusData.current = newTree;
     menusData.count = _count;
-    console.log(newTree)
+    console.log('newTree', newTree)
+    hasAgentPermission.value = _permission.includes('ai-agent-deploy')
   }
 };
 
@@ -148,7 +152,17 @@ const initMenu = async () => {
       ...menusData.current!,
       USER_CENTER_MENU_DATA,
     ]);
-    resolve(res.success)
+    if(res.success){
+      // 保存ai初始化数据
+      if(hasAgentPermission.value){
+        const resp = await saveAgentList(agentData)
+        resolve(resp.success)
+      } else {
+        resolve(res.success)
+      }
+    } else {
+      resolve(res.success)
+    }
   });
 };
 

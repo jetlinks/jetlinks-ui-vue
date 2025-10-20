@@ -81,7 +81,7 @@ const loadImage = () => {
 }
 </script>
 
-<style scoped>
+<style scoped lang="less">
 .image-container {
   position: relative;
   display: inline-block;

@@ -1,11 +1,14 @@
 <template>
-  <a-modal visible :title="$t('BatchImport.index.250528-1')" :mask-closable="false" @cancel="emits('close')">
+  <a-modal open :title="$t('BatchImport.index.250528-1')" :width="width" :mask-closable="false" @cancel="emits('close')">
     <slot name="alert">
       <div class="alert" v-if="message">
-        <AIcon type="InfoCircleFilled" style="color: #2F54EB; margin-right: 10px;"/>
-        {{ message }}
+        <div>
+          <AIcon type="InfoCircleFilled" style="color: #2F54EB; margin-right: 10px;"/>
+        </div>
+        <span v-html="message"></span>
       </div>
     </slot>
+    <slot name="content"></slot>
     <p>{{ $t('BatchImport.index.250528-2') }}</p>
     <a-upload-dragger
         v-model:fileList="value"
@@ -61,7 +64,7 @@
     </div>
 
     <template #footer>
-      <a-button type="primary" @click="emits('close')">{{ $t('Save.index.551009-0') }}</a-button>
+      <a-button :loading="result.loading" @click="emits('close')">{{ $t('Detail.index.551010-9') }}</a-button>
     </template>
   </a-modal>
 </template>
@@ -92,7 +95,11 @@ const props = defineProps({
   request: {
     type: Function,
     default: undefined
-  }
+  },
+  width: {
+    type: Number || String,
+    default: 600
+  },
 })
 const emits = defineEmits(['close', 'save'])
 
@@ -119,8 +126,9 @@ const submitData = (url) => {
         console.log('Received data:', data)
         if(data.success) {
           result.success = data.result.added + data.result.updated
-          result.error = data.result.total - result.success
         } else if(!data.success && data.rowNumber !== -1) {
+          result.error = data.result.total
+        } else if(!data.success && data.rowNumber === -1) {
           result.errMessage = data.detailFile
         }
         // result.success
@@ -177,7 +185,6 @@ const downTemplate = async (type) => {
   if (resp) {
     const blob = new Blob([resp], {type: type});
     const url = URL.createObjectURL(blob);
-    debugger
     downloadFileByUrl(url, props.templateName || '导入模板', type);
   }
 };
@@ -190,6 +197,8 @@ const downTemplate = async (type) => {
   border-radius: 4px;
   margin-bottom: 16px;
   background-color: #F5F5F5;
+  display: flex;
+  align-items: center;
 }
 
 .draggable-box {
@@ -197,7 +206,7 @@ const downTemplate = async (type) => {
   display: flex;
   flex-direction: column;
   color: #666666;
-
+  align-items: center;
   .icon {
     font-size: 30px;
     color: @primary-color;

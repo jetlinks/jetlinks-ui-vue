@@ -1,4 +1,5 @@
 import {
+    ACCESS_AI_AGENT_CODE,
     USER_CENTER_MENU_BUTTON_CODE,
     USER_CENTER_MENU_CODE
 } from '@/utils/consts'
@@ -56,6 +57,21 @@ export const USER_CENTER_MENU_DATA = {
                 {
                     permission: 'system_config',
                     actions: ['query'],
+                },
+            ]
+        },
+        {
+            id: ACCESS_AI_AGENT_CODE,
+            name: '访问智能体',
+            i18nMessages: {
+                zh_CN: "访问智能体",
+                en_US: "Access Ai Agent",
+                en: "Access Ai Agent"
+            },
+            permissions: [
+                {
+                    permission: 'ai-agent-deploy',
+                    actions: ['use']
                 },
             ]
         }

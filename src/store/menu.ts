@@ -141,6 +141,7 @@ export const useMenuStore = defineStore('menu', () => {
         const resp = await getOwnMenuThree({
             paging: false,
             terms: defaultOwnParams,
+            sorts: [{ name: 'sortIndex', order: 'asc' }]
         })
 
         let menuResult = resp.result

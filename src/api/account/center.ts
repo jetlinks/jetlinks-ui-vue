@@ -41,3 +41,20 @@ export const setView_api = (data:object) => request.patch(`/user/settings/view/u
 // 当前登录用户选择的页面
 export const getView_api = () => request.get(`/user/settings/view/user`);
 
+/**
+ * 查询创建的个人令牌
+ * @param data 通用查询参数
+ */
+export const getCreatedPersonalTokens_api = (data:object) => request.post(`/personal/token/created/_query`, data);
+
+/**
+ * 新增/编辑个人令牌
+ * @param data 个人令牌信息
+ */
+export const savePersonalToken_api = (data:object) => request.post(`/personal/token/me/_save`, data);
+
+/**
+ * 删除个人令牌
+ * @param tokenId 个人令牌ID
+ */
+export const deletePersonalToken_api = (tokenId: string) => request.remove(`/personal/token/me/${tokenId}`);
