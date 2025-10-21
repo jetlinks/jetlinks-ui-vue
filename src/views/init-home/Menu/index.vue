@@ -12,7 +12,7 @@
 
 <script lang="ts" setup>
 import { getImage } from "@jetlinks-web/utils";
-import { USER_CENTER_MENU_DATA } from "../data/baseMenu";
+import {ACCESS_AI_AGENT_CODE_DATA, USER_CENTER_MENU_DATA} from "../data/baseMenu";
 import BaseMenuData, { mergeTrees, handleMenuOptions } from '../data'
 import {
   updateMenus,
@@ -73,7 +73,6 @@ const getSystemPermissionData = async ( BaseMenu: any[] ) => {
     const _count = menuCount(newTree);
     menusData.current = newTree;
     menusData.count = _count;
-    console.log('newTree', newTree)
     hasAgentPermission.value = _permission.includes('ai-agent-deploy')
   }
 };
@@ -148,6 +147,9 @@ const initMenu = async () => {
   return new Promise(async (resolve) => {
     //  用户中心
     dealMenu(menusData.current);
+    if(hasAgentPermission.value){
+      USER_CENTER_MENU_DATA.buttons.push(ACCESS_AI_AGENT_CODE_DATA)
+    }
     const res = await updateMenus([
       ...menusData.current!,
       USER_CENTER_MENU_DATA,

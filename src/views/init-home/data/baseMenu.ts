@@ -4,6 +4,21 @@ import {
     USER_CENTER_MENU_CODE
 } from '@/utils/consts'
 
+export const ACCESS_AI_AGENT_CODE_DATA = {
+    id: ACCESS_AI_AGENT_CODE,
+    name: '访问智能体',
+    i18nMessages: {
+        zh_CN: "访问智能体",
+        en_US: "Access Ai Agent",
+        en: "Access Ai Agent"
+    },
+    permissions: [
+        {
+            permission: 'ai-agent-deploy',
+            actions: ['use']
+        },
+    ]
+}
 export const USER_CENTER_MENU_DATA = {
     id: '19a1f2c763e1231f1e1',
     accessSupport: {value: 'unsupported', label: '不支持'},
@@ -60,24 +75,7 @@ export const USER_CENTER_MENU_DATA = {
                 },
             ]
         },
-        {
-            id: ACCESS_AI_AGENT_CODE,
-            name: '访问智能体',
-            i18nMessages: {
-                zh_CN: "访问智能体",
-                en_US: "Access Ai Agent",
-                en: "Access Ai Agent"
-            },
-            permissions: [
-                {
-                    permission: 'ai-agent-deploy',
-                    actions: ['use']
-                },
-            ]
-        }
     ]
 }
 
-export default [
-
-];
+export default [];
