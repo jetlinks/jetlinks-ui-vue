@@ -5,6 +5,7 @@
       placement="right"
       width="520"
       :maskClosable="false"
+      destroy-on-close
   >
     <template #title>
       <div style="display: flex; align-items: center; gap: 12px">
@@ -56,7 +57,7 @@ const getAgentDetail = (agentId) => {
   if (agentId && aiChatStore.value) {
     getAgentDetailById(agentId).then((res) => {
       if (res.status === 200) {
-        aiChatStore.value.setAgentDetailData(res.result);
+        aiChatStore.value.setAgentDetailData(agentId, res.result, new Date().getTime());
       }
     });
   }
