@@ -124,13 +124,23 @@ const submitData = (url) => {
     props.request(url).subscribe({
       next: data => {// 处理数据
         console.log('Received data:', data)
-        if(data.success) {
-          result.success = data.result.added + data.result.updated
-        } else if(!data.success && data.rowNumber !== -1) {
-          result.error = data.result.total
-        } else if(!data.success && data.rowNumber === -1) {
-          result.errMessage = data.detailFile
+        if(data.success ){
+          result.success = data.result.total
+        }else{
+          if(data.detailFile){
+            result.errMessage = data.detailFile
+          }else{
+            result.error = data.result.total
+          }
         }
+        
+        // if(data.success) {
+        //   result.success = data.result.added + data.result.updated
+        // } else if(!data.success && data.rowNumber !== -1) {
+        //   result.error = data.result.total
+        // } else if(!data.success && data.rowNumber === -1) {
+        //   result.errMessage = data.detailFile
+        // }
         // result.success
       },
       error: err => {
