@@ -10,7 +10,7 @@
             title="地理位置"
             ok-text="确认"
             cancel-text="取消"
-            v-model:visible="modalVis"
+            v-model:open="modalVis"
             width="700px"
             @cancel="modalVis = false"
             @ok="handleModalSubmit"

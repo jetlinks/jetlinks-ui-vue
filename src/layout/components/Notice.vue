@@ -1,7 +1,7 @@
 <template>
   <div class="notice-container">
     <a-dropdown
-      v-model:visible="visible"
+      v-model:open="visible"
       :trigger="['click']"
     >
       <a-badge :count="total" :offset="[3, -3]">
@@ -108,7 +108,7 @@ const read = (type: string, data: any) => {
 // 查询未读数量
 const getList = () => {
     if(tabs.value.length <= 0) return;
-    loading.value = true; 
+    loading.value = true;
       const params = {
       paging:false,
         sorts: [{

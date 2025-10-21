@@ -83,7 +83,7 @@
             </div>
             <Popover
               trigger="click"
-              v-model:visible="moreVisible"
+              v-model:open="moreVisible"
               placement="bottomRight"
             >
               <template #content>

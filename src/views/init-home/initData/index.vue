@@ -12,7 +12,7 @@
     </div>
     <!-- 初始数据提交表单 -->
     <a-modal
-        v-model:visible="visible"
+        v-model:open="visible"
         ::title="$t('init-home.index.011072-2')"
         width="52vw"
         :maskClosable="false"

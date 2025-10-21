@@ -20,7 +20,7 @@
                             <AIcon type="QuestionCircleOutlined" />
                         </a-tooltip>
                         <a-popover
-                            v-model:visible="visible"
+                            v-model:open="visible"
                             trigger="click"
                             :title="$t('Player.ScreenPlayer.521467-5')"
                         >

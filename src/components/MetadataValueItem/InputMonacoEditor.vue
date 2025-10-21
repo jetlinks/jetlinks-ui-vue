@@ -6,7 +6,7 @@
       </a-button>
     </template>
   </a-input>
-  <a-modal v-model:visible="visible" :title="$t('CrudTable.index.150716-2')" @ok="onSave" @cancel="visible = false">
+  <a-modal v-model:open="visible" :title="$t('CrudTable.index.150716-2')" @ok="onSave" @cancel="visible = false">
     <monaco-editor
         v-model:modelValue="_value"
         theme="vs"

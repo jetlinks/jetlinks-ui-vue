@@ -65,7 +65,7 @@
             </div>
         </a-checkbox-group>
     </div>
-    <a-modal destroy-on-close :visible="showAdd" :title="$t('Role.index.263636-11')" @cancel="showAdd = false" @ok="addGroup">
+    <a-modal destroy-on-close :open="showAdd" :title="$t('Role.index.263636-11')" @cancel="showAdd = false" @ok="addGroup">
         <a-form layout="vertical" ref="formRef" :model="formData">
             <a-form-item name="name" :label="$t('Role.index.263636-12')" :rules="[
                 {

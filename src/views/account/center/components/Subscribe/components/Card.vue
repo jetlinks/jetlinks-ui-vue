@@ -2,7 +2,7 @@
   <div class="box-item">
     <div class="box-item-img">
       <a-popover
-        v-model:visible="popoverVisible"
+        v-model:open="popoverVisible"
         placement="top"
         :trigger="['click']"
       >
