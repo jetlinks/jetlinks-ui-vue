@@ -21,14 +21,15 @@ export const useApplication = defineStore('application', () => {
    * 查询应用列表
    */
   const queryApplication = async () => {
-    if (appList.value.length > 0 || OpenMicroApp === 'false') return
+    // if (appList.value.length > 0 || OpenMicroApp === 'false') return
 
     if (lock) return
-    lock = true
+
 
     try {
       const resp = await uiList()
       if (resp.success && resp.result) {
+        lock = true
         let result = resp.result
         // let result = [
         //   { id: 'authentication-manager', name: 'authentication-manager-ui', path: 'http://localhost:8082/'}
@@ -50,9 +51,6 @@ export const useApplication = defineStore('application', () => {
       }
     } catch (error) {
       console.error('查询应用列表失败:', error)
-      throw error
-    } finally {
-      lock = false
     }
   }
 
