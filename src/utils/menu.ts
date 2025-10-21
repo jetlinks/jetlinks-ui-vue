@@ -17,6 +17,7 @@ type MenuItem = {
   meta?: RouteMeta
   children?: MenuItem[]
   component?: any
+  id?: string
 }
 
 type BreadcrumbType = {
@@ -36,6 +37,7 @@ const handleMeta = (item: MenuItem, isApp: boolean):RouteMeta  => {
   return {
     ..._meta,
     ...(item.meta || {}),
+    id: item.id,
     icon: item.icon,
     title: item.i18nName || item.name,
     hideInMenu: item.options?.show === false, // 隐藏菜单
