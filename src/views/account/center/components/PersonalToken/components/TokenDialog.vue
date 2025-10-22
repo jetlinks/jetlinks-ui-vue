@@ -7,10 +7,18 @@
     @cancel="handleCancel"
     @ok="handleOk"
   >
-    <template v-if="mode !== 'view'" #footer>
+    <template
+      v-if="mode !== 'view'"
+      #footer
+    >
       <a-space>
         <a-button @click="handleCancel">{{ $t('PersonalToken.TokenDialog.168178-0') }}</a-button>
-        <a-button type="primary" :disabled="!canSubmit" @click="handleOk" :loading="loading">
+        <a-button
+          type="primary"
+          :disabled="!canSubmit"
+          @click="handleOk"
+          :loading="loading"
+        >
           {{ mode === 'add' ? $t('PersonalToken.TokenDialog.168178-1') : $t('PersonalToken.TokenDialog.168178-2') }}
         </a-button>
       </a-space>
@@ -23,21 +31,43 @@
     >
       <div class="form-layout">
         <div class="form-left">
-          <a-descriptions v-if="mode === 'view'" :column="1">
-            <a-descriptions-item :label="$t('PersonalToken.TokenDialog.168178-7')">{{ token.name }}</a-descriptions-item>
-            <a-descriptions-item :label="$t('PersonalToken.TokenCard.515931-0')">{{ token.sourceTypeName || token.sourceType }}</a-descriptions-item>
-            <a-descriptions-item :label="$t('PersonalToken.TokenCard.515931-1')" >{{ token.creatorName }}</a-descriptions-item>
-            <a-descriptions-item :label="$t('PersonalToken.TokenCard.515931-2')" >
+          <a-descriptions
+            v-if="mode === 'view'"
+            :column="1"
+          >
+            <a-descriptions-item :label="$t('PersonalToken.TokenDialog.168178-7')">
+              {{ token.name }}
+            </a-descriptions-item>
+            <a-descriptions-item :label="$t('PersonalToken.TokenCard.515931-0')">
+              {{ token.sourceTypeName || token.sourceType }}
+            </a-descriptions-item>
+            <a-descriptions-item :label="$t('PersonalToken.TokenCard.515931-1')">
+              {{ token.creatorName }}
+            </a-descriptions-item>
+            <a-descriptions-item :label="$t('PersonalToken.TokenCard.515931-2')">
               <span v-time-format="'YYYY-MM-DD HH:mm:ss'">{{ token.createTime }}</span>
             </a-descriptions-item>
             <a-descriptions-item :label="$t('PersonalToken.TokenCard.515931-3')">
               <span v-if="token.expires === -1">{{ $t('PersonalToken.TokenCard.515931-4') }}</span>
-              <span v-else v-time-format="'YYYY-MM-DD HH:mm:ss'">{{ token.expires }}</span>
+              <span
+                v-else
+                v-time-format="'YYYY-MM-DD HH:mm:ss'"
+              >
+                {{ token.expires }}
+              </span>
             </a-descriptions-item>
-            <a-descriptions-item :label="$t('PersonalToken.TokenCard.515931-5')">{{ token.description || '--' }}</a-descriptions-item>
+            <a-descriptions-item :label="$t('PersonalToken.TokenCard.515931-5')">
+              {{ token.description || '--' }}
+            </a-descriptions-item>
           </a-descriptions>
-          <div v-else class="form-section">
-            <a-form-item :label="$t('PersonalToken.TokenDialog.168178-7')" name="name">
+          <div
+            v-else
+            class="form-section"
+          >
+            <a-form-item
+              :label="$t('PersonalToken.TokenDialog.168178-7')"
+              name="name"
+            >
               <a-input
                 v-model:value="formData.name"
                 :placeholder="$t('PersonalToken.TokenDialog.168178-8')"
@@ -79,7 +109,10 @@
               />
             </a-form-item>
 
-            <a-form-item :label="$t('PersonalToken.TokenDialog.168178-18')" name="description">
+            <a-form-item
+              :label="$t('PersonalToken.TokenDialog.168178-18')"
+              name="description"
+            >
               <a-textarea
                 v-model:value="formData.description"
                 :placeholder="$t('PersonalToken.TokenDialog.168178-19')"
@@ -122,7 +155,7 @@ import PermissionSelector from './PermissionSelector.vue'
 import Success from './Success.vue'
 import { savePersonalToken_api } from '@/api/account/center'
 import { useUserStore } from '@/store'
-import {randomString} from "@jetlinks-web/utils";
+import { randomString } from '@jetlinks-web/utils'
 
 const props = defineProps({
   visible: {
@@ -159,7 +192,7 @@ const formData = ref({
     permissions: []
   },
   sourceType: 'account-center',
-  sourceId: randomString(8),// userStore.userInfo.id,
+  sourceId: randomString(8), // userStore.userInfo.id,
   sourceTypeName: '个人中心'
 })
 
@@ -168,9 +201,7 @@ const rules = {
     { required: true, message: '请输入名称', trigger: 'blur' },
     { max: 64, message: '最多可输入64个字符', trigger: 'blur' }
   ],
-  expires: [
-    { required: true, message: '请选择到期时间', trigger: 'change' }
-  ],
+  expires: [{ required: true, message: '请选择到期时间', trigger: 'change' }]
 }
 
 const dialogTitle = computed(() => {
@@ -232,7 +263,7 @@ const disabledTime = (current) => {
 const handleExpireTypeChange = (value) => {
   if (value === 'custom') {
     formData.value.expires = null
-  } else if(value === -1) {
+  } else if (value === -1) {
     formData.value.expires = -1
   } else {
     formData.value.expires = dayjs().add(parseInt(value), 'day').valueOf()
@@ -254,14 +285,14 @@ const handleOk = async () => {
     await formRef.value.validate()
     loading.value = true
     const submitData = {
-      ...formData.value,
+      ...formData.value
     }
 
     if (props.mode === 'add' || props.mode === 'edit') {
       // 模拟生成令牌
       // generatedToken.value = 'jetlinks_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
       const res = await savePersonalToken_api({
-        ...submitData,
+        ...submitData
       }).finally(() => {
         loading.value = false
       })
@@ -290,7 +321,6 @@ const handleSuccessClose = () => {
   showSuccessModal.value = false
   emit('save', formData.value)
 }
-
 
 const copyToken = async () => {
   try {
@@ -332,25 +362,29 @@ const getExpireType = (expireTime) => {
   return 'custom'
 }
 
-watch(() => props.visible, (visible) => {
-  if (visible && props.token && props.mode !== 'add') {
-    // 编辑或查看模式，填充表单数据
-    formData.value = {
-      name: props.token.name || '',
-      expires: props.token.expires,
-      description: props.token.description || '',
-      sourceType: props.token.sourceType || 'account-center',
-      sourceId: props.token.sourceId || randomString(8),// userStore.userInfo.id,
-      scope: {
-        permissions: props.token.scope?.permissions || []
+watch(
+  () => props.visible,
+  (visible) => {
+    if (visible && props.token && props.mode !== 'add') {
+      // 编辑或查看模式，填充表单数据
+      formData.value = {
+        name: props.token.name || '',
+        expires: props.token.expires,
+        description: props.token.description || '',
+        sourceType: props.token.sourceType || 'account-center',
+        sourceId: props.token.sourceId || randomString(8), // userStore.userInfo.id,
+        scope: {
+          permissions: props.token.scope?.permissions || []
+        }
       }
+      console.log(getExpireType(props.token.expires))
+      expireType.value = getExpireType(props.token.expires)
+    } else if (!visible) {
+      resetForm()
     }
-    console.log(getExpireType(props.token.expires))
-    expireType.value = getExpireType(props.token.expires)
-  } else if (!visible) {
-    resetForm()
-  }
-}, { immediate: true })
+  },
+  { immediate: true }
+)
 
 provide('mode', props.mode)
 </script>
@@ -358,15 +392,17 @@ provide('mode', props.mode)
 <style lang="less" scoped>
 .form-layout {
   display: flex;
-  gap: 24px;
+  // gap: 24px;
+  width: 100%;
 
-  .form-left,
+
   .form-right {
-    flex: 1;
+    width: 55%;
   }
 
   .form-left {
     padding-right: 12px;
+    width: 45%;
     border-right: 1px solid #f0f0f0;
   }
 

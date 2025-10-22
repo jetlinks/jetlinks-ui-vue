@@ -63,7 +63,7 @@ const selectedToken = ref(null)
 const deleteVisible = ref(false)
 const tokenToDelete = ref(null)
 
-const { run } = useRequest(getCreatedPersonalTokens_api, {
+const { run,reload } = useRequest(getCreatedPersonalTokens_api, {
   defaultParams: {
     sorts: [
       { name: 'createTime', order: 'desc' }
@@ -97,7 +97,7 @@ const handleEdit = (token) => {
 const handleDelete = async (token) => {
   const res = await deletePersonalToken_api(token.id)
   if (res.success) {
-    run()
+    reload()
     onlyMessage('操作成功')
   }
 }
@@ -117,7 +117,7 @@ const confirmDelete = async () => {
 }
 
 const handleDialogOk = async (data) => {
-  run()
+  reload()
   onlyMessage('操作成功')
   dialogVisible.value = false
   // try {
