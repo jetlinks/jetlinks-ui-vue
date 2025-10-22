@@ -54,3 +54,7 @@ export const queryAgentList = (clientType: string, clientId: string) => request.
 export const saveAgentList = (data: any) => request.post(`/ai/agent/deploy/client/pagePoint/_save`, data)
 export const getAgentDetailById = (agentId: string) => request.get(`/ai/agent/deploy/${agentId}/_detail`)
 export const getAgentHistoryList = (agentId: string, clientType: string, clientId: string) => request.get(`/ai/agent/deploy/${agentId}/session/_query?clientType=${clientType}&clientId=${clientId}`)
+export const delHistory = (sessionId: string) => request.remove(`/ai/agent/deploy/session/${sessionId}/_delete`)
+
+export const historyData = (id: string, data: any) => request.post(`/ai/agent/deploy/session/${id}/history/_query/no-paging`, Object.assign({ 'paging': false }, data));
+
