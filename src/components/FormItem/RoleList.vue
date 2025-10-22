@@ -120,6 +120,7 @@ onMounted(() => {
           :fieldNames="{ label: 'name', value: 'id', children:'children' }"
           :disabled="disabled"
           :filterTreeNode="(v, node) => filterSelectNode(v, node, 'name')"
+          :height="233"
           @change="onChange"
       >
         <template #title="record">

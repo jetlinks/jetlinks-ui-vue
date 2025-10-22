@@ -127,6 +127,7 @@ onMounted(() => {
         :tree-data="_treeData"
         :fieldNames="{ label: 'name', value: 'id' }"
         :filterTreeNode="(v, node) => filterSelectNode(v, node, 'name')"
+        :height="233"
         v-bind="props.extraProps"
         @change="onChange"
       >
