@@ -16,7 +16,7 @@
                 </template>
                 <a-spin :spinning="loading">
                     <div class="content">
-                        <j-scrollbar class="list" :max-height="450" v-if="list.length">
+                        <div class="list" v-if="list.length">
                             <template v-for="(i,index) in list" :key="i.id">
                                 <NoticeItem
                                     :data="i"
@@ -35,7 +35,7 @@
                             >
                                 {{ $t('components.NoticeInfo.811677-0') }}
                             </div>
-                        </j-scrollbar>
+                        </div>
                         <div class="no-data" v-else>
                             <j-empty />
                         </div>

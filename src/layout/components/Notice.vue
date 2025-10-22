@@ -1,8 +1,9 @@
 <template>
-  <div class="notice-container">
+  <div class="notice-container" ref="noticeRef">
     <a-dropdown
       v-model:open="visible"
       :trigger="['click']"
+      :getPopupContainer="getPopupContainer"
     >
       <a-badge :count="total" :offset="[3, -3]">
         <AIcon type="BellOutlined" style="font-size: 16px" />
@@ -35,6 +36,11 @@ const menuStory = useMenuStore();
 const visible = ref(false)
 const total = ref(0)
 const loading = ref(false)
+const noticeRef = ref(null)
+
+const getPopupContainer = () => {
+  return noticeRef.value || document.body
+}
 
 const { send } = useWebSocket({
   onMessage(data) {
