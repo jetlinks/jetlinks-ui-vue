@@ -90,6 +90,7 @@ import { protocolList } from "@/utils/consts";
 import { isNoCommunity } from "@/utils/utils";
 import { USER_CENTER_MENU_DATA } from "@/views/init-home/data/baseMenu";
 import { useI18n } from "vue-i18n";
+import { handleMenuFilterMessage, handleMergeTree } from "./utils";
 
 const { t: $t } = useI18n();
 const selectedKeys: any = ref([]);
@@ -308,10 +309,8 @@ onMounted(() => {
     );
     getMenuTree(params).then((resp: any) => {
       if (resp.status == 200) {
-        systemMenu.value = resp.result?.filter(
-          (item: { code: string }) =>
-            ![USER_CENTER_MENU_CODE, messageSubscribe].includes(item.code),
-        );
+        const filterMenu = handleMenuFilterMessage(resp.result)
+        systemMenu.value = handleMergeTree(baseMenu.value, filterMenu);
         //初始化菜单
         // initData(baseMenu.value); // 不要克隆，通过引用 处理key和name
         const systemMenuData = inItSelected(systemMenu.value);
