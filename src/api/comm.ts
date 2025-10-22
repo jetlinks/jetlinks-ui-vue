@@ -53,3 +53,4 @@ export const getTokenRedirect = (tokenId: string, data: any) =>
 export const queryAgentList = (clientType: string, clientId: string) => request.get(`/ai/agent/deploy/${clientType}/${clientId}`)
 export const saveAgentList = (data: any) => request.post(`/ai/agent/deploy/client/pagePoint/_save`, data)
 export const getAgentDetailById = (agentId: string) => request.get(`/ai/agent/deploy/${agentId}/_detail`)
+export const getAgentHistoryList = (agentId: string, clientType: string, clientId: string) => request.get(`/ai/agent/deploy/${agentId}/session/_query?clientType=${clientType}&clientId=${clientId}`)
