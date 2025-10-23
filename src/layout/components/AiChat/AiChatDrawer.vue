@@ -67,23 +67,23 @@
         </a-popover>
       </a-space>
     </template>
-    <div style="display: flex; align-items: center; gap: 12px">
-      <template v-if="agentList.length > 1">
-        <j-ellipsis style="width: 100px">{{ activeAgent.agentName || activeAgent.agentId }}</j-ellipsis>
-        <a-dropdown>
-          <div @click.prevent>
-            <AIcon type="DownOutlined"/>
-          </div>
-          <template #overlay>
-            <a-menu @click="onClick">
-              <a-menu-item v-for="item in agentList" :key="item.agentId">
-                {{ item?.agentName || item.agentId }}
-              </a-menu-item>
-            </a-menu>
-          </template>
-        </a-dropdown>
-      </template>
-    </div>
+<!--    <div style="display: flex; align-items: center; gap: 12px">-->
+<!--      <template v-if="agentList.length > 1">-->
+<!--        <j-ellipsis style="width: 100px">{{ activeAgent.agentName || activeAgent.agentId }}</j-ellipsis>-->
+<!--        <a-dropdown>-->
+<!--          <div @click.prevent>-->
+<!--            <AIcon type="DownOutlined"/>-->
+<!--          </div>-->
+<!--          <template #overlay>-->
+<!--            <a-menu @click="onClick">-->
+<!--              <a-menu-item v-for="item in agentList" :key="item.agentId">-->
+<!--                {{ item?.agentName || item.agentId }}-->
+<!--              </a-menu-item>-->
+<!--            </a-menu>-->
+<!--          </template>-->
+<!--        </a-dropdown>-->
+<!--      </template>-->
+<!--    </div>-->
     <div class="ai-iframe-container">
       <component
           v-if="_component && activeAgent.agentId"
