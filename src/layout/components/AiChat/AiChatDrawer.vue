@@ -68,7 +68,6 @@
       </a-space>
     </template>
     <div style="display: flex; align-items: center; gap: 12px">
-      <j-ellipsis>{{ activeAgent.others?.client?.name || 'AI助手' }}</j-ellipsis>
       <template v-if="agentList.length > 1">
         <j-ellipsis style="width: 100px">{{ activeAgent.agentName || activeAgent.agentId }}</j-ellipsis>
         <a-dropdown>
