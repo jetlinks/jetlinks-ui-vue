@@ -17,7 +17,11 @@ const props = defineProps({
     type: Object,
     default: () => ({}),
   },
-  disabledData: {
+  disabledData: { // 用于提示职位关联
+    type: Array,
+    default: [],
+  },
+  disabledShowTips: {
     type: Array,
     default: [],
   },
@@ -38,11 +42,17 @@ const handleData = (arr) => {
     if (i.children?.length) {
       i.children = handleData(i.children);
     }
-    if (props.disabledData?.includes(i.id)) {
-      i.disabled = true;
-    } else {
-      i.disabled = false;
-    }
+
+    i.disabled = (props.disabledShowTips || []).includes(i.id) || props.disabledData?.includes(i.id);
+
+    // if (!i.disabled) {
+    //   if (props.disabledData?.includes(i.id)) {
+    //     i.disabled = true;
+    //   } else {
+    //     i.disabled = false;
+    //   }
+    // }
+
     return i;
   });
 };
@@ -168,7 +178,7 @@ onMounted(() => {
             </div>
             <div
               v-if="
-                !disabledData.includes(value) && !_extraData.includes(value)
+                !disabledData.includes(value) && !_extraData.includes(value) && !disabledShowTips.includes(value)
               "
               @click.stop="onClose"
               class="ant-select-selection-item-remove"
