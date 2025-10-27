@@ -65,12 +65,16 @@ const handleData = (arr) => {
 
 const _treeData = computed(() => {
   // 查询组织树
-  const arr = handleData(treeData.value || [])
+  const arr = handleData(treeData.value || [])?.map(i => ({
+    ...i,
+    name: `${i.orgName}/${i.name}/`
+  })) || []
   const _arr = props.extraData.filter(i => {
     return !dataMap.value.get(i.id)
   }).map(item => {
     return {
       ...item,
+      name: `${item.orgName}/${item.name}`,
       disabled: true
     }
   })

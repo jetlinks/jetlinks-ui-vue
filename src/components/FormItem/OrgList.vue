@@ -26,6 +26,10 @@ const props = defineProps({
     type: Array,
     default: [],
   },
+  showAdd:{
+    type: Boolean,
+    default: true,
+  }
 });
 const dataMap = ref(new Map());
 const handleData = (arr) => {

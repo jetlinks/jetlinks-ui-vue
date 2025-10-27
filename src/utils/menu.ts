@@ -57,7 +57,7 @@ const handleRoute = (item: MenuItem, parent?: ParentType): Partial<RouteRecordRa
 
   return {
     path: isApp ? appUrl : item.url,
-    name: isApp ? appUrl : item.code,
+    name: isApp ? appUrl : item.routeName || item.code,
     meta: {
       ...meta,
       breadcrumb
