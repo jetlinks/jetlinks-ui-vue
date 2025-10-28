@@ -10,7 +10,7 @@ import progress from 'vite-plugin-progress'
 import * as path from 'path'
 import { theme } from 'ant-design-vue/lib'
 import convertLegacyToken from 'ant-design-vue/lib/theme/convertLegacyToken'
-import { registerModulesAlias, copyFile, loadViteModulesPlugins } from './configs/plugin'
+import { registerModulesAlias, copyFile, loadViteModulesPlugins, excludeModulesPlugin } from './configs/plugin'
 import { federation, sharpOptimize } from '@jetlinks-web/vite'
 import customTheme from './configs/theme'
 import { antdLegacyVarsPlugin } from './configs/plugin/antd-legacy-vars-plugin'
@@ -36,8 +36,20 @@ const federationSharedMap = {
 export default defineConfig(({ mode }) => {
   const env: Partial<ImportMetaEnv> = loadEnv(mode, process.cwd())
 
-  const moduleNameIndex = process.argv.indexOf('--module-name')
-  const mavenName = moduleNameIndex !== -1 ? process.argv[moduleNameIndex + 1] : null
+  const moduleNameIndex = process.argv.indexOf('--module-name');
+  const mavenName = moduleNameIndex !== -1 ? process.argv[moduleNameIndex + 1] : null;
+
+  // 解析 --omit 和 --pick 参数
+  const omitIndex = process.argv.indexOf('--omit');
+  const pickIndex = process.argv.indexOf('--pick');
+
+  const omitModules = omitIndex !== -1 && process.argv[omitIndex + 1]
+    ? process.argv[omitIndex + 1].split(',').filter(Boolean)
+    : [];
+
+  const pickModules = pickIndex !== -1 && process.argv[pickIndex + 1]
+    ? process.argv[pickIndex + 1].split(',').filter(Boolean)
+    : [];
 
   return {
     base: './',
@@ -80,6 +92,10 @@ export default defineConfig(({ mode }) => {
       }
     },
     plugins: [
+      excludeModulesPlugin({
+        omit: omitModules,
+        pick: pickModules
+      }),
       vue(),
       vueJsx(),
       VueSetupExtend(),
