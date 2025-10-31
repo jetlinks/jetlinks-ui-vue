@@ -122,6 +122,7 @@ const _tabList = computed(() => {
 })
 
 const getTabKey = () => {
+  if (router.params.value?.tabKey) return
   user.tabKey = !user.isApplicationUser ? 'HomeView' : (!isNoCommunity ? 'Subscribe' : 'BindThirdAccount')
 }
 
