@@ -50,7 +50,7 @@
               <a-row :gutter="24">
                 <a-col v-for="(_item, index) in contentList" :key="index" :span="24 / contentList.length">
                   <div class="card-item-content-text">{{ _item?.text }}</div>
-                  <j-ellipsis>{{ _item?.value || "--" }}</j-ellipsis>
+                  <j-ellipsis>{{ _item?.value ?? "--" }}</j-ellipsis>
                 </a-col>
               </a-row>
             </slot>

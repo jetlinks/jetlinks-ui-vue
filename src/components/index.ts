@@ -25,6 +25,7 @@ import TabsCard from './TabsCard/index.vue'
 import BatchImport from './BatchImport/index.vue'
 import Echarts from './Echarts'
 import RemoteComponent from './RemoteComponent/index.vue'
+import TitleValue from './TitleComponent/TitleValue.vue'
 
 
 export default {
@@ -56,6 +57,7 @@ export default {
           .component('TabsCard', TabsCard)
           .component('BatchImport', BatchImport)
           .component('RemoteComponent', RemoteComponent)
+          .component('TitleValue', TitleValue)
 
         Object.keys(FormItemValue).forEach(key => {
             app.component(key, FormItemValue[key])

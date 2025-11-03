@@ -23,3 +23,16 @@ export const registerModule = () => {
     item.default.register?.()
   })
 }
+
+export const getModulesInitPage = () => {
+  const modulesFiles = import.meta.glob('../modules/*/index.ts', {eager: true})
+  let initPage
+  Object.values(modulesFiles).forEach((item: any) => {
+    const page = item.default.initPage?.()
+    if (page) {
+      initPage = page
+    }
+  })
+
+  return initPage
+}

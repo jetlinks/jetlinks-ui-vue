@@ -3,7 +3,7 @@ import router from '@/router'
 import {cloneDeep} from 'lodash-es'
 import {setParamsValue} from '@jetlinks-web/hooks'
 import {onlyMessage} from '@jetlinks-web/utils'
-import { handleMenus, modules } from '@/utils'
+import { handleMenus, modules, getModulesInitPage } from '@/utils'
 import {getOwnMenuThree} from '@/api/system/menu'
 import {getGlobModules} from '@/router/globModules'
 import {getExtraRouters} from '@/router/extraMenu'
@@ -118,8 +118,9 @@ export const useMenuStore = defineStore('menu', () => {
 
         const { menuRoutes, menuMap, menus, authButtons } = handleMenus(cloneDeep(menuResult), extraMenu, asyncRoutes) // 处理路由
 
-        menuRoutes.push(USER_CENTER_ROUTE) // 添加个人中心
-        menuRoutes.push(INIT_HOME)
+        const initPage = getModulesInitPage() || INIT_HOME
+
+        menuRoutes.push(USER_CENTER_ROUTE,initPage) // 添加个人中心,初始化页面
 
         if (menuRoutes.length) {
             menuRoutes.push({

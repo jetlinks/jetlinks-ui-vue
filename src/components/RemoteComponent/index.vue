@@ -16,7 +16,9 @@
       :is="component"
       v-bind="componentProps"
       v-on="componentEvents"
-    />
+    >
+      <slot></slot>
+    </component>
 
     <!-- 空状态 -->
     <div v-else class="empty-state">
