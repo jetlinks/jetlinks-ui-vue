@@ -58,10 +58,12 @@
 
 <script setup>
 import { handleData } from './data'
-import {exportPermission_api} from "@authentication-manager-ui/api/system/permission";
 import { useI18n } from 'vue-i18n';
+import { moduleRegistry } from '@/utils/module-registry'
 
 const { t: $t } = useI18n();
+
+const exportPermission_api = moduleRegistry.getResourceItem('authentication-manager-ui', 'apis', 'exportPermission_api')
 
 const props = defineProps({
   value: {
