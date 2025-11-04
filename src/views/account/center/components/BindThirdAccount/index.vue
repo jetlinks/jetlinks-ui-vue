@@ -46,7 +46,9 @@
                     </div>
                 </div>
             </template>
-            <j-empty v-else style="margin: 200px 0" />
+          <div v-else style="margin: 200px 0">
+            <j-empty />
+          </div>
         </div>
         </div>
     </j-scrollbar>

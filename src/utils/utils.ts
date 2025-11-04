@@ -1,6 +1,7 @@
 // 是否不是community版本
-import { getToken, randomString } from '@jetlinks-web/utils'
+import { getToken, randomString, setToken } from '@jetlinks-web/utils'
 import {BASE_API} from "@jetlinks-web/constants";
+import { PersonalAIKey, PersonalKey, PersonalToken } from '@/utils/consts'
 
 export const isNoCommunity = !(localStorage.getItem('version_code') === 'community');
 
@@ -16,7 +17,15 @@ export class TabSaveSuccess {
     this.id = 'tab-save-success' + randomString(8)
     this.url = url
   }
+}
 
-  
+export const initPersonal = () => {
+  const url = new URL(window.location.href);
+  const _token = url.searchParams.get(PersonalKey)
 
+  if (_token) {
+    PersonalToken.value = _token
+    PersonalToken.aiToken = url.searchParams.get(PersonalAIKey)
+    setToken('token')
+  }
 }

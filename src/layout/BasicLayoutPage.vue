@@ -26,13 +26,14 @@
     </template>
     <router-view />
   </j-pro-layout>
+  <AiChat />
 </template>
 
 <script setup name="BasicLayoutPage" lang="ts">
 import { reactive, computed, watchEffect } from 'vue'
 import { useSystemStore } from '@/store/system'
 import { useMenuStore } from '@/store/menu'
-import { User, Notice, Language, Resource } from './components'
+import { User, Notice, Language, Resource, AiChat } from './components'
 import { storeToRefs } from 'pinia'
 
 const router = useRouter();

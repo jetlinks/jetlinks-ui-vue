@@ -176,8 +176,8 @@ export const useMenuStore = defineStore('menu', () => {
                         let isLocal = false
 
                         if (import.meta.env.DEV) {
-                            const modulesFiles = modules()
-                            isLocal = Object.values(modulesFiles).some(v => {
+                            const modulesFile = modules()
+                            isLocal = Object.values(modulesFile).some(v => {
                                 const localMenus = (v as any).default.getAsyncRoutesMap()
                                 return localMenus[node.code]
                             })

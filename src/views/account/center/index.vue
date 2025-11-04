@@ -34,32 +34,34 @@
         </div>
       </div>
     </div>
-    <div class="person-content">
-      <div class="person-content-item">
-        <div class="person-content-item-content">
-          <a-tabs v-model:activeKey="user.tabKey" type="card">
-            <a-tab-pane
-              v-for="item in _tabList"
-              :key="item.key"
-              :tab="item.title"
-            />
-          </a-tabs>
-          <component :is="tabs[user.tabKey]" />
-        </div>
+      <div class="person-content">
+          <div class="person-content-item">
+              <div class="person-content-item-content">
+                  <a-tabs v-model:activeKey="user.tabKey" type="card">
+                      <a-tab-pane
+                              v-for="item in _tabList"
+                              :key="item.key"
+                              :tab="item.title"
+                      />
+                  </a-tabs>
+                  <div style="flex: 1; min-height: 0; overflow-y: auto">
+                      <component :is="tabs[user.tabKey]" />
+                  </div>
+              </div>
+          </div>
       </div>
-    </div>
+  </div>
     <Detail v-if="visible" @close="visible = false" />
     <EditInfo
-      v-if="editInfoVisible"
-      :data="user.userInfo"
-      @close="editInfoVisible = false"
-      @save="onSave"
+            v-if="editInfoVisible"
+            :data="user.userInfo"
+            @close="editInfoVisible = false"
+            @save="onSave"
     />
     <EditPassword
-      v-if="editPasswordVisible"
-      @close="editPasswordVisible = false"
+            v-if="editPasswordVisible"
+            @close="editPasswordVisible = false"
     />
-  </div>
 </template>
 
 <script setup lang="ts" name="Center">
@@ -70,6 +72,7 @@ import StationMessage from './components/StationMessage/index.vue'
 import Detail from './components/Detail/index.vue'
 import EditInfo from './components/EditInfo/index.vue'
 import EditPassword from './components/EditPassword/index.vue'
+import PersonalToken from './components/PersonalToken/index.vue'
 import { useUserStore, useAuthStore } from '@/store'
 import UploadAvatar from './components/UploadAvatar/index.vue'
 import { updateMeInfo_api } from '@/api/account/center'
@@ -101,6 +104,7 @@ const tabs = {
   BindThirdAccount,
   Subscribe,
   StationMessage,
+  PersonalToken
 }
 
 const router = useRouterParams()
@@ -118,6 +122,7 @@ const _tabList = computed(() => {
 })
 
 const getTabKey = () => {
+  if (router.params.value?.tabKey) return
   user.tabKey = !user.isApplicationUser ? 'HomeView' : (!isNoCommunity ? 'Subscribe' : 'BindThirdAccount')
 }
 
@@ -223,18 +228,22 @@ onUnmounted(() => {
     padding: 10px 20px;
     background-color: #fff;
     // overflow: hidden;
+    height: 100%;
   }
 
   .person-content {
     width: 100%;
     padding: 0 @padding;
     margin-top: 15px;
+    height: calc(100vh - 251px);
   }
 
   .person-content-item-content {
-    // height: calc(100vh - 251px);
+    height: 100%;
     width: 100%;
     padding: 10px 0;
+    display: flex;
+    flex-direction: column;
   }
 }
 </style>

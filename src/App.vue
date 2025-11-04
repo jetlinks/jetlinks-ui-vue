@@ -21,6 +21,7 @@ import { useAuthStore, useSystemStore } from '@/store';
 import { ComponentsEnum, LOCAL_BASE_API, BASE_API } from '@jetlinks-web/constants'
 import {initPackages} from "@/package";
 import { setToken} from "@jetlinks-web/utils";
+import { initPersonal } from '@/utils'
 
 const route = useRoute()
 
@@ -44,8 +45,8 @@ const themeConfig = {
 
 provide(ComponentsEnum.Permission, { hasPermission })
 
+initPersonal()
 initPackages()
-
 
 if (import.meta.env.DEV) {
   localStorage.setItem(LOCAL_BASE_API, BASE_API)
@@ -59,6 +60,7 @@ watch(() => JSON.stringify(route.query || {}), () => {
   if (route.query.token) {
     setToken(route.query.token as string)
   }
+
 }, { immediate: true })
 
 </script>

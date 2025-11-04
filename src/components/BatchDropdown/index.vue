@@ -18,12 +18,10 @@
             <a-button>{{ $t('BatchDropdown.index.755305-1') }} <AIcon type="DownOutlined" /></a-button>
             <template #overlay>
                 <a-menu @click="handleMenuClick">
-                    <a-menu-item v-for="item in actions" :key="item.key">
+                    <a-menu-item v-for="item in actions" :key="item.key" :disabled="item.disabled">
                         <j-permission-button
                             style="width: 100%"
-                            :hasPermission="
-                                item.permission ? item.permission : true
-                            "
+                            :hasPermission="item.permission || true "
                             v-bind="omit(item, 'icon')"
                             :popConfirm="
                                 item.popConfirm
@@ -57,6 +55,7 @@ import { BatchActionsType } from './types';
 import { defineExpose } from 'vue';
 import { AIcon } from '@jetlinks-web/components'
 import {omit} from "lodash-es";
+import { useAuthStore } from '@/store'
 
 const props = defineProps({
     actions: {
@@ -71,11 +70,15 @@ const props = defineProps({
 
 const emits = defineEmits(['update:isCheck', 'change']);
 
+const authStore = useAuthStore();
 const visible = ref<boolean>(false);
 const _item = ref<Partial<BatchActionsType>>({});
 
 const handleMenuClick = (e: any) => {
     const val = props.actions.find((item) => item.key === e.key);
+
+    if (val?.permission && !authStore.hasPermission(val.permission)) return
+
     if(!(val?.popConfirm || val?.onClick)){
         emits('update:isCheck', true);
         emits('change', true);

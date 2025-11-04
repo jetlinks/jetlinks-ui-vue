@@ -1,5 +1,5 @@
 <template>
-  <div style="padding-right: 20px">
+  <div style="height: 100%; padding-right: 20px">
     <a-tabs
       tab-position="left"
       v-if="tabs.length"
@@ -10,7 +10,7 @@
         <NotificationRecord :type="item.provider" :children="item.children" />
       </a-tab-pane>
     </a-tabs>
-    <j-empty v-else style="margin: 200px 0" />
+    <div v-else style="margin: 200px 0"><j-empty  /></div>
   </div>
 </template>
 

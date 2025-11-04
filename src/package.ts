@@ -1,9 +1,9 @@
 import {getToken, LocalStore, setToken} from "@jetlinks-web/utils";
-import {BASE_API, TOKEN_KEY_URL} from "@jetlinks-web/constants";
+import { BASE_API, TOKEN_KEY, TOKEN_KEY_URL } from '@jetlinks-web/constants'
 import {crateAxios, wsClient} from '@jetlinks-web/core'
 import {jumpLogin} from '@/router'
 import {notification} from 'ant-design-vue'
-import { isSubApp, langKey } from '@/utils/consts'
+import { isSubApp, langKey, PersonalKey, PersonalToken, PersonalUrlKey } from '@/utils/consts'
 import Relogin from '@/views/relogin/index.vue'
 import { registerModule } from '@/utils'
 import microApp from '@micro-zoe/micro-app'
@@ -17,13 +17,19 @@ export const initPackages = () => {
     /**
      * 初始化websocket
      */
-    const token = getToken();
+    let token = getToken();
+    let tokenKey = TOKEN_KEY_URL
 
     if (!token) return
 
+    if (PersonalToken.value) {
+        token = PersonalToken.value
+        tokenKey = PersonalUrlKey
+    }
+
     const protocol = window.location.protocol.replace('http', 'ws');
     const host = document.location.host;
-    const url = `${protocol}${host}${BASE_API}/messaging/${token}?${TOKEN_KEY_URL}=${token}`;
+    const url = `${protocol}${host}${BASE_API}/messaging/${token}?${tokenKey}=${token}`;
     // wsClient.setOptions({
     //     onError(message) {
     //         notification.error({
@@ -58,6 +64,15 @@ export const initAxios = () => {
                 }
             },
             handleReconnect: _handleReconnect,
+            requestOptions: (config) => {
+                if (PersonalToken.value) {
+                    delete config.headers[TOKEN_KEY]
+
+                    config.headers[PersonalKey] = PersonalToken.value
+                }
+
+                return config;
+            },
             filter_url: [
                 '/system/version',
                 '/system/config/front',
