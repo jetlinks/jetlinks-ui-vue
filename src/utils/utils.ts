@@ -11,12 +11,4 @@ export const openEdgeUrl = (id: string) => {
 export class TabSaveSuccess {
   private id: string
   private url: string
-
-  constructor(url: string) {
-    this.id = 'tab-save-success' + randomString(8)
-    this.url = url
-  }
-
-  
-
 }

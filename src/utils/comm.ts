@@ -104,3 +104,16 @@ export const isFullScreen = () => {
 export function isZhCN(name: string): boolean {
   return /-cn\/?$/.test(name);
 }
+
+export function mergeObjectArrays(a: any[], b: any[], key = 'key') {
+  // 创建b的Map，基于key属性
+  const bMap = new Map(b.map(item => [item[key], item]));
+
+  // 过滤a中与b重复的元素，并用b的值覆盖
+  const filteredA = a.filter(item => !bMap.has(item[key]));
+
+  // 找出b中独有的元素
+  const uniqueB = b.filter(bItem => !a.some(aItem => aItem[key] === bItem[key]));
+
+  return [...uniqueB, ...filteredA];
+}

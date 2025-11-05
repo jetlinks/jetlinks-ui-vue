@@ -17,7 +17,9 @@
       v-bind="componentProps"
       v-on="componentEvents"
     >
-      <slot></slot>
+      <template v-for="(_, key) in slots" :key="key" #[key]="slotProps">
+        <slot :name="key" v-bind="slotProps"></slot>
+      </template>
     </component>
 
     <!-- 空状态 -->
@@ -46,7 +48,7 @@ interface Props {
   /** 超时时间 */
   timeout?: number
 }
-
+const slots = useSlots()
 const props = withDefaults(defineProps<Props>(), {
   componentProps: () => ({}),
   componentEvents: () => ({}),
