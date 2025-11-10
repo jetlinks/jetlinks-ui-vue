@@ -26,6 +26,5 @@ export const initPersonal = () => {
   if (_token) {
     PersonalToken.value = _token
     PersonalToken.aiToken = url.searchParams.get(PersonalAIKey)
-    setToken('token')
   }
 }
