@@ -5,13 +5,13 @@
         <template #icon>
           <img v-if="userStore.userInfo?.avatar" :src="userStore.userInfo?.avatar" alt="">
           <AIcon v-else type="UserOutlined"></AIcon>
-        </template>  
-      </a-avatar> 
+        </template>
+      </a-avatar>
       <span class="name">{{ userName }}</span>
     </div>
     <template #overlay>
       <a-menu @click="click">
-        <a-menu-item key="userCenter">
+        <a-menu-item key="userCenter" v-if="!hideHeaderRight">
           <AIcon type="UserOutlined" style="margin-right: 8px;" />
           <span>{{ $t('components.User.635192-0') }}</span>
         </a-menu-item>
@@ -30,6 +30,12 @@ import { jumpLogin } from '@/router'
 import { useUserStore } from '@/store/user'
 import { logout } from '@/api/login'
 
+const props = defineProps({
+  hideHeaderRight: {
+    type: Boolean,
+    default: false,
+  },
+})
 const userStore = useUserStore()
 const router = useRouter()
 const click = (e: { key: string }) => {

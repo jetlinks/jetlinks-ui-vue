@@ -18,10 +18,12 @@
 
     <template #rightContentRender>
       <div class="right-content">
-        <Language />
-        <Resource v-if="systemInfo?.['front']?.resources"/>
-        <Notice />
-        <User />
+        <template v-if="!hideHeaderRight">
+          <Language />
+          <Resource v-if="systemInfo?.['front']?.resources"/>
+          <Notice />
+        </template>
+        <User :hideHeaderRight="hideHeaderRight" />
       </div>
     </template>
     <router-view />
@@ -35,12 +37,14 @@ import { useSystemStore } from '@/store/system'
 import { useMenuStore } from '@/store/menu'
 import { User, Notice, Language, Resource, AiChat } from './components'
 import { storeToRefs } from 'pinia'
+import {getHideHeaderRightConfig} from "@/utils";
 
 const router = useRouter();
 const route = useRoute();
 const systemStore = useSystemStore()
 const menuStore = useMenuStore()
 const layoutType = ref('list')
+const hideHeaderRight = getHideHeaderRightConfig()
 
 const { theme, layout, language, systemInfo } = storeToRefs(systemStore)
 

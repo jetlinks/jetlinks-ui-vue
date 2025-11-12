@@ -36,3 +36,15 @@ export const getModulesInitPage = () => {
 
   return initPage
 }
+
+export const getHideHeaderRightConfig = () => {
+  const modulesFiles = import.meta.glob('../modules/*/index.ts', {eager: true})
+  let hideHeaderRight;
+  Object.values(modulesFiles).forEach((item: any) => {
+    const config = item.default.getConfig?.()?.hideHeaderRight
+    if (config) {
+      hideHeaderRight = config
+    }
+  })
+  return hideHeaderRight
+}

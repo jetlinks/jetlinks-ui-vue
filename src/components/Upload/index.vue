@@ -104,6 +104,10 @@ const props: JUploadProps = defineProps({
     size: {
         type: Number,
         default: undefined,
+    },
+    types: {
+      type: Array,
+      default: undefined
     }
 });
 
