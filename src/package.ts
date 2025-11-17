@@ -5,7 +5,7 @@ import {jumpLogin} from '@/router'
 import {notification} from 'ant-design-vue'
 import { isSubApp, langKey } from '@/utils/consts'
 import Relogin from '@/views/relogin/index.vue'
-import { registerModule } from '@/utils'
+import { getPackageConfig, registerModule } from '@/utils'
 import microApp from '@micro-zoe/micro-app'
 import { moduleRegistry } from '@/utils/module-registry'
 
@@ -47,42 +47,50 @@ const _handleReconnect = async () => {
     return await modalApp?.open?.();
 }
 export const initAxios = () => {
-    crateAxios(
-        {
-            langKey: langKey,
-            isCreateTokenRefresh: true,
-            tokenExpiration: () => {
-                const token = getToken();
-                if(!token){
-                    jumpLogin()
-                }
-            },
-            handleReconnect: _handleReconnect,
-            filter_url: [
-                '/system/version',
-                '/system/config/front',
-                '/authorize/captcha/config',
-                '/authorize/captcha/image',
-                '/application/sso/bind-code',
-                '/authorize/login',
-                '/application/',
-                '/application/sso/_all',
-                '/personal/token/',
-            ],
-            handleError: (description, key, err) => {
-                if (!err.config?.hiddenError) {
-                    notification.error({
-                        style: {
-                            zIndex: 1040
-                        },
-                        key: key as string,
-                        message: '',
-                        description
-                    })
-                }
-            }
-        },
-    )
+    const config = getPackageConfig()
+    let settings = {
+          langKey: langKey,
+          isCreateTokenRefresh: true,
+          tokenExpiration: () => {
+              const token = getToken();
+              if(!token){
+                  jumpLogin()
+              }
+          },
+          handleReconnect: _handleReconnect,
+          filter_url: [
+              '/system/version',
+              '/system/config/front',
+              '/authorize/captcha/config',
+              '/authorize/captcha/image',
+              '/application/sso/bind-code',
+              '/authorize/login',
+              '/application/',
+              '/application/sso/_all',
+              '/personal/token/',
+          ],
+          handleError: (description, key, err) => {
+              if (!err.config?.hiddenError) {
+                  notification.error({
+                      style: {
+                          zIndex: 1040
+                      },
+                      key: key as string,
+                      message: '',
+                      description
+                  })
+              }
+          }
+      }
+
+      if(Object.keys(config?.axiosSettings || {}).length) {
+          settings = {
+              ...settings,
+              ...config.axiosSettings
+          }
+          console.log(settings)
+      }
+    crateAxios(settings)
 }
 
 

@@ -48,3 +48,15 @@ export const getHideHeaderRightConfig = () => {
   })
   return hideHeaderRight
 }
+
+export const getPackageConfig = () => {
+  const modulesFiles = import.meta.glob('../modules/*/index.ts', {eager: true})
+  let packageConfig
+  Object.values(modulesFiles).forEach((item: any) => {
+    const config = item.default.getConfig?.()
+    if (config) {
+      packageConfig = config
+    }
+  })
+  return packageConfig
+}

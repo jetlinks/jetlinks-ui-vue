@@ -66,6 +66,7 @@ import { useI18n } from 'vue-i18n';
 const { t: $t } = useI18n();
 type Emits = {
     (e: 'update:modelValue', data: string): void;
+    (e: 'change', data: string): void;
 };
 interface JUploadProps extends UploadProps {
     modelValue: string;
@@ -138,6 +139,7 @@ const handleChange = (info: UploadChangeParam) => {
         imageUrl.value = info.file.response?.result.accessUrl;
         loading.value = false;
         emit('update:modelValue', info.file.response?.result.accessUrl);
+        emit('change', info.file.response?.result.accessUrl);
     }
     if (info.file.status === 'error') {
         loading.value = false;
@@ -175,6 +177,7 @@ const saveImage = (url: string) => {
   cropperVisible.value = false
   imageUrl.value = url
   emit('update:modelValue', url);
+  emit('change', url);
 }
 </script>
 
