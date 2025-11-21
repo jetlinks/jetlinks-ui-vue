@@ -52,16 +52,20 @@ if (import.meta.env.DEV) {
   localStorage.setItem(LOCAL_BASE_API, BASE_API)
 }
 
+const getUrlParams = () => {
+  const regex = /token=([a-fA-F0-9]+)/;
+  const match = window.location.href.match(regex);
+
+  if (match && match[1]) {
+    setToken(match[1])
+  }
+}
+
+getUrlParams()
+
 window.addEventListener('vite:preloadError', (event) => {
   console.error('资源版本不对，请清除浏览器缓存')
 })
-
-watch(() => JSON.stringify(route.query || {}), () => {
-  if (route.query.token) {
-    setToken(route.query.token as string)
-  }
-
-}, { immediate: true })
 
 </script>
 <style scoped></style>
