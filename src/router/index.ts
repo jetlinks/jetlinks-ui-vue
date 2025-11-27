@@ -1,32 +1,13 @@
-import {
-  createRouter,
-  createWebHashHistory,
-} from 'vue-router'
-import type { RouteRecordRaw } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import { getToken, removeToken } from '@jetlinks-web/utils'
 import { NOT_FIND_ROUTE, LOGIN_ROUTE, OAuth2, OAuthWechat, AccountCenterBind, AUTHORIZE_ROUTE } from './basic'
-import {isSubApp} from '@/utils/consts'
-import { useApplication, useUserStore, useSystemStore, useMenuStore  } from '@/store'
-import { modules } from '@/utils/modules'
+import { isSubApp } from '@/utils/consts'
+import { useApplication, useUserStore, useSystemStore, useMenuStore } from '@/store'
+import { getDefaultModules } from './globModules'
 
 let TokenFilterRoute: string[] = [OAuth2.path, AccountCenterBind.path, AUTHORIZE_ROUTE.path]
 
 let FilterPath: string[] = [OAuth2.path, AUTHORIZE_ROUTE.path]
-
-// 获取子模块默认路由
-const getModulesRoutes = () => {
-  const modulesFiles = modules()
-  const _routes: RouteRecordRaw[] = []
-  Object.values(modulesFiles).forEach((item: any) => {
-    const routes = item.default.getDefaultRoutes?.() || []
-    const filter = item.default.getFilterRoutes?.() || []
-
-    _routes.push(...routes)
-    TokenFilterRoute.push(...filter)
-  })
-  return _routes
-}
-
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -36,14 +17,14 @@ const router = createRouter({
     OAuthWechat,
     AccountCenterBind,
     AUTHORIZE_ROUTE,
-    ...getModulesRoutes()
+    ...getDefaultModules(TokenFilterRoute)
   ],
   scrollBehavior(to, from, savedPosition) {
     // 子应用路由变化时通知基座
     if (isSubApp && to.path !== from.path) {
       setTimeout(() => {
         if ((window as any).microApp?.dispatch) {
-          (window as any).microApp.dispatch({
+          ;(window as any).microApp.dispatch({
             type: 'route-change',
             data: {
               path: to.path,
@@ -54,8 +35,8 @@ const router = createRouter({
       }, 0)
     }
 
-    return savedPosition || {top: 0}
-  },
+    return savedPosition || { top: 0 }
+  }
 })
 
 const NoTokenJump = (to: any, next: any, isLogin: boolean) => {
@@ -63,18 +44,18 @@ const NoTokenJump = (to: any, next: any, isLogin: boolean) => {
   if (isLogin || TokenFilterRoute.includes(to.path)) {
     next()
   } else {
-    next({path: LOGIN_ROUTE.path})
+    next({ path: LOGIN_ROUTE.path })
   }
 }
 
 const getRoutesByServer = async (to: any, next: any) => {
-
   const UserInfoStore = useUserStore()
   const SystemStore = useSystemStore()
   const MenuStore = useMenuStore()
   const application = useApplication()
 
-  if (!Object.keys(UserInfoStore.userInfo).length && !isSubApp) { // 不是微前端的情况下
+  if (!Object.keys(UserInfoStore.userInfo).length && !isSubApp) {
+    // 不是微前端的情况下
     // 是否有用户信息
     await UserInfoStore.getUserInfo()
     //
@@ -83,7 +64,8 @@ const getRoutesByServer = async (to: any, next: any) => {
     await SystemStore.queryInfo()
   }
 
-  if (isSubApp && !Object.keys(SystemStore.microApp).length) { // 获取基座给的菜单信息
+  if (isSubApp && !Object.keys(SystemStore.microApp).length) {
+    // 获取基座给的菜单信息
     const data = (window as any).microApp.getData() // 获取主应用下发的数据
     SystemStore.microApp.value = data
     await MenuStore.createRoutes(data.menuResult)
@@ -91,11 +73,12 @@ const getRoutesByServer = async (to: any, next: any) => {
     MenuStore.menu.forEach((r) => {
       router.addRoute(r)
     })
-    router.addRoute( NOT_FIND_ROUTE)
-    await next({...to, replace: true})
+    router.addRoute(NOT_FIND_ROUTE)
+    await next({ ...to, replace: true })
   }
 
-  if (!isSubApp && !application.appList.length) { // 是否开启微前端
+  if (!isSubApp && !application.appList.length) {
+    // 是否开启微前端
     await application.queryApplication() // 获取子应用
 
     // 初始化微前端配置
@@ -126,8 +109,8 @@ const getRoutesByServer = async (to: any, next: any) => {
       MenuStore.menu.forEach((r) => {
         router.addRoute(r)
       })
-      router.addRoute( NOT_FIND_ROUTE)
-      await next({...to, replace: true})
+      router.addRoute(NOT_FIND_ROUTE)
+      await next({ ...to, replace: true })
     }
   } else {
     next()
@@ -139,7 +122,7 @@ router.beforeEach((to, from, next) => {
   const isLogin = to.path === LOGIN_ROUTE.path
   if (token) {
     if (isLogin) {
-      next({path: '/'})
+      next({ path: '/' })
     } else {
       getRoutesByServer(to, next)
     }
@@ -152,7 +135,7 @@ export const jumpLogin = () => {
   setTimeout(() => {
     removeToken()
     router.replace({
-      path: LOGIN_ROUTE.path,
+      path: LOGIN_ROUTE.path
     })
   })
 }
