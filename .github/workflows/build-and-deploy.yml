@@ -1,0 +1,193 @@
+name: Build and Deploy
+
+# 此工作流用于：
+# 1. 检出代码和 git 子模块（使用相同分支）
+# 2. 构建前端项目：
+#    - Maven 构建：使用 VITE_APP_BASE_API=/
+#    - Docker 构建：使用 VITE_APP_BASE_API=/api
+# 3. 构建 Maven JAR 并部署到远程仓库
+# 4. 构建并推送 Docker 镜像（amd64 和 arm64）
+#
+# 需要的 GitHub Secrets:
+# - DOCKER_USERNAME: Docker 镜像仓库用户名
+# - DOCKER_PASSWORD: Docker 镜像仓库密码
+# - MAVEN_USERNAME: Maven 仓库用户名（如果使用）
+# - MAVEN_PASSWORD: Maven 仓库密码（如果使用）
+
+on:
+    push:
+        branches:
+            - "2.11"
+            - "2.12"
+
+env:
+    REGISTRY: registry.cn-shenzhen.aliyuncs.com
+    IMAGE_NAME: jetlinks/jetlinks-community-ui
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            -   name: Checkout repository
+                uses: actions/checkout@v4
+                with:
+                    fetch-depth: 0
+                    token: ${{ secrets.GITHUB_TOKEN }}
+
+            -   name: Configure submodules remote URLs and checkout to branch
+                run: |
+                    BRANCH_NAME="${{ github.ref_name }}"
+                    echo "Current branch: $BRANCH_NAME"
+
+                    # 初始化子模块
+                    git submodule init
+
+                    # 先转换 .gitmodules 中的 SSH URL 为 HTTPS URL（在更新之前）
+                    echo "Converting .gitmodules URLs from SSH to HTTPS..."
+                    if [ -f .gitmodules ]; then
+                      sed -i.bak 's|git@github.com:\([^/]*\)/\(.*\)\.git|https://github.com/\1/\2.git|g' .gitmodules
+                      rm -f .gitmodules.bak
+                    fi
+
+                    # 同步子模块配置
+                    git submodule sync --recursive
+
+                    # 更新子模块（现在使用 HTTPS URL）
+                    echo "Updating submodules..."
+                    git submodule update --recursive --init
+
+                    # 切换子模块到指定分支并拉取最新代码
+                    echo "Switching submodules to branch: $BRANCH_NAME"
+                    git submodule foreach --recursive "
+                      echo \"Processing submodule: \$sm_path\"
+                      git fetch origin || true
+                      if git checkout $BRANCH_NAME 2>/dev/null; then
+                        echo \"  Switched to existing branch $BRANCH_NAME\"
+                      elif git checkout -b $BRANCH_NAME origin/$BRANCH_NAME 2>/dev/null; then
+                        echo \"  Created and switched to branch $BRANCH_NAME\"
+                      else
+                        echo \"  Branch $BRANCH_NAME not found, keeping current branch\"
+                      fi
+                      git pull origin $BRANCH_NAME 2>/dev/null || echo \"  Failed to pull, continuing...\"
+                    "
+
+            -   name: Setup Node.js
+                uses: actions/setup-node@v4
+                with:
+                    node-version: '22.18.0'
+
+            -   name: Setup pnpm
+                uses: pnpm/action-setup@v4
+                with:
+                    version: 10.7.0
+
+            -   name: Get pnpm store directory
+                shell: bash
+                run: |
+                    echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+            -   name: Setup pnpm cache
+                uses: actions/cache@v4
+                with:
+                    path: ${{ env.STORE_PATH }}
+                    key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+                    restore-keys: |
+                        ${{ runner.os }}-pnpm-store-
+
+            -   name: Install dependencies
+                run: |
+                    pnpm install --no-frozen-lockfile
+                    pnpm update:tsconfig
+
+            -   name: Build frontend for Maven (BASE_API=/)
+                run: |
+                    VITE_APP_BASE_API=/ pnpm build
+                env:
+                    VITE_APP_BASE_API: /
+
+            -   name: Setup Java and Maven
+                uses: actions/setup-java@v4
+                with:
+                    distribution: 'temurin'
+                    java-version: '17'
+                    cache: 'maven'
+
+            -   name: Configure Maven settings
+                run: |
+                    mkdir -p ~/.m2
+                    cat > ~/.m2/settings.xml <<EOF
+                    <?xml version="1.0" encoding="UTF-8"?>
+                    <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+                              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                              xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                              http://maven.apache.org/xsd/settings-1.0.0.xsd">
+                      <servers>
+                        <server>
+                          <id>snapshots</id>
+                          <username>${{ secrets.MAVEN_USERNAME }}</username>
+                          <password>${{ secrets.MAVEN_PASSWORD }}</password>
+                        </server>
+                      </servers>
+                    </settings>
+                    EOF
+
+            -   name: Build Maven JAR
+                run: mvn clean package -DskipTests
+
+            -   name: Deploy Maven artifact
+                run: |
+                    # 注意：如果 pom.xml 中没有配置 distributionManagement，需要先添加该配置
+                    # 或者使用 mvn deploy:deploy-file 命令手动部署
+                    mvn deploy -DskipTests || echo "Maven deploy failed, skipping..."
+                env:
+                    MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
+                    MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
+
+            -   name: Extract metadata for Docker
+                id: meta
+                run: |
+                    BRANCH_NAME="${{ github.ref_name }}"
+                    # 尝试从 pom.xml 中提取版本号，如果失败则使用分支名
+                    if VERSION=$(grep -m1 '<version>' pom.xml | sed 's/.*<version>\(.*\)<\/version>.*/\1/' | head -1); then
+                      # 移除 SNAPSHOT 后缀用于 Docker 标签
+                      VERSION_CLEAN=$(echo "$VERSION" | sed 's/-SNAPSHOT//')
+                    else
+                      VERSION_CLEAN="$BRANCH_NAME"
+                    fi
+
+                    # 使用分支名作为标签
+                    TAG="$BRANCH_NAME"
+                    echo "tag=$TAG" >> $GITHUB_OUTPUT
+                    echo "version=$VERSION_CLEAN" >> $GITHUB_OUTPUT
+                    echo "Docker tag: $TAG, version: $VERSION_CLEAN"
+
+            -   name: Build frontend for Docker (BASE_API=/api)
+                run: |
+                    VITE_APP_BASE_API=/api pnpm build
+                env:
+                    VITE_APP_BASE_API: /api
+
+            -   name: Set up QEMU
+                uses: docker/setup-qemu-action@v3
+
+            -   name: Set up Docker Buildx
+                uses: docker/setup-buildx-action@v3
+
+            -   name: Log in to Container Registry
+                uses: docker/login-action@v3
+                with:
+                    registry: ${{ env.REGISTRY }}
+                    username: ${{ secrets.ALIYUN_DOCKER_REPO_USERNAME }}
+                    password: ${{ secrets.ALIYUN_DOCKER_REPO_PWD }}
+
+            -   name: Build and push Docker image (multi-arch)
+                uses: docker/build-push-action@v5
+                with:
+                    context: .
+                    platforms: linux/amd64,linux/arm64
+                    push: true
+                    tags: |
+                        ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.version }}
+                    cache-from: type=gha
+                    cache-to: type=gha,mode=max
