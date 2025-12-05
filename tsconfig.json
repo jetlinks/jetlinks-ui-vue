@@ -1,39 +1,9 @@
 {
-  "extends": "./tsconfig.paths.json",
-  "compilerOptions": {
-    "target": "ESNext",
-    "useDefineForClassFields": true,
-    "module": "ESNext",
-    "moduleResolution": "Node",
-    "strict": true,
-    "jsx": "preserve",
-    "sourceMap": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "esModuleInterop": true,
-    "lib": [
-      "ESNext",
-      "DOM"
-    ],
-    "skipLibCheck": true,
-    "noEmit": true,
-    "allowJs": true,
-    "baseUrl": "./",
-    "types": [
-      "ant-design-vue/typings/global",
-      "vite/client"
-    ],
-    "suppressImplicitAnyIndexErrors": true
-  },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.d.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue"
-  ],
+  "extends": "./tsconfig.base.json",
   "references": [
     {
       "path": "./tsconfig.node.json"
     }
-  ]
+  ],
+  "include": ["modules/*"]
 }

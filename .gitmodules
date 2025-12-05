@@ -1,0 +1,19 @@
+[submodule "modules/authentication-manager-ui"]
+	path = modules/authentication-manager-ui
+	url = git@github.com:jetlinks-v2/authentication-manager-ui.git
+	branch = 2.12
+[submodule "modules/notify-manager-ui"]
+	path = modules/notify-manager-ui
+	url = git@github.com:jetlinks-v2/notify-manager-ui.git
+	branch = 2.12
+[submodule "jetlinks-web-core"]
+	path = jetlinks-web-core
+	url = git@github.com:jetlinks-v2/jetlinks-web-core.git
+[submodule "modules/device-manager-ui"]
+	path = modules/device-manager-ui
+	url = git@github.com:jetlinks-v2/device-manager-ui.git
+	branch = 2.12
+[submodule "modules/rule-engine-manager-ui"]
+	path = modules/rule-engine-manager-ui
+	url = git@github.com:jetlinks-v2/rule-engine-manager-ui.git
+	branch = 2.12

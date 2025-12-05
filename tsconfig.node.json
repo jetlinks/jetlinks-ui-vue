@@ -6,8 +6,8 @@
     "allowSyntheticDefaultImports": true
   },
   "include": [
-    "vite.config.ts",
-    "src/vite-env.d.ts",
-    "configs/**/*.ts"
+    "jetlinks-web-core/vite.config.ts",
+    "jetlinks-web-core/src/vite-env.d.ts",
+    "jetlinks-web-core/configs/**/*.ts"
   ]
 }

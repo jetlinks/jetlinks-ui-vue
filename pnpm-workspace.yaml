@@ -1,2 +1,3 @@
 packages:
-  - "src/modules/*"
+  - "jetlinks-web-core"
+  - "modules/*"
