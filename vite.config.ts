@@ -134,6 +134,7 @@ export default defineConfig(({ mode }) => {
     server: {
       host: '0.0.0.0',
       port: Number(env.VITE_PORT),
+      cors: true,
       proxy: {
         [env.VITE_APP_BASE_API]: {
           target: env.VITE_APP_DEV_PROXY_URL,

@@ -48,7 +48,7 @@ const handleMeta = (item: MenuItem, isApp: boolean):RouteMeta  => {
 const handleRoute = (item: MenuItem, parent?: ParentType): Partial<RouteRecordRaw> => {
   const isApp = !!item.appId
   const meta = handleMeta(item, isApp)
-  const appUrl = `/${item.appId}${item.url}`
+  const appUrl = `${item.url}`
 
   // 面包屑处理
   const breadcrumb: Array<BreadcrumbType> = []
@@ -103,9 +103,9 @@ export const handleMenus = (menuData: MenuItem[], extraMenus: any, components: R
         return () => import('../views/mirco/SubAppRedirect/base.vue')
       }
 
-      if (record.appId) {
-        return () => import('../layout/Iframe.vue')
-      }
+      // if (record.appId) {
+      //   return () => import('../layout/Iframe.vue')
+      // }
     }
 
     if (myComponents) {

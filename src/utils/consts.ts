@@ -4,7 +4,7 @@ export const messageSubscribe  = 'message-subscribe'
 
 export const ACCESS_AI_AGENT_CODE = 'access-ai-agent-code'
 
-export const OWNER_KEY = 'iot'
+export const OWNER_KEY = import.meta.env.VITE_APP_NAME
 
 export const default_app_id = 'authentication-service'
 
