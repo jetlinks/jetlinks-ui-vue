@@ -29,7 +29,8 @@ export const initPackages = () => {
 
     const protocol = window.location.protocol.replace('http', 'ws');
     const host = document.location.host;
-    const url = `${protocol}${host}${BASE_API}/messaging/${token}?${tokenKey}=${token}`;
+    const filterHost = host.endsWith('/') ? host.substring(0, host.length - 1) : host;
+    const url = `${protocol}${filterHost}${BASE_API}/messaging/${token}?${tokenKey}=${token}`;
     // wsClient.setOptions({
     //     onError(message) {
     //         notification.error({
