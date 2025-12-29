@@ -1,5 +1,5 @@
 // 用于校验 url
-export const urlReg = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+(?::\d+)?|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/;
+export const urlReg = /^(https?:\/\/)?((localhost)|(\d{1,3}(\.\d{1,3}){3})|([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})(:\d{1,5})?(\/[^\s?#]*)?(\?[^\s#]*)?(#\/?[^\s]*)?$/;
 
 export const isUrl = (path: string): boolean => urlReg.test(path)
 
