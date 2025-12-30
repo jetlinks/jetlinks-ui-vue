@@ -27,6 +27,7 @@ apps
 *.sw?
 .history
 src/modules
+public/three
 
 # 忽略所有 java 目录中的内容
 java/**

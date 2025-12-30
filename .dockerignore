@@ -2,8 +2,11 @@
 .git
 .gitignore
 .gitmodules
+.github
 .vscode
-.DS_Store
 .idea
+.DS_Store
+.claude
 node_modules
 src/modules
+dist
