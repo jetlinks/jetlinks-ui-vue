@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.jetlinks.ui</groupId>
+        <artifactId>ui-parent</artifactId>
+        <version>2.11.0-SNAPSHOT</version>
+    </parent>
+    <packaging>jar</packaging>
+
+    <artifactId>authentication-manager</artifactId>
+    <name>权限、用户管理UI</name>
+    <description>JetLinks 权限、用户管理UI模块</description>
+
+    <profiles>
+        <profile>
+            <id>ui-package</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                    </plugin>
+                </plugins>
+
+                <resources>
+                    <resource>
+                        <directory>dist</directory>
+                        <includes>
+                            <include>**/*</include>
+                        </includes>
+                        <targetPath>ui/${project.artifactId}</targetPath>
+                        <filtering>false</filtering>
+                    </resource>
+                </resources>
+            </build>
+        </profile>
+    </profiles>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>${basedir}</directory>
+                <includes>
+                    <include>package.json</include>
+                    <include>baseMenu.json</include>
+                </includes>
+                <targetPath>ui/${project.artifactId}/</targetPath>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
+    </build>
+
+    <repositories>
+        <repository>
+            <id>aliyun-nexus</id>
+            <name>aliyun</name>
+            <url>https://maven.aliyun.com/nexus/content/groups/public/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+
+        <repository>
+            <id>jetlinks</id>
+            <name>JetLinks Maven Repository</name>
+            <url>https://nexus.jetlinks.cn/content/groups/jetlinks/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+
+    </repositories>
+
+
+</project>
