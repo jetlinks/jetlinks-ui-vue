@@ -175,63 +175,27 @@
                             </a-row>
                         </a-form>
                     </div>
-
-                    <!-- 操作按钮 -->
-                    <div class="header-actions">
-                        <a-space>
-                            <a-button @click="handleCancel">返回</a-button>
-                            <a-button type="primary" :loading="saving" @click="handleSave">
-                                <template #icon>
-                                    <AIcon type="SaveOutlined"/>
-                                </template>
-                                保存
-                            </a-button>
-                        </a-space>
-                    </div>
                 </div>
 
-                <!-- 下部区域：左编辑 右预览 -->
+                <!-- 中部区域：Markdown编辑器（自带预览功能） -->
                 <div class="detail-content">
-                    <!-- 左侧：Markdown编辑区 -->
-                    <div class="left-panel">
-                        <div class="panel-header">文档编辑</div>
-                        <div class="panel-body">
-                            <div class="editor-container">
-                                <a-textarea
-                                    v-model:value="formData.documentation"
-                                    placeholder="支持 Markdown 格式编写文档..."
-                                    :rows="24"
-                                    class="markdown-editor"
-                                    allow-clear
-                                />
-                                <div class="editor-help">
-                                    <div class="help-title">Markdown 格式说明</div>
-                                    <ul class="help-list">
-                                        <li><code>#</code> - 标题（# H1, ## H2, ### H3）</li>
-                                        <li><code>**文本**</code> - 加粗</li>
-                                        <li><code>*文本*</code> - 斜体</li>
-                                        <li><code>[链接](URL)</code> - 超链接</li>
-                                        <li><code>`代码`</code> - 行内代码</li>
-                                        <li><code>```</code> - 代码块</li>
-                                        <li><code>- 项</code> - 无序列表</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <MarkdownEditor
+                        v-model="formData.apiDoc"
+                        :height="800"
+                    />
+                </div>
 
-                    <!-- 右侧：Markdown预览区 -->
-                    <div class="right-panel">
-                        <div class="panel-header">文档预览</div>
-                        <div class="panel-body">
-                            <div v-if="formData.documentation" class="markdown-preview">
-                                <MarkdownPreview :content="formData.documentation"/>
-                            </div>
-                            <div v-else class="empty-preview">
-                                <a-empty description="暂无文档内容"/>
-                            </div>
-                        </div>
-                    </div>
+                <!-- 底部操作栏 -->
+                <div class="footer-actions">
+                    <a-space>
+                        <a-button @click="handleCancel">返回</a-button>
+                        <a-button type="primary" :loading="saving" @click="handleSave">
+                            <template #icon>
+                                <AIcon type="SaveOutlined"/>
+                            </template>
+                            保存
+                        </a-button>
+                    </a-space>
                 </div>
             </div>
         </a-card>
@@ -243,12 +207,11 @@ import {ref, reactive, onMounted, computed} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 import {onlyMessage} from '@jetlinks-web/utils'
 import apiManageApi from '../../../api/apiManage'
-import MarkdownPreview from './components/MarkdownPreview.vue'
+import MarkdownEditor from '../../../components/MarkdownEditor/index.vue'
 
 const route = useRoute()
 const router = useRouter()
 const configFormRef = ref()
-
 const saving = ref(false)
 
 // 权限列表
@@ -278,7 +241,7 @@ const formData = reactive({
     impactScope: [] as string[],
     businessGroup: [] as string[],
     permissionId: '',
-    documentation: '',
+    apiDoc: '',
 })
 
 // 计算当前权限名称
@@ -388,7 +351,7 @@ const loadApiDetail = async () => {
             formData.tags = item.tags || []
             formData.impactScope = item.impactScope || []
             formData.businessGroup = item.businessGroup || []
-            formData.documentation = item.documentation || ''
+            formData.apiDoc = item.apiDoc || ''
         }
     } catch (error) {
         console.error('加载 API 详情失败:', error)
@@ -413,7 +376,7 @@ const handleSave = async () => {
             tags: formData.tags,
             impactScope: formData.impactScope,
             businessGroup: formData.businessGroup,
-            documentation: formData.documentation,
+            apiDoc: formData.apiDoc,
         }
 
         const resp = await apiManageApi.update(currentApi.value.id, payload)
@@ -445,14 +408,24 @@ onMounted(() => {
 
 <style scoped lang="less">
 .api-detail-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
     :deep(.ant-card-body) {
         padding: 0;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
     }
 }
 
 .api-detail-container {
     display: flex;
     flex-direction: column;
+    flex: 1;
+    min-height: 0;
     height: 100%;
     background-color: #fff;
 
@@ -550,117 +523,23 @@ onMounted(() => {
             }
         }
 
-        .header-actions {
-            display: flex;
-            justify-content: flex-start;
-            padding-top: 12px;
-            border-top: 1px solid #f0f0f0;
-        }
     }
 
     .detail-content {
         flex: 1;
         display: flex;
-        gap: 0;
+        flex-direction: column;
         overflow: hidden;
-        min-height: 0;
+        padding: 16px;
+    }
 
-        .left-panel,
-        .right-panel {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background-color: #fff;
-            border-right: 1px solid #f0f0f0;
-            min-width: 0;
-        }
-
-        .right-panel {
-            border-right: none;
-        }
-
-        .panel-header {
-            padding: 12px 16px;
-            font-size: 13px;
-            font-weight: 500;
-            color: #262626;
-            background-color: #fafafa;
-            border-bottom: 1px solid #f0f0f0;
-            flex-shrink: 0;
-        }
-
-        .panel-body {
-            flex: 1;
-            overflow-y: auto;
-            padding: 16px;
-
-            .editor-container {
-                display: flex;
-                flex-direction: column;
-                gap: 12px;
-                height: 100%;
-
-                .markdown-editor {
-                    width: 100%;
-                    border: 1px solid #d9d9d9;
-                    border-radius: 2px;
-                    padding: 12px;
-                    font-family: 'Monaco', 'Courier New', monospace;
-                    font-size: 12px;
-                    resize: none;
-                    box-sizing: border-box;
-
-                    &:focus {
-                        border-color: #1890ff;
-                        outline: 0;
-                        box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
-                    }
-                }
-
-                .editor-help {
-                    padding: 12px;
-                    background-color: #f5f5f5;
-                    border-radius: 2px;
-                    font-size: 12px;
-                    flex-shrink: 0;
-
-                    .help-title {
-                        font-weight: 500;
-                        margin-bottom: 8px;
-                        color: #262626;
-                    }
-
-                    .help-list {
-                        margin: 0;
-                        padding-left: 20px;
-
-                        li {
-                            margin: 4px 0;
-                            color: #595959;
-
-                            code {
-                                background-color: #f0f0f0;
-                                padding: 2px 6px;
-                                border-radius: 2px;
-                                font-family: 'Monaco', 'Courier New', monospace;
-                            }
-                        }
-                    }
-                }
-            }
-
-            .markdown-preview {
-                line-height: 1.6;
-                color: #262626;
-            }
-
-            .empty-preview {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                height: 100%;
-            }
-        }
+    .footer-actions {
+        flex-shrink: 0;
+        display: flex;
+        justify-content: flex-start;
+        padding: 16px 24px;
+        border-top: 1px solid #f0f0f0;
+        background-color: #fff;
     }
 }
 
@@ -675,25 +554,6 @@ onMounted(() => {
                     flex: 1;
                     min-width: 200px;
                 }
-            }
-        }
-
-        .detail-content {
-            flex-direction: column;
-
-            .left-panel,
-            .right-panel {
-                width: 100%;
-                border-right: none;
-                border-bottom: 1px solid #f0f0f0;
-            }
-
-            .left-panel {
-                flex: 0 0 50%;
-            }
-
-            .right-panel {
-                flex: 1;
             }
         }
     }

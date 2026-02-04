@@ -11,6 +11,13 @@ export default {
     query: (data: any) => request.post('/open/api/group/detail/_query', data),
 
     /**
+     * 查询当前用户有权限的 API 分组列表（用于应用赋权等场景）
+     * @param data 查询参数
+     * @param specification 是否查询API文档详情，默认true
+     */
+    queryMyPermission: (data: any, specification: boolean = true) => request.post(`/open/api/group/me/permission/_query?specification=${specification}`, data),
+
+    /**
      * 获取 API 分组详情（标准接口）
      * @param id 分组 ID
      */
@@ -69,4 +76,27 @@ export default {
      * @param data 查询参数
      */
     queryByApp: (appId: string, data: any) => request.post(`/open/api/group/app/${appId}/_query`, data),
+
+    /**
+     * 对接口分组进行授权（全量）
+     * @param targetType 目标类型（如 api-client）
+     * @param targetId 目标 ID（如应用 ID）
+     * @param data 授权数据
+     */
+    grant: (targetType: string, targetId: string, data: any[]) => {
+        // 确保即使空数组也发送请求体
+        const requestData = Array.isArray(data) ? data : []
+        return request.put(`/open/api/group/${targetType}/${targetId}/_grant`, requestData, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+    },
+
+    /**
+     * 查询对象授权信息
+     * @param targetType 目标类型
+     * @param targetId 目标 ID
+     */
+    queryGrant: (targetType: string, targetId: string) => request.post(`/open/api/group/${targetType}/${targetId}/grant/_query`, {}),
 }

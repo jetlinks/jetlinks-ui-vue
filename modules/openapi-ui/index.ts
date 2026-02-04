@@ -46,6 +46,18 @@ const getExtraRoutesMap = () => {
         url: '/Save',
         name: '应用保存',
         component: () => import('./views/system/application/Save/index.vue')
+      },
+      {
+        code: 'Detail',
+        url: '/Detail/:id',
+        name: '应用详情',
+        component: () => import('./views/system/application/Detail/index.vue')
+      },
+      {
+        code: 'Grant',
+        url: '/Grant/:id',
+        name: '应用赋权',
+        component: () => import('./views/system/application/Grant/index.vue')
       }
     ]
   }

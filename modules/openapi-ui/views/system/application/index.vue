@@ -101,50 +101,9 @@
               <template #actions="item">
                 <a-tooltip
                     v-bind="item.tooltip"
-                    :title="item.disabled && item.tooltip.title"
+                    :title="item.disabled && item.tooltip?.title"
                 >
-                  <a-dropdown
-                      placement="bottomRight"
-                      v-if="item.key === 'others'"
-                  >
-                    <a-button>
-                      <AIcon :type="item.icon"/>
-                      <span>{{ item.text }}</span>
-                    </a-button>
-                    <template #overlay>
-                      <a-menu>
-                        <a-menu-item
-                            v-for="(
-                                                        o, i
-                                                    ) in item.children"
-                            :key="i"
-                        >
-                          <a-tooltip
-                              :title="
-                                                            o?.tooltip?.title
-                                                        "
-                          >
-                            <a-button
-                                type="link"
-                                @click="o.onClick"
-                                :disabled="
-                                                                o.disabled
-                                                            "
-                            >
-                              <AIcon
-                                  :type="o.icon"
-                              />
-                              <span>{{
-                                  o.text
-                                }}</span>
-                            </a-button>
-                          </a-tooltip>
-                        </a-menu-item>
-                      </a-menu>
-                    </template>
-                  </a-dropdown>
                   <j-permission-button
-                      v-else
                       :hasPermission="item.permission"
                       :tooltip="item.tooltip"
                       :pop-confirm="item.popConfirm"
@@ -223,7 +182,7 @@ import {useI18n} from 'vue-i18n';
 
 const {t: $t} = useI18n();
 const menuStory = useMenuStore();
-const permission = 'system/Apply';
+const permission = 'system/application';
 
 const typeOptions = ref<any[]>([]);
 
@@ -338,8 +297,41 @@ const table = {
         icon: 'EditOutlined',
         onClick: () => table.toSave(data.id),
       },
+      // 将"其他"下拉菜单中的按钮平铺出来
       {
-        permission: `${permission}:action`,
+        permission: `${permission}:view`,
+        key: 'grant',
+        text: '赋权',
+        icon: 'SafetyOutlined',
+        tooltip: {
+          title: '赋权',
+        },
+        onClick: () => {
+          menuStory.jumpPage('system/application/Grant', {
+            params: { id: data.id },
+            query: {
+              mode: 'appManger',
+              code: data.id
+            }
+          });
+        },
+      },
+      {
+        permission: `${permission}:view`,
+        key: 'viewApi',
+        text: '查看API',
+        icon: 'ApiOutlined',
+        tooltip: {
+          title: '查看API',
+        },
+        onClick: () => {
+          menuStory.jumpPage('system/application/Detail', {
+            params: { id: data.id }
+          });
+        },
+      },
+      {
+        permission: `${permission}:update`,
         key: 'action',
         text: disabled ? $t('Apply.index.483342-7') : $t('Apply.index.483342-11'),
         tooltip: {
@@ -350,38 +342,6 @@ const table = {
           onConfirm: () => table.changeStatus(data),
         },
         icon: disabled ? 'StopOutlined' : 'PlayCircleOutlined',
-      },
-      {
-        permission: `${permission}:view`,
-        key: 'others',
-        text: '其他',
-        icon: 'EllipsisOutlined',
-        children: [
-          {
-            key: 'grant',
-            text: '赋权',
-            icon: 'SafetyOutlined',
-            tooltip: {
-              title: '赋权',
-            },
-            onClick: () => {
-              // TODO: 实现赋权功能
-              console.log('赋权', data.id);
-            },
-          },
-          {
-            key: 'viewApi',
-            text: '查看API',
-            icon: 'ApiOutlined',
-            tooltip: {
-              title: '查看API',
-            },
-            onClick: () => {
-              // TODO: 实现查看API功能
-              console.log('查看API', data.id);
-            },
-          },
-        ],
       },
       {
         permission: `${permission}:delete`,

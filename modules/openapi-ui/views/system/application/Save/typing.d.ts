@@ -26,6 +26,7 @@ export type formType = {
     integrationModes: string[]; // 接入方式数组（用于提交）
     config?: string;
     description: string;
+    dimension?: string; // 数据权限维度
     page: { // 页面集成
         baseUrl: string,
         routeType: 'hash' | 'history',
@@ -62,6 +63,7 @@ export type formType = {
         ipWhiteList: string, // IP白名单
         signature?: 'MD5' | 'SHA256' | '', // 签名方式, 可选值：MD5，SHA256
         enableOAuth2: boolean, // 是否启用OAuth2
+        dataAccess?: string, // 数据权限
     },
     sso: { // 统一单点登陆集成
         configuration: { // 配置

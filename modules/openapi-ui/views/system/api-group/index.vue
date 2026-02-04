@@ -14,10 +14,15 @@
           sorts: [{ name: 'updateTime', order: 'desc' }],
         }"
                 :params="params"
+                modeValue="CARD"
                 :gridColumns="[2, 2, 3]"
+                :rowSelection="isGrantMode ? {
+                    selectedRowKeys: selectedGroupIds,
+                    onChange: handleSelectionChange
+                } : undefined"
             >
                 <template #headerLeftRender>
-                    <a-space>
+                    <a-space v-if="!isGrantMode">
                         <a-button type="primary" @click="handleAdd">
                             <template #icon>
                                 <AIcon type="PlusOutlined"/>
@@ -31,8 +36,10 @@
                     <CardBox
                         :showStatus="true"
                         :value="slotProps"
+                        :status="slotProps.status?.value"
+                        :statusText="slotProps.status?.text"
                         :statusNames="statusNames"
-                        :actions="getActions(slotProps)"
+                        :actions="isGrantMode ? [] : getActions(slotProps)"
                     >
                         <template #content>
                             <h3 class="card-title">{{ slotProps.name }}</h3>
@@ -51,30 +58,22 @@
                         </template>
                         <template #actions="item">
                             <a-tooltip
-                                v-for="action in item"
-                                :key="action.key"
-                                :title="action.tooltip?.title"
+                                v-bind="item.tooltip"
+                                :title="item.disabled && item.tooltip?.title"
                             >
                                 <j-permission-button
-                                    v-if="action.key === 'delete'"
-                                    :hasPermission="`${permission}:${action.key}`"
-                                    :popConfirm="action.popConfirm"
-                                    :danger="action.danger"
+                                    :hasPermission="item.permission || `${permission}:${item.key}`"
+                                    :tooltip="item.tooltip"
+                                    :pop-confirm="item.popConfirm"
+                                    @click="item.onClick"
+                                    :disabled="item.disabled"
+                                    :danger="item.danger"
                                     type="link"
                                 >
                                     <template #icon>
-                                        <AIcon :type="action.icon"/>
+                                        <AIcon :type="item.icon"/>
                                     </template>
-                                </j-permission-button>
-                                <j-permission-button
-                                    v-else
-                                    :hasPermission="`${permission}:${action.key}`"
-                                    @click="action.onClick"
-                                    type="link"
-                                >
-                                    <template #icon>
-                                        <AIcon :type="action.icon"/>
-                                    </template>
+                                    <span v-if="item.key !== 'delete'">{{ item.text }}</span>
                                 </j-permission-button>
                             </a-tooltip>
                         </template>
@@ -102,7 +101,8 @@
                                 :tooltip="i.tooltip"
                                 @click="i.onClick"
                                 type="link"
-                                :hasPermission="`${permission}:${i.key}`"
+                                :hasPermission="i.permission || `${permission}:${i.key}`"
+                                :disabled="i.disabled"
                             >
                                 <template #icon>
                                     <AIcon :type="i.icon"/>
@@ -113,19 +113,45 @@
                 </template>
             </JProTable>
         </FullPage>
+
+        <!-- 赋权模式下的操作栏 -->
+        <div v-if="isGrantMode" class="grant-action-bar">
+            <a-space>
+                <a-button @click="handleCancelGrant">取消</a-button>
+                <a-button
+                    type="primary"
+                    :loading="saving"
+                    @click="handleSaveGrant"
+                    :disabled="selectedGroupIds.length === 0"
+                >
+                    保存
+                </a-button>
+            </a-space>
+        </div>
     </j-page-container>
 </template>
 
 <script setup lang="ts">
+import {ref, computed, onMounted} from 'vue'
 import apiGroupApi from '../../../api/apiGroup'
 import type {ApiGroupItem} from './types'
 import {useMenuStore, useAuthStore} from '@jetlinks-web-core/store'
 import {onlyMessage} from '@jetlinks-web/utils'
 import {useI18n} from 'vue-i18n'
+import {useRoute, useRouter} from 'vue-router'
 
 const {t: $t} = useI18n()
 const menuStory = useMenuStore()
 const authStore = useAuthStore()
+const route = useRoute()
+const router = useRouter()
+
+// 判断是否为赋权模式
+const isGrantMode = computed(() => route.query.mode === 'grant')
+
+// 赋权模式相关状态
+const selectedGroupIds = ref<string[]>([])
+const saving = ref(false)
 
 // 权限代码，对应菜单code（从文件路径生成：views/system/api-group/index.vue -> system/api-group）
 const permission = 'system/api-group'
@@ -139,65 +165,78 @@ onMounted(() => {
     console.log('检查 view 权限:', authStore.hasPermission(`${permission}:view`))
     console.log('检查 update 权限:', authStore.hasPermission(`${permission}:update`))
     console.log('检查 delete 权限:', authStore.hasPermission(`${permission}:delete`))
+
+    // 赋权模式下加载已授权的分组
+    if (isGrantMode.value) {
+        loadGrantedGroups()
+    }
 })
 
 const tableRef = ref()
 const params = ref<Record<string, any>>({})
 
 const statusNames = {
-    1: 'success',
-    0: 'error',
+    enabled: 'processing',
+    disabled: 'error',
 }
 
-const columns = [
-    {
-        title: $t('ApiGroup.index.784523-9'),
-        dataIndex: 'name',
-        key: 'name',
-        ellipsis: true,
-        search: {
-            type: 'string',
+const columns = computed(() => {
+    const baseColumns = [
+        {
+            title: $t('ApiGroup.index.784523-9'),
+            dataIndex: 'name',
+            key: 'name',
+            ellipsis: true,
+            search: {
+                type: 'string',
+            },
         },
-    },
-    {
-        title: $t('ApiGroup.index.784523-1'),
-        dataIndex: 'appName',
-        key: 'appName',
-        ellipsis: true,
-        search: {
-            type: 'select',
-            options: [],
+        {
+            title: $t('ApiGroup.index.784523-1'),
+            dataIndex: 'appName',
+            key: 'appName',
+            ellipsis: true,
+            search: {
+                type: 'select',
+                options: [],
+            },
         },
-    },
-    {
-        title: $t('ApiGroup.index.784523-2'),
-        dataIndex: 'apiCount',
-        key: 'apiCount',
-        width: 100,
-        scopedSlots: true,
-    },
-    {
-        title: $t('ApiGroup.index.784523-7'),
-        dataIndex: 'status',
-        key: 'enabled',
-        width: 100,
-        scopedSlots: true,
-        search: {
-            type: 'select',
-            options: [
-                {label: '正常', value: 'enabled'},
-                {label: '禁用', value: 'disabled'},
-            ],
+        {
+            title: $t('ApiGroup.index.784523-2'),
+            dataIndex: 'apiCount',
+            key: 'apiCount',
+            width: 100,
+            scopedSlots: true,
         },
-    },
-    {
-        title: $t('ApiGroup.index.784523-11'),
-        key: 'action',
-        fixed: 'right',
-        width: 180,
-        scopedSlots: true,
-    },
-]
+        {
+            title: $t('ApiGroup.index.784523-7'),
+            dataIndex: 'status',
+            key: 'enabled',
+            width: 100,
+            scopedSlots: true,
+            search: {
+                type: 'select',
+                options: [
+                    {label: '正常', value: 'enabled'},
+                    {label: '禁用', value: 'disabled'},
+                ],
+            },
+        },
+    ]
+
+    // 非赋权模式才显示操作列
+    if (!isGrantMode.value) {
+        baseColumns.push({
+            title: $t('ApiGroup.index.784523-11'),
+            key: 'action',
+            fixed: 'right',
+            width: 180,
+            scopedSlots: true,
+        })
+    }
+
+    return baseColumns
+})
 
 const queryApiGroups = (params: any) => {
     return apiGroupApi.query(params)
@@ -254,9 +293,14 @@ const handleToggleEnabled = async (record: ApiGroupItem) => {
 }
 
 const getActions = (record: ApiGroupItem) => {
+    // 未禁用的数据不允许删除（默认置灰）
+    const isEnabled = record.status?.value === 'enabled'
+    
     return [
         {
+            permission: `${permission}:update`,
             key: 'update',
+            text: $t('ApiGroup.index.784523-15'),
             tooltip: {
                 title: $t('ApiGroup.index.784523-15'),
             },
@@ -264,27 +308,97 @@ const getActions = (record: ApiGroupItem) => {
             onClick: () => handleEdit(record),
         },
         {
-            key: 'update',
+            permission: `${permission}:update`,
+            key: 'toggle',
+            text: record.status?.value === 'enabled' ? $t('ApiGroup.index.784523-18') :
+                $t('ApiGroup.index.784523-19'),
             tooltip: {
-                title: record.status?.value === 'enabled' ? $t('ApiGroup.index.784523-19') :
-                    $t('ApiGroup.index.784523-18'),
+                title: record.status?.value === 'enabled' ? $t('ApiGroup.index.784523-18') :
+                    $t('ApiGroup.index.784523-19'),
             },
             icon: record.status?.value === 'enabled' ? 'StopOutlined' : 'CheckCircleOutlined',
-            onClick: () => handleToggleEnabled(record),
+            popConfirm: {
+                title: `确认${record.status?.value === 'enabled' ? $t('ApiGroup.index.784523-18') : $t('ApiGroup.index.784523-19')}?`,
+                onConfirm: () => handleToggleEnabled(record),
+            },
         },
         {
+            permission: `${permission}:delete`,
             key: 'delete',
+            text: $t('ApiGroup.index.784523-16'),
             tooltip: {
-                title: $t('ApiGroup.index.784523-16'),
+                title: isEnabled ? '未禁用的数据不允许删除' : $t('ApiGroup.index.784523-16'),
             },
             icon: 'DeleteOutlined',
-            popConfirm: {
+            popConfirm: isEnabled ? undefined : {
                 title: $t('ApiGroup.index.784523-17'),
                 onConfirm: () => handleDelete(record),
             },
             danger: true,
+            disabled: isEnabled,
         },
     ]
+}
+
+// 赋权模式相关方法
+const handleSelectionChange = (selectedRowKeys: string[]) => {
+    selectedGroupIds.value = selectedRowKeys
+}
+
+const handleCancelGrant = () => {
+    router.back()
+}
+
+const handleSaveGrant = async () => {
+    if (saving.value) {
+        return
+    }
+
+    if (selectedGroupIds.value.length === 0) {
+        onlyMessage('请至少选择一个 API 分组', 'warning')
+        return
+    }
+
+    saving.value = true
+    try {
+        const appId = route.query.appId as string
+        const targetType = 'api-client' // 应用类型固定为 api-client
+
+        // 构建授权数据
+        const grantData = selectedGroupIds.value.map(groupId => ({
+            groupId,
+            operationIds: [], // 暂时为空，后续可以支持选择具体的 operations
+            merge: true,
+            priority: 10
+        }))
+
+        await apiGroupApi.grant(targetType, appId, grantData)
+        onlyMessage('授权成功')
+        router.back()
+    } catch (error) {
+        console.error('授权失败:', error)
+        onlyMessage('授权失败', 'error')
+    } finally {
+        saving.value = false
+    }
+}
+
+// 加载已授权的分组
+const loadGrantedGroups = async () => {
+    if (!isGrantMode.value) {
+        return
+    }
+
+    try {
+        const appId = route.query.appId as string
+        const targetType = 'api-client'
+        const resp = await apiGroupApi.queryGrant(targetType, appId)
+        if (resp.success && resp.result) {
+            selectedGroupIds.value = resp.result.map((item: any) => item.groupId)
+        }
+    } catch (error) {
+        console.error('加载已授权分组失败:', error)
+    }
 }
 </script>
 
@@ -308,5 +422,19 @@ const getActions = (record: ApiGroupItem) => {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.grant-action-bar {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    left: 200px;
+    padding: 16px 24px;
+    background: #fff;
+    border-top: 1px solid #f0f0f0;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
+    display: flex;
+    justify-content: flex-end;
+    z-index: 100;
 }
 </style>

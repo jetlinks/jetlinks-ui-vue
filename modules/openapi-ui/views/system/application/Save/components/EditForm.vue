@@ -137,7 +137,20 @@
                   :placeholder="$t('components.EditForm.949962-51')"
               />
             </a-form-item>
-            <a-form-item :label="'角色'">
+            <a-form-item 
+                :label="'角色'"
+                :name="['apiServer', 'roleIdList']"
+                :rules="[
+                    {
+                        required: true,
+                        message: '请选择角色',
+                    },
+                    {
+                        validator: validateRoleOrOrg(),
+                        trigger: 'change',
+                    },
+                ]"
+            >
               <a-select
                   v-model:value="form.data.apiServer.roleIdList"
                   mode="multiple"
@@ -160,7 +173,19 @@
               </j-permission-button>
             </a-form-item>
 
-            <a-form-item>
+            <a-form-item
+                :name="['apiServer', 'orgIdList']"
+                :rules="[
+                    {
+                        required: true,
+                        message: '请选择组织',
+                    },
+                    {
+                        validator: validateRoleOrOrg('请选择组织'),
+                        trigger: 'change',
+                    },
+                ]"
+            >
               <template #label>
                 <FormLabel
                     :text="$t('components.EditForm.949962-55')"
@@ -210,15 +235,6 @@
               >
                 <AIcon type="ReloadOutlined"/>
               </a-button>
-            </a-form-item>
-
-            <a-form-item :label="'数据权限'">
-              <a-select
-                  v-model:value="form.data.apiServer.dataAccess"
-                  :options="form.accessSupportsList"
-                  :placeholder="'请选择数据权限'"
-                  :field-names="{ label: 'name', value: 'id' }"
-              ></a-select>
             </a-form-item>
 
             <a-form-item>
@@ -799,7 +815,20 @@
                 />
               </a-form-item>
 
-              <a-form-item :label="$t('components.EditForm.949962-53')">
+              <a-form-item 
+                  :label="$t('components.EditForm.949962-53')"
+                  :name="['sso', 'roleIdList']"
+                  :rules="[
+                      {
+                          required: true,
+                          message: '请选择角色',
+                      },
+                      {
+                          validator: validateRoleOrOrg('请选择角色'),
+                          trigger: 'change',
+                      },
+                  ]"
+              >
                 <a-select
                     v-model:value="form.data.sso.roleIdList"
                     mode="multiple"
@@ -821,7 +850,20 @@
                   <AIcon type="PlusOutlined"/>
                 </j-permission-button>
               </a-form-item>
-              <a-form-item :label="$t('components.EditForm.949962-55')">
+              <a-form-item 
+                  :label="$t('components.EditForm.949962-55')"
+                  :name="['sso', 'orgIdList']"
+                  :rules="[
+                      {
+                          required: true,
+                          message: '请选择组织',
+                      },
+                      {
+                          validator: validateRoleOrOrg('请选择组织'),
+                          trigger: 'change',
+                      },
+                  ]"
+              >
                 <a-tree-select
                     v-model:value="form.data.sso.orgIdList"
                     show-search
@@ -922,7 +964,6 @@ import {
   getAppInfo_api,
   queryType,
   getThirdPartyType,
-  getAccessSupports_api
 } from '@authentication-manager-ui/api/system/apply';
 import {getRoleList_api} from '@authentication-manager-ui/api/system/user';
 import FormLabel from './FormLabel.vue';
@@ -1008,9 +1049,8 @@ const initForm: formType = {
     appId: randomString(16),
     secureKey: randomString(), // 密钥
     redirectUri: '', // 重定向URL
-    roleIdList: ['saas_role'], // 角色列表，默认包含 saas_role
+    roleIdList: [], // 角色列表
     orgIdList: [], // 部门列表
-    dataAccess: 'ignore', // 数据权限，默认为全部数据
     ipWhiteList: '', // IP白名单
     enableOAuth2: false, // 是否启用OAuth2
   },
@@ -1060,7 +1100,6 @@ const form = reactive({
   // integrationModesISO: [] as string[], // 接入方式镜像  折叠面板使用
   roleIdList: [] as optionsType, // 角色列表
   orgIdList: [] as dictType, // 组织列表
-  accessSupportsList: [] as any[], // 数据权限列表
 
   errorNumInfo: {
     page: new Set(),
@@ -1079,6 +1118,19 @@ const checkCh = (_rule: Rule, value: string): Promise<any> =>
       if (/[\u4e00-\u9fa5]/.test(value)) return reject($t('components.EditForm.949962-85'));
       else return resolve('')
     })
+
+// 角色/组织必填校验
+const validateRoleOrOrg = () => {
+  return (_rule: Rule, value: any): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      if (!value || (Array.isArray(value) && value.length === 0)) {
+        reject()
+      } else {
+        resolve()
+      }
+    })
+  }
+}
 
 const getType = async () => {
   const resp: any = await queryType();
@@ -1102,7 +1154,6 @@ onMounted(async () => {
   getRoleIdList();
   getOrgIdList();
   queryThirdPartyType();
-  getAccessSupportsList();
 
   // 设置默认 provider 为 third-party
   form.data.provider = 'third-party';
@@ -1181,9 +1232,8 @@ const onIntegrationModeChange = () => {
       appId: randomString(16),
       secureKey: randomString(),
       redirectUri: '',
-      roleIdList: ['saas_role'],
+      roleIdList: [],
       orgIdList: [],
-      dataAccess: 'ignore',
       ipWhiteList: '',
       enableOAuth2: false,
     };
@@ -1202,7 +1252,7 @@ watch(
         // 新增时, 切换应用类型, 清空公用字段的值
         form.data.description = '';
         form.data.apiServer.redirectUri = '';
-        form.data.apiServer.roleIdList = ['saas_role'];
+        form.data.apiServer.roleIdList = [];
         form.data.apiServer.orgIdList = [];
       }
       emit('changeApplyType', n);
@@ -1227,11 +1277,6 @@ function getInfo(id: string) {
       integrationMode: resp.result.integrationModes?.[0]?.value || '', // 取第一个接入方式
     } as formType;
     form.data.apiServer && (form.data.apiServer.appId = id);
-
-    // 确保 roleIdList 包含 saas_role
-    if (form.data.apiServer && !form.data.apiServer.roleIdList.includes('saas_role')) {
-      form.data.apiServer.roleIdList.push('saas_role');
-    }
   });
 }
 
@@ -1253,15 +1298,6 @@ function getOrgIdList() {
   getDepartmentList_api({paging: false}).then((resp) => {
     if (resp.status === 200) {
       form.orgIdList = resp.result as dictType;
-    }
-  });
-}
-
-// 获取数据权限列表
-function getAccessSupportsList() {
-  getAccessSupports_api().then((resp) => {
-    if (resp.status === 200) {
-      form.accessSupportsList = resp.result || [];
     }
   });
 }
@@ -1301,13 +1337,6 @@ function clickSave() {
       delete params[item];
     });
 
-    // 确保 apiServer 包含 saas_role
-    if (params.integrationModes.includes('apiServer') && params.apiServer) {
-      if (!params.apiServer.roleIdList.includes('saas_role')) {
-        params.apiServer.roleIdList.push('saas_role');
-      }
-    }
-
     clearNullProp(params);
 
     // 设置 id
@@ -1329,6 +1358,8 @@ function clickSave() {
         .finally(() => {
           loading.value = false;
         });
+  }).catch(() => {
+    // 验证失败，Ant Design Vue 会自动显示错误信息，这里不需要额外处理
   });
 }
 

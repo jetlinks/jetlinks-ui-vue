@@ -51,9 +51,15 @@ export interface ListFilter {
   /** 操作类型 */
   operationType?: ('read' | 'write' | 'control')[]
   /** 可见性 */
-  visibility?: ('INTERNAL' | 'PARTNER' | 'PUBLIC')[]
+  visibility?: ('internal' | 'saas_user' | 'open')[]
+  /** 稳定性 */
+  stable?: ('stable' | 'preview' | 'deprecated' | 'internal')[]
   /** 能力分组 */
   group?: string
+  /** 业务能力 */
+  businessGroup?: string[]
+  /** 影响范围 */
+  impactScope?: string[]
   /** 权限绑定状态 */
   hasPermission?: boolean
 }
