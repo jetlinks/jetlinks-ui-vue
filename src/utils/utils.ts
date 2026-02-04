@@ -28,3 +28,5 @@ export const initPersonal = () => {
     PersonalToken.aiToken = url.searchParams.get(PersonalAIKey)
   }
 }
+
+export const getBaseApi = () => BASE_API
