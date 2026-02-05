@@ -46,7 +46,7 @@ export const USER_CENTER_MENU_DATA = {
         },
         {
             permission: 'permission',
-            actions: ['query'],
+            actions: ['grant'],
         },
     ],
     buttons: [

@@ -12,7 +12,7 @@
     </div>
     <a-table
         :columns="columns"
-        :data-source="list"
+        :data-source="_sourceList"
         :pagination="false"
         :loading="loading"
         row-key="id"
@@ -81,6 +81,7 @@ const props = defineProps({
 const emit = defineEmits(['update:value', 'change', 'close'])
 
 const searchKeyword = ref('')
+const _searchKeyword = ref('')
 const list = ref([])
 const sourceList = ref([])
 const loading = ref(false)
@@ -136,7 +137,7 @@ const selectAll = (flag) => {
   }
 }
 const onSearch = (e) => {
-  handleSearch(e)
+  _searchKeyword.value = e
 }
 
 // 全选/取消全选
@@ -169,13 +170,19 @@ const selectOption = (_row, newValue) => {
   emit('update:value', newProp)
 }
 
-const handleSearch = (e = '') => {
+const _sourceList = computed(() => {
+  return list.value.filter(i => {
+    return !_searchKeyword.value || i.name.includes(_searchKeyword.value)
+  })
+})
+
+const handleSearch = () => {
   const params = {
     paging: false,
   }
-  if (e) {
-    params.terms = [{ column: 'name$like', value: `%${e}%` }]
-  }
+  // if (e) {
+  //   params.terms = [{ column: 'name$like', value: `%${e}%` }]
+  // }
   loading.value = true;
   queryPermission_api(params).then((resp) => {
     if (resp.success) {
@@ -208,7 +215,6 @@ const initializePermissions = (type) => {
       // 读写：选择查看、编辑、启用/禁用、导入权限
       const readwriteActions = ['query', 'save', 'enable', 'disable', 'import', 'export', 'add', 'find-geo', 'save-geo', 'bind-user', 'unbind-user']
       sourceList.value.forEach(item => {
-        console.log(item, 'item')
         if(item.actions.some(action => readwriteActions.includes(action.action))) {
           arr.push({
             id: item.id,
