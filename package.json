@@ -13,8 +13,8 @@
     "modules:init": "gitmodules.sh",
     "modules:update": "git submodule update",
     "test": "playwright test",
-    "build:server": "pnpm -F jetlinks-web-core build --mode server",
-    "build:modules": "pnpm -F jetlinks-web-core build -- --module-name"
+    "build:server": "pnpm -F jetlinks-web-core build:server",
+    "build:modules": "pnpm -F jetlinks-web-core build:modules"
   },
   "dependencies": {
     "@ant-design/icons-vue": "^7.0.1",
