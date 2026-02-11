@@ -28,7 +28,7 @@
         <project.build.jdk>${java.version}</project.build.jdk>
         <jetlinks.ui.build.module>${project.artifactId}</jetlinks.ui.build.module>
         <volume.modules.argument1>-v</volume.modules.argument1>
-        <volume.modules.argument2>${project.basedir}:/app/src/modules/${jetlinks.ui.build.module}</volume.modules.argument2>
+        <volume.modules.argument2>${project.basedir}:/app/modules/${jetlinks.ui.build.module}</volume.modules.argument2>
     </properties>
 
 
@@ -39,7 +39,7 @@
             <id>ui-with-extra-modules</id>
             <properties>
                 <volume.modules.argument1>-v</volume.modules.argument1>
-                <volume.modules.argument2>${project.basedir}/../:/app/src/modules</volume.modules.argument2>
+                <volume.modules.argument2>${project.basedir}/../:/app/modules</volume.modules.argument2>
             </properties>
         </profile>
     </profiles>

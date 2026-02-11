@@ -2,8 +2,8 @@
 set -e
 
 # 确保 src/modules 目录存在且有正确的权限
-mkdir -p /app/src/modules
-chmod 777 /app/src/modules
+mkdir -p /app/modules
+chmod 777 /app/modules
 
 echo "Installing dependencies..."
 # 配置 npm 源
