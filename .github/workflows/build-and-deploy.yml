@@ -21,7 +21,6 @@ jobs:
             - run: echo ${{github.ref}}
             - run: npm install pnpm -g
             - run: pnpm install --no-frozen-lockfile
-            - run: pnpm update:tsconfig
             - run: pnpm run build:server
               env:
                   CI: true
