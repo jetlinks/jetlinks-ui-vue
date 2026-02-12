@@ -3,6 +3,7 @@
     <j-advanced-search
       :target='target'
       :type='type'
+      v-bind='$attrs'
       :request='(data) => saveSearchHistory(data, target)'
       :historyRequest='() => getSearchHistory(target)'
       :deleteRequest='(_target: string, id: string) => deleteSearchHistory(target, id)'

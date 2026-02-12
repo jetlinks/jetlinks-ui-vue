@@ -20,6 +20,8 @@ const LEGACY_VAR_MAPPING: Record<string, string> = {
   'var(--ant-shadow-color)': '@shadow-color',
   'var(--ant-box-shadow-base)': '@box-shadow-base',
   'var(--ant-border-radius-base)': '@border-radius-base',
+  'var(--ant-primary-1)': '@primary-1',
+  'var(--ant-primary-2)': '@primary-2',
 }
 
 // 扩展映射表，支持更多变量
@@ -75,31 +77,31 @@ export function antdLegacyVarsPlugin(options: PluginOptions = {}): Plugin {
   return {
     name: 'antd-legacy-vars',
     enforce: 'pre',
-    
+
     transform(code: string, id: string) {
       // 检查文件类型
       const isVueFile = id.endsWith('.vue')
       const isLessFile = id.endsWith('.less')
       const isCssFile = id.endsWith('.css')
-      
+
       // 如果设置了 vueOnly，只处理 .vue 文件
       if (vueOnly && !isVueFile) {
         return null
       }
-      
+
       // 检查是否应该处理此文件
       if (!isVueFile && !isLessFile && !isCssFile) {
         return null
       }
-      
+
       // 检查排除规则
       if (exclude.some(pattern => pattern.test(id))) {
         return null
       }
-      
+
       let transformedCode = code
       let hasTransform = false
-      
+
       // 执行变量替换
       Object.entries(varMapping).forEach(([cssVar, lessVar]) => {
         if (transformedCode.includes(cssVar)) {
@@ -108,29 +110,29 @@ export function antdLegacyVarsPlugin(options: PluginOptions = {}): Plugin {
             lessVar
           )
           hasTransform = true
-          
+
           if (verbose) {
             console.log(`[antd-legacy-vars] ${path.basename(id)}: ${cssVar} → ${lessVar}`)
           }
         }
       })
-      
+
       if (hasTransform) {
         transformCount++
-        
+
         if (verbose) {
           console.log(`[antd-legacy-vars] 已转换文件: ${path.relative(process.cwd(), id)}`)
         }
-        
+
         return {
           code: transformedCode,
           map: null // 简单替换，不生成 source map
         }
       }
-      
+
       return null
     },
-    
+
     buildEnd() {
       if (verbose || transformCount > 0) {
         console.log(`[antd-legacy-vars] 总共转换了 ${transformCount} 个文件`)
