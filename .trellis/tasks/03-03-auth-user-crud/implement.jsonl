@@ -1,0 +1,4 @@
+{"file": ".trellis/workflow.md", "reason": "Project workflow and conventions"}
+{"file": ".trellis/spec/frontend/index.md", "reason": "Frontend development guide"}
+{"file": "modules/authentication-manager-ui/views/system/User/", "type": "directory", "reason": "Implement user CRUD page and dialogs"}
+{"file": "modules/authentication-manager-ui/api/system/user.ts", "reason": "Reuse user CRUD APIs"}

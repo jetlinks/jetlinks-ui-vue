@@ -1,0 +1,3 @@
+{"file": ".claude/commands/trellis/finish-work.md", "reason": "Finish work checklist"}
+{"file": ".claude/commands/trellis/check-frontend.md", "reason": "Frontend check spec"}
+{"file": "modules/authentication-manager-ui/views/system/User/", "type": "directory", "reason": "Review UI and CRUD actions"}

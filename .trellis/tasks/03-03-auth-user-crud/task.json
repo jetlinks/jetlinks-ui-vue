@@ -1,0 +1,41 @@
+{
+  "id": "auth-user-crud",
+  "name": "auth-user-crud",
+  "title": "Authentication User CRUD",
+  "description": "",
+  "status": "planning",
+  "dev_type": null,
+  "scope": null,
+  "priority": "P2",
+  "creator": "sc-codex",
+  "assignee": "sc-codex",
+  "createdAt": "2026-03-03",
+  "completedAt": null,
+  "branch": null,
+  "base_branch": "2.12",
+  "worktree_path": null,
+  "current_phase": 0,
+  "next_action": [
+    {
+      "phase": 1,
+      "action": "implement"
+    },
+    {
+      "phase": 2,
+      "action": "check"
+    },
+    {
+      "phase": 3,
+      "action": "finish"
+    },
+    {
+      "phase": 4,
+      "action": "create-pr"
+    }
+  ],
+  "commit": null,
+  "pr_url": null,
+  "subtasks": [],
+  "relatedFiles": [],
+  "notes": ""
+}

@@ -1,0 +1,6 @@
+{"file": ".trellis/workflow.md", "reason": "Project workflow and conventions"}
+{"file": ".trellis/spec/frontend/index.md", "reason": "Update status after filling frontend guides"}
+{"file": "jetlinks-web-core/src/main.ts", "reason": "Document app bootstrap and plugin conventions"}
+{"file": "jetlinks-web-core/src/store/menu.ts", "reason": "Document state and routing conventions"}
+{"file": "jetlinks-web-core/src/hooks/useRequest.ts", "reason": "Document hook and request patterns"}
+{"file": "modules/data-collector-ui/index.ts", "reason": "Document module organization conventions"}
