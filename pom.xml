@@ -71,7 +71,7 @@
                                 <executable>docker</executable>
                                 <arguments>
                                     <argument>run</argument>
-                                    <!--<argument>&#45;&#45;rm</argument>-->
+                                    <argument>--rm</argument>
                                     <!--  挂载子模块-->
                                     <argument>${volume.modules.argument1}</argument>
                                     <argument>${volume.modules.argument2}</argument>
