@@ -98,7 +98,6 @@ jobs:
             -   name: Install dependencies
                 run: |
                     pnpm install --no-frozen-lockfile
-                    pnpm update:tsconfig
 
             -   name: Build frontend for Maven (BASE_API=/)
                 run: |
