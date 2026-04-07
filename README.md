@@ -3,8 +3,8 @@
 [更新说明](./CHANGELOG.md)
 
 ## 项目说明
-本项目包含多个 **Git 子模块（submodule）**，用于拆分组件、公共模块等。
-请严格按照下列步骤进行操作，否则会出现代码不全、依赖安装失败、无法运行、缺少菜单等问题。
+本项目将各业务子仓库以 **Git subtree** 方式内嵌于主仓库（目录 `jetlinks-web-core`、`modules/*`），无需再使用子模块初始化。
+请严格按照下列步骤进行操作，否则会出现依赖安装失败、无法运行、缺少菜单等问题。
 
 ## ⚙️ 一、环境要求
 
@@ -21,7 +21,7 @@
 
 ## 二、配置 SSH 访问（非常重要）
 
-项目中的子模块使用 **SSH 地址**，如果没有配置 SSH，会导致代码无法拉取。
+若你需要使用 `pnpm modules:update` 从上游 **拉取 subtree 更新**，远程仍为 **SSH** 地址，需配置 SSH；仅本地开发、不拉取上游时可不配置。
 
 ### 🪟 Windows 环境配置步骤
 
@@ -116,20 +116,21 @@ ssh -T git@github.com
 ## 三、运行以及安装步骤
 使用 **pnpm** 命令运行该项目，[安装pnpm](https://www.pnpm.cn/installation)
 
-### 1. 拉取子仓库
-项目内置有拉取子模块的命令
+### 1. 子仓库说明
+克隆主仓库后子仓库源码已包含在内。`pnpm modules:init` 仅作提示；若需从上游同步 subtree，请使用：
 ```shell
-pnpm modules:init
+pnpm modules:update
 ```
+（需已配置 SSH，且会按当前主仓库分支名对应上游分支执行 `git subtree pull`。）
 
 ### 2. 安装依赖
-先查看子模块文件是否拉取完整，确保拉取完整之后再安装依赖
+确认 `jetlinks-web-core` 与 `modules` 下各目录存在后再安装依赖
 ```shell
 pnpm install
 ```
 
 ### 3. 生成子tsconfig.paths.json文件
-这是添加在ts中添加子模块别名，一定要执行。后面每新增一个子模块都需要运行一次
+这是向 tsconfig 写入子包别名，一定要执行。后面每新增一个内嵌子目录都需要运行一次
 ```shell
 # 修改tsconfig,将子模块的别名写入paths中
 pnpm update:tsconfig
@@ -145,7 +146,7 @@ pnpm dev
 
 ```shell
 
-# 更新子仓库
+# 从上游拉取 subtree 更新（需 SSH）
 pnpm modules:update
 
 # 打包
@@ -156,11 +157,11 @@ pnpm build
 
 | 问题                              | 可能原因                     | 解决方案                            |
 |---------------------------------|--------------------------|---------------------------------|
-| ❌ 子模块代码为空                       | 忘记使用 `pnpm modules:init` | 执行 `pnpm modules:init`          |
-| ❌ Permission denied (publickey) | SSH 没配置或公钥未添加            | 按上方 “SSH 配置” 步骤操作               |
+| ❌ 子目录代码为空                       | 使用了浅克隆或未拉全仓库           | 使用完整 clone，勿 `--depth 1`（除非你知道影响） |
+| ❌ Permission denied (publickey) | 执行 `modules:update` 时 SSH 未配置 | 按上方 “SSH 配置” 步骤操作               |
 | ❌ pnpm install 报错               | Node 版本过低或缓存损坏           | 升级 Node 至 ≥18                   |
-| ❌ 启动时报模块找不到                     | 子模块未初始化                  | 删除项目重新完整 clone                  |
-| ❌ 初始化页面中，菜单初始化项显示 “系统初始化0个菜单”   | 子模块代码没有拉取下来              | 检查子模块目录， 执行 `pnpm modules:init` |
+| ❌ 启动时报模块找不到                     | 目录缺失或路径错误                | 确认 `jetlinks-web-core`、`modules/*` 存在 |
+| ❌ 初始化页面中，菜单初始化项显示 “系统初始化0个菜单”   | 业务模块目录不完整                | 检查 `modules` 下各目录是否齐全           |
 | ❌ 登录进去之后页面没有菜单                  | 菜单未初始化成功                 | 进入 "/init-home" 进行初始化菜单操作       |
 
 ---

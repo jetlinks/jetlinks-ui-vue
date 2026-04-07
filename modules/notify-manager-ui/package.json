@@ -1,0 +1,23 @@
+{
+  "name": "notify-manager-ui",
+  "id": "notify-manager",
+  "version": "1.0.0",
+  "description": "通知管理",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jetlinks-v2/notify-manager-ui.git"
+  },
+  "keywords": [
+    "jetlinks"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jetlinks-v2/notify-manager-ui/issues"
+  },
+  "homepage": "https://github.com/jetlinks-v2/notify-manager-ui#readme"
+}

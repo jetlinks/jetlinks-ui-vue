@@ -1,21 +1,29 @@
 #!/bin/bash
+set -euo pipefail
 
-# 初始化子模块
-git submodule init
-git submodule update
+# 子仓库已通过 Git subtree 内嵌于主仓库；本脚本从各上游仓库拉取与当前主分支对应分支的更新。
 
-# 获取主仓库当前分支
 main_branch=$(git symbolic-ref --short HEAD)
 
-# 如果是dev，就使用master，否则用当前分支
 if [[ "$main_branch" = "dev" || "$main_branch" = "master" ]]; then
-  submodule_branch="master"
+  subtree_branch="master"
 else
-  submodule_branch="$main_branch"
+  subtree_branch="$main_branch"
 fi
 
-# 切换子模块到目标分支
-git submodule foreach "git checkout $submodule_branch || git checkout -b $submodule_branch origin/$submodule_branch"
+echo "同步 subtree，上游分支: $subtree_branch"
 
-# 拉取子模块最新代码
-git submodule foreach "git pull origin $submodule_branch"
+sync_subtree() {
+  local prefix=$1
+  local url=$2
+  echo "---- $prefix ----"
+  git subtree pull --prefix="$prefix" "$url" "$subtree_branch" --squash -m "chore: subtree pull ${prefix} (${subtree_branch})"
+}
+
+sync_subtree jetlinks-web-core git@github.com:jetlinks-v2/jetlinks-web-core.git
+sync_subtree modules/authentication-manager-ui git@github.com:jetlinks-v2/authentication-manager-ui.git
+sync_subtree modules/notify-manager-ui git@github.com:jetlinks-v2/notify-manager-ui.git
+sync_subtree modules/device-manager-ui git@github.com:jetlinks-v2/device-manager-ui.git
+sync_subtree modules/rule-engine-manager-ui git@github.com:jetlinks-v2/rule-engine-manager-ui.git
+
+echo "完成。"

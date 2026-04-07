@@ -10,8 +10,8 @@
     "preview": "pnpm -F jetlinks-web-core preview",
     "micro": "node scripts/start-micro.js",
     "clean": "pnpm rimraf node_modules && pnpm rimraf dist && pnpm rimraf .turbo",
-    "modules:init": "gitmodules.sh",
-    "modules:update": "git submodule update",
+    "modules:init": "echo 子仓库已通过 subtree 内嵌于主仓库，无需单独初始化。如需从上游同步最新代码请执行: pnpm modules:update",
+    "modules:update": "bash ./gitmodules.sh",
     "test": "playwright test",
     "build:server": "pnpm -F jetlinks-web-core build:server",
     "build:modules": "pnpm -F jetlinks-web-core build:modules"

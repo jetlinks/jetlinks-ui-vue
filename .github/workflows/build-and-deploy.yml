@@ -1,7 +1,7 @@
 name: Build and Deploy
 
 # 此工作流用于：
-# 1. 检出代码和 git 子模块（使用相同分支）
+# 1. 检出代码（子仓库已通过 subtree 内嵌，无需子模块步骤）
 # 2. 构建前端项目：
 #    - Maven 构建：使用 VITE_APP_BASE_API=/
 #    - Docker 构建：使用 VITE_APP_BASE_API=/api
@@ -35,42 +35,14 @@ jobs:
                     fetch-depth: 0
                     token: ${{ secrets.GITHUB_TOKEN }}
 
-            -   name: Configure submodules remote URLs and checkout to branch
+            -   name: Verify vendored subtree directories
                 run: |
-                    BRANCH_NAME="${{ github.ref_name }}"
-                    echo "Current branch: $BRANCH_NAME"
-
-                    # 初始化子模块
-                    git submodule init
-
-                    # 先转换 .gitmodules 中的 SSH URL 为 HTTPS URL（在更新之前）
-                    echo "Converting .gitmodules URLs from SSH to HTTPS..."
-                    if [ -f .gitmodules ]; then
-                      sed -i.bak 's|git@github.com:\([^/]*\)/\(.*\)\.git|https://github.com/\1/\2.git|g' .gitmodules
-                      rm -f .gitmodules.bak
-                    fi
-
-                    # 同步子模块配置
-                    git submodule sync --recursive
-
-                    # 更新子模块（现在使用 HTTPS URL）
-                    echo "Updating submodules..."
-                    git submodule update --recursive --init
-
-                    # 切换子模块到指定分支并拉取最新代码
-                    echo "Switching submodules to branch: $BRANCH_NAME"
-                    git submodule foreach --recursive "
-                      echo \"Processing submodule: \$sm_path\"
-                      git fetch origin || true
-                      if git checkout $BRANCH_NAME 2>/dev/null; then
-                        echo \"  Switched to existing branch $BRANCH_NAME\"
-                      elif git checkout -b $BRANCH_NAME origin/$BRANCH_NAME 2>/dev/null; then
-                        echo \"  Created and switched to branch $BRANCH_NAME\"
-                      else
-                        echo \"  Branch $BRANCH_NAME not found, keeping current branch\"
-                      fi
-                      git pull origin $BRANCH_NAME 2>/dev/null || echo \"  Failed to pull, continuing...\"
-                    "
+                    test -d jetlinks-web-core
+                    test -d modules/authentication-manager-ui
+                    test -d modules/notify-manager-ui
+                    test -d modules/device-manager-ui
+                    test -d modules/rule-engine-manager-ui
+                    echo "Subtree 目录就绪"
 
             -   name: Setup Node.js
                 uses: actions/setup-node@v4
