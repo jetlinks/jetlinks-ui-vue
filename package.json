@@ -1,0 +1,27 @@
+{
+  "name": "rule-engine-manager-ui",
+  "id": "rule-engine-manager",
+  "version": "1.0.0",
+  "description": "规则引擎",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jetlinks-v2/rule-engine-manager-ui.git"
+  },
+  "keywords": [
+    "jetlinks"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jetlinks-v2/rule-engine-manager-ui/issues"
+  },
+  "homepage": "https://github.com/jetlinks-v2/rule-engine-manager-ui#readme",
+  "dependencies": {
+    "cronstrue": "^2.50.0",
+    "marked": "^14.1.1"
+  }
+}
