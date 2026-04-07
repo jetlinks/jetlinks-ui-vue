@@ -1,0 +1,478 @@
+[
+  {
+    "code": "iot",
+    "name": "物联网",
+    "i18nMessages": {
+      "name": {
+        "zh_CN": "物联网",
+        "en_US": "IoT",
+        "en": "IoT"
+      }
+    },
+    "owner": "iot",
+    "id": "9c21f88182e7cc75cbdfa8e4b7844272",
+    "url": "/iot",
+    "icon": "icon-wulianwang",
+    "sortIndex": 1,
+    "permissions": [],
+    "children": [
+      {
+        "code": "notice",
+        "name": "通知管理",
+        "i18nMessages": {
+          "name": {
+            "zh_CN": "通知管理",
+            "en_US": "Notice Management",
+            "en": "Notice Management"
+          }
+        },
+        "owner": "iot",
+        "id": "b27e972543cdc5da5730b6d4b9b537b1",
+        "url": "/iot/notice",
+        "icon": "icon-tongzhiguanli",
+        "sortIndex": 2,
+        "showPage": [
+          "template",
+          "notifier"
+        ],
+        "permissions": [],
+        "children": [
+          {
+            "code": "notice/Config",
+            "name": "通知配置",
+            "i18nMessages": {
+              "name": {
+                "zh_CN": "通知配置",
+                "en_US": "Notice Config",
+                "en": "Notice Config"
+              }
+            },
+            "owner": "iot",
+            "id": "09bcab0a6a1f0796075254a453139287",
+            "url": "/iot/notice/Config",
+            "icon": "icon-tongzhiguanli",
+            "sortIndex": 1,
+            "showPage": [
+              "notifier"
+            ],
+            "permissions": [
+              {
+                "permission": "notifier",
+                "actions": [
+                  "query",
+                  "save",
+                  "delete",
+                  "send"
+                ]
+              }
+            ],
+            "buttons": [
+              {
+                "id": "bind",
+                "name": "同步用户",
+                "i18nMessages": {
+                  "zh_CN": "同步用户",
+                  "en_US": "Sync User",
+                  "en": "Sync User"
+                },
+                "permissions": [
+                  {
+                    "permission": "add",
+                    "actions": [
+                      "query"
+                    ]
+                  },
+                  {
+                    "permission": "notifier",
+                    "actions": [
+                      "save"
+                    ]
+                  },
+                  {
+                    "permission": "user-third-party-manager",
+                    "actions": [
+                      "query",
+                      "save"
+                    ]
+                  },
+                  {
+                    "permission": "user",
+                    "actions": [
+                      "query"
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "view",
+                "name": "查看",
+                "i18nMessages": {
+                  "zh_CN": "查看",
+                  "en_US": "View",
+                  "en": "View"
+                },
+                "permissions": [
+                  {
+                    "permission": "notifier",
+                    "actions": [
+                      "query"
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "log",
+                "name": "通知记录",
+                "i18nMessages": {
+                  "zh_CN": "通知记录",
+                  "en_US": "Log",
+                  "en": "Log"
+                },
+                "permissions": [
+                  {
+                    "permission": "notifier",
+                    "actions": [
+                      "query"
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "debug",
+                "name": "调试",
+                "i18nMessages": {
+                  "zh_CN": "调试",
+                  "en_US": "Debug",
+                  "en": "Debug"
+                },
+                "permissions": [
+                  {
+                    "permission": "add",
+                    "actions": [
+                      "query"
+                    ]
+                  },
+                  {
+                    "permission": "notifier",
+                    "actions": [
+                      "query",
+                      "send"
+                    ]
+                  },
+                  {
+                    "permission": "template",
+                    "actions": [
+                      "query"
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "export",
+                "name": "导出",
+                "i18nMessages": {
+                  "zh_CN": "导出",
+                  "en_US": "Export",
+                  "en": "Export"
+                },
+                "permissions": [
+                  {
+                    "permission": "notifier",
+                    "actions": [
+                      "query"
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "import",
+                "name": "导入",
+                "i18nMessages": {
+                  "zh_CN": "导入",
+                  "en_US": "Import",
+                  "en": "Import"
+                },
+                "permissions": [
+                  {
+                    "permission": "notifier",
+                    "actions": [
+                      "query",
+                      "save"
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "delete",
+                "name": "删除",
+                "i18nMessages": {
+                  "zh_CN": "删除",
+                  "en_US": "Delete",
+                  "en": "Delete"
+                },
+                "permissions": [
+                  {
+                    "permission": "notifier",
+                    "actions": [
+                      "query",
+                      "delete"
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "update",
+                "name": "编辑",
+                "i18nMessages": {
+                  "zh_CN": "编辑",
+                  "en_US": "Edit",
+                  "en": "Edit"
+                },
+                "permissions": [
+                  {
+                    "permission": "notifier",
+                    "actions": [
+                      "query",
+                      "save"
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "add",
+                "name": "新增",
+                "i18nMessages": {
+                  "zh_CN": "新增",
+                  "en_US": "Add",
+                  "en": "Add"
+                },
+                "permissions": [
+                  {
+                    "permission": "notifier",
+                    "actions": [
+                      "query",
+                      "save"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "accessSupport": {
+              "text": "支持",
+              "value": "support"
+            },
+            "supportDataAccess": true,
+            "assetType": "notifyConfig"
+          },
+          {
+            "code": "notice/Template",
+            "name": "通知模板",
+            "i18nMessages": {
+              "name": {
+                "zh_CN": "通知模板",
+                "en_US": "Notice Template",
+                "en": "Notice Template"
+              }
+            },
+            "owner": "iot",
+            "id": "705b82c807fa18360bf62a2b35f454e9",
+            "url": "/iot/notice/Template",
+            "icon": "icon-tongzhiguanli",
+            "sortIndex": 2,
+            "showPage": [
+              "template"
+            ],
+            "permissions": [
+              {
+                "permission": "template",
+                "actions": [
+                  "query"
+                ]
+              },
+              {
+                "permission": "notifier",
+                "actions": [
+                  "query",
+                  "send"
+                ]
+              }
+            ],
+            "buttons": [
+              {
+                "id": "view",
+                "name": "查看",
+                "i18nMessages": {
+                  "zh_CN": "查看",
+                  "en_US": "View",
+                  "en": "View"
+                },
+                "permissions": [
+                  {
+                    "permission": "template",
+                    "actions": [
+                      "query"
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "log",
+                "name": "通知记录",
+                "i18nMessages": {
+                  "zh_CN": "通知记录",
+                  "en_US": "Log",
+                  "en": "Log"
+                },
+                "permissions": [
+                  {
+                    "permission": "template",
+                    "actions": [
+                      "query"
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "debug",
+                "name": "调试",
+                "i18nMessages": {
+                  "zh_CN": "调试",
+                  "en_US": "Debug",
+                  "en": "Debug"
+                },
+                "permissions": [
+                  {
+                    "permission": "notifier",
+                    "actions": [
+                      "query",
+                      "send"
+                    ]
+                  },
+                  {
+                    "permission": "template",
+                    "actions": [
+                      "query"
+                    ]
+                  },
+                  {
+                    "permission": "add",
+                    "actions": [
+                      "query"
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "export",
+                "name": "导出",
+                "i18nMessages": {
+                  "zh_CN": "导出",
+                  "en_US": "Export",
+                  "en": "Export"
+                },
+                "permissions": [
+                  {
+                    "permission": "template",
+                    "actions": [
+                      "query"
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "import",
+                "name": "导入",
+                "i18nMessages": {
+                  "zh_CN": "导入",
+                  "en_US": "Import",
+                  "en": "Import"
+                },
+                "permissions": [
+                  {
+                    "permission": "template",
+                    "actions": [
+                      "query",
+                      "save"
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "delete",
+                "name": "删除",
+                "i18nMessages": {
+                  "zh_CN": "删除",
+                  "en_US": "Delete",
+                  "en": "Delete"
+                },
+                "permissions": [
+                  {
+                    "permission": "template",
+                    "actions": [
+                      "query",
+                      "delete"
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "update",
+                "name": "编辑",
+                "i18nMessages": {
+                  "zh_CN": "编辑",
+                  "en_US": "Edit",
+                  "en": "Edit"
+                },
+                "permissions": [
+                  {
+                    "permission": "notifier",
+                    "actions": [
+                      "query"
+                    ]
+                  },
+                  {
+                    "permission": "template",
+                    "actions": [
+                      "save"
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "add",
+                "name": "新增",
+                "i18nMessages": {
+                  "zh_CN": "新增",
+                  "en_US": "Add",
+                  "en": "Add"
+                },
+                "permissions": [
+                  {
+                    "permission": "notifier",
+                    "actions": [
+                      "query"
+                    ]
+                  },
+                  {
+                    "permission": "template",
+                    "actions": [
+                      "save"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "accessSupport": {
+              "text": "间接支持",
+              "value": "indirect"
+            },
+            "supportDataAccess": false,
+            "indirectMenus": [
+              "09bcab0a6a1f0796075254a453139287"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]
