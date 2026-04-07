@@ -1,0 +1,6 @@
+export { default as DingTalk } from './dingtalk.png'
+export { default as Email } from './email.png'
+export { default as InsideMail } from './inside-mail.png'
+export { default as Sms } from './sms.png'
+export { default as Voice } from './voice.png'
+export { default as Wechat } from './wechat.png'

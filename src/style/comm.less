@@ -1,0 +1,55 @@
+@set: {
+  0: #ffffff;
+  50: #F8F9FA;
+  200: #EFF0F1;
+  300: #E4E6E7;
+  400: #C3C7CB;
+  500: #8D9399;
+  600: #646C73;
+  900: #1F2429;
+}
+
+each(@set, {
+  .text-color-@{key} {
+    color: @value;
+  }
+  .bg-color-@{key} {
+    background-color: @value;
+  }
+  .border-color-@{key} {
+    border-color: @value;
+  }
+})
+
+
+// ======= antdv 4 引起的样式问题 =======
+
+body {
+  margin: 0;
+}
+
+hr {
+  box-sizing: content-box;
+  height: 0;
+  overflow: visible
+}
+
+h1,h2,h3,h4,h5,h6 {
+  color: #000000d9;
+  font-weight: 500;
+  margin-bottom: .5em;
+  margin-top: 0;
+}
+
+p {
+  margin-bottom: 1em;
+  margin-top: 0
+}
+
+.card-list-img-80 {
+  width: 80px;
+  height: 80px;
+}
+
+// ====== end antdv 4 ========
+

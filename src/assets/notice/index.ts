@@ -1,0 +1,7 @@
+export { default as DingTalk } from './dingtalk.png'
+export { default as DingTalkRebot } from './dingTalk-rebot.png'
+export { default as Email } from './email.png'
+export { default as Sms } from './sms.png'
+export { default as Voice } from './voice.png'
+export { default as Webhook } from './webhook.png'
+export { default as WeixinCorp } from './weixin-corp.png'

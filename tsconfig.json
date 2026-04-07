@@ -1,0 +1,11 @@
+{
+  "extends": "../tsconfig.base.json",
+  "include": ["./**/*.ts", "./**/*.tsx", "./**/*.vue", "./**/*.json", "./src/auto-imports.d.ts", "./src/env.d.ts"],
+  "compilerOptions": {
+    "baseUrl": "./",
+      "paths": {
+        "@jetlinks-web-core/*": ["./src/*"],
+        "@/*": ["./src/*"],
+      }
+  },
+}
