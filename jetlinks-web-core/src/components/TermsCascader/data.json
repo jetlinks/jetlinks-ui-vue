@@ -1,0 +1,49 @@
+[
+  {
+    "type": "and",
+    "termType": "eq",
+    "options": [],
+    "terms": [
+      {
+        "column": "properties.boolean.last",
+        "value": {
+          "source": "manual",
+          "value": 1
+        },
+        "type": "and",
+        "termType": "isnull",
+        "options": [],
+        "terms": [],
+        "key": "fQnDDZFySzZx86ABAWRFpM3WsBdJEwfp",
+        "error": false
+      },
+      {
+        "column": "timestamp",
+        "type": "and",
+        "termType": "eq",
+        "value": {
+          "source": "manual",
+          "value": "13:47:19"
+        },
+        "key": "params_1765950214184"
+      }
+    ],
+    "key": "TPQ6yBs2KzG4twNjQaEF2SkkY7p3PWBN"
+  },
+  {
+    "type": "and",
+    "terms": [
+      {
+        "column": "properties.text.last",
+        "type": "and",
+        "termType": "eq",
+        "value": {
+          "source": "manual",
+          "value": "12"
+        },
+        "key": "params_SGCmXX6EeA2TzNrmecFZWNP8hYG2mtEC"
+      }
+    ],
+    "key": "terms_m6YYreN845pSwSXNtQhCwb25fMit24ZA"
+  }
+]

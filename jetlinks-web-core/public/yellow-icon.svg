@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 64 64"><defs>
+<style>.cls-1,.cls-2{opacity:1;}.cls-1{fill:url(#未命名的渐变_7);}.cls-2{fill:url(#未命名的渐变_7-2);}.cls-3{fill:#FEC03D;}</style>
+<radialGradient id="未命名的渐变_7" cx="32" cy="32" r="32" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FEC03D" stop-opacity="0"/><stop offset="1" stop-color="#FEC03D"/></radialGradient>
+<radialGradient id="未命名的渐变_7-2" cy="32" r="20" xlink:href="#未命名的渐变_7"/></defs><title>涟漪</title>
+<g id="图层_2" data-name="图层 2"><g id="图层_1-2" data-name="图层 1">
+<circle class="cls-1" cx="32" cy="32" r="6">
+    <animate attributeName="r" from="6" to="32" begin="0s" dur="2s" repeatCount="indefinite" />
+	<animate attributeName="opacity" from="1" to="0" begin="0s" dur="2s" repeatCount="indefinite" />
+</circle>
+<circle class="cls-2" cx="32" cy="32" r="6">
+    <animate attributeName="r" from="6" to="32" begin="1s" dur="2s" repeatCount="indefinite" />
+	<animate attributeName="opacity" from="1" to="0" begin="1s" dur="2s" repeatCount="indefinite" />
+</circle>
+<circle class="cls-3" cx="32" cy="32" r="6"/></g></g></svg>

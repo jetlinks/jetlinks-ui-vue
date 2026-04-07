@@ -1,0 +1,40 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+components.d.ts
+apps
+
+# Editor directories and files
+.vscode
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.history
+public/three
+
+# 忽略所有 java 目录中的内容
+java/**
+
+# 取消忽略 java 目录本身（否则下面的取消规则不生效）
+!java/
+
+# 取消忽略特定文件
+!java/build_modules.sh
+!java/module_config.properties
+!java/*/pom.xml

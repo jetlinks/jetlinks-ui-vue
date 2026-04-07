@@ -1,0 +1,34 @@
+{
+  "name": "jetlinks-web-core",
+  "private": true,
+  "version": "2.12.0",
+  "scripts": {
+    "dev": "vite",
+    "dev:force": "vite --force",
+    "build": "node --max_old_space_size=1024000 ../node_modules/vite/bin/vite.js build",
+    "preview": "vite preview",
+    "clean": "pnpm rimraf node_modules && pnpm rimraf dist && pnpm rimraf .turbo",
+    "test": "playwright test",
+    "micro": "node scripts/start-micro.js",
+    "build:server": "pnpm build --mode server",
+    "build:modules": "pnpm build -- --module-name",
+    "dev:proxy": "vite -- --backend-url"
+  },
+  "dependencies": {
+    "crypto-js": "^4.2.0",
+    "monaco-editor": "^0.52.2",
+    "xgplayer": "^3.0.21",
+    "xgplayer-flv": "^3.0.21",
+    "xgplayer-hls": "^3.0.21"
+  },
+  "devDependencies": {
+    "vite-plugin-monaco-editor": "^1.1.0"
+  },
+  "volta": {
+    "node": "22.18.0",
+    "yarn": "1.22.0"
+  },
+  "engines": {
+    "node": ">=22.18.0"
+  }
+}
