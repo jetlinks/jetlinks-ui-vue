@@ -1,0 +1,1630 @@
+[
+  {
+    "code": "iot",
+    "name": "物联网",
+    "i18nMessages": {
+      "name": {
+        "zh_CN": "物联网",
+        "en_US": "IoT",
+        "en": "IoT"
+      }
+    },
+    "owner": "iot",
+    "id": "9c21f88182e7cc75cbdfa8e4b7844272",
+    "url": "/iot",
+    "icon": "icon-wulianwang",
+    "sortIndex": 1,
+    "permissions": [],
+    "children": [
+      {
+        "code": "home",
+        "name": "首页",
+        "i18nMessages": {
+          "name": {
+            "zh_CN": "首页",
+            "en_US": "Home",
+            "en": "Home"
+          }
+        },
+        "owner": "iot",
+        "id": "d56cfb0076ecc4ff2d8503b39b3dbf1c",
+        "url": "/iot/home",
+        "icon": "icon-zhihuishequ",
+        "sortIndex": 1,
+        "showPage": ["dashboard", "device-instance", "device-product"],
+        "permissions": [
+          {
+            "permission": "device-product",
+            "actions": ["query"]
+          },
+          {
+            "permission": "device-instance",
+            "actions": ["query"]
+          },
+          {
+            "permission": "dashboard",
+            "actions": ["query"]
+          },
+          {
+            "permission": "system_config",
+            "actions": ["query"]
+          },
+          {
+            "permission": "open-api",
+            "actions": ["query"]
+          }
+        ],
+        "accessSupport": {
+          "text": "不支持",
+          "value": "unsupported"
+        },
+        "supportDataAccess": false
+      },
+      {
+        "code": "device",
+        "name": "设备管理",
+        "i18nMessages": {
+          "name": {
+            "zh_CN": "设备管理",
+            "en_US": "Device Management",
+            "en": "Device Management"
+          }
+        },
+        "owner": "iot",
+        "id": "b6327c3ff01b49c9a7a96101606dc27a",
+        "url": "/iot/device",
+        "icon": "icon-shebei",
+        "sortIndex": 3,
+        "permissions": [],
+        "showPage": [],
+        "children": [
+          {
+            "code": "device/DashBoard",
+            "name": "仪表盘",
+            "i18nMessages": {
+              "name": {
+                "zh_CN": "仪表盘",
+                "en_US": "Dashboard",
+                "en": "Dashboard"
+              }
+            },
+            "owner": "iot",
+            "id": "68a02c9efa9fb4885c89b007f97d074d",
+            "url": "/iot/device/DashBoard",
+            "icon": "icon-keshihua",
+            "sortIndex": 1,
+            "showPage": ["dashboard", "device-product", "device-instance"],
+            "permissions": [
+              {
+                "permission": "device-product",
+                "actions": ["query"]
+              },
+              {
+                "permission": "dashboard",
+                "actions": ["query"]
+              },
+              {
+                "permission": "device-instance",
+                "actions": ["query"]
+              },
+              {
+                "permission": "geo-manager",
+                "actions": ["find-geo"]
+              },
+              {
+                "permission": "system_config",
+                "actions": ["query"]
+              }
+            ],
+            "accessSupport": {
+              "text": "不支持",
+              "value": "unsupported"
+            },
+            "supportDataAccess": false
+          },
+          {
+            "code": "device/Product",
+            "name": "产品",
+            "i18nMessages": {
+              "name": {
+                "zh_CN": "产品",
+                "en_US": "Product",
+                "en": "Product"
+              }
+            },
+            "owner": "iot",
+            "id": "8ddbb67de5f65514105d47b448bfd70e",
+            "url": "/iot/device/Product",
+            "icon": "icon-chanpin",
+            "sortIndex": 2,
+            "assetType": "product",
+            "showPage": ["device-product"],
+            "permissions": [
+              {
+                "permission": "transparent-codec",
+                "actions": ["query", "save"]
+              },
+              {
+                "permission": "network-config",
+                "actions": ["query"]
+              },
+              {
+                "permission": "file",
+                "actions": ["upload-static"]
+              },
+              {
+                "permission": "device-product",
+                "actions": ["query"]
+              },
+              {
+                "permission": "device-category",
+                "actions": ["query"]
+              },
+              {
+                "permission": "device-mapping",
+                "actions": ["query", "save"]
+              },
+              {
+                "permission": "device-instance",
+                "actions": ["query"]
+              }
+            ],
+            "buttons": [
+              {
+                "id": "view",
+                "name": "查看",
+                "i18nMessages": {
+                  "zh_CN": "查看",
+                  "en_US": "View",
+                  "en": "View"
+                },
+                "permissions": [
+                  {
+                    "permission": "protocol-supports",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "device-product",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "device-gateway",
+                    "actions": ["query"]
+                  }
+                ]
+              },
+              {
+                "id": "update",
+                "name": "编辑",
+                "i18nMessages": {
+                  "zh_CN": "编辑",
+                  "en_US": "Edit",
+                  "en": "Edit"
+                },
+                "permissions": [
+                  {
+                    "permission": "protocol-supports",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "file",
+                    "actions": ["upload-static"]
+                  },
+                  {
+                    "permission": "device-gateway",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "device-mapping",
+                    "actions": ["query", "save"]
+                  },
+                  {
+                    "permission": "device-instance",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "device-product",
+                    "actions": ["save"]
+                  }
+                ]
+              },
+              {
+                "id": "action",
+                "name": "启/禁用",
+                "i18nMessages": {
+                  "zh_CN": "启/禁用",
+                  "en_US": "Enable/Disable",
+                  "en": "Enable/Disable"
+                },
+                "permissions": [
+                  {
+                    "permission": "device-product",
+                    "actions": ["query", "save"]
+                  },
+                  {
+                    "permission": "device-gateway",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "protocol-supports",
+                    "actions": ["query"]
+                  }
+                ]
+              },
+              {
+                "id": "export",
+                "name": "导出",
+                "i18nMessages": {
+                  "zh_CN": "导出",
+                  "en_US": "Export",
+                  "en": "Export"
+                },
+                "permissions": [
+                  {
+                    "permission": "device-product",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "protocol-supports",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "device-gateway",
+                    "actions": ["query"]
+                  }
+                ]
+              },
+              {
+                "id": "import",
+                "name": "导入",
+                "i18nMessages": {
+                  "zh_CN": "导入",
+                  "en_US": "Import",
+                  "en": "Import"
+                },
+                "permissions": [
+                  {
+                    "permission": "protocol-supports",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "file",
+                    "actions": ["upload-static"]
+                  },
+                  {
+                    "permission": "device-product",
+                    "actions": ["query", "save"]
+                  },
+                  {
+                    "permission": "device-gateway",
+                    "actions": ["query"]
+                  }
+                ]
+              },
+              {
+                "id": "delete",
+                "name": "删除",
+                "i18nMessages": {
+                  "zh_CN": "删除",
+                  "en_US": "Delete",
+                  "en": "Delete"
+                },
+                "permissions": [
+                  {
+                    "permission": "device-product",
+                    "actions": ["delete"]
+                  },
+                  {
+                    "permission": "device-gateway",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "protocol-supports",
+                    "actions": ["query"]
+                  }
+                ]
+              },
+              {
+                "id": "add",
+                "name": "新增",
+                "i18nMessages": {
+                  "zh_CN": "新增",
+                  "en_US": "Add",
+                  "en": "Add"
+                },
+                "permissions": [
+                  {
+                    "permission": "protocol-supports",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "file",
+                    "actions": ["upload-static"]
+                  },
+                  {
+                    "permission": "device-product",
+                    "actions": ["query", "save"]
+                  },
+                  {
+                    "permission": "device-gateway",
+                    "actions": ["query"]
+                  }
+                ]
+              }
+            ],
+            "accessSupport": {
+              "text": "支持",
+              "value": "support"
+            },
+            "supportDataAccess": true
+          },
+          {
+            "code": "device/Instance",
+            "name": "设备",
+            "i18nMessages": {
+              "name": {
+                "zh_CN": "设备",
+                "en_US": "Device",
+                "en": "Device"
+              }
+            },
+            "owner": "iot",
+            "id": "1b136e7e4e4e74bb24b91802e4cfcd2d",
+            "url": "/iot/device/Instance",
+            "icon": "icon-shebei",
+            "sortIndex": 3,
+            "accessSupport": {
+              "text": "支持",
+              "value": "support"
+            },
+            "supportDataAccess": true,
+            "assetType": "device",
+            "showPage": ["device-instance"],
+            "permissions": [
+              {
+                "permission": "transparent-codec",
+                "actions": ["query"]
+              },
+              {
+                "permission": "protocol-supports",
+                "actions": ["query"]
+              },
+              {
+                "permission": "device-api",
+                "actions": ["query-device-events"]
+              },
+              {
+                "permission": "things-collector",
+                "actions": ["save", "delete"]
+              },
+              {
+                "permission": "edge-operations",
+                "actions": ["invoke"]
+              },
+              {
+                "permission": "device-gateway",
+                "actions": ["query"]
+              },
+              {
+                "permission": "system_config",
+                "actions": ["query"]
+              },
+              { "permission": "system-monitor", "actions": ["query"] },
+              { "permission": "device-gateway-manager", "actions": ["save"] }
+            ],
+            "buttons": [
+              {
+                "id": "view",
+                "name": "查看",
+                "i18nMessages": {
+                  "zh_CN": "查看",
+                  "en_US": "View",
+                  "en": "View"
+                },
+                "permissions": [
+                  {
+                    "permission": "device-product",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "device-instance",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "assets-bind",
+                    "actions": ["bind-all"]
+                  }
+                ]
+              },
+              {
+                "id": "export",
+                "name": "导出",
+                "i18nMessages": {
+                  "zh_CN": "导出",
+                  "en_US": "Export",
+                  "en": "Export"
+                },
+                "permissions": [
+                  {
+                    "permission": "device-gateway",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "device-product",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "device-instance",
+                    "actions": ["query", "export"]
+                  }
+                ]
+              },
+              {
+                "id": "import",
+                "name": "导入",
+                "i18nMessages": {
+                  "zh_CN": "导入",
+                  "en_US": "Import",
+                  "en": "Import"
+                },
+                "permissions": [
+                  {
+                    "permission": "device-gateway",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "device-product",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "device-instance",
+                    "actions": ["import", "query"]
+                  },
+                  {
+                    "permission": "file",
+                    "actions": ["upload-static"]
+                  }
+                ]
+              },
+              {
+                "id": "update",
+                "name": "编辑",
+                "i18nMessages": {
+                  "zh_CN": "编辑",
+                  "en_US": "Edit",
+                  "en": "Edit"
+                },
+                "permissions": [
+                  {
+                    "permission": "file",
+                    "actions": ["upload-static"]
+                  },
+                  {
+                    "permission": "visualization",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "organization",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "device-opt-api",
+                    "actions": ["read-property", "invoke-function", "write-property"]
+                  },
+                  {
+                    "permission": "device-gateway",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "dictionary",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "device-category",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "device-mapping",
+                    "actions": ["query", "save"]
+                  },
+                  {
+                    "permission": "device-instance",
+                    "actions": ["query", "save"]
+                  },
+                  {
+                    "permission": "device-product",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "media-server",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "dashboard",
+                    "actions": [
+                      "query"
+                    ]
+                  },
+                  {
+                    "permission": "assets-bind",
+                    "actions": [
+                      "bind-all"
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "action",
+                "name": "启/禁用",
+                "i18nMessages": {
+                  "zh_CN": "启/禁用",
+                  "en_US": "Enable/Disable",
+                  "en": "Enable/Disable"
+                },
+                "permissions": [
+                  {
+                    "permission": "device-gateway",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "device-product",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "device-instance",
+                    "actions": ["enable", "disable", "query"]
+                  }
+                ]
+              },
+              {
+                "id": "delete",
+                "name": "删除",
+                "i18nMessages": {
+                  "zh_CN": "删除",
+                  "en_US": "Delete",
+                  "en": "Delete"
+                },
+                "permissions": [
+                  {
+                    "permission": "device-product",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "device-instance",
+                    "actions": ["query", "delete"]
+                  },
+                  {
+                    "permission": "device-gateway",
+                    "actions": ["query"]
+                  }
+                ]
+              },
+              {
+                "id": "add",
+                "name": "新增",
+                "i18nMessages": {
+                  "zh_CN": "新增",
+                  "en_US": "Add",
+                  "en": "Add"
+                },
+                "permissions": [
+                  {
+                    "permission": "file",
+                    "actions": ["upload-static"]
+                  },
+                  {
+                    "permission": "device-product",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "device-instance",
+                    "actions": ["query", "save"]
+                  },
+                  {
+                    "permission": "device-gateway",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "visualization-project",
+                    "actions": ["add", "save"]
+                  }
+                ]
+              },
+              {
+                "id": "remote",
+                "name": "远程访问",
+                "i18nMessages": {
+                  "zh_CN": "远程访问",
+                  "en_US": "Remote Interview",
+                  "en": "Remote Interview"
+                },
+                "permissions": [
+                  {
+                    "permission": "edge-manager",
+                    "actions": ["remote", "proxy"]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "code": "device/Category",
+            "name": "产品分类",
+            "i18nMessages": {
+              "name": {
+                "zh_CN": "产品分类",
+                "en_US": "Device Category",
+                "en": "Device Category"
+              }
+            },
+            "owner": "iot",
+            "id": "bc83f18659982abb9ac1a96362fc3372",
+            "sortIndex": 4,
+            "url": "/iot/device/Category",
+            "icon": "icon-chanpinfenlei",
+            "accessSupport": {
+              "text": "支持",
+              "value": "support"
+            },
+            "supportDataAccess": true,
+            "assetType": "deviceCategory",
+            "showPage": ["device-category"],
+            "permissions": [],
+            "buttons": [
+              {
+                "id": "view",
+                "name": "查看",
+                "i18nMessages": {
+                  "zh_CN": "查看",
+                  "en_US": "View",
+                  "en": "View"
+                },
+                "permissions": [
+                  {
+                    "permission": "device-category",
+                    "actions": ["query"]
+                  }
+                ]
+              },
+              {
+                "id": "delete",
+                "name": "删除",
+                "i18nMessages": {
+                  "zh_CN": "删除",
+                  "en_US": "Delete",
+                  "en": "Delete"
+                },
+                "permissions": [
+                  {
+                    "permission": "device-category",
+                    "actions": ["query", "delete"]
+                  }
+                ]
+              },
+              {
+                "id": "update",
+                "name": "编辑",
+                "i18nMessages": {
+                  "zh_CN": "编辑",
+                  "en_US": "Edit",
+                  "en": "Edit"
+                },
+                "permissions": [
+                  {
+                    "permission": "device-category",
+                    "actions": ["query", "save"]
+                  }
+                ]
+              },
+              {
+                "id": "add",
+                "name": "新增",
+                "i18nMessages": {
+                  "zh_CN": "新增",
+                  "en_US": "Add",
+                  "en": "Add"
+                },
+                "permissions": [
+                  {
+                    "permission": "device-category",
+                    "actions": ["query", "save"]
+                  },
+                  {
+                    "permission": "visualization-project",
+                    "actions": ["add", "save"]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "code": "link",
+        "name": "运维管理",
+        "i18nMessages": {
+          "name": {
+            "zh_CN": "运维管理",
+            "en_US": "Operation Management",
+            "en": "Operation Management"
+          }
+        },
+        "owner": "iot",
+        "id": "bd55cdc9d0c1700afe628f572f91c22e",
+        "url": "/iot/link",
+        "icon": "icon-yunweiguanli-1",
+        "permissions": [],
+        "sortIndex": 4,
+        "children": [
+          {
+            "code": "link/DashBoard",
+            "name": "仪表盘",
+            "i18nMessages": {
+              "name": {
+                "zh_CN": "仪表盘",
+                "en_US": "Dashboard",
+                "en": "Dashboard"
+              }
+            },
+            "owner": "iot",
+            "id": "47bedff9df89ecc0f0ce896e53805f02",
+            "sortIndex": 1,
+            "url": "/iot/link/dashboard",
+            "icon": "icon-keshihua",
+            "showPage": ["dashboard", "network-config"],
+            "permissions": [
+              {
+                "permission": "network-config",
+                "actions": ["query"]
+              },
+              {
+                "permission": "dashboard",
+                "actions": ["query"]
+              }
+            ],
+            "accessSupport": {
+              "text": "不支持",
+              "value": "unsupported"
+            },
+            "supportDataAccess": false
+          },
+          {
+            "code": "link/AccessConfig",
+            "name": "设备接入网关",
+            "i18nMessages": {
+              "name": {
+                "zh_CN": "设备接入网关",
+                "en_US": "Device Access Gateway",
+                "en": "Device Access Gateway"
+              }
+            },
+            "owner": "iot",
+            "id": "10e67b761ec1f4206fabf36fcf9d9b0b",
+            "sortIndex": 2,
+            "url": "/iot/link/accessConfig",
+            "icon": "icon-wangguanzishebei",
+            "showPage": ["device-gateway"],
+            "permissions": [],
+            "buttons": [
+              {
+                "id": "view",
+                "name": "查看",
+                "i18nMessages": {
+                  "zh_CN": "查看",
+                  "en_US": "View",
+                  "en": "View"
+                },
+                "permissions": [
+                  {
+                    "permission": "device-gateway",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "network-config",
+                    "actions": ["query"]
+                  }
+                ]
+              },
+              {
+                "id": "delete",
+                "name": "删除",
+                "i18nMessages": {
+                  "zh_CN": "删除",
+                  "en_US": "Delete",
+                  "en": "Delete"
+                },
+                "permissions": [
+                  {
+                    "permission": "device-gateway",
+                    "actions": ["query", "delete"]
+                  }
+                ]
+              },
+              {
+                "id": "action",
+                "name": "启/禁用",
+                "i18nMessages": {
+                  "zh_CN": "启/禁用",
+                  "en_US": "Enable/Disable",
+                  "en": "Enable/Disable"
+                },
+                "permissions": [
+                  {
+                    "permission": "device-gateway",
+                    "actions": ["query", "save"]
+                  }
+                ]
+              },
+              {
+                "id": "add",
+                "name": "新增",
+                "i18nMessages": {
+                  "zh_CN": "新增",
+                  "en_US": "Add",
+                  "en": "Add"
+                },
+                "permissions": [
+                  {
+                    "permission": "protocol-supports",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "opc-point",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "network-config",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "device-gateway",
+                    "actions": ["query", "save"]
+                  },
+                  {
+                    "permission": "opc-client",
+                    "actions": ["query", "save", "delete"]
+                  },
+                  {
+                    "permission": "opc-device-bind",
+                    "actions": ["query", "save", "delete"]
+                  },
+                  {
+                    "permission": "gb28181-cascade",
+                    "actions": ["query"]
+                  }
+                ]
+              },
+              {
+                "id": "update",
+                "name": "编辑",
+                "i18nMessages": {
+                  "zh_CN": "编辑",
+                  "en_US": "Edit",
+                  "en": "Edit"
+                },
+                "permissions": [
+                  {
+                    "permission": "protocol-supports",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "opc-point",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "certificate",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "network-config",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "media-gateway",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "device-gateway",
+                    "actions": ["query", "save"]
+                  },
+                  {
+                    "permission": "opc-client",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "opc-device-bind",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "gb28181-cascade",
+                    "actions": ["query"]
+                  }
+                ]
+              }
+            ],
+            "accessSupport": {
+              "text": "不支持",
+              "value": "unsupported"
+            },
+            "supportDataAccess": false
+          },
+          {
+            "code": "link/Protocol",
+            "name": "协议管理",
+            "i18nMessages": {
+              "name": {
+                "zh_CN": "协议管理",
+                "en_US": "Protocol Management",
+                "en": "Protocol Management"
+              }
+            },
+            "owner": "iot",
+            "id": "cdd73c8cb02d1ae9af61ded7fc31e9c5",
+            "sortIndex": 3,
+            "url": "/iot/link/protocol",
+            "icon": "icon-tongzhiguanli",
+            "showPage": ["protocol-supports"],
+            "permissions": [],
+            "buttons": [
+              {
+                "id": "view",
+                "name": "查看",
+                "i18nMessages": {
+                  "zh_CN": "查看",
+                  "en_US": "View",
+                  "en": "View"
+                },
+                "permissions": [
+                  {
+                    "permission": "protocol-supports",
+                    "actions": ["query"]
+                  }
+                ]
+              },
+              {
+                "id": "delete",
+                "name": "删除",
+                "i18nMessages": {
+                  "zh_CN": "删除",
+                  "en_US": "Delete",
+                  "en": "Delete"
+                },
+                "permissions": [
+                  {
+                    "permission": "protocol-supports",
+                    "actions": ["query", "delete"]
+                  }
+                ]
+              },
+              {
+                "id": "update",
+                "name": "编辑",
+                "i18nMessages": {
+                  "zh_CN": "编辑",
+                  "en_US": "Edit",
+                  "en": "Edit"
+                },
+                "permissions": [
+                  {
+                    "permission": "protocol-supports",
+                    "actions": ["query", "save"]
+                  },
+                  {
+                    "permission": "file",
+                    "actions": ["upload-static"]
+                  },
+                  {
+                    "permission": "system_config",
+                    "actions": ["query"]
+                  }
+                ]
+              },
+              {
+                "id": "add",
+                "name": "新增",
+                "i18nMessages": {
+                  "zh_CN": "新增",
+                  "en_US": "Add",
+                  "en": "Add"
+                },
+                "permissions": [
+                  {
+                    "permission": "protocol-supports",
+                    "actions": ["query", "save"]
+                  },
+                  {
+                    "permission": "file",
+                    "actions": ["upload-static"]
+                  },
+                  {
+                    "permission": "system_config",
+                    "actions": ["query"]
+                  }
+                ]
+              }
+            ],
+            "accessSupport": {
+              "text": "不支持",
+              "value": "unsupported"
+            },
+            "supportDataAccess": false
+          },
+          {
+            "code": "link/Type",
+            "name": "网络组件",
+            "i18nMessages": {
+              "name": {
+                "zh_CN": "网络组件",
+                "en_US": "Network Component",
+                "en": "Network Component"
+              }
+            },
+            "owner": "iot",
+            "id": "f99acd0b64f96209eb276236cfb427cb",
+            "sortIndex": 5,
+            "url": "/iot/link/type",
+            "icon": "icon-wangluozujian",
+            "showPage": ["network-config"],
+            "permissions": [],
+            "buttons": [
+              {
+                "id": "view",
+                "name": "查看",
+                "i18nMessages": {
+                  "zh_CN": "查看",
+                  "en_US": "View",
+                  "en": "View"
+                },
+                "permissions": [
+                  {
+                    "permission": "network-config",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "certificate",
+                    "actions": ["query"]
+                  }
+                ]
+              },
+              {
+                "id": "action",
+                "name": "启/禁用",
+                "i18nMessages": {
+                  "zh_CN": "启/禁用",
+                  "en_US": "Enable/Disable",
+                  "en": "Enable/Disable"
+                },
+                "permissions": [
+                  {
+                    "permission": "network-config",
+                    "actions": ["query", "save", "action"]
+                  }
+                ]
+              },
+              {
+                "id": "delete",
+                "name": "删除",
+                "i18nMessages": {
+                  "zh_CN": "删除",
+                  "en_US": "Delete",
+                  "en": "Delete"
+                },
+                "permissions": [
+                  {
+                    "permission": "network-config",
+                    "actions": ["query", "delete"]
+                  }
+                ]
+              },
+              {
+                "id": "add",
+                "name": "新增",
+                "i18nMessages": {
+                  "zh_CN": "新增",
+                  "en_US": "Add",
+                  "en": "Add"
+                },
+                "permissions": [
+                  {
+                    "permission": "network-config",
+                    "actions": ["query", "save"]
+                  },
+                  {
+                    "permission": "certificate",
+                    "actions": ["query"]
+                  }
+                ]
+              },
+              {
+                "id": "update",
+                "name": "编辑",
+                "i18nMessages": {
+                  "zh_CN": "编辑",
+                  "en_US": "Edit",
+                  "en": "Edit"
+                },
+                "permissions": [
+                  {
+                    "permission": "network-config",
+                    "actions": ["query", "save"]
+                  },
+                  {
+                    "permission": "certificate",
+                    "actions": ["query"]
+                  }
+                ]
+              }
+            ],
+            "accessSupport": {
+              "text": "不支持",
+              "value": "unsupported"
+            },
+            "supportDataAccess": false
+          },
+          {
+            "code": "link/Certificate",
+            "name": "证书管理",
+            "i18nMessages": {
+              "name": {
+                "zh_CN": "证书管理",
+                "en_US": "Certificate Management",
+                "en": "Certificate Management"
+              }
+            },
+            "owner": "iot",
+            "id": "e395655a273a1b765236342738289587",
+            "sortIndex": 6,
+            "url": "/iot/link/Certificate",
+            "icon": "icon-zhengshuguanli",
+            "showPage": ["certificate"],
+            "permissions": [],
+            "buttons": [
+              {
+                "id": "delete",
+                "name": "删除",
+                "i18nMessages": {
+                  "zh_CN": "删除",
+                  "en_US": "Delete",
+                  "en": "Delete"
+                },
+                "permissions": [
+                  {
+                    "permission": "certificate",
+                    "actions": ["query", "delete"]
+                  }
+                ]
+              },
+              {
+                "id": "update",
+                "name": "编辑",
+                "i18nMessages": {
+                  "zh_CN": "编辑",
+                  "en_US": "Edit",
+                  "en": "Edit"
+                },
+                "permissions": [
+                  {
+                    "permission": "certificate",
+                    "actions": ["query", "save"]
+                  }
+                ]
+              },
+              {
+                "id": "add",
+                "name": "新增",
+                "i18nMessages": {
+                  "zh_CN": "新增",
+                  "en_US": "Add",
+                  "en": "Add"
+                },
+                "permissions": [
+                  {
+                    "permission": "certificate",
+                    "actions": ["query", "save"]
+                  }
+                ]
+              },
+              {
+                "id": "view",
+                "name": "查看",
+                "i18nMessages": {
+                  "zh_CN": "查看",
+                  "en_US": "View",
+                  "en": "View"
+                },
+                "permissions": [
+                  {
+                    "permission": "certificate",
+                    "actions": ["query"]
+                  }
+                ]
+              }
+            ],
+            "accessSupport": {
+              "text": "不支持",
+              "value": "unsupported"
+            },
+            "supportDataAccess": false
+          },
+          {
+            "code": "device/Firmware",
+            "name": "远程升级",
+            "i18nMessages": {
+              "name": {
+                "zh_CN": "远程升级",
+                "en_US": "Remote Upgrade",
+                "en": "Remote Upgrade"
+              }
+            },
+            "owner": "iot",
+            "id": "e0943d4c2fa539e89df1ff92e3379477",
+            "sortIndex": 9,
+            "url": "/iot/link/firmware",
+            "icon": "icon-yuanchengshengji",
+            "showPage": ["firmware-manager"],
+            "permissions": [],
+            "buttons": [
+              {
+                "id": "view",
+                "name": "查看",
+                "i18nMessages": {
+                  "zh_CN": "查看",
+                  "en_US": "View",
+                  "en": "View"
+                },
+                "permissions": [
+                  {
+                    "permission": "firmware-upgrade-task-manager",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "firmware-manager",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "device-instance",
+                    "actions": ["query"]
+                  }
+                ]
+              },
+              {
+                "id": "update",
+                "name": "编辑",
+                "i18nMessages": {
+                  "zh_CN": "编辑",
+                  "en_US": "Edit",
+                  "en": "Edit"
+                },
+                "permissions": [
+                  {
+                    "permission": "device-product",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "device-instance",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "firmware-upgrade-task-manager",
+                    "actions": ["query", "save", "deploy"]
+                  },
+                  {
+                    "permission": "firmware-manager",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "system_config",
+                    "actions": ["query"]
+                  }
+                ]
+              },
+              {
+                "id": "delete",
+                "name": "删除",
+                "i18nMessages": {
+                  "zh_CN": "删除",
+                  "en_US": "Delete",
+                  "en": "Delete"
+                },
+                "permissions": [
+                  {
+                    "permission": "firmware-manager",
+                    "actions": ["query", "delete"]
+                  },
+                  {
+                    "permission": "firmware-upgrade-task-manager",
+                    "actions": ["delete"]
+                  }
+                ]
+              },
+              {
+                "id": "add",
+                "name": "新增",
+                "i18nMessages": {
+                  "zh_CN": "新增",
+                  "en_US": "Add",
+                  "en": "Add"
+                },
+                "permissions": [
+                  {
+                    "permission": "firmware-manager",
+                    "actions": ["query", "save"]
+                  },
+                  {
+                    "permission": "device-product",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "system_config",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "device-instance",
+                    "actions": ["query"]
+                  },
+                  {
+                    "permission": "firmware-upgrade-task-manager",
+                    "actions": ["query", "save", "deploy"]
+                  }
+                ]
+              }
+            ],
+            "accessSupport": {
+              "text": "间接支持",
+              "value": "indirect"
+            },
+            "supportDataAccess": false,
+            "indirectMenus": ["8ddbb67de5f65514105d47b448bfd70e"]
+          },
+          {
+            "code": "link/plugin",
+            "name": "插件管理",
+            "i18nMessages": {
+              "name": {
+                "zh_CN": "插件管理",
+                "en_US": "Plugin Manager",
+                "en": "Plugin Manager"
+              }
+            },
+            "owner": "iot",
+            "id": "a20354876e9519e48f5ed6710ba6efb3",
+            "sortIndex": 10,
+            "url": "/iot/link/plugin",
+            "icon": "BoxPlotOutlined",
+            "showPage": ["plugin-driver"],
+            "permissions": [
+              {
+                "permission": "plugin-driver",
+                "actions": ["query"]
+              }
+            ],
+            "buttons": [
+              {
+                "id": "view",
+                "name": "查看",
+                "i18nMessages": {
+                  "zh_CN": "查看",
+                  "en_US": "View",
+                  "en": "View"
+                },
+                "permissions": [
+                  {
+                    "permission": "plugin-driver",
+                    "actions": ["view"]
+                  }
+                ]
+              },
+              {
+                "id": "update",
+                "name": "编辑",
+                "i18nMessages": {
+                  "zh_CN": "编辑",
+                  "en_US": "Edit",
+                  "en": "Edit"
+                },
+                "permissions": [
+                  {
+                    "permission": "plugin-driver",
+                    "actions": ["save"]
+                  }
+                ]
+              },
+              {
+                "id": "delete",
+                "name": "删除",
+                "i18nMessages": {
+                  "zh_CN": "删除",
+                  "en_US": "Delete",
+                  "en": "Delete"
+                },
+                "permissions": [
+                  {
+                    "permission": "plugin-driver",
+                    "actions": ["delete"]
+                  }
+                ]
+              },
+              {
+                "id": "add",
+                "name": "新增",
+                "i18nMessages": {
+                  "zh_CN": "新增",
+                  "en_US": "Add",
+                  "en": "Add"
+                },
+                "permissions": [
+                  {
+                    "permission": "plugin-driver",
+                    "actions": ["save"]
+                  }
+                ]
+              }
+            ],
+            "accessSupport": {
+              "text": "不支持",
+              "value": "unsupported"
+            },
+            "supportDataAccess": false
+          },
+          {
+            "sortIndex": 11,
+            "owner": "iot",
+            "name": "资源库",
+            "i18nMessages": {
+              "name": {
+                "zh_CN": "资源库",
+                "en_US": "Resource library",
+                "en": "Resource library"
+              }
+            },
+            "id": "cab894761bb00fb1c35746b510914cdb",
+            "code": "resource/Resource",
+            "describe": "",
+            "url": "/iot/link/resource",
+            "icon": "SnippetsOutlined",
+            "showPage": [
+              "resources-instance",
+              "resources-install-task",
+              "resources-library",
+              "resources-classification",
+              "resources-classification-type"
+            ],
+            "permissions": [
+              {
+                "permission": "resources-instance",
+                "actions": ["query", "save", "delete"]
+              },
+              {
+                "permission": "resources-install-task",
+                "actions": ["query", "save", "delete"]
+              },
+              {
+                "permission": "resources-library",
+                "actions": ["query", "save"]
+              },
+              {
+                "permission": "resources-classification",
+                "actions": ["query", "save", "delete"]
+              },
+              {
+                "permission": "resources-classification-type",
+                "actions": ["query", "save", "delete"]
+              },
+              { "permission": "resources-cloud", "actions": ["query"] }
+            ],
+            "accessSupport": {
+              "text": "不支持",
+              "value": "unsupported"
+            },
+            "supportDataAccess": false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "code": "system",
+    "name": "系统管理",
+    "i18nMessages": {
+      "name": {
+        "zh_CN": "系统管理",
+        "en_US": "System Management",
+        "en": "System Management"
+      }
+    },
+    "owner": "iot",
+    "id": "fd1670b860ae58cc58bcd01d027ccd35",
+    "url": "/system",
+    "icon": "icon-xitongguanli1",
+    "sortIndex": 4,
+    "permissions": [],
+    "buttons": [],
+    "children": [
+      {
+        "code": "system/Relationship",
+        "name": "关系配置",
+        "i18nMessages": {
+          "name": {
+            "zh_CN": "关系配置",
+            "en_US": "Relationship Configuration",
+            "en": "Relationship Configuration"
+          }
+        },
+        "owner": "iot",
+        "id": "2fa02b8758fe82a6b9666f4ebb1bbd03",
+        "sortIndex": 7,
+        "url": "/system/Relationship",
+        "icon": "icon-shuxingpeizhi",
+        "showPage": ["relation"],
+        "permissions": [],
+        "buttons": [
+          {
+            "id": "update",
+            "name": "编辑",
+            "i18nMessages": {
+              "zh_CN": "编辑",
+              "en_US": "Edit",
+              "en": "Edit"
+            },
+            "permissions": [
+              {
+                "permission": "relation",
+                "actions": ["query", "save"]
+              }
+            ]
+          },
+          {
+            "id": "delete",
+            "name": "删除",
+            "i18nMessages": {
+              "zh_CN": "删除",
+              "en_US": "Delete",
+              "en": "Delete"
+            },
+            "permissions": [
+              {
+                "permission": "relation",
+                "actions": ["query", "delete"]
+              }
+            ]
+          },
+          {
+            "id": "view",
+            "name": "查看",
+            "i18nMessages": {
+              "zh_CN": "查看",
+              "en_US": "View",
+              "en": "View"
+            },
+            "permissions": [
+              {
+                "permission": "relation",
+                "actions": ["query"]
+              }
+            ]
+          },
+          {
+            "id": "add",
+            "name": "新增",
+            "i18nMessages": {
+              "zh_CN": "新增",
+              "en_US": "Add",
+              "en": "Add"
+            },
+            "permissions": [
+              {
+                "permission": "relation",
+                "actions": ["query", "save"]
+              }
+            ]
+          }
+        ],
+        "accessSupport": {
+          "text": "不支持",
+          "value": "unsupported"
+        },
+        "supportDataAccess": false
+      }
+    ]
+  }
+]

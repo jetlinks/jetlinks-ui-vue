@@ -1,0 +1,30 @@
+{
+  "name": "device-manager-ui",
+  "id": "device-manager",
+  "version": "1.0.0",
+  "description": "设备管理",
+  "main": "index.js",
+  "scripts": {
+    "dev": "pnpm --filter jetlinks-ui-core dev -- --module-name device-manager",
+    "build": "pnpm --filter jetlinks-ui-core build -- --module-name device-manager"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jetlinks-v2/device-manager-ui.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jetlinks-v2/device-manager-ui/issues"
+  },
+  "homepage": "https://github.com/jetlinks-v2/device-manager-ui#readme",
+  "dependencies": {
+    "@xterm/addon-fit": "^0.10.0",
+    "@xterm/xterm": "^5.5.0",
+    "async-validator": "^4.2.5",
+    "driver.js": "0.9.8",
+    "marked": "^14.1.4",
+    "resize-observer-polyfill": "^1.5.1",
+    "vue-clipboard3": "^2.0.0"
+  }
+}
