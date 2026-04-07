@@ -1,0 +1,89 @@
+# 定时从 jetlinks-v2 各上游仓库拉取 subtree 更新，并自动发起 Pull Request。
+#
+# 请在仓库 Settings → Secrets and variables → Actions 中新增：
+#   SUBTREE_UPSTREAM_PAT
+# 使用可读取 jetlinks-v2 下各子仓库内容的 Personal Access Token（classic：勾选 repo 读权限；
+# fine-grained：对 jetlinks-web-core、*-manager-ui 等仓库授予 Contents: Read）。
+
+name: Subtree sync
+
+on:
+  schedule:
+    # 每周一 02:00 UTC（北京时间每周一 10:00）
+    - cron: '0 2 * * 1'
+  workflow_dispatch:
+    inputs:
+      base_branch:
+        description: '要同步的主仓库分支'
+        required: true
+        default: '2.12'
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    env:
+      SYNC_BRANCH: ${{ github.event.inputs.base_branch || '2.12' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.SYNC_BRANCH }}
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Pull subtrees on new branch
+        id: sync
+        env:
+          GIT_SUBTREE_TOKEN: ${{ secrets.SUBTREE_UPSTREAM_PAT }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${GIT_SUBTREE_TOKEN:-}" ]]; then
+            echo "::error::未配置 Secret SUBTREE_UPSTREAM_PAT，无法从 jetlinks-v2 拉取 subtree。"
+            exit 1
+          fi
+          SYNC_BRANCH="${{ env.SYNC_BRANCH }}"
+          BR="automated/subtree-sync-$(echo "$SYNC_BRANCH" | tr '/' '-')-${{ github.run_id }}"
+          git checkout -b "$BR"
+          bash ./gitmodules.sh
+          echo "branch=$BR" >> "$GITHUB_OUTPUT"
+          AHEAD=$(git rev-list --count "origin/$SYNC_BRANCH"..HEAD)
+          echo "ahead=$AHEAD" >> "$GITHUB_OUTPUT"
+          echo "相对 origin/$SYNC_BRANCH 新增提交数: $AHEAD"
+
+      - name: Push and create Pull Request
+        if: steps.sync.outputs.ahead != '0'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          BR="${{ steps.sync.outputs.branch }}"
+          BASE="${{ env.SYNC_BRANCH }}"
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          git push -u origin "HEAD:refs/heads/$BR"
+          {
+            echo "由 [Subtree sync]($RUN_URL) 自动发起。"
+            echo ""
+            echo "- 主仓库目标分支：\`$BASE\`"
+            echo '- 上游分支规则与 `gitmodules.sh` 一致（与主仓库同名；`dev`/`master` 时拉上游 `master`）。'
+            echo ""
+            echo '- 若有冲突可在本地 `pnpm modules:update` 解决后再合并。'
+          } > /tmp/pr-body.md
+          gh pr create \
+            --base "$BASE" \
+            --head "$BR" \
+            --title "chore: subtree 同步 ($BASE)" \
+            --body-file /tmp/pr-body.md
+
+      - name: No upstream changes
+        if: steps.sync.outputs.ahead == '0'
+        run: echo "上游无新提交，未创建 Pull Request。"
