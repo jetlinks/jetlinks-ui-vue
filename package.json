@@ -67,7 +67,7 @@
     "esbuild": "^0.25.5",
     "estree-walker": "^3.0.3",
     "fs-extra": "^11.3.0",
-    "glob": "^11.0.1",
+    "glob": "^11.1.0",
     "inquirer": "^12.6.1",
     "less": "^4.2.2",
     "magic-string": "^0.30.18",
