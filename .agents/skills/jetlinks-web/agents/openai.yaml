@@ -1,0 +1,38 @@
+interface:
+  display_name: "JetLinks Web"
+  short_description: "JetLinks 前端模版选择、能力复用与质量约束"
+  default_prompt: >-
+    使用 $jetlinks-web 处理 JetLinks 前端任务：业务分析 → 方案锁定 → 组件复用 → 实现 → 文案 → 交付。本 prompt 只做实现侧约束；方案与硬约束事实源为 $jetlinks-web-style 的 `references/style-catalog.md`（索引）+ `style-catalog-routing.md` + `style-catalog-core-base.md`（必选）+ 详情/侧栏任务再带 `style-catalog-core-detail-shell.md`，模版细则只读 `style-catalog-templates.md` 中与候选对应的 `###` 小节，禁止整篇加载 templates。
+
+    一、工作流：
+    1)业务分析：业务目标、目标用户、进入后的第一任务、成功标准、单对象 / 多对象、关键指标数据源；缺 1 项且影响结构就先问，缺 2 项及以上或页面分型摇摆时必须先澄清。
+    2)交互方案档案：除非命中"局部调整白名单"（仅改一个表单字段 / 筛选条件 / 弹窗内容 / 样式与文案与组件 props 微调），必须结合 $jetlinks-web-style 形成方案档案（推荐方案 + 最多 3 个替代；从 `style-catalog-templates.md` 只读对应 `###` 节正文，勿全文），每个候选含业务任务匹配理由 / 首屏 ASCII / 信息密度 / 编辑梯度 / 核心组件族 / 状态锚点 / 主要动作 / 不借鉴清单；事实清楚且只有一个可信推荐时记录"默认采用推荐方案"并继续实现，关键事实缺失或 2 个以上方案同样合理时先让用户选择。interaction-solution-catalog.md 只是薄索引；路由表与统一字段见 `style-catalog-routing.md`，§1–§6 硬约束见 `style-catalog-core-base.md`，详情/侧栏见 `style-catalog-core-detail-shell.md`。
+    3)组件来源核验：组件 / hooks / utils 最终以当前 workspace 的 jetlinks-web-core 为准——先核验 jetlinks-web-core/src/components/index.ts，再看组件实现与相邻页面用法；jetlinks-project-ui-cli 只在用户明确要求时作为外部参考，不作为默认依赖、导入来源或组件存在性证据。
+    4)实现：把卡片 / 列表 / 筛选 / 详情分区 / 轻量编辑 / 完整编辑 / 抽屉 / 底部操作 / 标签状态 / 图标 / 动态扩展 / 资源选择映射到 jetlinks-web-core 通用组件；不复用必须说明查过的导出入口、相邻页面和能力缺口。
+    5)拆分：超过 300 行、重复结构 ≥ 2 次、API / 业务编排进入组件时当场拆到子组件 / hook / service / api / util；不为了降行数抽无职责包装组件；UI 组件保持无副作用。
+    6)通用条件搜索：优先核验 ConditionFilter 及其编码 / 回显、字段定义、loadOptions / loadSelectedOptions / rename / routeAlias / handleParamsItem 等能力；只有窄改旧页、用户明确要求旧表格风格，或筛选确实只是少量固定字段且无路由回显 / 远程枚举或引用选项 / 保存搜索时才回退 ProSearch，并在方案档案或实现说明中写明例外理由。
+    7)后端枚举渲染：字段来自 EnumDict / I18nEnumDict 或返回 `{ value, text }` 时，表格 / 卡片 / 详情 / Tag / Badge / 筛选 Token 显示 text，表单 model / 查询参数 / 路由参数 / 状态色 / 图标 / 权限判断使用 value；不要直接显示 `[object Object]`，不要重复维护后端枚举文案映射，必要时读取 references/enum-rendering-rules.md。
+    8)视觉语言以 Ant Design / Ant Design Vue 和当前项目样式锚点为准，$frontend-design 只做本地体系内的层级、反馈与微交互润色，不引入新品牌 / 字体 / 配色 / 装饰元素。
+
+    二、按 `style-catalog-core-base.md` + 按需 `style-catalog-core-detail-shell.md`「反传统后台感硬约束」执行（实现侧只点名，细则打开对应文件）：
+    - 编辑触发梯度 inline > sectional > drawer > modal > page（轻量字段禁默认打开完整编辑弹窗）
+    - 首屏不允许默认"4 KPI 卡 + 顶部搜索 + 大表格"套壳；一屏一主视觉锚点
+    - 列表 / 卡片首屏状态先于字段；禁单侧彩色线条作为主要状态信号（列表已有 status pill 时行本身只用 hover / selected 弱底 + 完整描边）
+    - 按模版给的信息密度目标落地
+    - 弹窗不是唯一编辑路径
+    - 单对象详情头部 → catalog 第 7 节（详情页头部摘要区）
+    - 编辑控件 / 触发 / 反馈 → catalog 第 8 节（编辑交互样式统一）
+    - 对象详情整页 → 详情页 10 条硬规则 + AI 味 7 条不要 + 反向引用做主区段不放右栏 sticky
+    - 侧栏 → active 态浅嵌套去染色 / 深嵌套 Linear 风左条分档 + 折叠 8 条精美规则
+    - 顶级路由不渲染 PageHead；浮动元素 z-index token 化 + 单页一个 FAB
+
+    三、文案（统一走当前 i18n，可用中文作默认值）：
+    1)所有用户可见文案（功能介绍、说明卡、引导、空态、错态、Tooltip、按钮、Tab、占位、校验、Popconfirm、弹窗标题与说明、提交反馈、帮助入口）写之前先识别最终用户角色（运营 / 运维 / 平台管理员 / 租户管理员 / 设备管理员 / 业务管理员 / 终端使用者 / 开发集成方等具体角色）、用户目标动作、用户能看懂的术语和下一步；四件事任何一件答不上来先问，不要硬写。
+    2)禁止把用户原始需求文本、prompt、内部任务描述、需求文档原文或开发故事卡描述直接放进页面文案、说明卡、Tooltip、空态、帮助或弹窗描述，必须按最终用户视角重写，动作动词开头。
+    3)禁出现字段 key / 变量名 / API 路径 / 组件名 / Topic / 命令 ID / 权限码 / 内部 schema 名以及"TODO / 待定 / 占位文案 / 待接接口 / 这里以后接数据 / 原型说明 / 交互方式 / 设计意图"等开发态字样。
+    4)空 / 错 / 载态文案要具体到对象与下一步，校验要带限制与示例，成功反馈要带对象名与影响范围。
+    5)不展示无意义统计、假图表、装饰数据。
+
+    四、交付前报告：已锁定方案档案、确认模式、相关文件行数、查过的复用范围（同 feature / 同模块 / 兄弟同域模块 / 共享包 / 公共导出）、任何新建抽象的理由。
+
+    五、协同：方案选择切 $jetlinks-web-style；后端 API 接入参数 / 错误体 / i18n 不一致切 $jetlinks-conventions；交付 / commit / PR 切 $jetlinks-delivery；沉淀切 $jetlinks-capture。

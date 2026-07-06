@@ -1,0 +1,30 @@
+interface:
+  display_name: "JetLinks Web Style"
+  short_description: "JetLinks 前端方案档案与反传统后台感硬约束"
+  default_prompt: >-
+    使用 $jetlinks-web-style 为当前页面建立交互方案档案。事实源分片：`style-catalog.md`（索引 + 加载策略）、`style-catalog-routing.md`（业务任务路由 + 方案统一字段）、`style-catalog-core.md`（硬约束入口表）、`style-catalog-core-base.md`（§1–§6 通用硬约束）、`style-catalog-core-detail-shell.md`（§7+ 详情与壳层，候选含详情 / 主从 / 配置态 / 侧栏时必读）、`style-catalog-templates.md`（13 个方案详述，**仅读推荐方案与替代方案的 `###` 小节**，禁止整篇进上下文）。本 prompt 只做"建档案 + 判断确认模式 + 重申硬约束"三件事，实现回到 $jetlinks-web。
+
+    一、方案档案（默认强制）：
+    1)除非任务命中"局部调整白名单"（仅改一个表单字段 / 仅改一个筛选条件 / 仅改一个弹窗内容 / 仅样式与文案与组件 props 微调），任何新增页面、重构页面壳层、调整信息架构或主筛选 / 主列表 / 主详情承载方式都必须先建立方案档案；不要直接回退到传统后台表格 + 编辑弹窗。
+    2)如果用户已明确"参考现在这个页面 / 沿用资产页 / 就按当前模板"，直接映射到最接近的方案继续。
+    3)否则读 `style-catalog-routing.md` 的"业务任务 → 方案路由"识别第一任务，给 1 个推荐方案和最多 3 个替代；每个候选的正文只从 `style-catalog-templates.md` 提取对应 `###` 节，不要加载文件其余部分；不要把标准管理表格页当作信息不足时的兜底，只有第一任务明确是批量检索 / 列对比 / 轻量 CRUD 时才推荐。
+    4)给默认项 + 单句业务理由，不问"想要什么风格"这种开放问题；事实清楚且只有一个可信推荐时记录"默认采用推荐方案"并继续实现，关键事实缺失或 2 个以上方案同样合理时先让用户选择；如果推荐标准管理表格页，必须说明为什么资产卡片台账 / 筛选工作台 / 详情工作区不更适合。
+    5)输出 solution profile：solutionName / primaryFilterSurface / contentSurface / detailCarrier / editMode / coreComponentsToVerify / actionPlacement / densityTarget / sidebarMode / confirmationMode / rejectedAlternatives / searchShellDecision。searchShellDecision 默认 ConditionFilter；只有窄改旧页、用户明确要求旧表格风格，或少量固定筛选且无路由回显、远程枚举 / 引用选项、保存搜索需求时，才写 ProSearch 并说明例外理由。
+
+    二、重申硬约束（§1–§6 细则在 `style-catalog-core-base.md`，§7+ 在 `style-catalog-core-detail-shell.md`，此处按顺序点名，不要漏）：
+    - 编辑触发梯度优先 inline > sectional > drawer > modal > page
+    - 首屏不允许默认"4 KPI 卡 + 顶部搜索 + 大表格"套壳；一屏一主视觉锚点（主 CTA / 关键数据带 / 真实产品状态区三选一不叠加，工作流页主要内容首屏可见）
+    - 状态先于字段；禁止 border-left: 3px solid 或 inset box-shadow 这类单侧彩色线条作为主要状态信号
+    - 按方案给的信息密度目标落地
+    - 文案面向终端用户（详见三）
+    - 弹窗不是唯一编辑路径
+    - 单对象详情（对象详情工作区 / 主从详情工作区 / 配置态-运行态切换页）→ 详情页头部摘要区（catalog 第 7 节）：图标 + 名称 inline 可改、状态徽标 + 快捷动作切换、标签就近 + / × 增删、说明 inline 可改、归属与元信息只读、1-3 个快捷动作；禁"编辑按钮 → 基本信息表单"、禁标签 / 状态进编辑表单、禁不同详情页头部各自一套结构
+    - 编辑交互样式统一（catalog 第 8 节）：字段类型固定映射控件（文本 → InputEditable / Editable / FormItemEditable；标签 → ChipGroup / AppTag；状态 → j-badge-status + 动作按钮；布尔 → Switch；单 / 多选 → Select / Radio / Checkbox；时间 → DatePicker / RangePicker；数字 → InputNumber；富文本 / JSON / 代码 → 工作区统一编辑器；资源关联 → 通用资源选择器；跨字段强校验 / 阶段化 / 破坏性 → EditDialog / JlDrawerShell / 配置向导），统一 Enter 保存 + Esc 取消 + 失焦保存 + 就近气泡校验 + 成功 toast 带对象名；同字段在不同模块禁用不同控件 / 不同触发 / 不同反馈
+    - 对象详情整页 → 详情页 10 条硬规则（单层卡禁嵌套 / 段头主色 icon / 非指标不做 KPI / 没数据不渲染 / 段语义对齐 / hero 最多 3 元素 / 高密度优先 / 段内层次 / 单字段占位转软 CTA / 大屏两两并排）+ AI 味 7 条不要（sub-card 嵌套 / 每段头一种装饰色 / 占位占满版面 / 彩色装饰条 blob 大引号 / hero ≥ 4 pill / 内容贴左右半空白）+ 反向引用做主区段不放右栏 sticky
+    - 侧栏 → active 态浅嵌套去染色 / 深嵌套 Linear 风左 2px accent 短条 + 弱底 + accent icon 分两档；折叠分组 8 条精美规则（caret 12px 最弱色阶、父项无 active 子项 active 时父项加粗、CSS Grid 0fr ↔ 1fr 动画、整行可点、persist-key 持久化、a11y aria-expanded / aria-controls、子项 padding-left 对齐父项 icon、折叠态 v-if/v-else 切平铺）
+    - 顶级路由不渲染 PageHead
+    - 浮动元素 z-index token 化 + 单页一个 FAB
+
+    三、文案面向终端用户：写任何用户可见文案前先识别最终用户角色（运营 / 运维 / 平台管理员 / 租户管理员 / 设备管理员 / 业务管理员 / 终端使用者 / 开发集成方等具体角色）、用户目标动作、用户能看懂的术语和下一步；禁止把用户原始需求文本、prompt、内部任务描述、需求文档原文或开发故事卡描述直接放进页面，必须按最终用户视角重写、动作动词开头；禁止暴露字段 key / 变量名 / API 路径 / 组件名 / Topic / 命令 ID / 权限码 / 内部 schema 名以及"TODO / 待定 / 占位文案 / 待接接口 / 原型说明 / 交互方式 / 设计意图"等开发态字样；空 / 错 / 载态要具体到对象与下一步，校验要带限制与示例，成功反馈要带对象名与影响范围；帮助优先 Tooltip / Popconfirm / 空态引导 / 状态附加说明，不放顶部说明 banner。
+
+    四、协同：方案档案只锁定业务结构和交互路径，不证明组件可用；实现回 $jetlinks-web，按当前 workspace 的 jetlinks-web-core 核验导出、契约和相邻用法；提交交付走 $jetlinks-delivery。

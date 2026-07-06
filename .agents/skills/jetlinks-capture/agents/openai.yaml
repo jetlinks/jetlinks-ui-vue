@@ -1,0 +1,5 @@
+interface:
+  display_name: "JetLinks Capture"
+  short_description: "JetLinks 知识沉淀与经验归档"
+  default_prompt: >-
+    使用 $jetlinks-capture 判断本次 JetLinks 任务是否值得沉淀，先给沉淀建议，再在用户确认后写入统一目录；已成熟到可抽成通用 skill 时，继续询问是否并入官方技能仓库 PR。1)必读：references/capture-workflow.md（沉淀形式、何时值得沉淀、目录与命名、升级到 skill 的判断）。2)沉淀判断（满足任意两项就建议沉淀）：踩坑明显容易重复、结论依赖项目上下文不属通用常识、同类模式已出现两次以上、未来智能体大概率会重复遇到、结论会影响模块边界 / 事件模型 / 响应式链路 / 测试方式 / 交付流程。3)选最小形式：已有归属文档可承载 → 更新原文档；单次任务总结 → worklog；项目经验 → knowledge；稳定执行流程 → playbook；长期稳定且跨任务通用 → 更新 prompt 或 skill；再通用、跨项目都成立 → 准备并入 jetlinks-develop-skills 官方 PR。4)沉淀的是"规则"和"经验"不是简单 diff：写为什么这样做、以后遇到什么场景应复用，而不是仅列改了哪些文件；README 只放长期总览，不放单次任务总结、测试报告或 PR 摘要。5)流程：任务结束 → 给"是否建议沉淀 + 推荐形式 + 推荐路径 + 摘要草稿" → 用户确认 → 生成正式文档；用户已明确要求直接生成时可直接落。6)抽成 skill 的 PR：目标指向 https://github.com/jetlinks/jetlinks-develop-skills，按该仓库结构准备 SKILL.md / references / openai.yaml，提交前过 $jetlinks-delivery 的 PR 模板。7)协同：交付完成后由 $jetlinks-delivery 联动；沉淀涉及响应式 / 事件 / 边界 / 协议 / 规范的规则更新时，对应回到 $jetlinks-reactive / $jetlinks-events / $jetlinks-boundary / $jetlinks-protocol / $jetlinks-conventions 改更新对应 skill。

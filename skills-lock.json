@@ -1,0 +1,83 @@
+{
+  "version": 1,
+  "skills": {
+    "jetlinks-assets-permission": {
+      "source": "hhhrrr777/SmartBase-Skills",
+      "sourceType": "github",
+      "skillPath": "jetlinks-assets-permission/SKILL.md",
+      "computedHash": "a0bb9f56b7127652758177a267c6f36e0a69a431fea4e4802a553603f0384678"
+    },
+    "jetlinks-boundary": {
+      "source": "hhhrrr777/SmartBase-Skills",
+      "sourceType": "github",
+      "skillPath": "jetlinks-boundary/SKILL.md",
+      "computedHash": "a37d75530248993be221a732e0e22809f26f721f0115b610a98d45359c6ea8f2"
+    },
+    "jetlinks-capture": {
+      "source": "hhhrrr777/SmartBase-Skills",
+      "sourceType": "github",
+      "skillPath": "jetlinks-capture/SKILL.md",
+      "computedHash": "54105d46e744bea8a5b4bea912905efe25fe5a3da29706075f85ce395c88c1c1"
+    },
+    "jetlinks-conventions": {
+      "source": "hhhrrr777/SmartBase-Skills",
+      "sourceType": "github",
+      "skillPath": "jetlinks-conventions/SKILL.md",
+      "computedHash": "973798e532c101ca35077f5851c4145b158824d8545b8f0b60cca0f448573414"
+    },
+    "jetlinks-crud": {
+      "source": "hhhrrr777/SmartBase-Skills",
+      "sourceType": "github",
+      "skillPath": "jetlinks-crud/SKILL.md",
+      "computedHash": "024a60454ec3e87ec86e69da9099836a9edd43347acc1f4e0d7d9856cf0781d4"
+    },
+    "jetlinks-delivery": {
+      "source": "hhhrrr777/SmartBase-Skills",
+      "sourceType": "github",
+      "skillPath": "jetlinks-delivery/SKILL.md",
+      "computedHash": "ead4bd85082e38a33b3a24d3ec2b3721126004ad7506486583606fe7cabcd802"
+    },
+    "jetlinks-events": {
+      "source": "hhhrrr777/SmartBase-Skills",
+      "sourceType": "github",
+      "skillPath": "jetlinks-events/SKILL.md",
+      "computedHash": "d70879790ac976ef4957f54c221f4eea8743b9cb029cf9d28d1aa4cb7c841b52"
+    },
+    "jetlinks-protocol": {
+      "source": "hhhrrr777/SmartBase-Skills",
+      "sourceType": "github",
+      "skillPath": "jetlinks-protocol/SKILL.md",
+      "computedHash": "dc0b0e29fc4bb04fa05192b70759acd55f8aece41aa116094356556076ab2aa9"
+    },
+    "jetlinks-reactive": {
+      "source": "hhhrrr777/SmartBase-Skills",
+      "sourceType": "github",
+      "skillPath": "jetlinks-reactive/SKILL.md",
+      "computedHash": "eb6eff5a17a34f6e1182ab3d18a7eb1a508dccbbc85ae9c530872b27c85c5190"
+    },
+    "jetlinks-router": {
+      "source": "hhhrrr777/SmartBase-Skills",
+      "sourceType": "github",
+      "skillPath": "jetlinks-router/SKILL.md",
+      "computedHash": "5d88180a51b771c0eda943688841e3c00d28d96c36c59b2a4518913421e79c4e"
+    },
+    "jetlinks-routing": {
+      "source": "hhhrrr777/SmartBase-Skills",
+      "sourceType": "github",
+      "skillPath": "jetlinks-routing/SKILL.md",
+      "computedHash": "4547ad68dd03a886988b41f7e65e9686f91c305bcd9577b13dc2cf0d5b4972ab"
+    },
+    "jetlinks-web": {
+      "source": "hhhrrr777/SmartBase-Skills",
+      "sourceType": "github",
+      "skillPath": "jetlinks-web/SKILL.md",
+      "computedHash": "05c1a9452913c7d56d14cf21c9961fb19a3d5fc23e59384409a250f74b7b9341"
+    },
+    "jetlinks-web-style": {
+      "source": "hhhrrr777/SmartBase-Skills",
+      "sourceType": "github",
+      "skillPath": "jetlinks-web-style/SKILL.md",
+      "computedHash": "a4632790d37ab7fcf531070792e9cf91312a6ae3cc1be52296a0f3855b2df0c7"
+    }
+  }
+}
