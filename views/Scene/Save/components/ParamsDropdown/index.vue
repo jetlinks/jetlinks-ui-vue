@@ -19,7 +19,7 @@
       <div class="scene-select-content">
         <a-tabs v-model:activeKey="mySource" @change="tabsChange">
           <a-tab-pane
-            v-for="item in tabsOptions"
+            v-for="item in filteredTabsOptions"
             :tab="item.label"
             :key="item.key"
           >
@@ -160,6 +160,15 @@ const mySource = ref<string>(props.source);
 const label = ref<any>(props.placeholder);
 const treeOpenKeys = ref<(string | number)[]>([]);
 const visible = ref(false);
+
+const filteredTabsOptions = computed(() => {
+  return props.tabsOptions.filter((item) => {
+    if (['metric'].includes(item.key)) {
+      return props.metricOptions && props.metricOptions.length > 0;
+    }
+    return true;
+  });
+});
 
 const itemType = (type: string) => {
   if (['short', 'byte', 'word'].includes(type)) {
