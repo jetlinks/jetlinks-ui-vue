@@ -88,7 +88,7 @@
                 :label="$t('BasicInfo.Info.607342-9')"
                 name="url"
                 :rules="[
-                  { validator: checkUrl, trigger: 'blur' }
+                  { validator: checkUrl, trigger: 'blur', required: true },
                 ]"
               >
                 <a-input
