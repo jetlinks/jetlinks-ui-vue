@@ -91,8 +91,9 @@ const onSave = async () => {
   const permission = await permissionFormRef.value?.onSave()
   const accessSupportValue = permission.accessSupport
   const params = {
-    ...info,
+    ...props.value,
     ...permission,
+    ...info,
     accessSupport: {
       value: accessSupportValue,
       label:
