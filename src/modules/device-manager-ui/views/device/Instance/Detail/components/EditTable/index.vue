@@ -48,7 +48,7 @@
                                     show-search
                                     :filter-option="filterOption"
                                     :options="channelList"
-                                    @change="onChannelChange(index, 'channel')"
+                                    @change="onChannelChange(record, 'channel')"
                                     @select="
                                         (_, option) => {
                                             record.provider = option.provider;
@@ -76,7 +76,7 @@
                                     v-model="record[column.dataIndex]"
                                     :id="record.channelId"
                                     type="COLLECTOR"
-                                    @change="onChannelChange(index, 'collector')"
+                                    @change="onChannelChange(record, 'collector')"
                                 />
                             </a-form-item>
                         </template>
@@ -247,12 +247,16 @@ const modelRef = reactive({
 const formRef = ref();
 const visible = ref<boolean>(false);
 
-const onChannelChange = (_index: number, type: 'collector' | 'channel') => {
+// 分页表格的 index 是页内索引，联动重置必须直接作用于当前行。
+const onChannelChange = (
+    record: { collectorId?: string; pointId?: string },
+    type: 'collector' | 'channel',
+) => {
     if (type === 'channel') {
-        modelRef.dataSource[_index].collectorId = undefined;
-        modelRef.dataSource[_index].pointId = undefined;
+        record.collectorId = undefined;
+        record.pointId = undefined;
     } else {
-        modelRef.dataSource[_index].pointId = undefined;
+        record.pointId = undefined;
     }
 };
 
