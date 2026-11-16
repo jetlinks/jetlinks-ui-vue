@@ -170,14 +170,16 @@ const columns = computed(() => {
 
 const selectedAll = computed(() => {
   const arr = Object.values(flatTableData)
-  const selectList = arr.filter((item) => item._granted); // 第一列选中的项
+  const selectList = arr.filter((item) => item._granted); // 第一列完全选中的项
+  const indeterminateList = arr.filter((item) => item.indeterminate); // 半选项（有部分按钮被勾选）
   // 判断是全选/半全选
-  if (selectList.length === arr.length) {
+  if (arr.length > 0 && selectList.length === arr.length) {
     return {
       selectedAll: true,
       indeterminate: false
     }
-  } else if (selectList.length > 0) {
+  } else if (selectList.length > 0 || indeterminateList.length > 0) {
+    // 有完全选中或有半选，表头都应显示为半选状态
     return {
       selectedAll: false,
       indeterminate: true
@@ -346,18 +348,12 @@ const updateRowData = (row, checked) => {
   if (row.assetAccesses && row.assetAccesses.length > 0) {
     row.selectAccesses = checked ? (row.selectAccesses || 'creator') : undefined
   }
-  // 修改children的值
-  // 注意：对于既没有 buttons 也没有 children 的子节点，它们是"自己管自己"的，不应该被父节点影响
+  // 修改children的值，所有子节点都需要递归更新（包括无按钮无子节点的纯菜单项）
   if (row.children && row.children.length > 0) {
     row.children.forEach((child) => {
       const childRow = flatTableData[child.id];
       if (childRow) {
-        const hasButtons = childRow.buttons && childRow.buttons.length > 0;
-        const hasChildren = childRow.children && childRow.children.length > 0;
-        // 只有当子节点有 buttons 或有 children 时，才递归更新它
-        if (hasButtons || hasChildren) {
-          updateRowData(childRow, checked)
-        }
+        updateRowData(childRow, checked)
       }
     })
   }
@@ -385,8 +381,20 @@ const actionChange = (id, flag) => {
   // 重新计算当前节点状态
   getGrantedData(id)
 
-  // 使用新的方法递归更新所有祖先节点，确保多级父节点的状态都能正确更新
+  // 勾选/取消按钮时，同步更新数据权限（selectAccesses）
+  // 选中或半选状态时自动赋默认数据权限；完全取消时清空
   const row = flatTableData[id]
+  if (row.assetAccesses && row.assetAccesses.length > 0) {
+    if (row._granted || row.indeterminate) {
+      if (!row.selectAccesses) {
+        row.selectAccesses = 'creator'
+      }
+    } else {
+      row.selectAccesses = undefined
+    }
+  }
+
+  // 使用新的方法递归更新所有祖先节点，确保多级父节点的状态都能正确更新
   if (row.parentId) {
     updateAllAncestors(row.parentId)
   }
