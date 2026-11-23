@@ -11,8 +11,8 @@
             style="max-width: 220px"
             :placeholder="$t('Delay.index.9667826-1')"
             v-model:value="_value"
-            :precision="3"
-            :min="0.001"
+            :precision="0"
+            :min="0"
             :max="65535"
         >
             <template #addonAfter>
