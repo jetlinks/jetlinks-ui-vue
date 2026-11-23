@@ -11,7 +11,7 @@
                 <div :class="valueClass" v-if="!!_type">
                     <Image
                         v-if="_type === 'img'"
-                        :src="value?.formatValue"
+                        :src="getBase64ImageSrc(value?.formatValue)"
                     />
                     <Image v-else :src="imgMap.get(_type)"/>
                 </div>
@@ -113,7 +113,7 @@
 <script lang="ts" setup>
 import { onlyMessage } from '@jetlinks-web/utils';
 import ValueDetail from './ValueDetail.vue';
-import { getType, imgMap, imgList, videoList, fileList } from './index';
+import { getType, getBase64ImageSrc, imgMap, imgList, videoList, fileList } from './index';
 import { useI18n } from 'vue-i18n';
 
 const { t: $t } = useI18n();

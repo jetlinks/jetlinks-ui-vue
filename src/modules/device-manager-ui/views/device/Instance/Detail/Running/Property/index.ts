@@ -36,6 +36,29 @@ export const fileList = ['.txt', '.doc', '.xls', '.pdf', '.ppt', '.docx', '.xlsx
 //     return t;
 // };
 
+const imageMimeTypes: Record<string, string> = {
+    'iVBORw0KGgo': 'image/png',
+    '/9j/': 'image/jpeg',
+    'R0lGOD': 'image/gif',
+    'UklGR': 'image/webp',
+};
+
+/** 为设备上报的裸 Base64 图片补齐 Data URL，保留已有的 Data URL。 */
+export const getBase64ImageSrc = (base64String: string): string => {
+    if (!base64String || typeof base64String !== 'string') {
+        return '';
+    }
+    if (/^data:/i.test(base64String)) {
+        return base64String;
+    }
+
+    const cleanBase64 = base64String.replace(/\s/g, '');
+    const mimeType = Object.entries(imageMimeTypes).find(([signature]) =>
+        cleanBase64.startsWith(signature),
+    )?.[1];
+    return mimeType ? `data:${mimeType};base64,${cleanBase64}` : base64String;
+};
+
 /**
  * 根据base64字符串判断文件格式
  * @param base64String base64字符串
@@ -47,7 +70,9 @@ export const getType = (base64String: string): string => {
     }
 
     // 去除data URL前缀，只保留base64数据部分
-    const cleanBase64 = base64String.replace(/^data:([a-zA-Z]+\/[a-zA-Z0-9-.+]+).*,/, '');
+    const cleanBase64 = base64String
+        .replace(/^data:([a-zA-Z]+\/[a-zA-Z0-9-.+]+).*,/, '')
+        .replace(/\s/g, '');
 
     // 如果有MIME类型，优先使用MIME类型判断
     const mimeTypeMatch = base64String.match(/^data:([a-zA-Z]+\/[a-zA-Z0-9-.+]+);/);
@@ -70,15 +95,13 @@ export const getType = (base64String: string): string => {
         }
     }
 
+    // 图片识别与 Data URL 使用同一份签名，避免分类和实际加载格式不一致。
+    if (Object.keys(imageMimeTypes).some((signature) => cleanBase64.startsWith(signature))) {
+        return 'img';
+    }
+
     // 根据base64头部字节判断文件类型
     const fileTypeSignatures: { [key: string]: string } = {
-        // 图片格式
-        'IVBORw0KGgo': 'png',      // PNG
-        '/9j/': 'jpg',             // JPEG
-        'R0lGOD': 'gif',           // GIF
-        'UklGR': 'webp',           // WebP
-        'iVBORw0KGgoAAAANSUhEUg': 'png', // PNG (更完整的匹配)
-
         // 视频格式
         'AAAAIGZ0eXB': 'mp4',     // MP4
         'BAAAAHUAAAAAAAAAAAAAA': 'avi', // AVI
