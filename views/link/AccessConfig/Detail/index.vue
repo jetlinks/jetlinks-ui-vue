@@ -2,10 +2,11 @@
     <j-page-container>
         <a-spin :spinning="loading">
             <div v-if="type && id === ':id'">
-                <Provider
-                    @onClick="goProviders"
-                    :dataSource="dataSource"
-                ></Provider>
+              <component
+                :is="components.provider"
+                :dataSource="dataSource"
+                @onClick="goProviders"
+              />
             </div>
             <FullPage :fixed="false" v-else>
                 <a-card :bordered="false">
@@ -13,56 +14,13 @@
                         <div class="go-back" v-if="id === ':id'">
                             <a @click="goBack">{{ $t('Detail.index.308483-0') }}</a>
                         </div>
-                        <template v-if="showType === 'network'">
-                            <Plugin
-                                v-if="provider.id === 'plugin_gateway'"
-                                :bindProduct='bindProduct'
-                                :data="data"
-                                :provider="provider"
-                            />
-                            <GateWay
-                                v-else-if="provider.id === 'collector-gateway'"
-                                :bindProduct='bindProduct'
-                                :data="data"
-                                :provider="provider"
-                            />
-                            <Composite 
-                                v-else-if="provider.id === 'composite-device-gateway'"
-                                :data="data"
-                                :otherProvider="compositeProvider"
-                            />
-                            <Network
-                                v-else
-                                :bindProduct='bindProduct'
-                                :data="data"
-                                :provider="provider"
-                            />
-                        </template>
-
-                        <Media
-                            v-else-if="showType === 'media'"
-                            :bindProduct='bindProduct'
-                            :provider="provider"
-                            :data="data"
-                        />
-                        <Channel
-                            v-else-if="showType === 'channel'"
-                            :bindProduct='bindProduct'
-                            :provider="provider"
-                            :data="data"
-                        />
-                        <Edge
-                            v-else-if="showType === 'edge'"
-                            :bindProduct='bindProduct'
-                            :provider="provider"
-                            :data="data"
-                        />
-                        <Cloud
-                            v-else-if="showType === 'cloud'"
-                            :bindProduct='bindProduct'
-                            :provider="provider"
-                            :data="data"
-                        />
+                      <component
+                        :is="showType === 'network' ? components[provider.id] || components.network : components[showType]"
+                        :data="data"
+                        :provider="provider"
+                        :bindProduct="provider.id === `composite-device-gateway` ? undefined: bindProduct"
+                        :otherProvider="provider.id === `composite-device-gateway` ? compositeProvider : undefined"
+                      />
                     </div>
                 </a-card>
             </FullPage>
@@ -71,23 +29,27 @@
 </template>
 
 <script lang="ts" setup name="AccessConfigDetail">
-import Network from '../components/Network/index.vue';
-import Provider from '../components/Provider/index.vue';
-import Media from '../components/Media/index.vue';
-import Channel from '../components/Channel/index.vue';
-import Edge from '../components/Edge/index.vue';
-import GateWay from '../components/Edge/geteway.vue';
-import Cloud from '../components/Cloud/index.vue';
-import Plugin from '../components/Plugin/index.vue'
 import {getProviders, detail} from '@device-manager-ui/api/link/accessConfig';
 import {queryProductList} from '@device-manager-ui/api/product';
 import {accessConfigTypeFilter} from '@/utils';
 import { useI18n } from 'vue-i18n';
-import Composite from '../components/Composite/index.vue';
 
 const { t: $t } = useI18n();
 const route = useRoute();
 const id = route.params.id as string;
+
+const components = {
+  network: defineAsyncComponent(() => import('../components/Network/index.vue')),
+  provider: defineAsyncComponent(() => import('../components/Provider/index.vue')),
+  media: defineAsyncComponent(() => import('../components/Media/index.vue')),
+  channel: defineAsyncComponent(() => import('../components/Channel/index.vue')),
+  edge: defineAsyncComponent(() => import('../components/Edge/index.vue')),
+  cloud: defineAsyncComponent(() => import('../components/Cloud/index.vue')),
+  'collector-gateway': defineAsyncComponent(() => import('../components/Edge/geteway.vue')),
+  'plugin_gateway': defineAsyncComponent(() => import('../components/Plugin/index.vue')),
+  'composite-device-gateway': defineAsyncComponent(() => import('../components/Composite/index.vue')),
+}
+
 
 const dataSource: any = ref([]);
 const type = ref(false);
